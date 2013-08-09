@@ -119,13 +119,13 @@ public:
   int getCellSize(int winSize);
 
   void set_init_alpha(double input) { init_alpha_ = input; }
-  void set_init_neighbourhood(double input){init_neighbourhood_ = input;}
-  void set_init_std_factor(double input){init_std_factor_ = input;}
-  void set_init_iterations(int input){init_iterations_ = input;}
-  void set_train_alpha(double input){train_alpha_ = input;}
-  void set_train_neighbourhood(double input){train_neighbourhood_ = input;}
-  void set_train_std_factor(double input){train_std_factor_ = input;}
-  void set_train_iterations(int input){train_iterations_ = input;}
+  void set_init_neighbourhood(double input) {init_neighbourhood_ = input;}
+  void set_init_std_factor(double input) {init_std_factor_ = input;}
+  void set_init_iterations(int input) {init_iterations_ = input;}
+  void set_train_alpha(double input) {train_alpha_ = input;}
+  void set_train_neighbourhood(double input) {train_neighbourhood_ = input;}
+  void set_train_std_factor(double input) {train_std_factor_ = input;}
+  void set_train_iterations(int input) {train_iterations_ = input;}
 
   double get_init_alpha()  {return init_alpha_;}
   double get_init_neighbourhood()  { return init_neighbourhood_;}
@@ -157,7 +157,7 @@ public slots:
   void setTrainFile(QString fname);
   void setValue(int);
 
-signals: 
+signals:
   void playingTrack(MusicTrack *track);
   void repaintSignal();
   void errorBox(QString msg);

@@ -7,7 +7,7 @@
 
     Centre for Digital Music, Queen Mary, University of London.
     Copyright 2006 Chris Cannam.
-  
+
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation
     files (the "Software"), to deal in the Software without
@@ -67,22 +67,22 @@ static Vamp::PluginAdapter<MarsyasIBT> MarsyasIBT;
 
 
 const VampPluginDescriptor *vampGetPluginDescriptor(unsigned int version,
-                                                    unsigned int index)
+    unsigned int index)
 {
-    if (version < 1) return 0;
+  if (version < 1) return 0;
 
-    switch (index) {
-    case  0: return ZeroCrossingAdapter.getDescriptor();
-    case  1: return MarsyasBExtractZeroCrossingsAdapter.getDescriptor();
-    case  2: return MarsyasBExtractCentroidAdapter.getDescriptor();
-    case  3: return MarsyasBExtractLPCCAdapter.getDescriptor();
-    case  4: return MarsyasBExtractLSPAdapter.getDescriptor();
-    case  5: return MarsyasBExtractMFCCAdapter.getDescriptor();
-    case  6: return MarsyasBExtractRolloffAdapter.getDescriptor();
-    case  7: return MarsyasBExtractSCFAdapter.getDescriptor();
-    case  8: return MarsyasBExtractSFMAdapter.getDescriptor();
-	case  9: return MarsyasIBT.getDescriptor();
-    default: return 0;
-    }
+  switch (index) {
+  case  0: return ZeroCrossingAdapter.getDescriptor();
+  case  1: return MarsyasBExtractZeroCrossingsAdapter.getDescriptor();
+  case  2: return MarsyasBExtractCentroidAdapter.getDescriptor();
+  case  3: return MarsyasBExtractLPCCAdapter.getDescriptor();
+  case  4: return MarsyasBExtractLSPAdapter.getDescriptor();
+  case  5: return MarsyasBExtractMFCCAdapter.getDescriptor();
+  case  6: return MarsyasBExtractRolloffAdapter.getDescriptor();
+  case  7: return MarsyasBExtractSCFAdapter.getDescriptor();
+  case  8: return MarsyasBExtractSFMAdapter.getDescriptor();
+  case  9: return MarsyasIBT.getDescriptor();
+  default: return 0;
+  }
 }
 

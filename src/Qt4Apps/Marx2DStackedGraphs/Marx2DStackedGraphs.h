@@ -17,7 +17,7 @@
 */
 
 #ifndef MARX2DSTACKEDGRAPHS_H
-#define MARX2DSTACKEDGRAPHS_H 
+#define MARX2DSTACKEDGRAPHS_H
 
 #include <QWidget>
 #include <QGridLayout>
@@ -31,7 +31,7 @@ using namespace MarsyasQt;
 class Marx2DStackedGraphs : public QWidget
 {
 
- public:
+public:
   Marx2DStackedGraphs(QWidget *parent = 0);//warning C4520: 'Marx2DGraph' : multiple default constructors specified	[!]
   Marx2DStackedGraphs(unsigned int n=0, QWidget *parent = 0);//warning C4520: 'Marx2DGraph' : multiple default constructors specified	[!]
   Marx2DStackedGraphs(int s=0, unsigned int n=0, QWidget *parent = 0 );//warning C4520: 'Marx2DGraph' : multiple default constructors specified	[!]
@@ -50,13 +50,13 @@ class Marx2DStackedGraphs : public QWidget
   enum { setShowAxisScale, setAntialias, setXAxisLabelOn, setYAxisLabelOn };
   bool setMarxGraphBooleanArgs( int, int, bool );
 
-  enum { setXAxisLabel, setYAxisLabel, addLabel }; 
+  enum { setXAxisLabel, setYAxisLabel, addLabel };
   bool setMarxGraphStringArgs( int, int, std::string );
 
- protected:
+protected:
 
 
- private:
+private:
   std::vector<Marx2DGraph*> graphs;
   unsigned int numgraphs;
 

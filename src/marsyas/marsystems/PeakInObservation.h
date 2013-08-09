@@ -23,40 +23,40 @@
 
 namespace Marsyas
 {
-	/**
-	\ingroup	Analysis
-	\brief		Compute peaks in observation vector
-	\author		Matthias Varewyck
-	\date		20090518
+/**
+\ingroup	Analysis
+\brief		Compute peaks in observation vector
+\author		Matthias Varewyck
+\date		20090518
 
-	Controls:
-	- \b mrs_natural/HystLength [rw] : ..
-	- \b mrs_real/HystFactor [rw] : ..
-	*/
+Controls:
+- \b mrs_natural/HystLength [rw] : ..
+- \b mrs_real/HystFactor [rw] : ..
+*/
 
-	class PeakInObservation: public MarSystem
-	{
-		public:
-			PeakInObservation(mrs_string inName);
-			PeakInObservation(const PeakInObservation& inToCopy);
+class PeakInObservation: public MarSystem
+{
+public:
+  PeakInObservation(mrs_string inName);
+  PeakInObservation(const PeakInObservation& inToCopy);
 
-			~PeakInObservation();
+  ~PeakInObservation();
 
-			MarSystem* clone() const;
+  MarSystem* clone() const;
 
-			void addControls();
-			void myUpdate(MarControlPtr inSender);
-			void myProcess(realvec& inVec, realvec& outVec);
+  void addControls();
+  void myUpdate(MarControlPtr inSender);
+  void myProcess(realvec& inVec, realvec& outVec);
 
-		private:
-			// Pointer to MarControllers
-			MarControlPtr ctrl_HystLength_;
-			MarControlPtr ctrl_HystFactor_;
+private:
+  // Pointer to MarControllers
+  MarControlPtr ctrl_HystLength_;
+  MarControlPtr ctrl_HystFactor_;
 
-			// Member variables
-			mrs_natural HystLength_;
-			mrs_real HystFactor_;
-	};
+  // Member variables
+  mrs_natural HystLength_;
+  mrs_real HystFactor_;
+};
 
 }	// End namespace
 

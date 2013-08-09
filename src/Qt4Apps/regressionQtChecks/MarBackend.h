@@ -17,29 +17,29 @@ using namespace std;
 
 class MarBackend: public QObject
 {
-	Q_OBJECT
+  Q_OBJECT
 public:
-	MarBackend(string infile, string outfile);
-	~MarBackend();
-	void waitUntilFinished();
+  MarBackend(string infile, string outfile);
+  ~MarBackend();
+  void waitUntilFinished();
 
 public slots:
-	void ctrlChanged(MarControlPtr changed);
+  void ctrlChanged(MarControlPtr changed);
 
 signals:
-	void quit();
+  void quit();
 
 private:
-	void stop();
-	MarSystemManager mng;
-	MarSystemQtWrapper *mrsWrapper;
-	MarSystem *pnet;
-	MarControlPtr isEmptyPtr;
-	MarControlPtr posPtr;
-	bool isRunning;
+  void stop();
+  MarSystemManager mng;
+  MarSystemQtWrapper *mrsWrapper;
+  MarSystem *pnet;
+  MarControlPtr isEmptyPtr;
+  MarControlPtr posPtr;
+  bool isRunning;
 
 
-	QMutex mutex;
+  QMutex mutex;
 };
 #endif
 

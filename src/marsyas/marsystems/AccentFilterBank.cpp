@@ -24,12 +24,12 @@ using namespace Marsyas;
 
 AccentFilterBank::AccentFilterBank(mrs_string name):MarSystem("AccentFilterBank", name)
 {
-	addControls();
+  addControls();
 }
 
 AccentFilterBank::AccentFilterBank(const AccentFilterBank& a) : MarSystem(a)
 {
-	ctrl_gain_EXAMPLE_ = getctrl("mrs_real/gain");
+  ctrl_gain_EXAMPLE_ = getctrl("mrs_real/gain");
 }
 
 
@@ -40,35 +40,35 @@ AccentFilterBank::~AccentFilterBank()
 MarSystem*
 AccentFilterBank::clone() const
 {
-	return new AccentFilterBank(*this);
+  return new AccentFilterBank(*this);
 }
 
 void
 AccentFilterBank::addControls()
 {
 
-	addctrl("mrs_bool/dummyEXAMPLE", false);
-	setctrlState("mrs_bool/dummyEXAMPLE", true);
+  addctrl("mrs_bool/dummyEXAMPLE", false);
+  setctrlState("mrs_bool/dummyEXAMPLE", true);
 
-	addctrl("mrs_real/gain", 1.0, ctrl_gain_EXAMPLE_);
+  addctrl("mrs_real/gain", 1.0, ctrl_gain_EXAMPLE_);
 
 }
 
 void
 AccentFilterBank::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("AccentFilterBank.cpp - AccentFilterBank:myUpdate");
+  MRSDIAG("AccentFilterBank.cpp - AccentFilterBank:myUpdate");
 
-	MarSystem::myUpdate(sender);
+  MarSystem::myUpdate(sender);
 }
 
 void
 AccentFilterBank::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o,t;
-	const mrs_real& gainValueEXAMPLE = ctrl_gain_EXAMPLE_->to<mrs_real>();
+  mrs_natural o,t;
+  const mrs_real& gainValueEXAMPLE = ctrl_gain_EXAMPLE_->to<mrs_real>();
 
-	for (o=0; o < inObservations_; o++)
-		for (t = 0; t < inSamples_; t++)
-			out(o,t) = gainValueEXAMPLE * in(o,t);
+  for (o=0; o < inObservations_; o++)
+    for (t = 0; t < inSamples_; t++)
+      out(o,t) = gainValueEXAMPLE * in(o,t);
 }

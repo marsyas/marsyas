@@ -23,103 +23,103 @@
 #include <QtNetwork/QUdpSocket>
 
 QOscServer::QOscServer( quint16 port, QObject* p )
-	: QOscBase( p )
+  : QOscBase( p )
 {
-	socket()->bind( QHostAddress::Any, port );
-	connect( socket(), SIGNAL( readyRead() ), this, SLOT( readyRead() ) );
+  socket()->bind( QHostAddress::Any, port );
+  connect( socket(), SIGNAL( readyRead() ), this, SLOT( readyRead() ) );
 }
 QOscServer::QOscServer( QHostAddress address, quint16 port, QObject* p )
-	: QOscBase( p )
+  : QOscBase( p )
 {
-	socket()->bind( address, port );
-	connect( socket(), SIGNAL( readyRead() ), this, SLOT( readyRead() ) );
+  socket()->bind( address, port );
+  connect( socket(), SIGNAL( readyRead() ), this, SLOT( readyRead() ) );
 }
 
 QOscServer::~QOscServer() {
 }
 
 void QOscServer::registerPathObject( PathObject* p ) {
-	paths.push_back( p );
+  paths.push_back( p );
 }
 void QOscServer::unregisterPathObject( PathObject* p ) {
-	paths.removeAll( p );
+  paths.removeAll( p );
 }
 
 #define BUFFERSIZE 255
 
 void QOscServer::readyRead() {
-	while ( socket()->hasPendingDatagrams() ) {
-		QByteArray packet( BUFFERSIZE, char( 0 ) );
-		int size = socket()->readDatagram( packet.data(), BUFFERSIZE );
+  while ( socket()->hasPendingDatagrams() ) {
+    QByteArray packet( BUFFERSIZE, char( 0 ) );
+    int size = socket()->readDatagram( packet.data(), BUFFERSIZE );
 
-		QString path;
-		QString args;
-		QVariant arguments;
+    QString path;
+    QString args;
+    QVariant arguments;
 
-		int i=0;
-		if ( packet[ i ] == '/' ) {
+    int i=0;
+    if ( packet[ i ] == '/' ) {
 
-			for ( ; i<size && packet[ i ] != char( 0 ); ++i )
-				path += packet[ i ];
+      for ( ; i<size && packet[ i ] != char( 0 ); ++i )
+        path += packet[ i ];
 
-			while ( packet[ i ] != ',' ) ++i;
-			++i;
-			while ( packet[ i ] != char( 0 ) )
-				args += packet[ i++ ];
+      while ( packet[ i ] != ',' ) ++i;
+      ++i;
+      while ( packet[ i ] != char( 0 ) )
+        args += packet[ i++ ];
 
-			if ( ! args.isEmpty() ) {
-				QList<QVariant> list;
+      if ( ! args.isEmpty() ) {
+        QList<QVariant> list;
 
-				foreach( QChar type, args ) {
-					while ( i%4 != 0 ) ++i;
+        foreach( QChar type, args ) {
+          while ( i%4 != 0 ) ++i;
 
-					QByteArray tmp = packet.right( packet.size()-i );
-					QVariant value;
-					if ( type == 's' ) {
-						QString s = toString( tmp );
-						value = s;
-						i += s.size();
-					}
-					if ( type == 'i' ) {
-						value = toInt32( tmp );
-						i+=4;
-					}
-					if ( type == 'f' ) {
-						value = toFloat( tmp );
-						i+=4;
-					}
-					//qDebug() << " got" << value;
+          QByteArray tmp = packet.right( packet.size()-i );
+          QVariant value;
+          if ( type == 's' ) {
+            QString s = toString( tmp );
+            value = s;
+            i += s.size();
+          }
+          if ( type == 'i' ) {
+            value = toInt32( tmp );
+            i+=4;
+          }
+          if ( type == 'f' ) {
+            value = toFloat( tmp );
+            i+=4;
+          }
+          //qDebug() << " got" << value;
 
-					if ( args.size() > 1 )
-						list.append( value );
-					else
-						arguments = value;
-				}
+          if ( args.size() > 1 )
+            list.append( value );
+          else
+            arguments = value;
+        }
 
-				if ( args.size() > 1 )
-					arguments = list;
-			}
-		}
+        if ( args.size() > 1 )
+          arguments = list;
+      }
+    }
 
-		QMap<QString,QString> replacements;
-		replacements[ "!" ] = "^";
-		replacements[ "{" ] = "(";
-		replacements[ "}" ] = ")";
-		replacements[ "," ] = "|";
-		replacements[ "*" ] = ".*";
-		replacements[ "?" ] = ".";
+    QMap<QString,QString> replacements;
+    replacements[ "!" ] = "^";
+    replacements[ "{" ] = "(";
+    replacements[ "}" ] = ")";
+    replacements[ "," ] = "|";
+    replacements[ "*" ] = ".*";
+    replacements[ "?" ] = ".";
 
-		foreach( QString rep, replacements.keys() )
-			path.replace( rep, replacements[ rep ] );
+    foreach( QString rep, replacements.keys() )
+    path.replace( rep, replacements[ rep ] );
 
-		// patch for propagating data to the Marsyas network [ML]
-		emit data(path, arguments);
+    // patch for propagating data to the Marsyas network [ML]
+    emit data(path, arguments);
 
-		QRegExp exp( path );
-		foreach( PathObject* obj, paths ) {
-			if ( exp.exactMatch( obj->_path ) )
-				obj->signalData( arguments );
-		}
-	}
+    QRegExp exp( path );
+    foreach( PathObject* obj, paths ) {
+      if ( exp.exactMatch( obj->_path ) )
+        obj->signalData( arguments );
+    }
+  }
 }
 

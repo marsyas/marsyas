@@ -8,7 +8,7 @@
 /**
  * Abstract Constructor I am not sure if it should do anything in
  * particular.
- * Takes in the parameters required to create a marwidget. 
+ * Takes in the parameters required to create a marwidget.
  */
 CompositeNode::CompositeNode(string type,QString name,QWidget* parent)
   :MarSystemNode(type,name,parent)
@@ -26,18 +26,18 @@ CompositeNode::CompositeNode(MarSystem* msys, QWidget* parent)
  * Adds a MarSystemNode to the back of the list.
  * This abstract class has no graphical component so we don't need to
  * worry about anythign else.
- * Returns True if the addtion was a success false otherwise. 
+ * Returns True if the addtion was a success false otherwise.
  */
-bool 
+bool
 CompositeNode::append(MarSystemNode* newTail)
 {
   //First make sure we don't already have this MarSystemNode (Adding the
   //same mar widget seems like a mistake
-  if(!isMember(newTail)){
+  if(!isMember(newTail)) {
     nodes_.push_back(newTail);
     dynamic_cast<MarSystem*>(represents_)->addMarSystem(newTail->getSystem());
     return true;
-  }else{
+  } else {
     return false;
   }
 }
@@ -50,22 +50,22 @@ CompositeNode::append(MarSystemNode* newTail)
 bool
 CompositeNode::insert(int index, MarSystemNode* newWidget)
 {
-  if(!isMember(newWidget)){
+  if(!isMember(newWidget)) {
     //Comparison is between unsigned and signed int which one is unsigned
-    if(index>=nodes_.size()){
-      return false;//Cannot add beyond the end of the 
-    }else{
+    if(index>=nodes_.size()) {
+      return false;//Cannot add beyond the end of the
+    } else {
       //TODO make sure this works without an issue
       vector<MarSystemNode*>::iterator itr=nodes_.begin();
       int i=0;
-      while(i<index && itr!=nodes_.end()){
-	i++;
-	itr++;
+      while(i<index && itr!=nodes_.end()) {
+        i++;
+        itr++;
       }
       nodes_.insert(itr,newWidget);
     }
     return true;
-  }else{
+  } else {
     return false;
   }
 }
@@ -77,15 +77,15 @@ CompositeNode::insert(int index, MarSystemNode* newWidget)
 bool
 CompositeNode::insert(MarSystemNode* before,MarSystemNode* newWidget)
 {
-  if(!isMember(newWidget)){
+  if(!isMember(newWidget)) {
     vector<MarSystemNode*>::iterator itr=nodes_.begin();
-    for(;itr!=nodes_.end();itr++){
-      if(*itr==before){
-	nodes_.insert(itr,newWidget);
+    for(; itr!=nodes_.end(); itr++) {
+      if(*itr==before) {
+        nodes_.insert(itr,newWidget);
       }
     }
     return true;
-  }else{
+  } else {
     return false;
   }
 }
@@ -97,7 +97,7 @@ bool
 CompositeNode::isMember(MarSystemNode* findMe)
 {
   vector<MarSystemNode*>::iterator itr;
-  for(itr=nodes_.begin();itr!=nodes_.end();itr++){
+  for(itr=nodes_.begin(); itr!=nodes_.end(); itr++) {
     if(findMe==*itr)return true;
   }
   return false;
@@ -129,13 +129,13 @@ CompositeNode::handleChildResize(int x,int y, int w, int h)
   //This class will do nothing with it
 }
 
-/**happened after the constructor of the 
-derived class finished. At this point the virtual metaObject 
-method (defined by the Q_OBJECT macro) upon invocation returns 
-a reference to your derived class' metaobject instance. This way 
-connect finds slotX as provided by the second metaObject first 
-and binds that to the signal. If that metaobject wouldn't provide 
-that slot it would search recursively upwards in the hierarchy of 
+/**happened after the constructor of the
+derived class finished. At this point the virtual metaObject
+method (defined by the Q_OBJECT macro) upon invocation returns
+a reference to your derived class' metaobject instance. This way
+connect finds slotX as provided by the second metaObject first
+and binds that to the signal. If that metaobject wouldn't provide
+that slot it would search recursively upwards in the hierarchy of
 metaobjects for the given object (and probably find slot
  * CompositeNode sets next instead of marChild.
  * TODO might remove this DOn't think Fanout MarSystemNode is using

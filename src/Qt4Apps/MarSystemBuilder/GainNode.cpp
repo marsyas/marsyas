@@ -28,20 +28,20 @@ GainNode::resizeEvent(QResizeEvent*)
   paint.setFont(font());
   paint.setPen(Qt::black);
   paint.setBrush(Qt::NoBrush);
-  paint.drawText(QRect(QPoint((width()-size.width())/2, (height()-size.height())/2), size), 
-		   Qt::AlignCenter,  name_);
+  paint.drawText(QRect(QPoint((width()-size.width())/2, (height()-size.height())/2), size),
+                 Qt::AlignCenter,  name_);
   paint.end();
   //paint.drawRect(0,0,pix.width(),pix.height());
   /* QPalette pal(palette());
   pal.setBrush(backgroundRole(),QBrush(pix));
   setPalette(pal);
-  */ 
+  */
   update();
 }
 
 
 
-void GainNode::paintEvent(QPaintEvent*) 
+void GainNode::paintEvent(QPaintEvent*)
 {
   cout << "GainNode::paintEvent" << endl;
   QFontMetrics fm(font());
@@ -57,13 +57,13 @@ void GainNode::paintEvent(QPaintEvent*)
   paint.setFont(font());
   paint.setPen(Qt::black);
   paint.setBrush(Qt::NoBrush);
-  paint.drawText(QRect(QPoint((width()-size.width())/2, (height()-size.height())/2), size), 
-		   Qt::AlignCenter,  name_);
+  paint.drawText(QRect(QPoint((width()-size.width())/2, (height()-size.height())/2), size),
+                 Qt::AlignCenter,  name_);
   paint.end();
   //paint.drawRect(0,0,pix.width(),pix.height());
   QPalette pal(palette());
 
   setPalette(pal);
   setPixmap(pix);
-  
+
 }

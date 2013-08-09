@@ -44,7 +44,7 @@ typedef double MY_FLOAT;
 class StkError
 {
 public:
-  enum TYPE { 
+  enum TYPE {
     WARNING,
     DEBUG_WARNING,
     FUNCTION_ARGUMENT,
@@ -170,7 +170,7 @@ typedef double FLOAT64;
 // move the rawwaves directory to a different location in your file
 // system, you will need to set this path definition appropriately.
 #if !defined(RAWWAVE_PATH)
-  #define RAWWAVE_PATH "../../rawwaves/"
+#define RAWWAVE_PATH "../../rawwaves/"
 #endif
 
 
@@ -179,16 +179,16 @@ typedef double FLOAT64;
 #define ONE_OVER_128 (MY_FLOAT) 0.0078125
 
 #if defined(__WINDOWS_DS__) || defined(__WINDOWS_ASIO__)
-  #define __STK_REALTIME__
+#define __STK_REALTIME__
 #elif defined(__LINUX_OSS__) || defined(__LINUX_ALSA__) || defined(__LINUX_JACK__)
 //  #define MARSYAS_CYGWIN
-  #define __STK_REALTIME__
+#define __STK_REALTIME__
 #elif defined(__IRIX_AL__)
-  #define MARSYAS_IRIX
-  #define __STK_REALTIME__
+#define MARSYAS_IRIX
+#define __STK_REALTIME__
 #elif defined(__MACOSX_CORE__)
-  #define MARSYAS_MACOSX
-  #define __STK_REALTIME__
+#define MARSYAS_MACOSX
+#define __STK_REALTIME__
 #endif
 
 //#define _STK_DEBUG_

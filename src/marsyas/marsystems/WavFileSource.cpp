@@ -57,7 +57,7 @@ WavFileSource::~WavFileSource()
   delete [] sdata_;
   delete [] cdata_;
   if (sfp_ != NULL)
-	fclose(sfp_);
+    fclose(sfp_);
 }
 
 MarSystem*
@@ -122,205 +122,205 @@ WavFileSource::addControls()
 void
 WavFileSource::getHeader(mrs_string filename)
 {
-	
+
   if (sfp_ != NULL)
-	fclose(sfp_);
+    fclose(sfp_);
 
   sfp_ = fopen(filename.c_str(), "rb");
   if (sfp_)
   {
-	char magic[5];
+    char magic[5];
 
-	fseek(sfp_, 8, SEEK_SET); // Locate wave id
-	if (fread(magic, 4, 1, sfp_) == 0)
-	{
-	  MRSERR("WavFileSource: File " + filename + " is empty ");
-	}
-	magic[4] = '\0';
+    fseek(sfp_, 8, SEEK_SET); // Locate wave id
+    if (fread(magic, 4, 1, sfp_) == 0)
+    {
+      MRSERR("WavFileSource: File " + filename + " is empty ");
+    }
+    magic[4] = '\0';
 
-	if (strcmp(magic, "WAVE"))
-	{
-	  MRSWARN("Filename " + filename + " is not correct .wav file \n or has settings that are not supported in Marsyas");
-	  // setctrl("mrs_natural/nChannels", 1);
-	  setctrl("mrs_real/israte", (mrs_real)22050.0);
-	  setctrl("mrs_natural/size", 0);
-	  hasData_ = false;
-	  lastTickWithData_ = true;
-	  setctrl("mrs_bool/hasData", false);
-	  setctrl("mrs_bool/lastTickWithData", true);
+    if (strcmp(magic, "WAVE"))
+    {
+      MRSWARN("Filename " + filename + " is not correct .wav file \n or has settings that are not supported in Marsyas");
+      // setctrl("mrs_natural/nChannels", 1);
+      setctrl("mrs_real/israte", (mrs_real)22050.0);
+      setctrl("mrs_natural/size", 0);
+      hasData_ = false;
+      lastTickWithData_ = true;
+      setctrl("mrs_bool/hasData", false);
+      setctrl("mrs_bool/lastTickWithData", true);
 
-	}
-	else
-	{
-	  char id[5];
-	  int chunkSize;
-	  if (fread(id, 4, 1, sfp_) != 1) {
-            MRSERR("Error reading wav file");
-        }
-	  id[4] = '\0';
+    }
+    else
+    {
+      char id[5];
+      int chunkSize;
+      if (fread(id, 4, 1, sfp_) != 1) {
+        MRSERR("Error reading wav file");
+      }
+      id[4] = '\0';
 
-	  while (strcmp(id, "fmt "))
-	  {
-		if (fread(&chunkSize, 4, 1, sfp_) != 1) {
-            MRSERR("Error reading wav file");
-        }
-#if defined(MARSYAS_BIGENDIAN)
-		chunkSize = ByteSwapLong(chunkSize);
-#else
-		//chunkSize = chunkSize;
-#endif
-		fseek(sfp_, chunkSize, SEEK_CUR);
-		if (fread(id, 4, 1, sfp_) != 1) {
-            MRSERR("Error reading wav file");
-        }
-	  }
-
-	  if (fread(&chunkSize, 4, 1, sfp_) != 1) {
-            MRSERR("Error reading wav file");
+      while (strcmp(id, "fmt "))
+      {
+        if (fread(&chunkSize, 4, 1, sfp_) != 1) {
+          MRSERR("Error reading wav file");
         }
 #if defined(MARSYAS_BIGENDIAN)
-	  chunkSize = ByteSwapLong(chunkSize);
+        chunkSize = ByteSwapLong(chunkSize);
 #else
-	  //chunkSize = chunkSize;
+        //chunkSize = chunkSize;
+#endif
+        fseek(sfp_, chunkSize, SEEK_CUR);
+        if (fread(id, 4, 1, sfp_) != 1) {
+          MRSERR("Error reading wav file");
+        }
+      }
+
+      if (fread(&chunkSize, 4, 1, sfp_) != 1) {
+        MRSERR("Error reading wav file");
+      }
+#if defined(MARSYAS_BIGENDIAN)
+      chunkSize = ByteSwapLong(chunkSize);
+#else
+      //chunkSize = chunkSize;
 #endif
 
-	  unsigned short format_tag;
-	  if (fread(&format_tag, 2, 1, sfp_) != 1) {
-            MRSERR("Error reading wav file");
-        }
+      unsigned short format_tag;
+      if (fread(&format_tag, 2, 1, sfp_) != 1) {
+        MRSERR("Error reading wav file");
+      }
 
 #if defined(MARSYAS_BIGENDIAN)
-	  format_tag = ByteSwapShort(format_tag);
+      format_tag = ByteSwapShort(format_tag);
 #else
-	  //format_tag = format_tag;
+      //format_tag = format_tag;
 #endif
 
-	  if (format_tag != 1)
-	  {
-		fclose(sfp_);
-		MRSWARN("Non pcm(compressed) wave files are not supported");
-		exit(1);
-	  }
+      if (format_tag != 1)
+      {
+        fclose(sfp_);
+        MRSWARN("Non pcm(compressed) wave files are not supported");
+        exit(1);
+      }
 
-	  // Get number of channels
-	  unsigned short channels;
-	  if (fread(&channels, 2,1, sfp_) != 1) {
-            MRSERR("Error reading wav file");
-        }
+      // Get number of channels
+      unsigned short channels;
+      if (fread(&channels, 2,1, sfp_) != 1) {
+        MRSERR("Error reading wav file");
+      }
 
 #if defined(MARSYAS_BIGENDIAN)
-	  channels = ByteSwapShort(channels);
+      channels = ByteSwapShort(channels);
 #else
-	  //channels = channels;
+      //channels = channels;
 #endif
 
-	  setctrl("mrs_natural/onObservations", (mrs_natural)channels);
+      setctrl("mrs_natural/onObservations", (mrs_natural)channels);
 
-	  unsigned int srate;
-	  if (fread(&srate, 4,1,sfp_) != 1) {
-            MRSERR("Error reading wav file");
-        }
+      unsigned int srate;
+      if (fread(&srate, 4,1,sfp_) != 1) {
+        MRSERR("Error reading wav file");
+      }
 
 #if defined(MARSYAS_BIGENDIAN)
-	  srate = ByteSwapLong(srate);
+      srate = ByteSwapLong(srate);
 #else
-	  //srate = srate;
+      //srate = srate;
 #endif
 
 
-	  setctrl("mrs_real/israte", (mrs_real)srate);
-	  setctrl("mrs_real/osrate", (mrs_real)srate);
+      setctrl("mrs_real/israte", (mrs_real)srate);
+      setctrl("mrs_real/osrate", (mrs_real)srate);
 
-	  fseek(sfp_,6,SEEK_CUR);
-	  if (fread(&bits_, 2, 1, sfp_) != 1) {
-            MRSERR("Error reading wav file");
-        }
+      fseek(sfp_,6,SEEK_CUR);
+      if (fread(&bits_, 2, 1, sfp_) != 1) {
+        MRSERR("Error reading wav file");
+      }
 
 #if defined(MARSYAS_BIGENDIAN)
-	  bits_ = ByteSwapShort(bits_);
+      bits_ = ByteSwapShort(bits_);
 #else
-	  //bits_ = bits_;
+      //bits_ = bits_;
 #endif
 
-	  if ((bits_ != 16)&&(bits_ != 8)&&(bits_!=32))
-	  {
-		MRSWARN("WavFileSource::Only linear 8-bit, 16-bit, and 32-bit samples are supported ");
-	  }
-	  fseek(sfp_, chunkSize - 16, SEEK_CUR);
+      if ((bits_ != 16)&&(bits_ != 8)&&(bits_!=32))
+      {
+        MRSWARN("WavFileSource::Only linear 8-bit, 16-bit, and 32-bit samples are supported ");
+      }
+      fseek(sfp_, chunkSize - 16, SEEK_CUR);
 
-	  if (fread(id, 4, 1, sfp_) != 1) {
-            MRSERR("Error reading wav file");
-        }
-	  id[4] = '\0';
-	  while (strcmp(id, "data"))
-	  {
-		if (fread(&chunkSize, 4, 1, sfp_) != 1) {
-            MRSERR("Error reading wav file");
+      if (fread(id, 4, 1, sfp_) != 1) {
+        MRSERR("Error reading wav file");
+      }
+      id[4] = '\0';
+      while (strcmp(id, "data"))
+      {
+        if (fread(&chunkSize, 4, 1, sfp_) != 1) {
+          MRSERR("Error reading wav file");
         }
 #if defined(MARSYAS_BIGENDIAN)
-		chunkSize = ByteSwapLong(chunkSize);
+        chunkSize = ByteSwapLong(chunkSize);
 #else
-		//chunkSize = chunkSize;
+        //chunkSize = chunkSize;
 #endif
 
-		fseek(sfp_,chunkSize,SEEK_CUR);
-		if (fread(&id,4,1,sfp_) != 1) {
-            MRSERR("Error reading wav file");
+        fseek(sfp_,chunkSize,SEEK_CUR);
+        if (fread(&id,4,1,sfp_) != 1) {
+          MRSERR("Error reading wav file");
         }
-	  }
+      }
 
-	  int bytes;
-	  if (fread(&bytes, 4, 1, sfp_) != 1) {
-            MRSERR("Error reading wav file");
-        }
+      int bytes;
+      if (fread(&bytes, 4, 1, sfp_) != 1) {
+        MRSERR("Error reading wav file");
+      }
 
 #if defined(MARSYAS_BIGENDIAN)
-	  bytes = ByteSwapLong(bytes);
+      bytes = ByteSwapLong(bytes);
 #else
-	  //bytes = bytes;
+      //bytes = bytes;
 #endif
 
-	  //size in number of samples per channel
-	  size_ = bytes / (bits_ / 8)/ (getctrl("mrs_natural/onObservations")->to<mrs_natural>());
-	  csize_ = size_;
-	  
-	  setctrl("mrs_natural/size", size_);
-	  ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
-	  ctrl_previouslyPlaying_->setValue(filename, NOUPDATE);
-	  ctrl_currentLabel_->setValue((mrs_real)0.0, NOUPDATE);
-	  ctrl_previousLabel_->setValue((mrs_real)0.0, NOUPDATE);
+      //size in number of samples per channel
+      size_ = bytes / (bits_ / 8)/ (getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+      csize_ = size_;
 
-	  ctrl_labelNames_->setValue(",", NOUPDATE);
-	  ctrl_nLabels_->setValue(0, NOUPDATE);
-	  sfp_begin_ = ftell(sfp_);
-	  hasData_ = true;
-	  lastTickWithData_ = false;
-	  pos_ = 0;
-	  samplesOut_ = 0;
-	  MRSDIAG("WavFileSource: "
-			  << filename
-			  << " has the following properties: ");
-	  mrs_real temprate = getControl("mrs_real/israte")->to<mrs_real>();
-	  mrs_natural numInSamples = getControl("mrs_natural/inSamples")->to<mrs_natural>();
-	  MRSDIAG("israte == " << temprate);
-	  MRSDIAG("inSamples == " << numInSamples);
+      setctrl("mrs_natural/size", size_);
+      ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
+      ctrl_previouslyPlaying_->setValue(filename, NOUPDATE);
+      ctrl_currentLabel_->setValue((mrs_real)0.0, NOUPDATE);
+      ctrl_previousLabel_->setValue((mrs_real)0.0, NOUPDATE);
+
+      ctrl_labelNames_->setValue(",", NOUPDATE);
+      ctrl_nLabels_->setValue(0, NOUPDATE);
+      sfp_begin_ = ftell(sfp_);
+      hasData_ = true;
+      lastTickWithData_ = false;
+      pos_ = 0;
+      samplesOut_ = 0;
+      MRSDIAG("WavFileSource: "
+              << filename
+              << " has the following properties: ");
+      mrs_real temprate = getControl("mrs_real/israte")->to<mrs_real>();
+      mrs_natural numInSamples = getControl("mrs_natural/inSamples")->to<mrs_natural>();
+      MRSDIAG("israte == " << temprate);
+      MRSDIAG("inSamples == " << numInSamples);
       (void) temprate;
       (void) numInSamples; // in case the macro is not expanded
 
-	}
+    }
   }
   else
   {
-	MRSWARN("couldn't open file: " << filename);
-	// setctrl("mrs_natural/nChannels", 1);
-	setctrl("mrs_real/israte", (mrs_real)22050.0);
-	setctrl("mrs_natural/onObservations", 1);
-	setctrl("mrs_natural/size", 0);
-	hasData_ = false;
-	lastTickWithData_ = true;
-	setctrl("mrs_bool/hasData", false);
-	setctrl("mrs_bool/lastTickWithData", true);
-	pos_ = 0;
+    MRSWARN("couldn't open file: " << filename);
+    // setctrl("mrs_natural/nChannels", 1);
+    setctrl("mrs_real/israte", (mrs_real)22050.0);
+    setctrl("mrs_natural/onObservations", 1);
+    setctrl("mrs_natural/size", 0);
+    hasData_ = false;
+    lastTickWithData_ = true;
+    setctrl("mrs_bool/hasData", false);
+    setctrl("mrs_bool/lastTickWithData", true);
+    pos_ = 0;
   }
 
   nChannels_ = getctrl("mrs_natural/onObservations")->to<mrs_natural>();
@@ -357,12 +357,12 @@ WavFileSource::myUpdate(MarControlPtr sender)
 
   if (duration_ != -1.0)
   {
-	  csize_ = (mrs_natural)(duration_ * israte_);
+    csize_ = (mrs_natural)(duration_ * israte_);
   }
 
   samplesToRead_ = inSamples_ * nChannels_;
   MRSDIAG("WavFileSource::myUpdate "
-		  << " has the following properties: ");
+          << " has the following properties: ");
   mrs_real temprate = getControl("mrs_real/israte")->to<mrs_real>();
   mrs_natural numInSamples = getControl("mrs_natural/inSamples")->to<mrs_natural>();
   MRSDIAG("israte == " << temprate);
@@ -385,22 +385,22 @@ WavFileSource::getLinear8(realvec& slice)
 
   if (samplesRead_ != samplesToRead_)
   {
-	for (c=0; c < nChannels_; ++c)
-	  for (t=0; t < inSamples_; t++)
-	  {
-		slice(c,t) = 0.0;
-	  }
-	samplesToWrite_ = samplesRead_ / nChannels_;
+    for (c=0; c < nChannels_; ++c)
+      for (t=0; t < inSamples_; t++)
+      {
+        slice(c,t) = 0.0;
+      }
+    samplesToWrite_ = samplesRead_ / nChannels_;
   }
   else
-	samplesToWrite_ = inSamples_;
+    samplesToWrite_ = inSamples_;
 
   for (t=0; t < samplesToWrite_; t++)
   {
-	for (c=0; c < nChannels_; ++c)
-	{
-	  slice(c, t) = (mrs_real)-1.0 + (mrs_real) cdata_[nChannels_ * t + c] / 127;
-	}
+    for (c=0; c < nChannels_; ++c)
+    {
+      slice(c, t) = (mrs_real)-1.0 + (mrs_real) cdata_[nChannels_ * t + c] / 127;
+    }
   }
 
   pos_ += samplesToWrite_;
@@ -412,14 +412,14 @@ unsigned long
 WavFileSource::ByteSwapLong(unsigned long nLongNumber)
 {
   return (((nLongNumber&0x000000FF)<<24)+((nLongNumber&0x0000FF00)<<8)+
-		  ((nLongNumber&0x00FF0000)>>8)+((nLongNumber&0xFF000000)>>24));
+          ((nLongNumber&0x00FF0000)>>8)+((nLongNumber&0xFF000000)>>24));
 }
 
 unsigned int
 WavFileSource::ByteSwapInt(unsigned int nInt)
 {
   return (((nInt&0x000000FF)<<24)+((nInt&0x0000FF00)<<8)+
-		  ((nInt&0x00FF0000)>>8)+((nInt&0xFF000000)>>24));
+          ((nInt&0x00FF0000)>>8)+((nInt&0xFF000000)>>24));
 }
 
 
@@ -441,45 +441,45 @@ WavFileSource::getLinear32(realvec& slice)
   // pad with zeros if necessary
   if ((samplesRead_ != samplesToRead_)&&(samplesRead_ != 0))
   {
-	for (c=0; c < nChannels_; ++c)
-	  for (t=0; t < inSamples_; t++)
-		slice(c, t) = 0.0;
-	samplesToWrite_ = samplesRead_ / nChannels_;
+    for (c=0; c < nChannels_; ++c)
+      for (t=0; t < inSamples_; t++)
+        slice(c, t) = 0.0;
+    samplesToWrite_ = samplesRead_ / nChannels_;
   }
   else // default case - read enough samples or no samples in which case zero output
   {
-	samplesToWrite_ = inSamples_;
+    samplesToWrite_ = inSamples_;
 
-	// if there are no more samples output zeros
-	if (samplesRead_ == 0)
-	  for (t=0; t < inSamples_; t++)
-	  {
-		nt_ = nChannels_ * t;
-		for (c=0; c < nChannels_; ++c)
-		{
-		  idata_[nt_ + c] = 0;
-		}
-	  }
+    // if there are no more samples output zeros
+    if (samplesRead_ == 0)
+      for (t=0; t < inSamples_; t++)
+      {
+        nt_ = nChannels_ * t;
+        for (c=0; c < nChannels_; ++c)
+        {
+          idata_[nt_ + c] = 0;
+        }
+      }
   }
 
   // write the read samples to output slice once for each channel
   for (t=0; t < samplesToWrite_; t++)
   {
-	ival_ = 0;
-	nt_ = nChannels_ * t;
+    ival_ = 0;
+    nt_ = nChannels_ * t;
 #if defined(MARSYAS_BIGENDIAN)
-	for (c=0; c < nChannels_; ++c)
-	{
-        // oh dear.  "long" here means 32 bits
-	  ival_ = ByteSwapInt(idata_[nt_ + c]);
-	  slice(c, t) = (mrs_real) ival_ / (PCM_FMAXINT + 1);
-	}
+    for (c=0; c < nChannels_; ++c)
+    {
+      // oh dear.  "long" here means 32 bits
+      ival_ = ByteSwapInt(idata_[nt_ + c]);
+      slice(c, t) = (mrs_real) ival_ / (PCM_FMAXINT + 1);
+    }
 #else
-	for (c=0; c < nChannels_; ++c)
-	{
-	  ival_ = idata_[nt_ + c];
-	  slice(c, t) = ((mrs_real) ival_ / (PCM_FMAXINT + 1));
-	}
+    for (c=0; c < nChannels_; ++c)
+    {
+      ival_ = idata_[nt_ + c];
+      slice(c, t) = ((mrs_real) ival_ / (PCM_FMAXINT + 1));
+    }
 #endif
   }
 
@@ -499,44 +499,44 @@ WavFileSource::getLinear16(realvec& slice)
   // pad with zeros if necessary
   if ((samplesRead_ != samplesToRead_)&&(samplesRead_ != 0))
   {
-	for (c=0; c < nChannels_; ++c)
-	  for (t=0; t < inSamples_; t++)
-		slice(c, t) = 0.0;
-	samplesToWrite_ = samplesRead_ / nChannels_;
+    for (c=0; c < nChannels_; ++c)
+      for (t=0; t < inSamples_; t++)
+        slice(c, t) = 0.0;
+    samplesToWrite_ = samplesRead_ / nChannels_;
   }
   else // default case - read enough samples or no samples in which case zero output
   {
-	samplesToWrite_ = inSamples_;
+    samplesToWrite_ = inSamples_;
 
-	// if there are no more samples output zeros
-	if (samplesRead_ == 0)
-	  for (t=0; t < inSamples_; t++)
-	  {
-		nt_ = nChannels_ * t;
-		for (c=0; c < nChannels_; ++c)
-		{
-		  sdata_[nt_ + c] = 0;
-		}
-	  }
+    // if there are no more samples output zeros
+    if (samplesRead_ == 0)
+      for (t=0; t < inSamples_; t++)
+      {
+        nt_ = nChannels_ * t;
+        for (c=0; c < nChannels_; ++c)
+        {
+          sdata_[nt_ + c] = 0;
+        }
+      }
   }
 
   // write the read samples to output slice once for each channel
   for (t=0; t < samplesToWrite_; t++)
   {
-	sval_ = 0;
-	nt_ = nChannels_ * t;
+    sval_ = 0;
+    nt_ = nChannels_ * t;
 #if defined(MARSYAS_BIGENDIAN)
-	for (c=0; c < nChannels_; ++c)
-	{
-	  sval_ = ByteSwapShort(sdata_[nt_ + c]);
-	  slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT + 1);
-	}
+    for (c=0; c < nChannels_; ++c)
+    {
+      sval_ = ByteSwapShort(sdata_[nt_ + c]);
+      slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT + 1);
+    }
 #else
-	for (c=0; c < nChannels_; ++c)
-	{
-	  sval_ = sdata_[nt_ + c];
-	  slice(c, t) = ((mrs_real) sval_ / (PCM_FMAXSHRT + 1));
-	}
+    for (c=0; c < nChannels_; ++c)
+    {
+      sval_ = sdata_[nt_ + c];
+      slice(c, t) = ((mrs_real) sval_ / (PCM_FMAXSHRT + 1));
+    }
 #endif
   }
 
@@ -550,102 +550,102 @@ WavFileSource::myProcess(realvec& in, realvec& out)
   (void) in;
   switch(bits_)
   {
-	case 32:
-	  {
-		getLinear32(out);
-		ctrl_pos_->setValue(pos_, NOUPDATE);
+  case 32:
+  {
+    getLinear32(out);
+    ctrl_pos_->setValue(pos_, NOUPDATE);
 
-		if (pos_ >= rewindpos_ + csize_)
-		{
-		  if (repetitions_ != 1)
-			pos_ = rewindpos_;
-		}
-		samplesOut_ += onSamples_;
+    if (pos_ >= rewindpos_ + csize_)
+    {
+      if (repetitions_ != 1)
+        pos_ = rewindpos_;
+    }
+    samplesOut_ += onSamples_;
 
-		if (repetitions_ != 1)
-		{
-		  hasData_ = (samplesOut_ < repetitions_ * csize_);
+    if (repetitions_ != 1)
+    {
+      hasData_ = (samplesOut_ < repetitions_ * csize_);
 
-		  lastTickWithData_ = ((samplesOut_  + onSamples_>= repetitions_ * csize_) && hasData_);
-		}
+      lastTickWithData_ = ((samplesOut_  + onSamples_>= repetitions_ * csize_) && hasData_);
+    }
 
-		else
-		{
-		  hasData_ = pos_ < rewindpos_ + csize_;
-		  lastTickWithData_ = ((pos_ + onSamples_ >= rewindpos_ + csize_) && hasData_);
-		}
+    else
+    {
+      hasData_ = pos_ < rewindpos_ + csize_;
+      lastTickWithData_ = ((pos_ + onSamples_ >= rewindpos_ + csize_) && hasData_);
+    }
 
-		if (repetitions_ == -1)
-		{
-		  hasData_ = true;
-		  lastTickWithData_ = false;
-		}
-		break;
-	  }
-	case 16:
-	  {
-		getLinear16(out);
-		ctrl_pos_->setValue(pos_, NOUPDATE);
+    if (repetitions_ == -1)
+    {
+      hasData_ = true;
+      lastTickWithData_ = false;
+    }
+    break;
+  }
+  case 16:
+  {
+    getLinear16(out);
+    ctrl_pos_->setValue(pos_, NOUPDATE);
 
-		if (pos_ >= rewindpos_ + csize_)
-		{
-		  if (repetitions_ != 1)
-			pos_ = rewindpos_;
-		}
-		samplesOut_ += onSamples_;
+    if (pos_ >= rewindpos_ + csize_)
+    {
+      if (repetitions_ != 1)
+        pos_ = rewindpos_;
+    }
+    samplesOut_ += onSamples_;
 
-		if (repetitions_ != 1)
-		{
-		  hasData_ = (samplesOut_ < repetitions_ * csize_);
+    if (repetitions_ != 1)
+    {
+      hasData_ = (samplesOut_ < repetitions_ * csize_);
 
-		  lastTickWithData_ = ((samplesOut_  + onSamples_>= repetitions_ * csize_) && hasData_);
-		}
+      lastTickWithData_ = ((samplesOut_  + onSamples_>= repetitions_ * csize_) && hasData_);
+    }
 
-		else
-		{
-		  hasData_ = pos_ < rewindpos_ + csize_;
-		  lastTickWithData_ = ((pos_ + onSamples_ >= rewindpos_ + csize_) && hasData_);
-		}
+    else
+    {
+      hasData_ = pos_ < rewindpos_ + csize_;
+      lastTickWithData_ = ((pos_ + onSamples_ >= rewindpos_ + csize_) && hasData_);
+    }
 
-		if (repetitions_ == -1)
-		{
-		  hasData_ = true;
-		  lastTickWithData_ = false;
-		}
-		break;
-	  }
-	case 8:
-	  {
-		getLinear8(out);
-		ctrl_pos_->setValue(pos_, NOUPDATE);
+    if (repetitions_ == -1)
+    {
+      hasData_ = true;
+      lastTickWithData_ = false;
+    }
+    break;
+  }
+  case 8:
+  {
+    getLinear8(out);
+    ctrl_pos_->setValue(pos_, NOUPDATE);
 
-		if (pos_ >= rewindpos_ + csize_)
-		{
-		  if (repetitions_ != 1)
-			pos_ = rewindpos_;
-		}
-		samplesOut_ += onSamples_;
+    if (pos_ >= rewindpos_ + csize_)
+    {
+      if (repetitions_ != 1)
+        pos_ = rewindpos_;
+    }
+    samplesOut_ += onSamples_;
 
-		if (repetitions_ != 1)
-		{
-		  hasData_ = (samplesOut_ < repetitions_ * csize_);
-		  lastTickWithData_ = ((samplesOut_ + onSamples_ >= repetitions_ * csize_) && hasData_);
-		}
-		else
-		{
-		  hasData_ = pos_ < rewindpos_ + csize_;
-		  lastTickWithData_ = ((pos_ + onSamples_ >= rewindpos_ + csize_) && hasData_);
-		}
+    if (repetitions_ != 1)
+    {
+      hasData_ = (samplesOut_ < repetitions_ * csize_);
+      lastTickWithData_ = ((samplesOut_ + onSamples_ >= repetitions_ * csize_) && hasData_);
+    }
+    else
+    {
+      hasData_ = pos_ < rewindpos_ + csize_;
+      lastTickWithData_ = ((pos_ + onSamples_ >= rewindpos_ + csize_) && hasData_);
+    }
 
-		if (repetitions_ == -1)
-		{
-		  hasData_ = true;
-		  lastTickWithData_ = false;
-		}
-		break;
+    if (repetitions_ == -1)
+    {
+      hasData_ = true;
+      lastTickWithData_ = false;
+    }
+    break;
 
 
-	  }
+  }
   }
   ctrl_currentHasData_->setValue(hasData_);
 

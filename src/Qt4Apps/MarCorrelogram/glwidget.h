@@ -2,7 +2,7 @@
 #define GLWIDGET_H
 
 #include <QGLWidget>
-#include <QTimer> 
+#include <QTimer>
 
 // Marsyas
 #include "MarSystemManager.h"
@@ -22,7 +22,7 @@ using namespace Marsyas;
 
 class GLWidget : public QGLWidget
 {
-Q_OBJECT
+  Q_OBJECT
 
 public:
   GLWidget(string inAudioFileName,QWidget *parent = 0);
@@ -46,7 +46,7 @@ private slots:
 protected:
   void initializeGL();                    // Initialize the GL window
   void paintGL();                         // Paint the objects in the GL window
-  void resizeGL(int width, int height);   // Resize the GL window 
+  void resizeGL(int width, int height);   // Resize the GL window
 
 private:
   GLuint makeObject();                    // Make the object
@@ -67,15 +67,15 @@ private:
 
   void redrawScene();
   void addDataToRingBuffer();
-  
+
   // Marsyas
-  MarSystemManager mng;  
+  MarSystemManager mng;
   MarSystemQtWrapper*  mwr_;
   MarSystem* pnet_;
 
   // Scale
   double y_scale;
-  
+
   mrs_realvec correlogram_data;
   void setData();
 

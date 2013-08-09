@@ -11,64 +11,64 @@ class MusicPlaylist;
 
 typedef MusicLink MusicAlbum;
 typedef QMap<QString, MusicAlbum*>  MusicAlbumMap;
-typedef QMapIterator<QString, MusicAlbum*>  MusicAlbumIterator; 
+typedef QMapIterator<QString, MusicAlbum*>  MusicAlbumIterator;
 
 typedef MusicLink MusicGenre;
-typedef QSet<MusicGenre*>  MusicGenreSet; 
+typedef QSet<MusicGenre*>  MusicGenreSet;
 typedef QMap<QString, MusicGenre*> MusicGenreMap;
 typedef QMapIterator<QString, MusicGenre*> MusicGenreIterator;
 
-typedef QSet<MusicArtist*>  MusicArtistSet; 
+typedef QSet<MusicArtist*>  MusicArtistSet;
 typedef QMap<QString, MusicArtist*> MusicArtistMap;
 typedef QMapIterator<QString, MusicArtist*> MusicArtistIterator;
 
 typedef QMap<QString, MusicPlaylist*>  MusicPlaylistMap;
-typedef QMapIterator<QString, MusicPlaylist*>  MusicPlaylistIterator; 
+typedef QMapIterator<QString, MusicPlaylist*>  MusicPlaylistIterator;
 
 class MusicLink
 {
 public:
-	MusicLink(QString name);
-	virtual ~MusicLink();
+  MusicLink(QString name);
+  virtual ~MusicLink();
 
-	QString getName() const { return _name; }
-	MusicTrackIterator getTracks() const;
+  QString getName() const { return _name; }
+  MusicTrackIterator getTracks() const;
 
-	void linkTrack(MusicTrack *track);
+  void linkTrack(MusicTrack *track);
 
 private:
-	QString _name;
-	MusicTrackVector *_tracks;
+  QString _name;
+  MusicTrackVector *_tracks;
 };
 
 class MusicArtist : public MusicLink
 {
 public:
-	MusicArtist(QString name);
-	~MusicArtist();
+  MusicArtist(QString name);
+  ~MusicArtist();
 
-	void linkAlbum(MusicTrack *track);
-	MusicAlbumIterator getAlbums() const;
+  void linkAlbum(MusicTrack *track);
+  MusicAlbumIterator getAlbums() const;
 
 private:
-	MusicAlbumMap *_albums;
+  MusicAlbumMap *_albums;
 };
 
 class MusicPlaylist : public MusicLink
 {
 public:
-	MusicPlaylist(QString name);
-	~MusicPlaylist() {}
+  MusicPlaylist(QString name);
+  ~MusicPlaylist() {}
 
-	void setPersistentId(QString persistentId);
-	void setPlaylistId(int id);
+  void setPersistentId(QString persistentId);
+  void setPlaylistId(int id);
 
-	QString getPersistentId() const { return _persistentId; }
-	int getPlaylistId() const { return _playlistId; }
+  QString getPersistentId() const { return _persistentId; }
+  int getPlaylistId() const { return _playlistId; }
 
 private:
-	QString _persistentId;
-	int _playlistId;
+  QString _persistentId;
+  int _playlistId;
 };
 
 #endif /* MUSICLINK_H */

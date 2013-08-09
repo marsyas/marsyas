@@ -73,56 +73,56 @@ class marsyas_EXPORT RunningAutocorrelation: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
-	/// Cache of the maxLag control value
-	mrs_natural maxLag_;
-	/// MarControlPtr for the gain control
-	MarControlPtr ctrl_maxLag_;
+  /// Cache of the maxLag control value
+  mrs_natural maxLag_;
+  /// MarControlPtr for the gain control
+  MarControlPtr ctrl_maxLag_;
 
-	/// Internal buffer of the running autocorrelation values.
-	realvec acBuffer_;
+  /// Internal buffer of the running autocorrelation values.
+  realvec acBuffer_;
 
-	/// Buffer of previous samples.
-	realvec memory_;
+  /// Buffer of previous samples.
+  realvec memory_;
 
-	/// The normalize control
-	MarControlPtr ctrl_normalize_;
-	/// Cache of the normalize control value.
-	mrs_bool normalize_;
+  /// The normalize control
+  MarControlPtr ctrl_normalize_;
+  /// Cache of the normalize control value.
+  mrs_bool normalize_;
 
-	/// The doNotNormalizeForLag0 control.
-	MarControlPtr ctrl_doNotNormalizeForLag0_;
-	/// Cache of the doNotNormalizeForLag0 control value
-	mrs_bool doNotNormalizeForLag0_;
+  /// The doNotNormalizeForLag0 control.
+  MarControlPtr ctrl_doNotNormalizeForLag0_;
+  /// Cache of the doNotNormalizeForLag0 control value
+  mrs_bool doNotNormalizeForLag0_;
 
-	/// MarControlPtr for the clear control
-	MarControlPtr ctrl_clear_;
+  /// MarControlPtr for the clear control
+  MarControlPtr ctrl_clear_;
 
-	/// MarControlPtr for the unfoldToObservations control
-	MarControlPtr ctrl_unfoldToObservations_;
-	/// Cache for the unfoldToObservations control value.
-	mrs_bool unfoldToObservations_;
+  /// MarControlPtr for the unfoldToObservations control
+  MarControlPtr ctrl_unfoldToObservations_;
+  /// Cache for the unfoldToObservations control value.
+  mrs_bool unfoldToObservations_;
 
 public:
-	/// RunningAutocorrelation constructor.
-	RunningAutocorrelation(std::string name);
+  /// RunningAutocorrelation constructor.
+  RunningAutocorrelation(std::string name);
 
-	/// RunningAutocorrelation copy constructor.
-	RunningAutocorrelation(const RunningAutocorrelation& a);
+  /// RunningAutocorrelation copy constructor.
+  RunningAutocorrelation(const RunningAutocorrelation& a);
 
-	/// RunningAutocorrelation destructor.
-	~RunningAutocorrelation();
+  /// RunningAutocorrelation destructor.
+  ~RunningAutocorrelation();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

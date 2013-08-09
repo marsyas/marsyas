@@ -13,13 +13,13 @@
 class Tracklist : public QListWidget
 {
 public:
-	Tracklist(QWidget *parent=0);
-	~Tracklist();
+  Tracklist(QWidget *parent=0);
+  ~Tracklist();
 
-	void listTracks(MusicPlaylist *playlist);
-	void listTracks(MusicTrackIterator *tracks);
+  void listTracks(MusicPlaylist *playlist);
+  void listTracks(MusicTrackIterator *tracks);
 protected:
-	void mousePressEvent(QMouseEvent *event);
+  void mousePressEvent(QMouseEvent *event);
 
 private:
 

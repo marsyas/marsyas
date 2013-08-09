@@ -33,7 +33,7 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   max_data.create(POWERSPECTRUM_BUFFER_SIZE);
 
   for (int i = 0; i < POWERSPECTRUM_BUFFER_SIZE; i++) {
-  	max_data(i) = -999.9;
+    max_data(i) = -999.9;
   }
 
   // Defaults
@@ -41,7 +41,7 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
 
   //
   // Create the MarSystem to play and analyze the data
-  // 
+  //
   MarSystemManager mng;
 
   // A series to contain everything
@@ -98,12 +98,12 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   mwr_->start();
 
   if (inAudioFileName == "") {
-	mwr_->play();
-	play_state = true;
+    mwr_->play();
+    play_state = true;
   } else {
-	play_state = false;
+    play_state = false;
   }
-		    
+
   // Create some handy pointers to access the MarSystem
   posPtr_ = mwr_->getctrl("Fanout/inputfanout/SoundFileSource/src/mrs_natural/pos");
   initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
@@ -112,10 +112,10 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   //
   // Create the animation timer that periodically redraws the screen
   //
-  QTimer *timer = new QTimer( this ); 
-  connect( timer, SIGNAL(timeout()), this, SLOT(animate()) ); 
+  QTimer *timer = new QTimer( this );
+  connect( timer, SIGNAL(timeout()), this, SLOT(animate()) );
   timer->start(10); // Redraw the screen every 10ms
-  
+
 }
 
 GLWidget::~GLWidget()
@@ -143,7 +143,7 @@ void GLWidget::initializeGL()
 
   // Set the shading model
   glShadeModel(GL_SMOOTH);
-  
+
   // Enable depth testing
   glDisable(GL_DEPTH_TEST);
 }
@@ -153,7 +153,7 @@ void GLWidget::paintGL()
 {
   // Clear the color and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  
+
   // Load the identity matrix
   glLoadIdentity();
 
@@ -162,13 +162,13 @@ void GLWidget::paintGL()
 
   // Draw the object
   redrawScene();
-  
+
 }
 
 void GLWidget::animate() {
   emit updateGL();
   if (play_state) {
-	setData();
+    setData();
   }
 }
 
@@ -180,38 +180,38 @@ void GLWidget::redrawScene() {
   correlogram_data = mwr_->getctrl("mrs_realvec/processedData")->to<Marsyas::mrs_realvec>();
 
   for (int x = 0; x < MEMORY_SIZE; x++) {
-  	for (int y = 0; y < POWERSPECTRUM_BUFFER_SIZE; y++) {
-  	  if (correlogram_data(y,x) > max_data(y)) {
-  		max_data(y) = correlogram_data(y,x);
-  		// cout << "max_data(" << y << ")=" << max_data(y) << endl;
-  	  }
-  	}
+    for (int y = 0; y < POWERSPECTRUM_BUFFER_SIZE; y++) {
+      if (correlogram_data(y,x) > max_data(y)) {
+        max_data(y) = correlogram_data(y,x);
+        // cout << "max_data(" << y << ")=" << max_data(y) << endl;
+      }
+    }
   }
 
   float x1,x2,y1,y2;
-  
+
   // Draw a rectangle for each element in the array
   for (int x = 0; x < MEMORY_SIZE; x++) {
-  	for (int y = 0; y < POWERSPECTRUM_BUFFER_SIZE; y++) {
-  	  float color = (correlogram_data(y,x) * (1.0 / max_data(y)));
+    for (int y = 0; y < POWERSPECTRUM_BUFFER_SIZE; y++) {
+      float color = (correlogram_data(y,x) * (1.0 / max_data(y)));
 
-  	  glColor3f(color,color,color);
-  	  // cout << "color=" << color << endl;
-   
-  	  x1 = (float)x/MEMORY_SIZE;
-  	  x2 = x1+0.005;
+      glColor3f(color,color,color);
+      // cout << "color=" << color << endl;
 
-  	  y1 = float(y)/POWERSPECTRUM_BUFFER_SIZE;
-  	  y2 = y1+0.005;
-  
-  	  glBegin(GL_QUADS);
-  	  glVertex2f(x1, y1);
-  	  glVertex2f(x2, y1);
-  	  glVertex2f(x2, y2);
-  	  glVertex2f(x1, y2);
-  	  glEnd();
+      x1 = (float)x/MEMORY_SIZE;
+      x2 = x1+0.005;
 
-  	}
+      y1 = float(y)/POWERSPECTRUM_BUFFER_SIZE;
+      y2 = y1+0.005;
+
+      glBegin(GL_QUADS);
+      glVertex2f(x1, y1);
+      glVertex2f(x2, y1);
+      glVertex2f(x2, y2);
+      glVertex2f(x1, y2);
+      glEnd();
+
+    }
   }
 }
 
@@ -237,19 +237,19 @@ void GLWidget::resizeGL(int width, int height)
   glMatrixMode(GL_MODELVIEW);
 }
 
-void GLWidget::playPause() 
+void GLWidget::playPause()
 {
   play_state = !play_state;
 
   if (play_state == true) {
-	mwr_->play();
+    mwr_->play();
   } else {
-	mwr_->pause();
+    mwr_->pause();
   }
 }
 
 
-void GLWidget::open() 
+void GLWidget::open()
 {
   QString fileName = QFileDialog::getOpenFileName(this);
 

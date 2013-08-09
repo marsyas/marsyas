@@ -52,30 +52,30 @@ class marsyas_EXPORT DeltaFirstOrderRegression: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
-	/// Buffers of previous samples.
-	realvec memory_;
+  /// Buffers of previous samples.
+  realvec memory_;
 
 public:
-	/// DeltaFirstOrderRegression constructor.
-	DeltaFirstOrderRegression(std::string name);
+  /// DeltaFirstOrderRegression constructor.
+  DeltaFirstOrderRegression(std::string name);
 
-	/// DeltaFirstOrderRegression copy constructor.
-	DeltaFirstOrderRegression(const DeltaFirstOrderRegression& a);
+  /// DeltaFirstOrderRegression copy constructor.
+  DeltaFirstOrderRegression(const DeltaFirstOrderRegression& a);
 
-	/// DeltaFirstOrderRegression destructor.
-	~DeltaFirstOrderRegression();
+  /// DeltaFirstOrderRegression destructor.
+  ~DeltaFirstOrderRegression();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

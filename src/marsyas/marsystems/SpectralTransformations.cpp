@@ -70,37 +70,37 @@ SpectralTransformations::phaseRandomize(realvec& in, realvec& out)
 {
   mrs_natural t,o;
   for(t=0; t < inSamples_; ++t)
-	for (o=0; o < N2_; o++)
-	{
-	  if (o==0) //DC bin (i.e. 0)
-	  {
-		re_ = in(0,t);
-		im_ = 0.0;
-	  }
-	  else if (o == N2_-1) //Nyquist bin (i.e. N/2)
-	  {
-		re_ = in(1,t);
-		im_ = 0.0;
-	  }
-	  else //all other bins
-	  {
-		re_ = in(2*o, t);
-		// randomize phase
-		im_ = in(2*o+1,t);
-	  }
+    for (o=0; o < N2_; o++)
+    {
+      if (o==0) //DC bin (i.e. 0)
+      {
+        re_ = in(0,t);
+        im_ = 0.0;
+      }
+      else if (o == N2_-1) //Nyquist bin (i.e. N/2)
+      {
+        re_ = in(1,t);
+        im_ = 0.0;
+      }
+      else //all other bins
+      {
+        re_ = in(2*o, t);
+        // randomize phase
+        im_ = in(2*o+1,t);
+      }
 
-	  mag_ = sqrt(re_ * re_ + im_ * im_);
-	  // phs_ = -atan2(im_, re_);
-	  phs_ = ((mrs_real)rand() / (mrs_real)(RAND_MAX)) * TWOPI;
-	  phs_ -= PI;
+      mag_ = sqrt(re_ * re_ + im_ * im_);
+      // phs_ = -atan2(im_, re_);
+      phs_ = ((mrs_real)rand() / (mrs_real)(RAND_MAX)) * TWOPI;
+      phs_ -= PI;
 
-	  if (o < N2_-1)
-	  {
-		out(2*o,t) = mag_ * cos(phs_);
-		out(2*o+1,t) = mag_ * sin(phs_);
-	  }
+      if (o < N2_-1)
+      {
+        out(2*o,t) = mag_ * cos(phs_);
+        out(2*o+1,t) = mag_ * sin(phs_);
+      }
 
-	}
+    }
 }
 
 
@@ -110,37 +110,37 @@ SpectralTransformations::compress_magnitude(realvec& in, realvec& out)
 {
   mrs_natural t,o;
   for(t=0; t < inSamples_; ++t)
-	for (o=0; o < N2_; o++)
-	{
-	  if (o==0) //DC bin (i.e. 0)
-	  {
-		re_ = in(0,t);
-		im_ = 0.0;
-	  }
-	  else if (o == N2_-1) //Nyquist bin (i.e. N/2)
-	  {
-		re_ = in(1,t);
-		im_ = 0.0;
-	  }
-	  else //all other bins
-	  {
-		re_ = in(2*o, t);
-		im_ = in(2*o+1,t);
-	  }
+    for (o=0; o < N2_; o++)
+    {
+      if (o==0) //DC bin (i.e. 0)
+      {
+        re_ = in(0,t);
+        im_ = 0.0;
+      }
+      else if (o == N2_-1) //Nyquist bin (i.e. N/2)
+      {
+        re_ = in(1,t);
+        im_ = 0.0;
+      }
+      else //all other bins
+      {
+        re_ = in(2*o, t);
+        im_ = in(2*o+1,t);
+      }
 
-	  mag_ = sqrt(re_ * re_ + im_ * im_);
-	  phs_ = -atan2(im_, re_);
+      mag_ = sqrt(re_ * re_ + im_ * im_);
+      phs_ = -atan2(im_, re_);
 
-	  if (o < N2_-1)
-	  {
-	    out(2*o,t) = log(1+1000.0 * mag_) * cos(phs_);
-		out(2*o+1,t) = log(1+1000.0 * mag_) * sin(phs_);
+      if (o < N2_-1)
+      {
+        out(2*o,t) = log(1+1000.0 * mag_) * cos(phs_);
+        out(2*o+1,t) = log(1+1000.0 * mag_) * sin(phs_);
 
-	    // out(2*o,t) = sqrt(mag_) * cos(phs_);
-	    // out(2*o+1,t) = sqrt(mag_) * sin(phs_);
-	  }
+        // out(2*o,t) = sqrt(mag_) * cos(phs_);
+        // out(2*o+1,t) = sqrt(mag_) * sin(phs_);
+      }
 
-	}
+    }
 
 
 }
@@ -163,90 +163,90 @@ SpectralTransformations::three_peaks(realvec& in, realvec& out)
 
 
   for(t=0; t < inSamples_; ++t)
-	for (o=0; o < N2_; o++)
-	{
-	  if (o==0) //DC bin (i.e. 0)
-	  {
-		re_ = in(0,t);
-		im_ = 0.0;
-	  }
-	  else if (o == N2_-1) //Nyquist bin (i.e. N/2)
-	  {
-		re_ = in(1,t);
-		im_ = 0.0;
-	  }
-	  else //all other bins
-	  {
-		re_ = in(2*o, t);
-		im_ = in(2*o+1,t);
-	  }
+    for (o=0; o < N2_; o++)
+    {
+      if (o==0) //DC bin (i.e. 0)
+      {
+        re_ = in(0,t);
+        im_ = 0.0;
+      }
+      else if (o == N2_-1) //Nyquist bin (i.e. N/2)
+      {
+        re_ = in(1,t);
+        im_ = 0.0;
+      }
+      else //all other bins
+      {
+        re_ = in(2*o, t);
+        im_ = in(2*o+1,t);
+      }
 
-	  mag_ = sqrt(re_ * re_ + im_ * im_);
-
-
-
-	  if ((mag_ > max_mag) && (o > 2))
-	  {
-		max_mag = mag_;
-		max_o = o;
-	  }
-	  if ((mag_ < max_mag) && (mag_ > second_max_mag) && (o > 2))
-	  {
-		second_max_mag = mag_;
-		second_max_o = o;
-	  }
+      mag_ = sqrt(re_ * re_ + im_ * im_);
 
 
-	  if ((mag_ < max_mag) && (mag_ < second_max_mag) && (mag_ > third_max_mag) && (o > 2))
-	  {
-		third_max_mag = mag_;
-		third_max_o = o;
-	  }
+
+      if ((mag_ > max_mag) && (o > 2))
+      {
+        max_mag = mag_;
+        max_o = o;
+      }
+      if ((mag_ < max_mag) && (mag_ > second_max_mag) && (o > 2))
+      {
+        second_max_mag = mag_;
+        second_max_o = o;
+      }
 
 
-	  phs_ = -atan2(im_, re_);
+      if ((mag_ < max_mag) && (mag_ < second_max_mag) && (mag_ > third_max_mag) && (o > 2))
+      {
+        third_max_mag = mag_;
+        third_max_o = o;
+      }
 
-	}
+
+      phs_ = -atan2(im_, re_);
+
+    }
 
 
 
 
   for(t=0; t < inSamples_; ++t)
-	for (o=0; o < N2_; o++)
-	{
-	  if (o==0) //DC bin (i.e. 0)
-	  {
-		re_ = in(0,t);
-		im_ = 0.0;
-	  }
-	  else if (o == N2_-1) //Nyquist bin (i.e. N/2)
-	  {
-		re_ = in(1,t);
-		im_ = 0.0;
-	  }
-	  else //all other bins
-	  {
-		re_ = in(2*o, t);
-		im_ = in(2*o+1,t);
-	  }
+    for (o=0; o < N2_; o++)
+    {
+      if (o==0) //DC bin (i.e. 0)
+      {
+        re_ = in(0,t);
+        im_ = 0.0;
+      }
+      else if (o == N2_-1) //Nyquist bin (i.e. N/2)
+      {
+        re_ = in(1,t);
+        im_ = 0.0;
+      }
+      else //all other bins
+      {
+        re_ = in(2*o, t);
+        im_ = in(2*o+1,t);
+      }
 
-	  mag_ = sqrt(re_ * re_ + im_ * im_);
-	  phs_ = -atan2(im_, re_);
+      mag_ = sqrt(re_ * re_ + im_ * im_);
+      phs_ = -atan2(im_, re_);
 
-	  if (o < N2_-1)
-	  {
-		if ((o == max_o) || (o == second_max_o) || (o == third_max_o))
-		{
-		  out(2*o,t) = 2.0 * mag_ * cos(phs_);
-		  out(2*o+1,t) = 2.0 * mag_ * sin(phs_);
-		}
-		else {
-		  out(2*o,t) = 0 * cos(phs_);
-		  out(2*o+1,t) = 0 * sin(phs_);
-		}
-	  }
+      if (o < N2_-1)
+      {
+        if ((o == max_o) || (o == second_max_o) || (o == third_max_o))
+        {
+          out(2*o,t) = 2.0 * mag_ * cos(phs_);
+          out(2*o+1,t) = 2.0 * mag_ * sin(phs_);
+        }
+        else {
+          out(2*o,t) = 0 * cos(phs_);
+          out(2*o+1,t) = 0 * sin(phs_);
+        }
+      }
 
-	}
+    }
 
 
 }
@@ -259,48 +259,48 @@ SpectralTransformations::singlebin(realvec& in, realvec& out)
 {
   mrs_natural t,o;
   for(t=0; t < inSamples_; ++t)
-	for (o=0; o < N2_; o++)
-	{
-	  if (o==4) //DC bin (i.e. 0)
-	  {
-		re_ = in(0,t);
-		im_ = 0.0;
-	  }
-	  else if (o == N2_-1) //Nyquist bin (i.e. N/2)
-	  {
-		re_ = in(1,t);
-		im_ = 0.0;
-	  }
-	  else //all other bins
-	  {
+    for (o=0; o < N2_; o++)
+    {
+      if (o==4) //DC bin (i.e. 0)
+      {
+        re_ = in(0,t);
+        im_ = 0.0;
+      }
+      else if (o == N2_-1) //Nyquist bin (i.e. N/2)
+      {
+        re_ = in(1,t);
+        im_ = 0.0;
+      }
+      else //all other bins
+      {
 
-		// if (o ==3)
-		if (o == 5)
-		{
-		  re_ = 0.5;
-		  im_ = 0.0;
-		}
-		else
-		{
-		  re_ = 0.0;
-		  im_ = 0.0;
-		}
+        // if (o ==3)
+        if (o == 5)
+        {
+          re_ = 0.5;
+          im_ = 0.0;
+        }
+        else
+        {
+          re_ = 0.0;
+          im_ = 0.0;
+        }
 
-	  }
+      }
 
 
-	  mag_ = sqrt(re_ * re_ + im_ * im_);
-	  phs_ = -atan2(im_, re_);
-	  // phs_ = ((mrs_real)rand() / (mrs_real)(RAND_MAX)) * TWOPI;
-	  // phs_ -= PI;
+      mag_ = sqrt(re_ * re_ + im_ * im_);
+      phs_ = -atan2(im_, re_);
+      // phs_ = ((mrs_real)rand() / (mrs_real)(RAND_MAX)) * TWOPI;
+      // phs_ -= PI;
 
-	  if (o < N2_-1)
-	  {
-		out(2*o,t) = mag_ * cos(phs_);
-		out(2*o+1,t) = mag_ * sin(phs_);
-	  }
+      if (o < N2_-1)
+      {
+        out(2*o,t) = mag_ * cos(phs_);
+        out(2*o+1,t) = mag_ * sin(phs_);
+      }
 
-	}
+    }
 }
 
 
@@ -311,25 +311,25 @@ SpectralTransformations::myProcess(realvec& in, realvec& out)
 
   if (ctrl_mode_->to<mrs_string>() == "PhaseRandomize")
   {
-	MRSMSG("PhaseRandomize");
-	phaseRandomize(in, out);
+    MRSMSG("PhaseRandomize");
+    phaseRandomize(in, out);
   }
   else if (ctrl_mode_->to<mrs_string>() == "singlebin")
   {
-	MRSMSG("SingleBin");
-	singlebin(in, out);
+    MRSMSG("SingleBin");
+    singlebin(in, out);
   }
 
 
   if (ctrl_mode_->to<mrs_string>() == "three_peaks")
   {
-	three_peaks(in,out);
+    three_peaks(in,out);
   }
 
 
   if (ctrl_mode_->to<mrs_string>() == "compress_magnitude")
   {
-	compress_magnitude(in,out);
+    compress_magnitude(in,out);
   }
 
 

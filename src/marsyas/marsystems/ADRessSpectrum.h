@@ -26,39 +26,39 @@ namespace Marsyas
 /**
    \class ADRessSpectrum
    \ingroup Analysis
-   \brief Takes the output of the ADRess (i.e. the stereo azimuth-frequency 
-   maps) and outputs a single channel spectrum of the part of the freq-azimuth 
-   plane selected by the d and H controls. This can then be 
+   \brief Takes the output of the ADRess (i.e. the stereo azimuth-frequency
+   maps) and outputs a single channel spectrum of the part of the freq-azimuth
+   plane selected by the d and H controls. This can then be
    inverse transformed back into time domain for resynthesis purposes.
 
    Controls:
-   - \b mrs_real/d		[w] : value between 0.0~1.0, used for selecting the 
+   - \b mrs_real/d		[w] : value between 0.0~1.0, used for selecting the
    portion of the azimuth-frequency plane to be extracted
-   - \b mrs_real/H   [w] : sets the azimuth subspace width 
+   - \b mrs_real/H   [w] : sets the azimuth subspace width
    (in percentage of total width of the azimuth plane)
 */
 
-	class ADRessSpectrum: public MarSystem
-	{
-		private:
-			mrs_natural N2_;
-			mrs_real re_, im_;
-			mrs_natural beta_;
+class ADRessSpectrum: public MarSystem
+{
+private:
+  mrs_natural N2_;
+  mrs_real re_, im_;
+  mrs_natural beta_;
 
-			MarControlPtr ctrl_d_;
-			MarControlPtr ctrl_H_;
+  MarControlPtr ctrl_d_;
+  MarControlPtr ctrl_H_;
 
-			void addControls();
-			void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-		public:
-			ADRessSpectrum(std::string name);
-			ADRessSpectrum(const ADRessSpectrum& a);
-			~ADRessSpectrum();
-			MarSystem* clone() const;
+public:
+  ADRessSpectrum(std::string name);
+  ADRessSpectrum(const ADRessSpectrum& a);
+  ~ADRessSpectrum();
+  MarSystem* clone() const;
 
-			void myProcess(realvec& in, realvec& out);
-	};
+  void myProcess(realvec& in, realvec& out);
+};
 
 }
 

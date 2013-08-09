@@ -37,18 +37,18 @@ namespace Marsyas
 class Subtract: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	MarControlPtr ctrl_gain_EXAMPLE_;
+  MarControlPtr ctrl_gain_EXAMPLE_;
 
 public:
-	Subtract(std::string name);
-	Subtract(const Subtract& a);
-	~Subtract();
-	MarSystem* clone() const;
+  Subtract(std::string name);
+  Subtract(const Subtract& a);
+  ~Subtract();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

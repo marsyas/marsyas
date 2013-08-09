@@ -12,24 +12,24 @@
 
 #include "common_source.h"
 #include "MarSystem.h"
-#include "MarSystemManager.h" 
+#include "MarSystemManager.h"
 #include "MarControl.h"
-#include "MarSystemQtWrapper.h" 
+#include "MarSystemQtWrapper.h"
 
 using namespace MarsyasQt;
 
 
 class MarOscOutWindow : public QMainWindow
 {
-Q_OBJECT
+  Q_OBJECT
 
 public:
   QSlider* gainSlider_;
 
   MarOscOutWindow(string);
-  MarSystemQtWrapper* getMarSystemQtWrapper(){return mwr_;};
+  MarSystemQtWrapper* getMarSystemQtWrapper() {return mwr_;};
 
-public slots: 
+public slots:
   void gainChanged(int value);
   void play(string fileName);
   void ctrlChanged(MarControlPtr cname);
@@ -44,7 +44,7 @@ private:
 
   MarSystem* net_;
   MarSystemQtWrapper* mwr_;
- 
+
   MarControlPtr gainPtr_;
   MarControlPtr initPtr_;
   MarControlPtr fnamePtr_;
@@ -53,4 +53,4 @@ private:
 
 #endif
 
-	
+

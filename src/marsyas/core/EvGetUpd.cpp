@@ -24,36 +24,36 @@ using namespace Marsyas;
 
 EvGetUpd::EvGetUpd(MarSystem* src, mrs_string scname, MarSystem* tgt, mrs_string tcname) : EvEvent("EvGetUpd","GetUpd")
 {
-	setEvent(src,scname,tgt,tcname);
+  setEvent(src,scname,tgt,tcname);
 }
 
 EvGetUpd::EvGetUpd(EvGetUpd& e) : EvEvent("EvGetUpd","GetUpd")
 {
-	setEvent(e.source_,e.src_cname_,e.target_,e.tgt_cname_);
+  setEvent(e.source_,e.src_cname_,e.target_,e.tgt_cname_);
 }
 EvGetUpd::~EvGetUpd() { }
 
 void
 EvGetUpd::setEvent(MarSystem* src, mrs_string scname, MarSystem* tgt, mrs_string tcname)
 {
-	src_cname_=scname;
-	tgt_cname_=tcname;
-	source_=src;
-	target_=tgt;
+  src_cname_=scname;
+  tgt_cname_=tcname;
+  source_=src;
+  target_=tgt;
 }
 
 void
 EvGetUpd::dispatch()
 {
-	if (target_!=NULL && source_!=NULL) {
-		target_->updControl(tgt_cname_,source_->getctrl(src_cname_));
-	}
+  if (target_!=NULL && source_!=NULL) {
+    target_->updControl(tgt_cname_,source_->getctrl(src_cname_));
+  }
 }
 
 EvGetUpd*
 EvGetUpd::clone()
 {
-	return new EvGetUpd(*this);
+  return new EvGetUpd(*this);
 }
 
 /* these have been moved to the header file

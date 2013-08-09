@@ -18,47 +18,47 @@
 
 
 #ifndef MARMONITORS_H
-#define MARMONITORS_H 
+#define MARMONITORS_H
 
 #include "Marx2DGraph.h"
-#include "MarSystemManager.h" 
+#include "MarSystemManager.h"
 #include "MarSystemQtWrapper.h"
 #include "MarSystem.h"
-#include "MarControl.h" 
-#include <QPushButton> 
+#include "MarControl.h"
+#include <QPushButton>
 #include <QSpinBox>
 #include <QDialog>
-#include <QLabel> 
+#include <QLabel>
 #include <QMenuBar>
 #include <QMenu>
-#include <QListWidget> 
+#include <QListWidget>
 #include <QMainWindow>
-#include <QApplication> 
-#include <QFileDialog> 
+#include <QApplication>
+#include <QFileDialog>
 using namespace MarsyasQt;
 
 class MarMonitors : public QMainWindow
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		MarMonitors(string pluginName, string audioInputName);
+public:
+  MarMonitors(string pluginName, string audioInputName);
 
-	public slots: 
-		void tick();
-		void graph(int size,string xlabel, string label);
-		void setup();
-		void dialogDone();
-		void open();
-		void about();  
-		
+public slots:
+  void tick();
+  void graph(int size,string xlabel, string label);
+  void setup();
+  void dialogDone();
+  void open();
+  void about();
 
-private: 
+
+private:
   void createMenus();
   void createActions();
   void initNetwork(QString pluginName);
 
-  
+
   string pluginName_;
   string audioInputName_;
   realvec out_;
@@ -68,25 +68,25 @@ private:
   MarSystemQtWrapper* mwr_;
   QGridLayout *gridLayout_;
   QWidget* centralWidget_;
-  
+
 
   QVector<string> probes_;
   QListWidget *listWidget;
   QSpinBox* graphNum;
   std::map<std::string, MarControlPtr> mycontrols_;
 
-	
+
   int nTicks_;
   int nGraphs_;
-  
 
-  QMenu*   fileMenu;  
+
+  QMenu*   fileMenu;
   QMenu*   helpMenu;
   QAction* openAct;
   QAction* aboutAct;
 
-  
+
 };
 
-	
-#endif 
+
+#endif

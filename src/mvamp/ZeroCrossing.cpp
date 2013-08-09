@@ -12,16 +12,16 @@ ZeroCrossing::ZeroCrossing(float inputSampleRate) :
   m_previousSample(0.0f),
   m_network(0)
 {
-	MarSystemManager mng;
-	m_network = mng.create("Series", "series");
-	m_network->addMarSystem(mng.create("RealvecSource", "src"));
-	m_network->addMarSystem(mng.create("ZeroCrossings", "zcrs"));
+  MarSystemManager mng;
+  m_network = mng.create("Series", "series");
+  m_network->addMarSystem(mng.create("RealvecSource", "src"));
+  m_network->addMarSystem(mng.create("ZeroCrossings", "zcrs"));
 }
 
 ZeroCrossing::~ZeroCrossing()
 {
-	delete m_network;
-	m_network = 0;
+  delete m_network;
+  m_network = 0;
 }
 
 string
@@ -63,8 +63,8 @@ ZeroCrossing::getCopyright() const
 bool
 ZeroCrossing::initialise(size_t channels, size_t stepSize, size_t blockSize)
 {
-  if (channels < getMinChannelCount() || channels > getMaxChannelCount()) 
-	  return false;
+  if (channels < getMinChannelCount() || channels > getMaxChannelCount())
+    return false;
 
   m_stepSize = std::min(stepSize, blockSize);
   m_network->updctrl("mrs_natural/inSamples", (int)m_stepSize);
@@ -103,35 +103,35 @@ ZeroCrossing::process(const float *const *inputBuffers,
                       Vamp::RealTime timestamp)
 {
   if (m_stepSize == 0) {
-	cerr << "ERROR: ZeroCrossing::process: "
-	     << "ZeroCrossing has not been initialised"
-	     << endl;
-	return FeatureSet();
+    cerr << "ERROR: ZeroCrossing::process: "
+         << "ZeroCrossing has not been initialised"
+         << endl;
+    return FeatureSet();
   }
 
   FeatureSet returnFeatures;
 
-   size_t count = 0;
+  size_t count = 0;
 
   // Stuff inputBuffers into a realvec
   realvec r(m_stepSize);
   for (size_t i = 0; i < m_stepSize; ++i) {
-	r(i) = inputBuffers[0][i];
+    r(i) = inputBuffers[0][i];
   }
 
-   m_network->updctrl("RealvecSource/src/mrs_realvec/data", r);
+  m_network->updctrl("RealvecSource/src/mrs_realvec/data", r);
 
-   mrs_natural insamples;
-   double val = 0.0;
+  mrs_natural insamples;
+  double val = 0.0;
 
-   insamples = m_network->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  insamples = m_network->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
-   while (!m_network->getctrl("RealvecSource/src/mrs_bool/done")->to<mrs_bool>()) {
-	 m_network->tick();
-	 val = m_network->getctrl("mrs_realvec/processedData")->to<mrs_realvec>()(0) * insamples;
-   }
+  while (!m_network->getctrl("RealvecSource/src/mrs_bool/done")->to<mrs_bool>()) {
+    m_network->tick();
+    val = m_network->getctrl("mrs_realvec/processedData")->to<mrs_realvec>()(0) * insamples;
+  }
 
-   count = (int)val;
+  count = (int)val;
 
 
   Feature feature;

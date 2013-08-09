@@ -28,16 +28,16 @@
 
 int main(int argc, char *argv[])
 {
-  
+
   QApplication app(argc, argv);
 
   MarWidgets marwidgets;
   marwidgets.setup();
-  
+
   marwidgets.show();
 
 
-  
-  
+
+
   return app.exec();
 }

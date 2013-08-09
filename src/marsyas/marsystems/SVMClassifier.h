@@ -20,8 +20,8 @@
 #define MARSYAS_SVMCLASSIFIER_H
 
 #include "MarSystem.h"
-#include "svm.h" 
-#include "WekaData.h" 
+#include "svm.h"
+#include "WekaData.h"
 
 namespace Marsyas
 {
@@ -30,67 +30,67 @@ namespace Marsyas
 	\brief SVM classifier based on libsvm
 */
 
-	class SVMClassifier: public MarSystem
-	{
-		private:
-			MarControlPtr ctrl_sv_coef_ ;
-			MarControlPtr ctrl_sv_indices_ ;
-			MarControlPtr ctrl_SV_ ;
-			MarControlPtr ctrl_rho_ ;
-			MarControlPtr ctrl_probA_ ;
-			MarControlPtr ctrl_probB_ ;
-			MarControlPtr ctrl_label_ ;
-			MarControlPtr ctrl_nSV_ ;
-			MarControlPtr ctrl_nr_class_ ;
-			MarControlPtr ctrl_weight_;
-			MarControlPtr ctrl_weight_label_;
-			MarControlPtr ctrl_minimums_;
-			MarControlPtr ctrl_maximums_;
-			MarControlPtr ctrl_mode_;
-			MarControlPtr ctrl_nClasses_;
-			MarControlPtr ctrl_l_;
-			MarControlPtr ctrl_svm_;
-			MarControlPtr ctrl_kernel_;
-			MarControlPtr ctrl_degree_;
-			MarControlPtr ctrl_gamma_;
-			MarControlPtr ctrl_coef0_;
-			MarControlPtr ctrl_nu_;
-			MarControlPtr ctrl_cache_size_;
-			MarControlPtr ctrl_C_;
-			MarControlPtr ctrl_eps_;
-			MarControlPtr ctrl_p_;
-			MarControlPtr ctrl_shrinking_;
-			MarControlPtr ctrl_probability_;
-			MarControlPtr ctrl_nr_weight_;
-			MarControlPtr ctrl_classPerms_;
-		
-			std::vector<int> classPerms_;
-			
+class SVMClassifier: public MarSystem
+{
+private:
+  MarControlPtr ctrl_sv_coef_ ;
+  MarControlPtr ctrl_sv_indices_ ;
+  MarControlPtr ctrl_SV_ ;
+  MarControlPtr ctrl_rho_ ;
+  MarControlPtr ctrl_probA_ ;
+  MarControlPtr ctrl_probB_ ;
+  MarControlPtr ctrl_label_ ;
+  MarControlPtr ctrl_nSV_ ;
+  MarControlPtr ctrl_nr_class_ ;
+  MarControlPtr ctrl_weight_;
+  MarControlPtr ctrl_weight_label_;
+  MarControlPtr ctrl_minimums_;
+  MarControlPtr ctrl_maximums_;
+  MarControlPtr ctrl_mode_;
+  MarControlPtr ctrl_nClasses_;
+  MarControlPtr ctrl_l_;
+  MarControlPtr ctrl_svm_;
+  MarControlPtr ctrl_kernel_;
+  MarControlPtr ctrl_degree_;
+  MarControlPtr ctrl_gamma_;
+  MarControlPtr ctrl_coef0_;
+  MarControlPtr ctrl_nu_;
+  MarControlPtr ctrl_cache_size_;
+  MarControlPtr ctrl_C_;
+  MarControlPtr ctrl_eps_;
+  MarControlPtr ctrl_p_;
+  MarControlPtr ctrl_shrinking_;
+  MarControlPtr ctrl_probability_;
+  MarControlPtr ctrl_nr_weight_;
+  MarControlPtr ctrl_classPerms_;
 
-			void addControls();
-			void myUpdate(MarControlPtr sender);
-			
-			WekaData instances_;
-			struct svm_problem svm_prob_;
-			struct svm_parameter svm_param_;
-			struct svm_model *svm_model_;
-			mrs_bool trained_, training_, was_training_;
-			mrs_natural kernel_, svm_;
+  std::vector<int> classPerms_;
 
-			// to clean-up memory leaks
-			mrs_natural num_nodes;
-            void ensure_free_svm_model();
-            void ensure_free_svm_prob_xy();
-            mrs_natural num_svm_prob_x;
 
-		public:
-			SVMClassifier(std::string name);
-			SVMClassifier(const SVMClassifier& a);
-			~SVMClassifier();
-			MarSystem* clone() const;
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-			void myProcess(realvec& in, realvec& out);
-	};
+  WekaData instances_;
+  struct svm_problem svm_prob_;
+  struct svm_parameter svm_param_;
+  struct svm_model *svm_model_;
+  mrs_bool trained_, training_, was_training_;
+  mrs_natural kernel_, svm_;
+
+  // to clean-up memory leaks
+  mrs_natural num_nodes;
+  void ensure_free_svm_model();
+  void ensure_free_svm_prob_xy();
+  mrs_natural num_svm_prob_x;
+
+public:
+  SVMClassifier(std::string name);
+  SVMClassifier(const SVMClassifier& a);
+  ~SVMClassifier();
+  MarSystem* clone() const;
+
+  void myProcess(realvec& in, realvec& out);
+};
 
 }
 

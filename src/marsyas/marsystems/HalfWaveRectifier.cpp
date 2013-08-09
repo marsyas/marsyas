@@ -33,26 +33,26 @@ HalfWaveRectifier::~HalfWaveRectifier()
 MarSystem*
 HalfWaveRectifier::clone() const
 {
-	return new HalfWaveRectifier(*this);
+  return new HalfWaveRectifier(*this);
 }
 
 void
 HalfWaveRectifier::myUpdate(MarControlPtr sender)
 {
-	/// Use the default MarSystem setup with equal input/output stream format.
-	MarSystem::myUpdate(sender);
+  /// Use the default MarSystem setup with equal input/output stream format.
+  MarSystem::myUpdate(sender);
 }
 
 void
 HalfWaveRectifier::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o,t;
-	// Positive values are kept, negative values are trimmed to zero.
-	for (t = 0; t < inSamples_; t++)
-	{
-		for (o = 0; o < inObservations_; o++)
-		{
-			out(o, t) = (in(o, t) > 0) ? in(o, t) : 0;
-		}
-	}
+  mrs_natural o,t;
+  // Positive values are kept, negative values are trimmed to zero.
+  for (t = 0; t < inSamples_; t++)
+  {
+    for (o = 0; o < inObservations_; o++)
+    {
+      out(o, t) = (in(o, t) > 0) ? in(o, t) : 0;
+    }
+  }
 }

@@ -2,7 +2,7 @@
 #define GLWIDGET_H
 
 #include <QGLWidget>
-#include <QTimer> 
+#include <QTimer>
 
 // Marsyas
 #include "MarSystemManager.h"
@@ -19,7 +19,7 @@ using namespace Marsyas;
 
 class GLWidget : public QGLWidget
 {
-Q_OBJECT
+  Q_OBJECT
 
 public:
   GLWidget(string inAudioFileName,QWidget *parent = 0);
@@ -38,7 +38,7 @@ public slots:
   void powerSpectrumModeChanged(int val);
 
   void setWaterfallVisible(bool val);
-  
+
   void animate();
 
 
@@ -68,7 +68,7 @@ private slots:
 protected:
   void initializeGL();                    // Initialize the GL window
   void paintGL();                         // Paint the objects in the GL window
-  void resizeGL(int width, int height);   // Resize the GL window 
+  void resizeGL(int width, int height);   // Resize the GL window
 
 private:
   GLuint makeObject();                    // Make the object
@@ -86,7 +86,7 @@ private:
   int start_yRot;
   int start_zRot;
 
-  // The end x,y,z rotation angles for the animation      
+  // The end x,y,z rotation angles for the animation
   int end_xRot;
   int end_yRot;
   int end_zRot;
@@ -107,9 +107,9 @@ private:
 
   void redrawScene();
   void addDataToRingBuffer();
-  
+
   // Marsyas
-  MarSystemManager mng;  
+  MarSystemManager mng;
   MarSystemQtWrapper*  mwr_;
   MarSystem* pnet_;
 
@@ -119,7 +119,7 @@ private:
 
   // Scale
   double y_scale;
-  
+
   // Test variables
   double test_x;
   double test_y;

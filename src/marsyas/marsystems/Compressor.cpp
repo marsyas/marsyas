@@ -27,7 +27,7 @@ using namespace Marsyas;
 
 Compressor::Compressor(mrs_string name):MarSystem("Compressor", name)
 {
-	addControls();
+  addControls();
 }
 
 Compressor::Compressor(const Compressor& a) : MarSystem(a)
@@ -42,7 +42,7 @@ Compressor::~Compressor()
 MarSystem*
 Compressor::clone() const
 {
-	return new Compressor(*this);
+  return new Compressor(*this);
 }
 
 void
@@ -54,22 +54,22 @@ Compressor::addControls()
 void
 Compressor::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("Compressor.cpp - Compressor:myUpdate");
+  MRSDIAG("Compressor.cpp - Compressor:myUpdate");
 
-	MarSystem::myUpdate(sender);
+  MarSystem::myUpdate(sender);
 }
 
 void
 Compressor::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o,t;
-	for (o=0; o < inObservations_; o++)
-		for (t = 0; t < inSamples_; t++) {
-			if(in(o,t) > 0.0001) 
-				out(o,t) = 5.213 * log(1 + 10 * sqrt(in(o,t)))/12.5;
-			else 
-				out(o,t) = 5.213 * log(1.1)/12.5;
-			
-			//cout << "Compressor:" << in(o,t) << "\t-->\t" << out(o,t) << endl;
-		}
+  mrs_natural o,t;
+  for (o=0; o < inObservations_; o++)
+    for (t = 0; t < inSamples_; t++) {
+      if(in(o,t) > 0.0001)
+        out(o,t) = 5.213 * log(1 + 10 * sqrt(in(o,t)))/12.5;
+      else
+        out(o,t) = 5.213 * log(1.1)/12.5;
+
+      //cout << "Compressor:" << in(o,t) << "\t-->\t" << out(o,t) << endl;
+    }
 }

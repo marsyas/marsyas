@@ -17,49 +17,49 @@
 
 
 namespace Marsyas {
-    class MarControlDiagramNode : public Widget{
-        
-    protected:
-        
-        MarControlWidget* ctrlWidget_;
-        std::vector<MarControlDiagramNode*>* linkers_;
-        
-        MarControlDiagramNode* parent_;
-        
-        bool highlighted_;
-    
-    public:
-        MarControlDiagramNode(MarControlWidget* ctrlWidget, GraphicalEnvironment* env, MarControlDiagramNode* parent, bool highlighted);
-        ~MarControlDiagramNode();             
-        
-        void setup(MarControlWidget* ctrlWidget, GraphicalEnvironment* env, MarControlDiagramNode* parent, bool highlighted);
-        void update();
-        void draw();
-        
-        void addLinker(MarControlDiagramNode* ctrlWidget);
-        
-        std::vector<MarControlDiagramNode*>* getLinkers();
-        
-        MarControlWidget* getCtrlWidget();
-        
-        void organizeLinkers(int x, int y);
-        
-        
-        
-        void debugger();
-        
-        
-        //mouse
-		bool mouseOver();
-		bool mousePressed();
-		bool mouseDragged();
-		bool mouseReleased();
-        
-        void highlightSelectedControl();
-        
-        
-    };
-    
+class MarControlDiagramNode : public Widget {
+
+protected:
+
+  MarControlWidget* ctrlWidget_;
+  std::vector<MarControlDiagramNode*>* linkers_;
+
+  MarControlDiagramNode* parent_;
+
+  bool highlighted_;
+
+public:
+  MarControlDiagramNode(MarControlWidget* ctrlWidget, GraphicalEnvironment* env, MarControlDiagramNode* parent, bool highlighted);
+  ~MarControlDiagramNode();
+
+  void setup(MarControlWidget* ctrlWidget, GraphicalEnvironment* env, MarControlDiagramNode* parent, bool highlighted);
+  void update();
+  void draw();
+
+  void addLinker(MarControlDiagramNode* ctrlWidget);
+
+  std::vector<MarControlDiagramNode*>* getLinkers();
+
+  MarControlWidget* getCtrlWidget();
+
+  void organizeLinkers(int x, int y);
+
+
+
+  void debugger();
+
+
+  //mouse
+  bool mouseOver();
+  bool mousePressed();
+  bool mouseDragged();
+  bool mouseReleased();
+
+  void highlightSelectedControl();
+
+
+};
+
 }
 
 

@@ -23,62 +23,62 @@
 
 namespace Marsyas
 {
-	/**
-	\ingroup	Analysis
-	\brief		Transform pitch to chroma
-				- input = amplitude spectrum with peaks at frequency bins
-				that represent pitches and values that represent evidences
-				- output = chroma profile with chroma values ordered
-				according to the circle of fifths, i.e. A, E,.. D
-	\author		Matthias Varewyck
-	\date		20090518
+/**
+\ingroup	Analysis
+\brief		Transform pitch to chroma
+			- input = amplitude spectrum with peaks at frequency bins
+			that represent pitches and values that represent evidences
+			- output = chroma profile with chroma values ordered
+			according to the circle of fifths, i.e. A, E,.. D
+\author		Matthias Varewyck
+\date		20090518
 
-	Controls:
-	- \b mrs_real/SampleRate [rw] : sample rate of the input spectrum
-	- \b mrs_real/LowestPitch [rw] : lowest pitch taken into account
-	- \b mrs_natural/NotesPerOctave [rw] : nr. of notes per octave ([f 2*f])
-	- \b mrs_natural/NrOfNotes [rw] : total nr. of notes to be taken into account
-	- \b mrs_natural/RefChromaIndex [rw] : index in chroma vector of the ref. pitch (= 440Hz)
-	*/
+Controls:
+- \b mrs_real/SampleRate [rw] : sample rate of the input spectrum
+- \b mrs_real/LowestPitch [rw] : lowest pitch taken into account
+- \b mrs_natural/NotesPerOctave [rw] : nr. of notes per octave ([f 2*f])
+- \b mrs_natural/NrOfNotes [rw] : total nr. of notes to be taken into account
+- \b mrs_natural/RefChromaIndex [rw] : index in chroma vector of the ref. pitch (= 440Hz)
+*/
 
-	class Pitch2Chroma: public MarSystem
-	{
-		public:
-			Pitch2Chroma(mrs_string inName);
-			Pitch2Chroma(const Pitch2Chroma& inToCopy);
+class Pitch2Chroma: public MarSystem
+{
+public:
+  Pitch2Chroma(mrs_string inName);
+  Pitch2Chroma(const Pitch2Chroma& inToCopy);
 
-			~Pitch2Chroma();
+  ~Pitch2Chroma();
 
-			MarSystem* clone() const;
+  MarSystem* clone() const;
 
-			void addControls();
-			void myUpdate(MarControlPtr inSender);
-			void myProcess(realvec& inVec, realvec& outVec);
+  void addControls();
+  void myUpdate(MarControlPtr inSender);
+  void myProcess(realvec& inVec, realvec& outVec);
 
-		private:
-			// Pointer to MarControllers
-			MarControlPtr ctrl_SampleRate_;
-			MarControlPtr ctrl_LowestPitch_;
-			MarControlPtr ctrl_NotesPerOctave_;
-			MarControlPtr ctrl_NrOfNotes_;
-			MarControlPtr ctrl_RefChromaIndex_;
+private:
+  // Pointer to MarControllers
+  MarControlPtr ctrl_SampleRate_;
+  MarControlPtr ctrl_LowestPitch_;
+  MarControlPtr ctrl_NotesPerOctave_;
+  MarControlPtr ctrl_NrOfNotes_;
+  MarControlPtr ctrl_RefChromaIndex_;
 
-			// Member variables
-			mrs_real SampleRate_;					// Sample rate of amplitude spectrum
-			mrs_real LowestPitch_;					// Lowest supported pitch
-			mrs_natural NotesPerOctave_;			// Number of notes per octave
-			mrs_natural NrOfNotes_;					// Total number of notes
-			mrs_natural RefChromaIndex_;			// Chroma index of LOWEST FREQUENCY
-													// Possible values: 1.. NotesPerOctave
+  // Member variables
+  mrs_real SampleRate_;					// Sample rate of amplitude spectrum
+  mrs_real LowestPitch_;					// Lowest supported pitch
+  mrs_natural NotesPerOctave_;			// Number of notes per octave
+  mrs_natural NrOfNotes_;					// Total number of notes
+  mrs_natural RefChromaIndex_;			// Chroma index of LOWEST FREQUENCY
+  // Possible values: 1.. NotesPerOctave
 
-			mrs_realvec PitchToNoteTransform_;		// Dimension: NrOfNotes x NrOfFFTBins
-			mrs_realvec StartAndEndIndex_;			// Start/end indexes of notes in input vector
+  mrs_realvec PitchToNoteTransform_;		// Dimension: NrOfNotes x NrOfFFTBins
+  mrs_realvec StartAndEndIndex_;			// Start/end indexes of notes in input vector
 
-			mrs_realvec NoteToChromaTransform_;		// Dimension: NrOfNotesPerOctave x NrOfNotes
+  mrs_realvec NoteToChromaTransform_;		// Dimension: NrOfNotesPerOctave x NrOfNotes
 
-			void UpdatePitchToNoteTransform();
-			void UpdateNoteToChromaTransform();
-	};
+  void UpdatePitchToNoteTransform();
+  void UpdateNoteToChromaTransform();
+};
 
 }	// End namespace
 

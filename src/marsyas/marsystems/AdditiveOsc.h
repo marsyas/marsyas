@@ -26,7 +26,7 @@ namespace Marsyas
 /**
 	\ingroup Synthesis
 	\brief Generates what is perceptually a saw wave.
-	
+
 	Creates what is perceptually a saw wave using wave guides to
 	generate each harmonic.
 
@@ -44,27 +44,27 @@ namespace Marsyas
 class AdditiveOsc: public MarSystem
 {
 private:
-	
-	mrs_real harmonics_; // How many harmonics our signal will have
 
-	realvec x1n1_;  // List of Last x1s
-	realvec x2n1_;  // List of Last x2s
-	realvec k_;     // List of filter coefficient
+  mrs_real harmonics_; // How many harmonics our signal will have
 
-	mrs_real israte_; // Sampling rate of the system
+  realvec x1n1_;  // List of Last x1s
+  realvec x2n1_;  // List of Last x2s
+  realvec k_;     // List of filter coefficient
+
+  mrs_real israte_; // Sampling rate of the system
 
 
-	//Add specific controls needed by this MarSystem.
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  //Add specific controls needed by this MarSystem.
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	AdditiveOsc(std::string name);
-	AdditiveOsc(const AdditiveOsc& a);
-	~AdditiveOsc();
-	MarSystem* clone() const;
+  AdditiveOsc(std::string name);
+  AdditiveOsc(const AdditiveOsc& a);
+  ~AdditiveOsc();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

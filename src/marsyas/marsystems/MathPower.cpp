@@ -24,15 +24,15 @@ using namespace Marsyas;
 
 MathPower::MathPower(mrs_string name) : MarSystem("MathPower", name)
 {
-	/// Add any specific controls needed by this MarSystem.
-	addControls();
+  /// Add any specific controls needed by this MarSystem.
+  addControls();
 }
 
 MathPower::MathPower(const MathPower& a) : MarSystem(a)
 {
-	/// All member MarControlPtr have to be explicitly reassigned in
-	/// the copy constructor.
-	ctrl_exponent_ = getctrl("mrs_real/exponent");
+  /// All member MarControlPtr have to be explicitly reassigned in
+  /// the copy constructor.
+  ctrl_exponent_ = getctrl("mrs_real/exponent");
 }
 
 
@@ -43,45 +43,45 @@ MathPower::~MathPower()
 MarSystem*
 MathPower::clone() const
 {
-	return new MathPower(*this);
+  return new MathPower(*this);
 }
 
 void
 MathPower::addControls()
 {
-	/// Add any specific controls needed by this MarSystem.
+  /// Add any specific controls needed by this MarSystem.
 
-	addctrl("mrs_real/exponent", 1.0, ctrl_exponent_);
+  addctrl("mrs_real/exponent", 1.0, ctrl_exponent_);
 
 }
 
 void
 MathPower::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("MathPower.cpp - MathPower:myUpdate");
+  MRSDIAG("MathPower.cpp - MathPower:myUpdate");
 
-	/// Use the default MarSystem setup with equal input/output stream format.
-	MarSystem::myUpdate(sender);
+  /// Use the default MarSystem setup with equal input/output stream format.
+  MarSystem::myUpdate(sender);
 
-	// Add prefix to the observation names.
-	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
-	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames,
-"MathPower_"), NOUPDATE);
+  // Add prefix to the observation names.
+  mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+  ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames,
+                             "MathPower_"), NOUPDATE);
 
-	exponent_ = ctrl_exponent_->to<mrs_real>();
+  exponent_ = ctrl_exponent_->to<mrs_real>();
 }
 
 void
 MathPower::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
+  mrs_natural t,o;
 
-	/// Iterate over the observations and samples and do the processing.
-	for (o = 0; o < inObservations_; o++)
-	{
-		for (t = 0; t < inSamples_; t++)
-		{
-			out(o, t) = pow(in(o, t), exponent_);
-		}
-	}
+  /// Iterate over the observations and samples and do the processing.
+  for (o = 0; o < inObservations_; o++)
+  {
+    for (t = 0; t < inSamples_; t++)
+    {
+      out(o, t) = pow(in(o, t), exponent_);
+    }
+  }
 }

@@ -34,69 +34,70 @@ class Extractor;
 class MarsyasECP;
 class KeypadSquare;
 
-const static int KEYPAD_SIZE = 9; 
+const static int KEYPAD_SIZE = 9;
 enum KeypadEnum  { KEYPAD1, KEYPAD2, KEYPAD3,
                    KEYPAD4, KEYPAD5, KEYPAD6,
-                   KEYPAD7, KEYPAD8, KEYPAD9, KEYPAD_INVALID };
+                   KEYPAD7, KEYPAD8, KEYPAD9, KEYPAD_INVALID
+                 };
 
-class Keypad : public MyDisplay 
+class Keypad : public MyDisplay
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	Keypad(int winSize, Tracklist *tracklist, QWidget *parent = 0);
-	~Keypad();
-	void clear();
+  Keypad(int winSize, Tracklist *tracklist, QWidget *parent = 0);
+  ~Keypad();
+  void clear();
 
-	int getHeight() const { return _width; }
-	int getWidth() const { return _width; }
+  int getHeight() const { return _width; }
+  int getWidth() const { return _width; }
 
-public slots: 
-	void extract() {}
-	void predict() {}
-	void train() {}
-	void midiXYEvent(unsigned char xaxis, unsigned char yaxis);
-	void midiPlaylistEvent(bool next);
-	void keypadClicked(KeypadEnum button);
-  
+public slots:
+  void extract() {}
+  void predict() {}
+  void train() {}
+  void midiXYEvent(unsigned char xaxis, unsigned char yaxis);
+  void midiPlaylistEvent(bool next);
+  void keypadClicked(KeypadEnum button);
+
 protected:
-	void dragEnterEvent(QDragEnterEvent *event);
-	void dragMoveEvent(QDragMoveEvent *event);
-	void dropEvent(QDropEvent *event);
-	void startDrag(Qt::DropActions supportedActions);
+  void dragEnterEvent(QDragEnterEvent *event);
+  void dragMoveEvent(QDragMoveEvent *event);
+  void dropEvent(QDropEvent *event);
+  void startDrag(Qt::DropActions supportedActions);
 
-	void mousePressEvent(QMouseEvent *event);
-	void mouseMoveEvent(QMouseEvent *event);
- 
-	void updateXYPosition(int x, int y); 
-	void paintEvent(QPaintEvent *event);
-	void playNextTrack();
+  void mousePressEvent(QMouseEvent *event);
+  void mouseMoveEvent(QMouseEvent *event);
 
-	void addTrack(int x, int y, MusicTrack* track);
-	void resetGrid();
+  void updateXYPosition(int x, int y);
+  void paintEvent(QPaintEvent *event);
+  void playNextTrack();
 
-	void setGridX(int x);  
-	void setGridY(int y); 
-	KeypadSquare *getCurrentSquare();
+  void addTrack(int x, int y, MusicTrack* track);
+  void resetGrid();
 
-	void setup();
+  void setGridX(int x);
+  void setGridY(int y);
+  KeypadSquare *getCurrentSquare();
+
+  void setup();
 
 private:
-	int _winSize;
-	int _cellSize;
-	int _gridX;
-	int _gridY;
-	int _width;
+  int _winSize;
+  int _cellSize;
+  int _gridX;
+  int _gridY;
+  int _width;
 
-	KeypadEnum _currentIndex;
-	KeypadSquare *_current;
-	KeypadSquare *_root;
+  KeypadEnum _currentIndex;
+  KeypadSquare *_current;
+  KeypadSquare *_root;
 
-	//MarsyasECP *_marsyas;
-	//Classifier *_classifier;
-	//Extractor *_extractor;
+  //MarsyasECP *_marsyas;
+  //Classifier *_classifier;
+  //Extractor *_extractor;
 
-	MusicCollection *_collection; 
+  MusicCollection *_collection;
 };
 
 /*
@@ -111,33 +112,33 @@ PAD7	PAD8	PAD9
 class KeypadSquare
 {
 public:
-	KeypadSquare(KeypadSquare *parent=NULL);
-	~KeypadSquare();
+  KeypadSquare(KeypadSquare *parent=NULL);
+  ~KeypadSquare();
 
-	bool isEmpty() const;
+  bool isEmpty() const;
 
-	void addTrack(MusicTrack *track);
-	void removeTrack(MusicTrack *track);
+  void addTrack(MusicTrack *track);
+  void removeTrack(MusicTrack *track);
 
-	void nextTrack();
-	MusicTrack* getCurrent();
-	MusicTrackIterator getTracks();
+  void nextTrack();
+  MusicTrack* getCurrent();
+  MusicTrackIterator getTracks();
 
-	int getCount() const;
+  int getCount() const;
 
-	void clear();
+  void clear();
 
-	KeypadSquare *getParent();
-	KeypadSquare *getChild(KeypadEnum child);
-	KeypadSquare *createChild(KeypadEnum child);
-	KeypadEnum getChildId(KeypadSquare *child);	
+  KeypadSquare *getParent();
+  KeypadSquare *getChild(KeypadEnum child);
+  KeypadSquare *createChild(KeypadEnum child);
+  KeypadEnum getChildId(KeypadSquare *child);
 
 private:
-	KeypadSquare *_children[KEYPAD_SIZE];
-	KeypadSquare *_parent;
+  KeypadSquare *_children[KEYPAD_SIZE];
+  KeypadSquare *_parent;
 
-	MusicTrackVector _list;
-	int _currentTrack;
+  MusicTrackVector _list;
+  int _currentTrack;
 };
 
 #endif

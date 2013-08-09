@@ -12,21 +12,21 @@
 
 namespace Marsyas
 {
-	
-	class SelfSimilarityMatrixWidget : public MarSystemWidget
-	{
-	private:
-		void addControls();
-		void updateControls();
-		
-		
-	public:
-		SelfSimilarityMatrixWidget(MarSystem *msys, GraphicalEnvironment* env);
-		~SelfSimilarityMatrixWidget();
-		
-		
-		void drawConnections();
-	};
+
+class SelfSimilarityMatrixWidget : public MarSystemWidget
+{
+private:
+  void addControls();
+  void updateControls();
+
+
+public:
+  SelfSimilarityMatrixWidget(MarSystem *msys, GraphicalEnvironment* env);
+  ~SelfSimilarityMatrixWidget();
+
+
+  void drawConnections();
+};
 }
 
 #endif

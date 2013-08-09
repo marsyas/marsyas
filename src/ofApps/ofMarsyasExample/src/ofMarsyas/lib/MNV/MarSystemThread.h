@@ -14,42 +14,42 @@
 #include "MarSystemManager.h"
 
 namespace Marsyas {
-    
-    class MarSystemThread : public ofThread{
-        
-    protected:
-        
-        GraphicalEnvironment* env_;
-        MarSystem* msys_;
-        
-        int tick_;
-        bool setTickLock_;
-        void restartThread();
-        
-    public:
-        
-        MarSystemThread();
-        MarSystemThread(MarSystem* msys);
-        MarSystemThread(GraphicalEnvironment* env);
-        ~MarSystemThread();
-        
-        
-        
-        MarSystem *getMarSystem();
-        void loadMarSystem(MarSystem *msys);
-        bool isLoaded();
-        
-        void start();
-        void stop();
-		void threadedFunction();
-        
-        void setTickStatus(int tick);
-        int getTickStatus();
-        MarControlPtr ctrlAux_;
-        
-        
-    };
-    
+
+class MarSystemThread : public ofThread {
+
+protected:
+
+  GraphicalEnvironment* env_;
+  MarSystem* msys_;
+
+  int tick_;
+  bool setTickLock_;
+  void restartThread();
+
+public:
+
+  MarSystemThread();
+  MarSystemThread(MarSystem* msys);
+  MarSystemThread(GraphicalEnvironment* env);
+  ~MarSystemThread();
+
+
+
+  MarSystem *getMarSystem();
+  void loadMarSystem(MarSystem *msys);
+  bool isLoaded();
+
+  void start();
+  void stop();
+  void threadedFunction();
+
+  void setTickStatus(int tick);
+  int getTickStatus();
+  MarControlPtr ctrlAux_;
+
+
+};
+
 }
 
 

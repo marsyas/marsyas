@@ -48,23 +48,23 @@ class CsvFileSource: public MarSystem
 {
 private:
 
-	std::string filename_;
+  std::string filename_;
 
-	FILE *vfp_;
+  FILE *vfp_;
 
-	mrs_natural lines_done_;
-	mrs_natural fileSamples_;
-	mrs_natural fileObs_;
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  mrs_natural lines_done_;
+  mrs_natural fileSamples_;
+  mrs_natural fileObs_;
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	CsvFileSource(std::string name);
-	~CsvFileSource();
-	MarSystem* clone() const;
+  CsvFileSource(std::string name);
+  ~CsvFileSource();
+  MarSystem* clone() const;
 
-	void getHeader(std::string filename);
-	void myProcess(realvec& in, realvec &out);
+  void getHeader(std::string filename);
+  void myProcess(realvec& in, realvec &out);
 };
 
 }//namespace Marsyas

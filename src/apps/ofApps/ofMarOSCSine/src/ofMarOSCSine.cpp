@@ -4,8 +4,8 @@
 void
 ofMarOSCSine::setup()
 {
-	sineChanger.setup();
-	soundEngine.sineChanger = &sineChanger;
+  sineChanger.setup();
+  soundEngine.sineChanger = &sineChanger;
 }
 
 //--------------------------------------------------------------

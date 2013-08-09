@@ -37,32 +37,32 @@ class marsyas_EXPORT MathPower: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
 
-	/// MarControlPtr for the gain control
-	MarControlPtr ctrl_exponent_;
-	mrs_real exponent_;
+  /// MarControlPtr for the gain control
+  MarControlPtr ctrl_exponent_;
+  mrs_real exponent_;
 
 public:
-	/// MathPower constructor.
-	MathPower(mrs_string name);
+  /// MathPower constructor.
+  MathPower(mrs_string name);
 
-	/// MathPower copy constructor.
-	MathPower(const MathPower& a);
+  /// MathPower copy constructor.
+  MathPower(const MathPower& a);
 
-	/// MathPower destructor.
-	~MathPower();
+  /// MathPower destructor.
+  ~MathPower();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

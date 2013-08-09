@@ -56,61 +56,61 @@ class ArffFileSink: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
-	/// The output stream to write the WEKA ARFF data to.
-	std::ofstream* os_;
+  /// The output stream to write the WEKA ARFF data to.
+  std::ofstream* os_;
 
-	/// Name of the file we are writing to.
-	mrs_string filename_;
+  /// Name of the file we are writing to.
+  mrs_string filename_;
 
-	/// Local cache for the decimal precision to use in the floating point notation.
-	mrs_natural floatPrecision_;
+  /// Local cache for the decimal precision to use in the floating point notation.
+  mrs_natural floatPrecision_;
 
-	/// Local cache of the decimation factor for data writing.
-	mrs_natural decimationFactor_;
+  /// Local cache of the decimation factor for data writing.
+  mrs_natural decimationFactor_;
 
-	/// Internal counter for handling the decimation.
-	mrs_natural decimationCounter;
+  /// Internal counter for handling the decimation.
+  mrs_natural decimationCounter;
 
-	/// MarControl for setting the filename of the file to write to.
-	MarControlPtr ctrl_filename_;
+  /// MarControl for setting the filename of the file to write to.
+  MarControlPtr ctrl_filename_;
 
-	/// MarControl for setting the floating point precision.
-	MarControlPtr ctrl_floatPrecision_;
+  /// MarControl for setting the floating point precision.
+  MarControlPtr ctrl_floatPrecision_;
 
-	/// MarControl for setting the decimation factor for the data writing.
-	MarControlPtr ctrl_decimationFactor_;
+  /// MarControl for setting the decimation factor for the data writing.
+  MarControlPtr ctrl_decimationFactor_;
 
 
-	/// Helper function for closing the output (if needed).
-	void closeOutput();
+  /// Helper function for closing the output (if needed).
+  void closeOutput();
 
-	/// Preparation of the output stream (open file, write header if necessary).
-	void prepareOutput();
+  /// Preparation of the output stream (open file, write header if necessary).
+  void prepareOutput();
 
-	/// Write ARFF header.
-	void writeArffHeader();
+  /// Write ARFF header.
+  void writeArffHeader();
 
 public:
-	/// ArffFileSink constructor.
-	ArffFileSink(std::string name);
+  /// ArffFileSink constructor.
+  ArffFileSink(std::string name);
 
-	/// ArffFileSink copy constructor.
-	ArffFileSink(const ArffFileSink& a);
+  /// ArffFileSink copy constructor.
+  ArffFileSink(const ArffFileSink& a);
 
-	/// ArffFileSink destructor.
-	~ArffFileSink();
+  /// ArffFileSink destructor.
+  ~ArffFileSink();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

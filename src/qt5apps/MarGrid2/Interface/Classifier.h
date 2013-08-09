@@ -4,9 +4,9 @@
 class Classifier
 {
 public:
-	virtual ~Classifier();
-	virtual void classify();
-	virtual void train();
+  virtual ~Classifier();
+  virtual void classify();
+  virtual void train();
 };
 
 #endif /* CLASSIFIER_H */

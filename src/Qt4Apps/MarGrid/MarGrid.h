@@ -43,52 +43,52 @@ using namespace MarsyasQt;
 
 class MarGrid : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    MarGrid(QWidget *parent = 0);
-    void clear();
+  MarGrid(QWidget *parent = 0);
+  void clear();
 
-public slots: 
-		void setupTrain(QString fname);
-		void setupPredict(QString fname);
-		void setPlaybackMode(bool continuous);
-		void setBlackWhiteMode(bool continuous);
-		void openPredictionGrid(QString fname);
-		void savePredictionGrid(QString fname);
-	    void setXGridSize(QString size);
-	    void setYGridSize(QString size);
+public slots:
+  void setupTrain(QString fname);
+  void setupPredict(QString fname);
+  void setPlaybackMode(bool continuous);
+  void setBlackWhiteMode(bool continuous);
+  void openPredictionGrid(QString fname);
+  void savePredictionGrid(QString fname);
+  void setXGridSize(QString size);
+  void setYGridSize(QString size);
 
-		void extract();
-		void predict();
-		void train();
-signals: 
+  void extract();
+  void predict();
+  void train();
+signals:
   void playingFile(QString str);
-  
-  
+
+
 protected:
   void mousePressEvent(QMouseEvent *event);
   void mouseMoveEvent(QMouseEvent *event);
-  
+
   void paintEvent(QPaintEvent *event);
   void addFile(int grid_x, int grid_y, std::string filename);
   void resetPredict();
   void resetFilesVec(int height, int width);
-  
-  
+
+
 private:
 
   MarControlPtr filePtr_;
-  
+
   QString trainFname;
   QString predictFname;
 
-  Marsyas::MarSystemManager mng;  
+  Marsyas::MarSystemManager mng;
   QVector<QList <std::string> > files;
   QVector<int> counters;
   QVector<int> counterSizes;
   QVector<int> labels;
-  
+
   bool initAudio_;
   QList<QPixmap> piecePixmaps;
   QList<QRect> pieceRects;
@@ -108,15 +108,15 @@ private:
   int grid_y;
   bool continuous_;
   bool blackwhite_;
-		
+
 
   Marsyas::realvec norm_som_fmatrix;
   Marsyas::MarSystem* som_;
   Marsyas::MarSystem* total_;
   Marsyas::MarSystem* norm_;
-  
-  
-  
+
+
+
 };
 
 #endif

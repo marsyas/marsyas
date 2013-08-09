@@ -25,20 +25,20 @@ to the percentrage of files in that square of the given genre.
 ************************************************************/
 
 class SquareRenderArea : public QWidget
- {
-     Q_OBJECT
+{
+  Q_OBJECT
 
- public:
-     SquareRenderArea(QWidget *parent = 0);
-	 void updateSquare(int * genreDensity, int numGenres);
+public:
+  SquareRenderArea(QWidget *parent = 0);
+  void updateSquare(int * genreDensity, int numGenres);
 
- protected:
-     void paintEvent(QPaintEvent *event);
+protected:
+  void paintEvent(QPaintEvent *event);
 
- private:
-	 QColor currentColour;
-	 int *squareDensity;
-	 double *squarePaintSize;
-	 int squareSize;
-	 int totalFiles;
- };
+private:
+  QColor currentColour;
+  int *squareDensity;
+  double *squarePaintSize;
+  int squareSize;
+  int totalFiles;
+};

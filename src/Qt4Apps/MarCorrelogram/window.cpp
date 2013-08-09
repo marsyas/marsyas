@@ -17,7 +17,7 @@ Window::Window(string inAudioFileName)
   glWidget->setMaximumSize(500,500);
 
   createActions();
-  createMenus();  
+  createMenus();
 
   // A play/pause button
   playpause_button  = new QPushButton(tr("Play/Pause"));
@@ -42,7 +42,7 @@ Window::Window(string inAudioFileName)
 
   // Set the layout for this widget to the layout we just created
   mainWidget->setLayout(layout);
-	
+
   setWindowTitle(tr("MarSndPeek"));
 }
 
@@ -54,7 +54,7 @@ void Window::createMenus()
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAct);
 }
- 
+
 void Window::createActions()
 {
   openAct = new QAction(tr("&Open..."), this);
@@ -66,11 +66,11 @@ void Window::createActions()
   connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 }
 
-void 
+void
 Window::about()
 {
-  QMessageBox::about(this, tr("Marsyas MarCorrelogram"),  
-					 tr("Marsyas MarCorrelogram : A graphical user interface for the \n real time generation of correlograms\n \n \n written by sness (c) 2010 GPL - sness@sness.net"));
+  QMessageBox::about(this, tr("Marsyas MarCorrelogram"),
+                     tr("Marsyas MarCorrelogram : A graphical user interface for the \n real time generation of correlograms\n \n \n written by sness (c) 2010 GPL - sness@sness.net"));
 
 }
 

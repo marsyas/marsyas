@@ -10,7 +10,7 @@
 
 class MarxGLColorGraph : public QGLWidget
 {
-  
+
 public:
 
   MarxGLColorGraph( QWidget *parent, long b=0 );

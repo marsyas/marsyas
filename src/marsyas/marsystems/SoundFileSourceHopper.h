@@ -77,36 +77,36 @@ class SoundFileSourceHopper: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
-	/// MarControlPtr for the window size control.
-	MarControlPtr ctrl_windowSize_;
+  /// MarControlPtr for the window size control.
+  MarControlPtr ctrl_windowSize_;
 
-	/// MarControlPtr for the hop size.
-	MarControlPtr ctrl_hopSize_;
+  /// MarControlPtr for the hop size.
+  MarControlPtr ctrl_hopSize_;
 
-	/// MarControlPtr for the gain control.
-	MarControlPtr ctrl_mixToMono_;
+  /// MarControlPtr for the gain control.
+  MarControlPtr ctrl_mixToMono_;
 
 public:
-	/// SoundFileSourceHopper constructor.
-	SoundFileSourceHopper(std::string name);
+  /// SoundFileSourceHopper constructor.
+  SoundFileSourceHopper(std::string name);
 
-	/// SoundFileSourceHopper copy constructor.
-	SoundFileSourceHopper(const SoundFileSourceHopper& a);
+  /// SoundFileSourceHopper copy constructor.
+  SoundFileSourceHopper(const SoundFileSourceHopper& a);
 
-	/// SoundFileSourceHopper destructor.
-	~SoundFileSourceHopper();
+  /// SoundFileSourceHopper destructor.
+  ~SoundFileSourceHopper();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

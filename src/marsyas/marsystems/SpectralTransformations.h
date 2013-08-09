@@ -38,25 +38,25 @@ namespace Marsyas
 class SpectralTransformations: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	MarControlPtr ctrl_gain_;
-	MarControlPtr ctrl_mode_;
+  MarControlPtr ctrl_gain_;
+  MarControlPtr ctrl_mode_;
 
-	mrs_real N2_, re_, im_, mag_, phs_;
+  mrs_real N2_, re_, im_, mag_, phs_;
 
 public:
-	SpectralTransformations(std::string name);
-	SpectralTransformations(const SpectralTransformations& a);
-	~SpectralTransformations();
-	MarSystem* clone() const;
-	void phaseRandomize(realvec& in, realvec& out);
-	void singlebin(realvec& in, realvec& out);
-    void three_peaks(realvec& in, realvec& out);
+  SpectralTransformations(std::string name);
+  SpectralTransformations(const SpectralTransformations& a);
+  ~SpectralTransformations();
+  MarSystem* clone() const;
+  void phaseRandomize(realvec& in, realvec& out);
+  void singlebin(realvec& in, realvec& out);
+  void three_peaks(realvec& in, realvec& out);
   void compress_magnitude(realvec& in, realvec& out);
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

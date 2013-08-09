@@ -61,11 +61,11 @@ std::vector<double> filter_state_class::FilterStep(CF_class &CF, double input_wa
     // coeffs.
     double z1_mem = z1_memory[i];
     z1_memory[i] = ((filterstep_r *
-                           (CF.filter_coeffs.a_coeffs[i] * z1_memory[i] -
-                            CF.filter_coeffs.c_coeffs[i] * z2_memory[i]))
-                           + filterstep_inputs[i]);
+                     (CF.filter_coeffs.a_coeffs[i] * z1_memory[i] -
+                      CF.filter_coeffs.c_coeffs[i] * z2_memory[i]))
+                    + filterstep_inputs[i]);
     z2_memory[i] = filterstep_r * (CF.filter_coeffs.c_coeffs[i] * z1_mem +
-              CF.filter_coeffs.a_coeffs[i] * z2_memory[i]);
+                                   CF.filter_coeffs.a_coeffs[i] * z2_memory[i]);
   }
 
   // Update the "velocity" for cubic nonlinearity, into zA.
@@ -465,7 +465,7 @@ void CF_class::CARFAC_DesignFilters()
   std::vector<double> r2 = r;
   for (unsigned int i = 0; i < theta.size(); i++) {
     filter_coeffs.g_coeffs[i] =
-        1 / (1 + h[i] * r2[i] * sin(theta[i]) / (1 - 2 * r2[i] * cos(theta[i]) + pow(r2[i], 2)));
+      1 / (1 + h[i] * r2[i] * sin(theta[i]) / (1 - 2 * r2[i] * cos(theta[i]) + pow(r2[i], 2)));
   }
 }
 

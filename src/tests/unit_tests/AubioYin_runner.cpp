@@ -12,7 +12,7 @@
 #include <cxxtest/ErrorPrinter.h>
 
 int main() {
- return CxxTest::ErrorPrinter().run();
+  return CxxTest::ErrorPrinter().run();
 }
 #include "TestAubioYin.h"
 
@@ -23,32 +23,32 @@ CxxTest::StaticSuiteDescription suiteDescription_AubioYin_runner( "TestAubioYin.
 
 static class TestDescription_AubioYin_runner_test_one_window_1000hz : public CxxTest::RealTestDescription {
 public:
- TestDescription_AubioYin_runner_test_one_window_1000hz() : CxxTest::RealTestDescription( Tests_AubioYin_runner, suiteDescription_AubioYin_runner, 57, "test_one_window_1000hz" ) {}
- void runTest() { suite_AubioYin_runner.test_one_window_1000hz(); }
+  TestDescription_AubioYin_runner_test_one_window_1000hz() : CxxTest::RealTestDescription( Tests_AubioYin_runner, suiteDescription_AubioYin_runner, 57, "test_one_window_1000hz" ) {}
+  void runTest() { suite_AubioYin_runner.test_one_window_1000hz(); }
 } testDescription_AubioYin_runner_test_one_window_1000hz;
 
 static class TestDescription_AubioYin_runner_test_ten_windows_1000hz : public CxxTest::RealTestDescription {
 public:
- TestDescription_AubioYin_runner_test_ten_windows_1000hz() : CxxTest::RealTestDescription( Tests_AubioYin_runner, suiteDescription_AubioYin_runner, 84, "test_ten_windows_1000hz" ) {}
- void runTest() { suite_AubioYin_runner.test_ten_windows_1000hz(); }
+  TestDescription_AubioYin_runner_test_ten_windows_1000hz() : CxxTest::RealTestDescription( Tests_AubioYin_runner, suiteDescription_AubioYin_runner, 84, "test_ten_windows_1000hz" ) {}
+  void runTest() { suite_AubioYin_runner.test_ten_windows_1000hz(); }
 } testDescription_AubioYin_runner_test_ten_windows_1000hz;
 
 static class TestDescription_AubioYin_runner_test_ten_windows_1000hz_500hz : public CxxTest::RealTestDescription {
 public:
- TestDescription_AubioYin_runner_test_ten_windows_1000hz_500hz() : CxxTest::RealTestDescription( Tests_AubioYin_runner, suiteDescription_AubioYin_runner, 151, "test_ten_windows_1000hz_500hz" ) {}
- void runTest() { suite_AubioYin_runner.test_ten_windows_1000hz_500hz(); }
+  TestDescription_AubioYin_runner_test_ten_windows_1000hz_500hz() : CxxTest::RealTestDescription( Tests_AubioYin_runner, suiteDescription_AubioYin_runner, 151, "test_ten_windows_1000hz_500hz" ) {}
+  void runTest() { suite_AubioYin_runner.test_ten_windows_1000hz_500hz(); }
 } testDescription_AubioYin_runner_test_ten_windows_1000hz_500hz;
 
 static class TestDescription_AubioYin_runner_test_ten_windows_1000_990_smooth_hz : public CxxTest::RealTestDescription {
 public:
- TestDescription_AubioYin_runner_test_ten_windows_1000_990_smooth_hz() : CxxTest::RealTestDescription( Tests_AubioYin_runner, suiteDescription_AubioYin_runner, 224, "test_ten_windows_1000_990_smooth_hz" ) {}
- void runTest() { suite_AubioYin_runner.test_ten_windows_1000_990_smooth_hz(); }
+  TestDescription_AubioYin_runner_test_ten_windows_1000_990_smooth_hz() : CxxTest::RealTestDescription( Tests_AubioYin_runner, suiteDescription_AubioYin_runner, 224, "test_ten_windows_1000_990_smooth_hz" ) {}
+  void runTest() { suite_AubioYin_runner.test_ten_windows_1000_990_smooth_hz(); }
 } testDescription_AubioYin_runner_test_ten_windows_1000_990_smooth_hz;
 
 static class TestDescription_AubioYin_runner_test_ten_windows_1000_880_smooth_hz : public CxxTest::RealTestDescription {
 public:
- TestDescription_AubioYin_runner_test_ten_windows_1000_880_smooth_hz() : CxxTest::RealTestDescription( Tests_AubioYin_runner, suiteDescription_AubioYin_runner, 299, "test_ten_windows_1000_880_smooth_hz" ) {}
- void runTest() { suite_AubioYin_runner.test_ten_windows_1000_880_smooth_hz(); }
+  TestDescription_AubioYin_runner_test_ten_windows_1000_880_smooth_hz() : CxxTest::RealTestDescription( Tests_AubioYin_runner, suiteDescription_AubioYin_runner, 299, "test_ten_windows_1000_880_smooth_hz" ) {}
+  void runTest() { suite_AubioYin_runner.test_ten_windows_1000_880_smooth_hz(); }
 } testDescription_AubioYin_runner_test_ten_windows_1000_880_smooth_hz;
 
 #include <cxxtest/Root.cpp>

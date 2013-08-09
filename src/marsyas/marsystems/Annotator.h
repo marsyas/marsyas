@@ -50,46 +50,46 @@ namespace Marsyas
 
 class Annotator: public MarSystem
 {
-	private:
-		
-		/// Implementation of the MarSystem::addControls() method.
-		void addControls();
-		
-		/// Implementation of the MarSystem::myUpdate() method.
-		void myUpdate(MarControlPtr sender);
-		
-		/// MarControl for setting the annotation label.
-		MarControlPtr ctrl_label_;
-		
-		/// MarControl toggle for putting the annotation label in front of the observations.
-		MarControlPtr ctrl_labelInFront_;
+private:
 
-		
-		
-		
-		/// Cache for storing the value of the labelInFront control.
-		mrs_bool labelInFront_;
-		
-		/// MarControl for setting the annotation name.
-		MarControlPtr ctrl_annotationName_;
-		
-	public:
-		
-		/// Annotator constructor.
-		Annotator(std::string name);
-		
-		/// Annotator copy constructor.
-		Annotator(const Annotator& a);
-		
-		/// Annotator destructor.
-		~Annotator();
-		
-		MarSystem* clone() const;
-		
-		/// Implementation of the MarSystem::myProcess() method.
-		void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::addControls() method.
+  void addControls();
+
+  /// Implementation of the MarSystem::myUpdate() method.
+  void myUpdate(MarControlPtr sender);
+
+  /// MarControl for setting the annotation label.
+  MarControlPtr ctrl_label_;
+
+  /// MarControl toggle for putting the annotation label in front of the observations.
+  MarControlPtr ctrl_labelInFront_;
+
+
+
+
+  /// Cache for storing the value of the labelInFront control.
+  mrs_bool labelInFront_;
+
+  /// MarControl for setting the annotation name.
+  MarControlPtr ctrl_annotationName_;
+
+public:
+
+  /// Annotator constructor.
+  Annotator(std::string name);
+
+  /// Annotator copy constructor.
+  Annotator(const Annotator& a);
+
+  /// Annotator destructor.
+  ~Annotator();
+
+  MarSystem* clone() const;
+
+  /// Implementation of the MarSystem::myProcess() method.
+  void myProcess(realvec& in, realvec& out);
 };
-	
+
 }//namespace Marsyas
 
 #endif

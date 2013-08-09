@@ -51,24 +51,24 @@ class OnePole: public MarSystem
 {
 private:
 
-	/// Cache for the alpha value.
-	mrs_real alpha_;
+  /// Cache for the alpha value.
+  mrs_real alpha_;
 
-	/// Cache for the gain value.
-	mrs_real gain_;
+  /// Cache for the gain value.
+  mrs_real gain_;
 
-	/// Internal memory for the last samples of the previous observed slice.
-	realvec previousOutputSamples_;
+  /// Internal memory for the last samples of the previous observed slice.
+  realvec previousOutputSamples_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	OnePole(std::string name);
-	~OnePole();
-	MarSystem* clone() const;
+  OnePole(std::string name);
+  ~OnePole();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

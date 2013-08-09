@@ -15,24 +15,24 @@
 
 namespace Marsyas
 {
-	
-	class ParallelWidget : public MarSystemWidget
-	{
-	private:
-		
-		void addControls();
-		void updateControls();
-		void updateSize();
-		void updateChildrenWidgets();
-		
-		
-	public:
-		ParallelWidget(MarSystem *msys, GraphicalEnvironment* env);
-		~ParallelWidget();
-		
-		
-		void drawConnections();
-	};
+
+class ParallelWidget : public MarSystemWidget
+{
+private:
+
+  void addControls();
+  void updateControls();
+  void updateSize();
+  void updateChildrenWidgets();
+
+
+public:
+  ParallelWidget(MarSystem *msys, GraphicalEnvironment* env);
+  ~ParallelWidget();
+
+
+  void drawConnections();
+};
 }
 
 #endif

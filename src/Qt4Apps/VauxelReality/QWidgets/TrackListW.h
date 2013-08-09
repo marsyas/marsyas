@@ -8,14 +8,14 @@
 class TrackListW : public QListWidget
 {
 public:
-	TrackListW(QWidget *parent=0);
-	~TrackListW();
+  TrackListW(QWidget *parent=0);
+  ~TrackListW();
 
-	void listTracks(MusicPlaylist *playlist);
-	void listTracks(MusicTrackIterator *tracks);
+  void listTracks(MusicPlaylist *playlist);
+  void listTracks(MusicTrackIterator *tracks);
 
 protected:
-	void mousePressEvent(QMouseEvent *event);
+  void mousePressEvent(QMouseEvent *event);
 
 private:
 

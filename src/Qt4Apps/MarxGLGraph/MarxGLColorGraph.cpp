@@ -18,28 +18,28 @@ MarxGLColorGraph::MarxGLColorGraph(QWidget *parent, long b)
 }
 
 
-void 
+void
 MarxGLColorGraph::setBufferSize( long b )
 {
   buffersize = b;
 }
 
 
-void 
+void
 MarxGLColorGraph::setContrast( float c )
 {
   contrast = c;
   updateGL();
 }
 
-void 
+void
 MarxGLColorGraph::initializeGL()
 {
   qglClearColor( bgcolor );
 }
 
 
-void 
+void
 MarxGLColorGraph::paintGL()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -71,7 +71,7 @@ MarxGLColorGraph::paintGL()
 }
 
 
-void 
+void
 MarxGLColorGraph::resizeGL(int width, int height)
 {
   glViewport(-1, -1, width+5, height+5);
@@ -80,13 +80,13 @@ MarxGLColorGraph::resizeGL(int width, int height)
 
 
 
-bool 
+bool
 MarxGLColorGraph::setBuffer( realvec& rv )
 {
-  if ( rv.getSize() == buffersize ) { 
-     *buffer = rv;
+  if ( rv.getSize() == buffersize ) {
+    *buffer = rv;
 
-      updateGL();
+    updateGL();
 
     return true;
   }

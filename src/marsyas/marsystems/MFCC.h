@@ -46,57 +46,57 @@ class MFCC: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	void myUpdate(MarControlPtr sender);
+  void myUpdate(MarControlPtr sender);
 
-	mrs_real lowestFrequency_;
-	mrs_natural linearFilters_;
-	mrs_real linearSpacing_;
-	mrs_natural logFilters_;
-	mrs_real logSpacing_;
-	mrs_natural totalFilters_;
+  mrs_real lowestFrequency_;
+  mrs_natural linearFilters_;
+  mrs_real linearSpacing_;
+  mrs_natural logFilters_;
+  mrs_real logSpacing_;
+  mrs_natural totalFilters_;
 
-	mrs_natural fftSize_, pfftSize_;
-	mrs_natural samplingRate_, psamplingRate_;
+  mrs_natural fftSize_, pfftSize_;
+  mrs_natural samplingRate_, psamplingRate_;
 
 
-	/// Number of cepstral coefficients.
-	mrs_natural cepstralCoefs_;
-	/// Previous number of cepstral coefficients (used for determining whether to update)
-	mrs_natural pcepstralCoefs_;
-	/// Default number of MFCC coefficients.
-	static const int cepstralCoefs_default = 13;
+  /// Number of cepstral coefficients.
+  mrs_natural cepstralCoefs_;
+  /// Previous number of cepstral coefficients (used for determining whether to update)
+  mrs_natural pcepstralCoefs_;
+  /// Default number of MFCC coefficients.
+  static const int cepstralCoefs_default = 13;
 
-	/// MarControlPtr for the number of cepstral coefficients.
-	MarControlPtr ctrl_cepstralCoefs_;
+  /// MarControlPtr for the number of cepstral coefficients.
+  MarControlPtr ctrl_cepstralCoefs_;
 
-	realvec freqs_;
-	realvec lower_;
-	realvec center_;
-	realvec upper_;
-	realvec triangle_heights_;
+  realvec freqs_;
+  realvec lower_;
+  realvec center_;
+  realvec upper_;
+  realvec triangle_heights_;
 
-	realvec fftFreqs_;
-	realvec mfccFilterWeights_;
-	realvec mfccDCT_;
-	realvec earMagnitude_;
-	realvec fmagnitude_;
+  realvec fftFreqs_;
+  realvec mfccFilterWeights_;
+  realvec mfccDCT_;
+  realvec earMagnitude_;
+  realvec fmagnitude_;
 
-	// NEIL's filter weight speedup
-	int* mfcc_offsets_;
+  // NEIL's filter weight speedup
+  int* mfcc_offsets_;
 
-	bool init_;
+  bool init_;
 
 public:
 
-	MFCC(std::string name);
-	MFCC(const MFCC& a);
-	~MFCC();
-	MarSystem* clone() const;
+  MFCC(std::string name);
+  MFCC(const MFCC& a);
+  ~MFCC();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

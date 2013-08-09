@@ -19,7 +19,7 @@
 #include "AimBoxes.h"
 #include "common_source.h"
 
- 
+
 using std::ostringstream;
 using std::vector;
 
@@ -38,7 +38,7 @@ AimBoxes::AimBoxes(mrs_string name):MarSystem("AimBoxes",name)
   addControls();
 }
 
-AimBoxes::AimBoxes(const AimBoxes& a): MarSystem(a) 
+AimBoxes::AimBoxes(const AimBoxes& a): MarSystem(a)
 {
   is_initialized = false;
   initialized_israte = 0.0;
@@ -63,7 +63,7 @@ AimBoxes::clone() const
   return new AimBoxes(*this);
 }
 
-void 
+void
 AimBoxes::addControls()
 {
   addControl("mrs_natural/box_size_spectral", 16 , ctrl_box_size_spectral_);
@@ -144,24 +144,24 @@ AimBoxes::InitializeInternal() {
   while (channels_height < channel_count / 2) {
     int top = channel_count - 1;
     while (top - channels_height >= 0) {
-        box_limits_channels_.push_back(std::make_pair(top,
-                                                      top - channels_height));
-        top -= channels_height / 2;
+      box_limits_channels_.push_back(std::make_pair(top,
+                                     top - channels_height));
+      top -= channels_height / 2;
     }
     channels_height *= 2;
   }
-  
+
   while (temporal_width < buffer_length) {
     box_limits_time_.push_back(temporal_width);
     temporal_width *= 2;
-  } 
-  
+  }
+
   box_count_ = box_limits_time_.size() * box_limits_channels_.size();
   feature_size_ = ctrl_box_size_spectral_->to<mrs_natural>() + ctrl_box_size_temporal_->to<mrs_natural>();
 
 }
 
-void 
+void
 AimBoxes::ResetInternal() {
 }
 
@@ -176,7 +176,7 @@ AimBoxes::myProcess(realvec& in, realvec& out)
     for (int s = 0; s < static_cast<int>(box_limits_time_.size()); ++s) {
       int pixel_size_channels = (box_limits_channels_[c].first
                                  - box_limits_channels_[c].second)
-                                   / box_size_spectral;
+                                / box_size_spectral;
       int pixel_size_samples = box_limits_time_[s] / box_size_temporal;
       vector<vector<float> > box;
       vector<float> line;

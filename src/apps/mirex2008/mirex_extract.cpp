@@ -14,7 +14,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <vector> 
+#include <vector>
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
@@ -41,20 +41,20 @@ map<string, string> featureExtractorDesc;
 
 MarSystem* createSTFTMFCCextractor()
 {
-	MarSystemManager mng;
+  MarSystemManager mng;
 
-	MarSystem* extractor = mng.create("Series", "STFTMFCCextractor");
-	extractor->addMarSystem(mng.create("PowerSpectrumNet","powerSpect"));
-	// Spectrum Shape descriptors
-	MarSystem* spectrumFeatures = mng.create("Fanout", "spectrumFeatures");
-	spectrumFeatures->addMarSystem(mng.create("Centroid", "cntrd"));
-	spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));      
-	spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
-	spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
-	extractor->addMarSystem(spectrumFeatures);
-	extractor->linkControl("mrs_natural/winSize", "PowerSpectrumNet/powerSpect/mrs_natural/winSize");
+  MarSystem* extractor = mng.create("Series", "STFTMFCCextractor");
+  extractor->addMarSystem(mng.create("PowerSpectrumNet","powerSpect"));
+  // Spectrum Shape descriptors
+  MarSystem* spectrumFeatures = mng.create("Fanout", "spectrumFeatures");
+  spectrumFeatures->addMarSystem(mng.create("Centroid", "cntrd"));
+  spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));
+  spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
+  spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
+  extractor->addMarSystem(spectrumFeatures);
+  extractor->linkControl("mrs_natural/winSize", "PowerSpectrumNet/powerSpect/mrs_natural/winSize");
 
-	return extractor;
+  return extractor;
 }
 
 ////////////////////////////////////////
@@ -79,13 +79,13 @@ read_collection(Collection& c, string inCollectionName)
 }
 
 ////////////////////////////////////////
-// 
+//
 // Extract features from a single file
 //
 void extract(Collection collection, string outWekaName)
-// void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label, 
-// 							   string pluginName, string classNames, 
-// 							   string wekafname, 
+// void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
+// 							   string pluginName, string classNames,
+// 							   string wekafname,
 // 							   mrs_natural memSize, string extractorStr,
 // 							   bool withBeatFeatures)
 {
@@ -102,7 +102,7 @@ void extract(Collection collection, string outWekaName)
   ////////////////////////////////////////////////////////////
   // Create a MarSystemManager to run the show
   ////////////////////////////////////////////////////////////
-  MarSystemManager mng;  
+  MarSystemManager mng;
 
   ////////////////////////////////////////////////////////////
   // create the file source
@@ -124,7 +124,7 @@ void extract(Collection collection, string outWekaName)
   featureNetwork->addMarSystem(src);
 
   ////////////////////////////////////////////////////////////
-  // convert stereo files to mono 
+  // convert stereo files to mono
   ////////////////////////////////////////////////////////////
   featureNetwork->addMarSystem(mng.create("Stereo2Mono", "s2m"));
   featureNetwork->addMarSystem(featureExtractor);
@@ -142,7 +142,7 @@ void extract(Collection collection, string outWekaName)
   featureNetwork->updControl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
 
   ////////////////////////////////////////////////////////////
-  // accumulate feature vectors over 30 seconds 
+  // accumulate feature vectors over 30 seconds
   ////////////////////////////////////////////////////////////
   MarSystem* acc = mng.create("Accumulator", "acc");
   acc->updControl("mrs_natural/nTimes", accSize_);
@@ -152,25 +152,25 @@ void extract(Collection collection, string outWekaName)
   ////////////////////////////////////////////////////////////
   acc->addMarSystem(featureNetwork->clone());
 
-   ////////////////////////////////////////////////////////////
-   // WEKA output
-   ////////////////////////////////////////////////////////////
-   MarSystem* wsink = mng.create("WekaSink", "wsink");
-
-   ////////////////////////////////////////////////////////////
-   // Annotator
-   ////////////////////////////////////////////////////////////
-   MarSystem* annotator = mng.create("Annotator", "annotator");
+  ////////////////////////////////////////////////////////////
+  // WEKA output
+  ////////////////////////////////////////////////////////////
+  MarSystem* wsink = mng.create("WekaSink", "wsink");
 
   ////////////////////////////////////////////////////////////
-  // Generate 30-second statistics 
+  // Annotator
+  ////////////////////////////////////////////////////////////
+  MarSystem* annotator = mng.create("Annotator", "annotator");
+
+  ////////////////////////////////////////////////////////////
+  // Generate 30-second statistics
   ////////////////////////////////////////////////////////////
   MarSystem* statistics = mng.create("Fanout", "statistics2");
   statistics->addMarSystem(mng.create("Mean", "mn"));
   statistics->addMarSystem(mng.create("StandardDeviation", "std"));
 
   ////////////////////////////////////////////////////////////
-  // A final network to compute 30-second statistics 
+  // A final network to compute 30-second statistics
   ////////////////////////////////////////////////////////////
   MarSystem* total = mng.create("Series", "total");
   total->addMarSystem(acc);
@@ -182,7 +182,7 @@ void extract(Collection collection, string outWekaName)
   total->updControl("mrs_natural/inSamples", winSize);
 
   //////////////////////////////////////////////////////////////////////////
-  // Main loop for extracting the features 
+  // Main loop for extracting the features
   //////////////////////////////////////////////////////////////////////////
   //mrs_natural wc = 0;
   //mrs_natural samplesPlayed =0;
@@ -196,17 +196,17 @@ void extract(Collection collection, string outWekaName)
   realvec fullres;
   realvec afullres;
 
-  in.create(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
- 			total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
-  timbreres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
- 				   total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+  in.create(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
+            total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  timbreres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
+                   total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
-  fullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
- 				 total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+  fullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
+                 total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
   afullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>() + 1,
- 				  total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());  
-  annotator->updControl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations")->to<mrs_natural>());      
+                  total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+  annotator->updControl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
 
   annotator->updControl("mrs_natural/inSamples", total->getctrl("mrs_natural/onSamples"));
   annotator->updControl("mrs_real/israte", total->getctrl("mrs_real/israte"));
@@ -216,60 +216,60 @@ void extract(Collection collection, string outWekaName)
   wsink->updControl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
 
   mrs_natural timbreSize = total->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-   annotator->updControl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames"));  
+  annotator->updControl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames"));
 
-   if (outWekaName != EMPTYSTRING)
-  	wsink->updControl("mrs_string/inObsNames", annotator->getctrl("mrs_string/onObsNames"));
+  if (outWekaName != EMPTYSTRING)
+    wsink->updControl("mrs_string/inObsNames", annotator->getctrl("mrs_string/onObsNames"));
 
 
   realvec iwin;
 
-   ////////////////////////////////////////////////////////////
-   // Assign the name of each file as the label of the
-   // extracted feature.  This lets us keep track of which
-   // feature corresponds to which label
-   ////////////////////////////////////////////////////////////
-   string all_files_in_collection = "";
-   for (size_t i = 0; i < collection.getSize(); ++i) {
-	 all_files_in_collection += collection.entry(i);
-	 if (i < collection.getSize() - 1)
-	   all_files_in_collection += ",";
-   }
-   cout << "all_files_in_collection=" << all_files_in_collection << endl;
-   cout << "collection.getSize()=" << collection.getSize() << endl;
+  ////////////////////////////////////////////////////////////
+  // Assign the name of each file as the label of the
+  // extracted feature.  This lets us keep track of which
+  // feature corresponds to which label
+  ////////////////////////////////////////////////////////////
+  string all_files_in_collection = "";
+  for (size_t i = 0; i < collection.getSize(); ++i) {
+    all_files_in_collection += collection.entry(i);
+    if (i < collection.getSize() - 1)
+      all_files_in_collection += ",";
+  }
+  cout << "all_files_in_collection=" << all_files_in_collection << endl;
+  cout << "collection.getSize()=" << collection.getSize() << endl;
 
-   wsink->updControl("mrs_string/labelNames",all_files_in_collection);
-   wsink->updControl("mrs_natural/nLabels", (mrs_natural)collection.getSize());  
-   wsink->updControl("mrs_string/filename", outWekaName);
-   cout << "Writing weka .arff file to :" << outWekaName << endl;
+  wsink->updControl("mrs_string/labelNames",all_files_in_collection);
+  wsink->updControl("mrs_natural/nLabels", (mrs_natural)collection.getSize());
+  wsink->updControl("mrs_string/filename", outWekaName);
+  cout << "Writing weka .arff file to :" << outWekaName << endl;
 
-   cout << "------------------------------" << endl;
-   cout << "Label names" << endl;
-   cout << wsink->getctrl("mrs_string/labelNames")->to<mrs_string>() << endl;
-   cout << "------------------------------\n" << endl;
+  cout << "------------------------------" << endl;
+  cout << "Label names" << endl;
+  cout << wsink->getctrl("mrs_string/labelNames")->to<mrs_string>() << endl;
+  cout << "------------------------------\n" << endl;
 
   ////////////////////////////////////////////////////////////
   // Iterate over all files in collection
   ////////////////////////////////////////////////////////////
   for (size_t i=0; i < collection.size(); ++i)
- 	{
-	  // Update the featureNetwork to read the current file in the collection
- 	  total->updControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", collection.entry(i));
- 	  //wc = 0;  	  
- 	  //samplesPlayed = 0;
+  {
+    // Update the featureNetwork to read the current file in the collection
+    total->updControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", collection.entry(i));
+    //wc = 0;
+    //samplesPlayed = 0;
 //   	  annotator->updControl("mrs_natural/label", collection.labelNum(collection.labelEntry(i)));
-   	  annotator->updControl("mrs_real/label", (mrs_real)i);
+    annotator->updControl("mrs_real/label", (mrs_real)i);
 
 // 	  cout << "collection.labelNum(collection.labelEntry(i))" << collection.labelNum(collection.labelEntry(i)) << endl;
 
-	  total->process(in, timbreres);
-	  
-	  // concatenate timbre and beat vectors 
-	  for (int t=0; t < timbreSize; t++)
-		fullres(t,0) = timbreres(t,0);
+    total->process(in, timbreres);
 
-  	  annotator->process(fullres, afullres);
- 	  wsink->process(afullres, afullres);
+    // concatenate timbre and beat vectors
+    for (int t=0; t < timbreSize; t++)
+      fullres(t,0) = timbreres(t,0);
+
+    annotator->process(fullres, afullres);
+    wsink->process(afullres, afullres);
 
 // 	  cout << *annotator << endl;
 
@@ -280,13 +280,13 @@ void extract(Collection collection, string outWekaName)
 // 		}
 // 	  }
 // 	  outstream << "\t" << collection.entry(i) << endl;
-		
- 	  cerr << "Processed " << collection.entry(i) << endl;
- 	}
-	
+
+    cerr << "Processed " << collection.entry(i) << endl;
+  }
+
   delete featureNetwork;
 }
-  
+
 
 int
 main(int argc, const char **argv)
@@ -296,11 +296,11 @@ main(int argc, const char **argv)
 
 
   if (argc < 3) {
-	usage();
-	exit(1);
+    usage();
+    exit(1);
   } else {
-	inCollectionName = argv[1];
-	outfname = argv[2];
+    inCollectionName = argv[1];
+    outfname = argv[2];
   }
 
   Collection c;

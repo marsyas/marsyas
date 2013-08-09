@@ -26,10 +26,10 @@ namespace Marsyas
 /**
 	\class Krumhansl_key_finder
 	\ingroup Analysis
-	\brief Krumhansl-Schmuckler Key-Finding Algorithm 
+	\brief Krumhansl-Schmuckler Key-Finding Algorithm
 
 Performs simple chord detection using the Krumhansl-Schmuckler Key-Finding Algorithm.
-The input is a pitch class profile or chroma vector with 12 values one for each chromatic note. 
+The input is a pitch class profile or chroma vector with 12 values one for each chromatic note.
 
 	Controls:
 */
@@ -38,38 +38,38 @@ class marsyas_EXPORT Krumhansl_key_finder: public MarSystem
 {
 private:
 
-	mrs_realvec major_profile_;
-	mrs_realvec minor_profile_;
-	mrs_realvec scores_;
-	std::vector<mrs_string> key_names_;
-	
-
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
-
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  mrs_realvec major_profile_;
+  mrs_realvec minor_profile_;
+  mrs_realvec scores_;
+  std::vector<mrs_string> key_names_;
 
 
-	MarControlPtr ctrl_key_;
-	MarControlPtr ctrl_key_name_;
-	
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
+
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
+
+
+  MarControlPtr ctrl_key_;
+  MarControlPtr ctrl_key_name_;
+
 
 public:
-	/// Krumhansl_key_finder constructor.
-	Krumhansl_key_finder(std::string name);
+  /// Krumhansl_key_finder constructor.
+  Krumhansl_key_finder(std::string name);
 
-	/// Krumhansl_key_finder copy constructor.
-	Krumhansl_key_finder(const Krumhansl_key_finder& a);
+  /// Krumhansl_key_finder copy constructor.
+  Krumhansl_key_finder(const Krumhansl_key_finder& a);
 
-	/// Krumhansl_key_finder destructor.
-	~Krumhansl_key_finder();
+  /// Krumhansl_key_finder destructor.
+  ~Krumhansl_key_finder();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

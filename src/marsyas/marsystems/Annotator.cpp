@@ -24,15 +24,15 @@ using namespace Marsyas;
 
 Annotator::Annotator(mrs_string name):MarSystem("Annotator", name)
 {
-	addControls();
+  addControls();
 }
 
 
 Annotator::Annotator(const Annotator& a):MarSystem(a)
 {
-	ctrl_label_ = getControl("mrs_real/label");
-	ctrl_labelInFront_ = getControl("mrs_bool/labelInFront");
-	ctrl_annotationName_ = getControl("mrs_string/annotationName");
+  ctrl_label_ = getControl("mrs_real/label");
+  ctrl_labelInFront_ = getControl("mrs_bool/labelInFront");
+  ctrl_annotationName_ = getControl("mrs_string/annotationName");
 }
 
 Annotator::~Annotator()
@@ -42,61 +42,61 @@ Annotator::~Annotator()
 MarSystem*
 Annotator::clone() const
 {
-	return new Annotator(*this);
+  return new Annotator(*this);
 }
 
 void
 Annotator::addControls()
 {
-	addControl("mrs_real/label", 0.0, ctrl_label_);
-	addControl("mrs_bool/labelInFront", false, ctrl_labelInFront_);
-	addControl("mrs_string/annotationName", "annotation", ctrl_annotationName_);
+  addControl("mrs_real/label", 0.0, ctrl_label_);
+  addControl("mrs_bool/labelInFront", false, ctrl_labelInFront_);
+  addControl("mrs_string/annotationName", "annotation", ctrl_annotationName_);
 }
 
 void
 Annotator::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("Annotator.cpp - Annotator:myUpdate");
+  MRSDIAG("Annotator.cpp - Annotator:myUpdate");
 
-	// Do the default MarSystem configuration ...
-	MarSystem::myUpdate(sender);
+  // Do the default MarSystem configuration ...
+  MarSystem::myUpdate(sender);
 
-	// ... but add one to the number of output observations.
-	ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>() + 1, NOUPDATE);
+  // ... but add one to the number of output observations.
+  ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>() + 1, NOUPDATE);
 
-	// Should the label go in front or at the back of the observations?
-	labelInFront_ = ctrl_labelInFront_->to<mrs_bool>();
+  // Should the label go in front or at the back of the observations?
+  labelInFront_ = ctrl_labelInFront_->to<mrs_bool>();
 
-	
-	// Add the annotation name to onObsNames.
-	mrs_string annotationName = ctrl_annotationName_->to<mrs_string>();
-	mrs_string onObsNames = ctrl_inObsNames_->to<mrs_string>();
-	if (labelInFront_)
-	{
-      onObsNames = annotationName + mrs_string(",") + onObsNames;
-	}
-	else
-	{
-		onObsNames = onObsNames + mrs_string(",") + annotationName;
-	}
-	ctrl_onObsNames_->setValue(onObsNames, NOUPDATE);
+
+  // Add the annotation name to onObsNames.
+  mrs_string annotationName = ctrl_annotationName_->to<mrs_string>();
+  mrs_string onObsNames = ctrl_inObsNames_->to<mrs_string>();
+  if (labelInFront_)
+  {
+    onObsNames = annotationName + mrs_string(",") + onObsNames;
+  }
+  else
+  {
+    onObsNames = onObsNames + mrs_string(",") + annotationName;
+  }
+  ctrl_onObsNames_->setValue(onObsNames, NOUPDATE);
 
 }
 
 void
 Annotator::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o,t;
-	// Get the label to annotate the feature stream with.
-	const mrs_real& label = ctrl_label_->to<mrs_real>();
+  mrs_natural o,t;
+  // Get the label to annotate the feature stream with.
+  const mrs_real& label = ctrl_label_->to<mrs_real>();
 
-	// Copy the input observations to the output and add the label.
-	for (t = 0; t < inSamples_; t++)
-	{
-		for (o = 0; o < inObservations_; o++)
-		{
-			out((int)(labelInFront_) + o, t) =  in(o, t);
-		}
-		out(labelInFront_ ? 0 : onObservations_ - 1, t) = label;
-	}
+  // Copy the input observations to the output and add the label.
+  for (t = 0; t < inSamples_; t++)
+  {
+    for (o = 0; o < inObservations_; o++)
+    {
+      out((int)(labelInFront_) + o, t) =  in(o, t);
+    }
+    out(labelInFront_ ? 0 : onObservations_ - 1, t) = label;
+  }
 }

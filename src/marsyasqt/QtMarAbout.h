@@ -3,10 +3,10 @@
 * version number.
 */
 
-#ifndef QT_MAR_ABOUT_H 
+#ifndef QT_MAR_ABOUT_H
 #define QT_MAR_ABOUT_H
 
-#include <QMessageBox> 
+#include <QMessageBox>
 
 
 namespace MarsyasQt
@@ -20,16 +20,16 @@ namespace MarsyasQt
 
 class QtMarAbout: private QObject
 {
-	Q_OBJECT
+  Q_OBJECT
 public:
-	QtMarAbout() {};
-	static void aboutMarsyas(QWidget *parent)
-	{
-		QMessageBox::about(parent, tr("About Marsyas"),
-			tr("marsyas is a blah one two three four"
-			"\n"
-			"Marsyas Version 0.2.14"));
-	};
+  QtMarAbout() {};
+  static void aboutMarsyas(QWidget *parent)
+  {
+    QMessageBox::about(parent, tr("About Marsyas"),
+                       tr("marsyas is a blah one two three four"
+                          "\n"
+                          "Marsyas Version 0.2.14"));
+  };
 };
 } // namespace
 #endif // MARSYSTEMWRAPPER_H

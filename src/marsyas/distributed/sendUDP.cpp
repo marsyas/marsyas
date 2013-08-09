@@ -3,18 +3,18 @@
 #include <iostream>
 #include <string>
 #include "Collection.h"
-#include "AuFileSource.h"  
+#include "AuFileSource.h"
 #include "SocketException.h"
 #include "NetworkUDPSink.h"
 #include "AudioSink.h"
 #include "MrsDoctor.h"
-#include "Gain.h" 
+#include "Gain.h"
 #include "Spectrum.h"
 #include "InvSpectrum.h"
-#include "fft.h" 
-#include "AutoCorrelation.h" 
-#include "Peaker.h" 
-#include "SineSource.h" 
+#include "fft.h"
+#include "AutoCorrelation.h"
+#include "Peaker.h"
+#include "SineSource.h"
 #include "MarSystemManager.h"
 #include "HalfWaveRectifier.h"
 #include "CommandLineOptions.h"
@@ -39,7 +39,7 @@ float repetitions = 1;
 
 
 
-void 
+void
 printUsage(string progName)
 {
   MRSDIAG("sendTCP.cpp - printUsage");
@@ -49,7 +49,7 @@ printUsage(string progName)
   exit(1);
 }
 
-void 
+void
 printHelp(string progName)
 {
   MRSDIAG("sendUDP.cpp - printHelp");
@@ -72,42 +72,42 @@ printHelp(string progName)
   cerr << "-p --port       : host port number " << endl;
   cerr << "-t --host	   : host IP address " << endl;
   cerr << "-r --repetitions: number of repetitions " << endl;
-  
+
   exit(1);
 }
 
 
 
-// Play soundfile given by sfName, msys contains the playback 
-// network of MarSystem objects 
-void sfplayFile(MarSystem& msys, mrs_natural offset, mrs_natural duration, 
-mrs_real start, mrs_real length, mrs_real gain, mrs_real repetitions, string sfName )
+// Play soundfile given by sfName, msys contains the playback
+// network of MarSystem objects
+void sfplayFile(MarSystem& msys, mrs_natural offset, mrs_natural duration,
+                mrs_real start, mrs_real length, mrs_real gain, mrs_real repetitions, string sfName )
 {
   msys.updctrl("SoundFileSource/src/mrs_string/filename", sfName);
   mrs_natural nChannels = msys.getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>();
   mrs_real srate = msys.getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
-  
+
   // playback offset & duration
   offset = (mrs_natural) (start * srate * nChannels);
   duration = (mrs_natural) (length * srate * nChannels);
-  
+
   // udpate controls
   msys.updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
   msys.updctrl("Gain/gt/mrs_real/gain", gain);
-  msys.updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
-  
+  msys.updctrl("SoundFileSource/src/mrs_natural/pos", offset);
+
   mrs_natural wc=0;
   mrs_natural samplesPlayed = 0;
   mrs_natural onSamples = msys.getctrl("mrs_natural/onSamples")->to<mrs_natural>();
   // mrs_natural repeatId = 1;
-  
+
   while (msys.getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
-    {
-      msys.tick();
-      wc ++;
-      samplesPlayed += onSamples;	
-    }
-    cerr << "Played " << wc << " slices of " << onSamples << " samples" << endl;
+  {
+    msys.tick();
+    wc ++;
+    samplesPlayed += onSamples;
+  }
+  cerr << "Played " << wc << " slices of " << onSamples << " samples" << endl;
 }
 
 
@@ -117,56 +117,56 @@ void sfplay(Collection l, mrs_natural offset, mrs_natural duration, mrs_real sta
   MRSDIAG("sendUDP.cpp - sendUDP");
   int i;
 
-  // Load first soundfile in collection 
+  // Load first soundfile in collection
   string sfName = l.entry(0);
   SoundFileSource* src = new SoundFileSource("src");
   src->updctrl("mrs_string/filename", sfName);
 
   // create the network sink
   NetworkUDPSink* netSink = new NetworkUDPSink("netSink");
-  
+
   // update controls if they are passed on cmd line...
   if ( host != EMPTYSTRING && port != 0 ) {
-  	netSink->updctrl("mrs_string/host", host);
-  	netSink->updctrl("mrs_natural/port", port);
+    netSink->updctrl("mrs_string/host", host);
+    netSink->updctrl("mrs_natural/port", port);
   }
   if ( port != 0 && host == EMPTYSTRING ) {
-  	cerr << "Please specify a hostname." << endl;
-  	exit(1);
+    cerr << "Please specify a hostname." << endl;
+    exit(1);
   } else if ( port == 0 && host != EMPTYSTRING ) {
-  	cerr << "Please specify a port." << endl;
-  	exit(1);
+    cerr << "Please specify a port." << endl;
+    exit(1);
   }
-  
+
   AudioSink* auSink = new AudioSink("auSink");
-  
-  // create playback network 
+
+  // create playback network
   MarSystemManager mn;
   Series playbacknet("playbacknet");
   playbacknet.addMarSystem(src);
   playbacknet.addMarSystem(mn.create("Gain", "gt"));
   playbacknet.addMarSystem(auSink);
   playbacknet.addMarSystem(netSink);
-  
+
   playbacknet.updctrl("AudioSink/auSink/mrs_natural/nChannels", 1);
-  
+
   // output the MarSystem
-  cout << playbacknet << endl;      
- 
+  cout << playbacknet << endl;
+
   // refresh the connection...
 
   netSink->refresh();
   cout << "Connecting to host: " << netSink->getctrl("mrs_string/host");
   cout << " on port: " << netSink->getctrl("mrs_natural/port") << endl;
- 
- 
+
+
   // For each file in collection playback the sound
   for (i=0; i < l.size(); i++)
-    {
-      sfName = l.entry(i);
-      sfplayFile(playbacknet, offset, duration, 
-		 start, length, gain, repetitions, sfName );
-    }
+  {
+    sfName = l.entry(i);
+    sfplayFile(playbacknet, offset, duration,
+               start, length, gain, repetitions, sfName );
+  }
 }
 
 
@@ -180,32 +180,32 @@ readCollection(Collection& l, string name)
   ifstream from(collectionstr.c_str());
   ifstream from1(name.c_str());
   mrs_natural attempts  =0;
-  
-  
+
+
   MRSDIAG("Trying default MARSYAS mf directory: " + collectionstr);
   if (from.good() == false)
-    {
-      attempts++;
-    }
+  {
+    attempts++;
+  }
   else
     from >> l;
-  
+
   MRSDIAG("Trying current working directory: " + name);
   if (from1.good() == false)
-    {
-      attempts++;
-    }
+  {
+    attempts++;
+  }
   else
     from1 >> l;
-  
-  if (attempts == 2) 
-    {
-      MRSWARN("Can not read collection from default mf directory or current working directory");
-    }
-  
+
+  if (attempts == 2)
+  {
+    MRSWARN("Can not read collection from default mf directory or current working directory");
+  }
+
 }
 
-void 
+void
 initOptions()
 {
   cmd_options.addBoolOption("help", "h", false);
@@ -220,7 +220,7 @@ initOptions()
 }
 
 
-void 
+void
 loadOptions()
 {
   helpopt = cmd_options.getBoolOption("help");
@@ -240,9 +240,9 @@ main(int argc, const char **argv)
 {
   MRSDIAG("sendUDP.cpp - main");
 
-  string progName = argv[0];  
+  string progName = argv[0];
 
-  
+
   if (argc == 1)
     printUsage(progName);
 
@@ -255,29 +255,29 @@ main(int argc, const char **argv)
 
 
 
-  if (helpopt) 
+  if (helpopt)
     printHelp(progName);
-  
+
   if (usageopt)
     printUsage(progName);
 
   int i;
-  
+
 
   i = 0;
-  Collection l;  
-  
-  for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
-    {  
-	string fname = *sfi;
-	string ext = fname.substr(fname.rfind(".", fname.length()), fname.length());
-	if (ext == ".mf") 
-	  readCollection(l,fname);
-	else 
-	  l.add(fname);
-	i++;
-      }
-  
+  Collection l;
+
+  for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi)
+  {
+    string fname = *sfi;
+    string ext = fname.substr(fname.rfind(".", fname.length()), fname.length());
+    if (ext == ".mf")
+      readCollection(l,fname);
+    else
+      l.add(fname);
+    i++;
+  }
+
   // check for hostname and port...
   sfplay(l, offset, duration, start, length, gain, repetitions );
   exit(1);

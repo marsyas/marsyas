@@ -23,20 +23,20 @@ using namespace std;
 class CanvasWidget:public QWidget
 {
   Q_OBJECT
- public:
+public:
   CanvasWidget();
   CanvasWidget(QWidget* parent);
   virtual void drawAttachmentsFor(MarSystemNode* widget);
   int maximum(int a,int b, int c=MININT);
   int minimum(int a,int b, int c=MAXINT);
 
- protected:
+protected:
   virtual void paintEvent(QPaintEvent * event);
   virtual void dragEnterEvent(QDragEnterEvent *event);
   virtual void dragMoveEvent(QDragMoveEvent *event);
   virtual void dropEvent(QDropEvent *event);
   virtual QRect  getDimensionsFor(MarSystemNode* widget);
-  MarSystemNode* paintWidget; 
+  MarSystemNode* paintWidget;
 
 };
 

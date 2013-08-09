@@ -10,89 +10,89 @@
 
 using namespace Marsyas;
 
-MarSystemThread::MarSystemThread(){
-    loadMarSystem(NULL);
+MarSystemThread::MarSystemThread() {
+  loadMarSystem(NULL);
 }
 
-MarSystemThread::MarSystemThread(MarSystem* msys){
-    loadMarSystem(msys);
+MarSystemThread::MarSystemThread(MarSystem* msys) {
+  loadMarSystem(msys);
 }
 
-MarSystemThread::MarSystemThread(GraphicalEnvironment* env){
-    env_ = env;
-    loadMarSystem(NULL);
-    tickStatus_ = 0;
-    setTickLock_ = true;
+MarSystemThread::MarSystemThread(GraphicalEnvironment* env) {
+  env_ = env;
+  loadMarSystem(NULL);
+  tickStatus_ = 0;
+  setTickLock_ = true;
 }
 
-MarSystemThread::~MarSystemThread(){
-    
+MarSystemThread::~MarSystemThread() {
+
 }
 
-void MarSystemThread::start(){
-    startThread(false, false);
+void MarSystemThread::start() {
+  startThread(false, false);
 }
 
-void MarSystemThread::restartThread(){
-    startThread(true, false);
-}
-
-
-void MarSystemThread::stop(){
-    stopThread();
+void MarSystemThread::restartThread() {
+  startThread(true, false);
 }
 
 
-void MarSystemThread::threadedFunction(){
-    
-    
-    while( isThreadRunning() != 0 ){
-        if(!setTickLock_){
-            tickStatus_ = tick_;
-            setTickLock_ = true;
-        }
-        if(tickStatus_ > 0){
-            if(lock()){
-                if(isLoaded()){
-                    msys_->updControl("mrs_bool/active", true);
-                    msys_->tick();
-                    env_->probe_->writeToBuffer();
-                    msys_->updControl("mrs_bool/active", false);
-                }
-                unlock();
-            }
-        }
-        if(tickStatus_ == 2){
-            tickStatus_ = 0;
-            msys_->updControl("mrs_bool/active", false);
-        }
-        
+void MarSystemThread::stop() {
+  stopThread();
+}
+
+
+void MarSystemThread::threadedFunction() {
+
+
+  while( isThreadRunning() != 0 ) {
+    if(!setTickLock_) {
+      tickStatus_ = tick_;
+      setTickLock_ = true;
     }
-    
-}
-
-void MarSystemThread::loadMarSystem(MarSystem *msys){
-    stop();
-    msys_ = msys;
-}
-
-bool MarSystemThread::isLoaded(){
-    if(msys_ != NULL){
-        return true;
+    if(tickStatus_ > 0) {
+      if(lock()) {
+        if(isLoaded()) {
+          msys_->updControl("mrs_bool/active", true);
+          msys_->tick();
+          env_->probe_->writeToBuffer();
+          msys_->updControl("mrs_bool/active", false);
+        }
+        unlock();
+      }
     }
-    return false;
+    if(tickStatus_ == 2) {
+      tickStatus_ = 0;
+      msys_->updControl("mrs_bool/active", false);
+    }
+
+  }
+
 }
 
-MarSystem* MarSystemThread::getMarSystem(){
-    return msys_;
+void MarSystemThread::loadMarSystem(MarSystem *msys) {
+  stop();
+  msys_ = msys;
 }
 
-void MarSystemThread::setTickStatus(int tick){    
-    tick_ = tick;
-    setTickLock_ = false;
-    //cout<<endl<<"tickstatus = "<<tickStatus_;
+bool MarSystemThread::isLoaded() {
+  if(msys_ != NULL) {
+    return true;
+  }
+  return false;
 }
 
-int MarSystemThread::getTickStatus(){
-    return tickStatus_;
+MarSystem* MarSystemThread::getMarSystem() {
+  return msys_;
+}
+
+void MarSystemThread::setTickStatus(int tick) {
+  tick_ = tick;
+  setTickLock_ = false;
+  //cout<<endl<<"tickstatus = "<<tickStatus_;
+}
+
+int MarSystemThread::getTickStatus() {
+  return tickStatus_;
 }

@@ -40,31 +40,31 @@ class marsyas_EXPORT NormalizeAbs: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
 
-	/// MarControlPtr for the gain control
-	MarControlPtr ctrl_target_;
+  /// MarControlPtr for the gain control
+  MarControlPtr ctrl_target_;
 
 public:
-	/// NormalizeAbs constructor.
-	NormalizeAbs(std::string name);
+  /// NormalizeAbs constructor.
+  NormalizeAbs(std::string name);
 
-	/// NormalizeAbs copy constructor.
-	NormalizeAbs(const NormalizeAbs& a);
+  /// NormalizeAbs copy constructor.
+  NormalizeAbs(const NormalizeAbs& a);
 
-	/// NormalizeAbs destructor.
-	~NormalizeAbs();
+  /// NormalizeAbs destructor.
+  ~NormalizeAbs();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

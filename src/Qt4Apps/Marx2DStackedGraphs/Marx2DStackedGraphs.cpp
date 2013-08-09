@@ -89,7 +89,7 @@ Marx2DStackedGraphs::Marx2DStackedGraphs(int s, unsigned int n, QWidget *parent 
     graphs.push_back( marx );
   }
 
-  QGridLayout *gridLayout = new QGridLayout; 
+  QGridLayout *gridLayout = new QGridLayout;
   gridLayout->setSpacing( 0 );
   vector<Marx2DGraph*>::iterator vi;
   int i=0;
@@ -98,7 +98,7 @@ Marx2DStackedGraphs::Marx2DStackedGraphs(int s, unsigned int n, QWidget *parent 
     gridLayout->addWidget(marx, i, 0);  i++;
     setLayout(gridLayout);
   }
-  
+
 }
 
 
@@ -116,7 +116,7 @@ bool
 Marx2DStackedGraphs::setBuffers( realvec& rv )
 {
   if (rv.getCols() == numgraphs && rv.getRows() == buffersize) {
-    
+
     vector<Marx2DGraph*>::iterator vi;
     int i=0;
     for (vi = graphs.begin(); vi != graphs.end(); ++vi) {
@@ -125,11 +125,11 @@ Marx2DStackedGraphs::setBuffers( realvec& rv )
       // this doesn't really seem that efficient
       realvec* rt = new realvec(rv.getRows());
       for (int k=0; k<rv.getRows(); k++) {
-	(*rt)(k) = rv(k, i);
+        (*rt)(k) = rv(k, i);
       }
-      
+
       marx->setBuffer( *rt );
-      
+
       i++;
     }
     return true;
@@ -149,7 +149,7 @@ Marx2DStackedGraphs::setBuffers( realvec& rv )
   to be communicated.  For instance, say one wanted to set the plot
   type for the second of three stacked graphs:
 
-  myStackedGraph.setMarxGraphIntArgs(1, 
+  myStackedGraph.setMarxGraphIntArgs(1,
                                      setPlotType,
                                      LINEAR_INTERPOLATION);
 
@@ -159,10 +159,10 @@ Marx2DStackedGraphs::setBuffers( realvec& rv )
 
   \return bool true if action appears successful
 */
-bool 
+bool
 Marx2DStackedGraphs::setMarxGraphIntArgs( int g, int m, int a )
 {
-  if (g >= (int)numgraphs){ return false; }
+  if (g >= (int)numgraphs) { return false; }
 
   switch (m) {
   case Marx2DStackedGraphs::setPlotType:
@@ -192,13 +192,13 @@ Marx2DStackedGraphs::setMarxGraphIntArgs( int g, int m, int a )
   \param QColor the QColor argument
 
   \return bool was this method successful?
-  
+
   \sa setMarxGraphIntArgs
 */
-bool 
+bool
 Marx2DStackedGraphs::setMarxGraphQColorArgs( int g, int m, QColor c)
 {
-  if (g >= (int)numgraphs){ return false; }
+  if (g >= (int)numgraphs) { return false; }
 
   switch (m) {
   case Marx2DStackedGraphs::setGraphDataColor:
@@ -228,13 +228,13 @@ Marx2DStackedGraphs::setMarxGraphQColorArgs( int g, int m, QColor c)
   \param float f
 
   \return bool was this method successful?
-  
+
   \sa setMarxGraphIntArgs
 */
-bool 
+bool
 Marx2DStackedGraphs::setMarxGraphFloatArgs( int g, int m, float f)
 {
-  if (g >= (int)numgraphs){ return false; }
+  if (g >= (int)numgraphs) { return false; }
 
   switch (m) {
   case Marx2DStackedGraphs::setGraphDataPointSize:
@@ -261,13 +261,13 @@ Marx2DStackedGraphs::setMarxGraphFloatArgs( int g, int m, float f)
   \param boolean tf argument to Marx2DGraph method
 
   \return bool was this method successful?
-  
+
   \sa setMarxGraphIntArgs
 */
-bool 
+bool
 Marx2DStackedGraphs::setMarxGraphBooleanArgs( int g, int m, bool tf )
 {
-  if (g >= (int)numgraphs){ return false; }
+  if (g >= (int)numgraphs) { return false; }
 
   switch (m) {
   case Marx2DStackedGraphs::setShowAxisScale:
@@ -300,13 +300,13 @@ Marx2DStackedGraphs::setMarxGraphBooleanArgs( int g, int m, bool tf )
   \param string label argument to Marx2DGraph method
 
   \return bool was this method successful?
-  
+
   \sa setMarxGraphIntArgs
 */
-bool 
+bool
 Marx2DStackedGraphs::setMarxGraphStringArgs( int g, int m, string s)
 {
-  if (g >= (int)numgraphs){ return false; }
+  if (g >= (int)numgraphs) { return false; }
 
   switch (m) {
   case Marx2DStackedGraphs::setXAxisLabel:
@@ -314,7 +314,7 @@ Marx2DStackedGraphs::setMarxGraphStringArgs( int g, int m, string s)
     break;
   case Marx2DStackedGraphs::setYAxisLabel:
     graphs[0]->setYAxisLabel( s );
-    break;    
+    break;
   case Marx2DStackedGraphs::addLabel:
     graphs[0]->addLabel( s );
     break;

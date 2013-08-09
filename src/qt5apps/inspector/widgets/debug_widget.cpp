@@ -44,8 +44,8 @@ void DebugWidget::setSystem( Marsyas::MarSystem * system )
 void DebugWidget::openRecording()
 {
   QString filename =
-      QFileDialog::getOpenFileName(this,
-                                   "Open MarSystem Recording");
+    QFileDialog::getOpenFileName(this,
+                                 "Open MarSystem Recording");
   if (filename.isEmpty())
     return;
 
@@ -81,7 +81,7 @@ void DebugWidget::evaluate()
     return;
   }
 
-  for (const auto & bug_mapping : *bugs)
+for (const auto & bug_mapping : *bugs)
   {
     QString report_path = QString::fromStdString(bug_mapping.first);
     QString report_text;
@@ -91,25 +91,25 @@ void DebugWidget::evaluate()
     {
     case debugger::path_missing:
       report_text =
-          report_path
-          + " FAILURE: invalid path.";
+        report_path
+        + " FAILURE: invalid path.";
       break;
     case debugger::format_mismatch:
       report_text =
-          report_path
-          + " FAILURE: format mismatch: ";
+        report_path
+        + " FAILURE: format mismatch: ";
       break;
     case debugger::value_mismatch:
       report_text =
-          report_path
-          + " MISMATCH:"
-          + " average deviation = " + QString::number(state.average_deviation)
-          + ", maximum deviation = " + QString::number(state.max_deviation);
+        report_path
+        + " MISMATCH:"
+        + " average deviation = " + QString::number(state.average_deviation)
+        + ", maximum deviation = " + QString::number(state.max_deviation);
       break;
     default:
       report_text =
-          report_path
-          + " Ooops: unrecognized bug.";
+        report_path
+        + " Ooops: unrecognized bug.";
       break;
     }
 

@@ -47,26 +47,26 @@ namespace Marsyas
 class DownSampler: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	/// MarControl pointer for the downsample factor.
-	MarControlPtr ctrl_factor_;
+  /// MarControl pointer for the downsample factor.
+  MarControlPtr ctrl_factor_;
 
 public:
-	/// DownSampler constructor.
-	DownSampler(std::string name);
+  /// DownSampler constructor.
+  DownSampler(std::string name);
 
-	/// DownSampler copy constructor.
-	DownSampler(const DownSampler& a);
+  /// DownSampler copy constructor.
+  DownSampler(const DownSampler& a);
 
-	/// DownSampler destructor.
-	~DownSampler();
+  /// DownSampler destructor.
+  ~DownSampler();
 
-	/// DownSampler clone method.
-	MarSystem* clone() const;
+  /// DownSampler clone method.
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

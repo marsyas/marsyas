@@ -36,7 +36,7 @@ namespace Marsyas
 	frequency.  The saw algorithm ends up having a considerable DC offset, that
 	is removed by subtracting frequency/Samplerate from each sample. Finally
 	the leaky integrator is used to apply an exponential decay to the frequency
-	spectrum.  
+	spectrum.
 
 	The saw wave is generated in a similar way, but we don't need to worry
 	about any DC offset. The only real difference is the square algorithm is
@@ -61,128 +61,128 @@ namespace Marsyas
 class APDelayOsc: public MarSystem
 {
 private:
-	// Add specific controls needed by this MarSystem.
-	void addControls();
+  // Add specific controls needed by this MarSystem.
+  void addControls();
 
-	// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  // Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
-	class FirstOrderAllPass
-	{
-	private:
-		mrs_real y, y1;
-		mrs_real x, x1;
-		mrs_real a, d;
+  class FirstOrderAllPass
+  {
+  private:
+    mrs_real y, y1;
+    mrs_real x, x1;
+    mrs_real a, d;
 
-	public:
-		void delay(mrs_real din)
-		{
-			d = din;
-			a = (1 - d)/(1 + d);
-			y1 = x1 = 0;
-		}
+  public:
+    void delay(mrs_real din)
+    {
+      d = din;
+      a = (1 - d)/(1 + d);
+      y1 = x1 = 0;
+    }
 
-		mrs_real get_delay()
-		{
-			return d;
-		}
+    mrs_real get_delay()
+    {
+      return d;
+    }
 
-		mrs_real operator()(mrs_real x)
-		{
-			y = (a * x) + (x1 - (a * y1));
-			x1 = x;
-			y1 = y;
-			return y;
-		}
-	};
+    mrs_real operator()(mrs_real x)
+    {
+      y = (a * x) + (x1 - (a * y1));
+      x1 = x;
+      y1 = y;
+      return y;
+    }
+  };
 
-	class LeakyIntegrator
-	{
-	private:
-		mrs_real y, y1;
-		mrs_real x;
-		mrs_real e;
+  class LeakyIntegrator
+  {
+  private:
+    mrs_real y, y1;
+    mrs_real x;
+    mrs_real e;
 
-	public:
-		LeakyIntegrator(): e(0.003) {}
+  public:
+    LeakyIntegrator(): e(0.003) {}
 
-		void leaky(mrs_real amount)
-		{
-			e = amount;
-		}
+    void leaky(mrs_real amount)
+    {
+      e = amount;
+    }
 
-		mrs_real operator()(mrs_real x)
-		{
-			y = x + ((1 - e) * y1);
-			y1 = y;
-			return y;
-		}
-	};
+    mrs_real operator()(mrs_real x)
+    {
+      y = x + ((1 - e) * y1);
+      y1 = y;
+      return y;
+    }
+  };
 
-	class DCBlocker
-	{
-	private:
-		mrs_real y, y1;
-		mrs_real x, x1;
-		mrs_real R;
+  class DCBlocker
+  {
+  private:
+    mrs_real y, y1;
+    mrs_real x, x1;
+    mrs_real R;
 
-	public:
-		DCBlocker(): R(0.995) {}
+  public:
+    DCBlocker(): R(0.995) {}
 
-		mrs_real operator()(mrs_real x)
-		{
-			y = x - x1 + (R * y1);
-			y1 = y;
-			x1 = x;
-			return y;
-		}
-	};
+    mrs_real operator()(mrs_real x)
+    {
+      y = x - x1 + (R * y1);
+      y1 = y;
+      x1 = x;
+      return y;
+    }
+  };
 
-	mrs_real frequency_;
+  mrs_real frequency_;
 
-    mrs_natural delaylineSize_;
-	realvec delayline_;
+  mrs_natural delaylineSize_;
+  realvec delayline_;
 
-    mrs_real dc_;
-	mrs_real frac_;
+  mrs_real dc_;
+  mrs_real frac_;
 
-    mrs_real israte_; // Sample rate of the system
-    mrs_real dcoff_;  // The precalculated DC offset
-    mrs_real neg_;    // Used to invert the system if
-	                  // only even harmonics are wanted
+  mrs_real israte_; // Sample rate of the system
+  mrs_real dcoff_;  // The precalculated DC offset
+  mrs_real neg_;    // Used to invert the system if
+  // only even harmonics are wanted
 
-	FirstOrderAllPass ap1;
-	FirstOrderAllPass ap2; // The tuning filter
-	DCBlocker dcb;
-	LeakyIntegrator le1;
+  FirstOrderAllPass ap1;
+  FirstOrderAllPass ap2; // The tuning filter
+  DCBlocker dcb;
+  LeakyIntegrator le1;
 
-    mrs_natural wp_;   // Write Pointer
-    mrs_natural rp_;   // Read pointer one
-    mrs_natural rpp_;  // Read pointer two
-    mrs_natural N_;    // The delayline length for our current pitch
-	mrs_natural type_; // The current type of the oscillator
+  mrs_natural wp_;   // Write Pointer
+  mrs_natural rp_;   // Read pointer one
+  mrs_natural rpp_;  // Read pointer two
+  mrs_natural N_;    // The delayline length for our current pitch
+  mrs_natural type_; // The current type of the oscillator
 
-    mrs_bool noteon_;
+  mrs_bool noteon_;
 
-	mrs_real allPass(mrs_real x);
-	mrs_real leakyIntegrator(mrs_real x);
-	mrs_real dcBlocker(mrs_real x);
+  mrs_real allPass(mrs_real x);
+  mrs_real leakyIntegrator(mrs_real x);
+  mrs_real dcBlocker(mrs_real x);
 
 public:
-	// APDelayOsc constructor.
-	APDelayOsc(std::string name);
+  // APDelayOsc constructor.
+  APDelayOsc(std::string name);
 
-	// APDelayOsc copy constructor.
-	APDelayOsc(const APDelayOsc& a);
+  // APDelayOsc copy constructor.
+  APDelayOsc(const APDelayOsc& a);
 
-	// APDelayOsc destructor.
-	~APDelayOsc();
+  // APDelayOsc destructor.
+  ~APDelayOsc();
 
-	// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  // Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  // Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

@@ -38,38 +38,38 @@ Differentiator::~Differentiator()
 MarSystem*
 Differentiator::clone() const
 {
-	return new Differentiator(*this);
+  return new Differentiator(*this);
 }
 
 void
 Differentiator::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("Differentiator.cpp - Differentiator:myUpdate");
+  MRSDIAG("Differentiator.cpp - Differentiator:myUpdate");
 
-	// Use the default matching of the output slice format and rate
-	// with the input slice format and rate.
-	MarSystem::myUpdate(sender);
+  // Use the default matching of the output slice format and rate
+  // with the input slice format and rate.
+  MarSystem::myUpdate(sender);
 
-	// Allocate the buffer_ based on inObservations.
-	buffer_.stretch(inObservations_);
-	buffer_.setval(0);
+  // Allocate the buffer_ based on inObservations.
+  buffer_.stretch(inObservations_);
+  buffer_.setval(0);
 }
 
 void
 Differentiator::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
-	for (o=0; o < inObservations_; o++)
-	{
-		// Calculate the difference of the first sample with the last sample of
-		// the previous slice.
-		out(o,0) = in(o,0) - buffer_(o);
-		// Calculate the differences for the other samples.
-		for (t = 1; t < inSamples_; t++)
-		{
-			out(o, t) = in(o, t) - in(o, t-1);
-		}
-		// Store the last sample in the buffer.
-		buffer_(o) = in(o, inSamples_-1);
-	}
+  mrs_natural t,o;
+  for (o=0; o < inObservations_; o++)
+  {
+    // Calculate the difference of the first sample with the last sample of
+    // the previous slice.
+    out(o,0) = in(o,0) - buffer_(o);
+    // Calculate the differences for the other samples.
+    for (t = 1; t < inSamples_; t++)
+    {
+      out(o, t) = in(o, t) - in(o, t-1);
+    }
+    // Store the last sample in the buffer.
+    buffer_(o) = in(o, inSamples_-1);
+  }
 }

@@ -34,18 +34,18 @@ namespace Marsyas
 class Median: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
   realvec obsrow_;
 
 public:
-	Median(std::string name);
-	Median(const Median& a);
-	~Median();
-	MarSystem* clone() const;
+  Median(std::string name);
+  Median(const Median& a);
+  ~Median();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

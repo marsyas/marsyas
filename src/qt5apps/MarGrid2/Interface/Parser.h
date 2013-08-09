@@ -4,12 +4,12 @@
 #include <QFile>
 #include "../Music/MusicCollection.h"
 
-class Parser 
+class Parser
 {
 public:
-	enum ParserTypes { ITUNES, MARXML, MARCSV };
-	//static bool parse(ParserTypes which, QFile &file, MusicCollection *collection);
-	static bool parse(QFile &file, MusicCollection *collection);
+  enum ParserTypes { ITUNES, MARXML, MARCSV };
+  //static bool parse(ParserTypes which, QFile &file, MusicCollection *collection);
+  static bool parse(QFile &file, MusicCollection *collection);
 };
 
 

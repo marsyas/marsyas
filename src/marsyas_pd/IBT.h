@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <string>
-#include <iomanip> 
+#include <iomanip>
 
 #include "common_source.h"
 #include "MarSystemManager.h"
@@ -30,19 +30,19 @@ using namespace Marsyas;
 class MarMaxIBT
 {
 public:
-	MarMaxIBT(mrs_natural winSize, mrs_natural hopSize, mrs_real fs, mrs_real indTime, mrs_natural minBPM, mrs_natural maxBPM, mrs_string outPathName, mrs_bool stateRecovery);
-    virtual ~MarMaxIBT();
+  MarMaxIBT(mrs_natural winSize, mrs_natural hopSize, mrs_real fs, mrs_real indTime, mrs_natural minBPM, mrs_natural maxBPM, mrs_string outPathName, mrs_bool stateRecovery);
+  virtual ~MarMaxIBT();
 
-    MarSystem* createMarsyasNet(void);
+  MarSystem* createMarsyasNet(void);
 
 protected:
-    MarSystemManager mng;
-    MarSystem* ibt;
-    MarSystem* featureNetwork;
-    MarSystem* featExtractor;
-	MarSystem* audioflow;
-	MarSystem* beattracker;
-	mrs_natural inductionTickCount;
+  MarSystemManager mng;
+  MarSystem* ibt;
+  MarSystem* featureNetwork;
+  MarSystem* featExtractor;
+  MarSystem* audioflow;
+  MarSystem* beattracker;
+  mrs_natural inductionTickCount;
 };
 
 #endif

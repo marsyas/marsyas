@@ -40,26 +40,26 @@ namespace Marsyas
 class SliceDelta: public MarSystem
 {
 private:
-	void myUpdate(MarControlPtr sender);
+  void myUpdate(MarControlPtr sender);
 
-	/// Internal memory for the previous observed slice.
-	realvec previousInputSlice_;
+  /// Internal memory for the previous observed slice.
+  realvec previousInputSlice_;
 
 public:
-	/// SliceDelta constructor.
-	SliceDelta(std::string name) : MarSystem("SliceDelta", name) {};
+  /// SliceDelta constructor.
+  SliceDelta(std::string name) : MarSystem("SliceDelta", name) {};
 
-	/// SliceDelta copy constructor.
-	SliceDelta(const SliceDelta& a) : MarSystem(a) {};
+  /// SliceDelta copy constructor.
+  SliceDelta(const SliceDelta& a) : MarSystem(a) {};
 
-	/// SliceDelta destructor.
-	~SliceDelta() {};
+  /// SliceDelta destructor.
+  ~SliceDelta() {};
 
-	/// Implementation of MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of MarSystem::myProcess.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of MarSystem::myProcess.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

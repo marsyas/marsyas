@@ -59,18 +59,18 @@ namespace Marsyas
 class Sum: public MarSystem
 {
 private:
-	void myUpdate(MarControlPtr sender);
-	MarControlPtr ctrl_weight_;
-	MarControlPtr ctrl_stereo_;
-	MarControlPtr ctrl_mode_;
-	void addControls();
+  void myUpdate(MarControlPtr sender);
+  MarControlPtr ctrl_weight_;
+  MarControlPtr ctrl_stereo_;
+  MarControlPtr ctrl_mode_;
+  void addControls();
 public:
-	Sum(std::string name);
-	Sum(const Sum& a);
-	~Sum();
-	MarSystem* clone() const;
+  Sum(std::string name);
+  Sum(const Sum& a);
+  ~Sum();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

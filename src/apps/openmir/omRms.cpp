@@ -76,7 +76,7 @@ void run(string inFilename) {
     net->tick();
     data = (net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>())(0,0);
     currTime = i * secPerTick;
-    cout << currTime << "\t" << data << endl; 
+    cout << currTime << "\t" << data << endl;
     i++;
   }
 
@@ -85,15 +85,15 @@ void run(string inFilename) {
 
 int main(int argc, const char **argv)
 {
-  string progName = argv[0];  
+  string progName = argv[0];
   if (argc == 1)
     printUsage(progName);
-  
+
   // Handle of command-line options.
   initOptions();
   cmd_options.readOptions(argc, argv);
   loadOptions();
-  
+
   vector<string> inFilenames = cmd_options.getRemaining();
 
   run(inFilenames[0]);

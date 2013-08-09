@@ -124,9 +124,9 @@ static void set_control_value( MarControlPtr & control, const any & value, bool 
     set_control_value<mrs_realvec>(control, value, update);
   else {
     MRSERR(
-          "Marsyas::Thread::System:: Can not set control value - unsupported type: "
-          << control_type.c_str()
-          );
+      "Marsyas::Thread::System:: Can not set control value - unsupported type: "
+      << control_type.c_str()
+    );
     return;
   }
 }
@@ -146,9 +146,9 @@ static any get_control_value( const MarControlPtr & control )
     return any( control->to<mrs_realvec>() );
   else {
     MRSERR(
-          "Marsyas::Thread::System:: Can not get control value - unsupported type: "
-          << control_type.c_str()
-          );
+      "Marsyas::Thread::System:: Can not get control value - unsupported type: "
+      << control_type.c_str()
+    );
     return any();
   }
 }
@@ -242,9 +242,9 @@ Control * Runner::create_control( const std::string & control_path )
     atomic_control = new AtomicControlT<mrs_realvec>(sys_control);
   else {
     MRSERR(
-          "Marsyas::Thread::System:: Can not track control - unsupported type: "
-          << sys_control_type.c_str()
-          );
+      "Marsyas::Thread::System:: Can not track control - unsupported type: "
+      << sys_control_type.c_str()
+    );
     return 0;
   }
 
@@ -257,7 +257,7 @@ Control * Runner::create_control( const std::string & control_path )
 
 void Runner::refit_realvec_controls()
 {
-  for (const auto & mapping : m_shared->controls)
+for (const auto & mapping : m_shared->controls)
   {
     Control *control = mapping.second;
     control->resizeToFit();
@@ -320,7 +320,7 @@ void RunnerThread::run()
 
     m_system->tick();
 
-    for (const auto & mapping : m_shared->controls)
+for (const auto & mapping : m_shared->controls)
       mapping.second->push();
   }
 
@@ -358,7 +358,7 @@ void RunnerThread::process_requests()
     case SetControls:
     {
       SetControlsEvent *request = static_cast<SetControlsEvent*>(event);
-      for( const auto & mapping : request->control_values )
+for( const auto & mapping : request->control_values )
       {
         const bool do_not_update = false;
         //cout << "MarSystemThread: setting staged control: " << mapping.first->getName() << endl;

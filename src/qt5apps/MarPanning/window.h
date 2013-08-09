@@ -18,7 +18,7 @@ class Window : public QMainWindow
 {
   Q_OBJECT
 
-public slots: 
+public slots:
   void about();
   void seekPos();
 
@@ -84,7 +84,7 @@ private:
   QMenu*   helpMenu;
   QAction* openAct;
   QAction* aboutAct;
-  
+
   void createMenus();
   void createActions();
 

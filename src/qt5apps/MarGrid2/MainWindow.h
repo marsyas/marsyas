@@ -33,95 +33,95 @@
 
 class MainWindow : public QMainWindow
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	MainWindow(Grid* grid_);
-	~MainWindow();
+  MainWindow(Grid* grid_);
+  ~MainWindow();
 
   // sness - I should move this to a getter function, really.  and do
   // it with signals and slots.  Please fix me.
-	GridDisplay *_display;
+  GridDisplay *_display;
 
 signals:
-	void libraryUpdated();
-	void openPredictGridFile(QString);
-	void savePredictGridFile(QString);
-	void playModeChanged();
-	void cancelButtonSignal();
-	void fullScreenModeOff();
-	void resetGrid();
-	void alphaDecayChanged();
+  void libraryUpdated();
+  void openPredictGridFile(QString);
+  void savePredictGridFile(QString);
+  void playModeChanged();
+  void cancelButtonSignal();
+  void fullScreenModeOff();
+  void resetGrid();
+  void alphaDecayChanged();
 
-	private slots:  
-		void openiTunesLibrary();
-		void openCollectionFile();
-		void updateCurrentlyPlaying(MusicTrack *);
-		void about();
-		void display();
-		void openSavedGrid();
-		void saveCurrentGrid();
-		void changedPlayMode();
-		void cancelButton();
-		void openDefaultiTunes();
-		void fullScreenMode(bool mode);
-		void keyPressEvent(QKeyEvent *);
-		void keyReleaseEvent(QKeyEvent *);
-		void resetButtonPressed();
-		void optionsDialogTriggered();
+private slots:
+  void openiTunesLibrary();
+  void openCollectionFile();
+  void updateCurrentlyPlaying(MusicTrack *);
+  void about();
+  void display();
+  void openSavedGrid();
+  void saveCurrentGrid();
+  void changedPlayMode();
+  void cancelButton();
+  void openDefaultiTunes();
+  void fullScreenMode(bool mode);
+  void keyPressEvent(QKeyEvent *);
+  void keyReleaseEvent(QKeyEvent *);
+  void resetButtonPressed();
+  void optionsDialogTriggered();
 
 private:
-	void createActions();
-	void createToolbars();
-	void createWindow();
-	void createMenus();
+  void createActions();
+  void createToolbars();
+  void createWindow();
+  void createMenus();
 
-	//Widgets
-	Grid *_dataGrid;
-	PlayBox *_playBox;
-	Playlist *_playlist;
-	Tracklist *_tracklist;
-	ColourMapDisplay *_colourMapDisplay;
+  //Widgets
+  Grid *_dataGrid;
+  PlayBox *_playBox;
+  Playlist *_playlist;
+  Tracklist *_tracklist;
+  ColourMapDisplay *_colourMapDisplay;
 
-	//Dialogs
+  //Dialogs
 
-	QMenu *_fileMenu;
-	QMenu *_openMenu;
-	QMenu *_debugMenu;
-	QMenu *_viewMenu;
-	QMenu *_helpMenu;
+  QMenu *_fileMenu;
+  QMenu *_openMenu;
+  QMenu *_debugMenu;
+  QMenu *_viewMenu;
+  QMenu *_helpMenu;
 
-	QToolBar *_toolbar;
+  QToolBar *_toolbar;
 
-	QAction *_openiTunesAction;
-	QAction *_coutAction;
-	QAction *_openCollectionAction;
-	QAction *_exitAction;
-	QAction *_aboutAction;
-	QAction *_extractAction;;
-	QAction *_predictAction;
-	QAction *_trainingAction;
-	QAction *_openPreferencesAction;
-	QAction *_saveGridAction;
-	QAction *_loadGridAction;
-	QAction *_playModeAction;
-	QAction *_cancelAction;
-	QAction *_initAction;
-	QAction *_normHashAction;
-	QAction *_fullScreenAction;
-	QAction *_colourMapMode;
-	QAction *_resetButtonAction;
-	QAction *_optionsDialogAction;
+  QAction *_openiTunesAction;
+  QAction *_coutAction;
+  QAction *_openCollectionAction;
+  QAction *_exitAction;
+  QAction *_aboutAction;
+  QAction *_extractAction;;
+  QAction *_predictAction;
+  QAction *_trainingAction;
+  QAction *_openPreferencesAction;
+  QAction *_saveGridAction;
+  QAction *_loadGridAction;
+  QAction *_playModeAction;
+  QAction *_cancelAction;
+  QAction *_initAction;
+  QAction *_normHashAction;
+  QAction *_fullScreenAction;
+  QAction *_colourMapMode;
+  QAction *_resetButtonAction;
+  QAction *_optionsDialogAction;
 
-	QLabel* gridHeightLabel;
-	QLabel* gridWidthLabel;
+  QLabel* gridHeightLabel;
+  QLabel* gridWidthLabel;
 
-	QLineEdit* gridWidth;
-	QLineEdit* gridHeight;
+  QLineEdit* gridWidth;
+  QLineEdit* gridHeight;
 
-	MusicCollection *_library;
-	bool isFullScreenMouse;
-	// MidiListener *_midi;
+  MusicCollection *_library;
+  bool isFullScreenMouse;
+  // MidiListener *_midi;
 };
 
 #endif /* MAINWINDOW_h */

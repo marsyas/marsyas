@@ -29,7 +29,7 @@ using namespace Marsyas;
 //! The constructor
 /*!
   The constructor
-                                                                                        
+
   \param parent a pointer to the parent widget
   \param long the number of elements in the realvec buffer
 */
@@ -63,13 +63,13 @@ MarxGL2Din3DSpaceGraph::MarxGL2Din3DSpaceGraph(QWidget *parent, long b)
   \param realvec& the new buffer of data
   \return bool indicates if the buffer was updated
 */
-bool 
+bool
 MarxGL2Din3DSpaceGraph::setBuffer( realvec& rv )
 {
-  if ( rv.getSize() == buffersize ) { 
-     *buffer = rv;
+  if ( rv.getSize() == buffersize ) {
+    *buffer = rv;
 
-      updateGL();
+    updateGL();
 
     return true;
   }
@@ -86,7 +86,7 @@ MarxGL2Din3DSpaceGraph::setBuffer( realvec& rv )
 
   \para float most likely a value 1.0 or greater
 */
-void 
+void
 MarxGL2Din3DSpaceGraph::setXAxisStretch( float xs )
 {
   x_axis_stretch = xs;
@@ -94,11 +94,11 @@ MarxGL2Din3DSpaceGraph::setXAxisStretch( float xs )
 }
 
 
-void 
+void
 MarxGL2Din3DSpaceGraph::setYAxisStretch( float ys )
 {
   y_axis_stretch = ys;
-  updateGL(); 
+  updateGL();
 }
 
 
@@ -122,7 +122,7 @@ MarxGL2Din3DSpaceGraph::setYNormalizeFactor( float yn )
     updateGL();
     return true;
   }
-  
+
   return false;
 }
 
@@ -133,7 +133,7 @@ MarxGL2Din3DSpaceGraph::setYNormalizeFactor( float yn )
 
   \param float translation distance (probably between -1 and 1)
 */
-void 
+void
 MarxGL2Din3DSpaceGraph::setXTranslation( float xt )
 {
   x_translation = xt;
@@ -141,7 +141,7 @@ MarxGL2Din3DSpaceGraph::setXTranslation( float xt )
 }
 
 
-void 
+void
 MarxGL2Din3DSpaceGraph::setYTranslation( float yt )
 {
   y_translation = yt;
@@ -149,7 +149,7 @@ MarxGL2Din3DSpaceGraph::setYTranslation( float yt )
 }
 
 
-void 
+void
 MarxGL2Din3DSpaceGraph::setZTranslation( float zt )
 {
   z_translation = zt;
@@ -157,7 +157,7 @@ MarxGL2Din3DSpaceGraph::setZTranslation( float zt )
 }
 
 
-void 
+void
 MarxGL2Din3DSpaceGraph::setYRotation( float yr )
 {
   y_rotation = yr;
@@ -165,7 +165,7 @@ MarxGL2Din3DSpaceGraph::setYRotation( float yr )
 }
 
 
-void 
+void
 MarxGL2Din3DSpaceGraph::initializeGL()
 {
 
@@ -184,7 +184,7 @@ MarxGL2Din3DSpaceGraph::initializeGL()
 }
 
 
-void 
+void
 MarxGL2Din3DSpaceGraph::paintGL()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -195,7 +195,7 @@ MarxGL2Din3DSpaceGraph::paintGL()
   glTranslatef( x_translation, y_translation, z_translation );  // translate first
   glRotatef(y_rotation, 0.0, 1.0, 0.0);     // then rotate!
 
-  // now construct the model  
+  // now construct the model
   glBegin( GL_LINES );
 
   float blue, green, red;
@@ -231,12 +231,12 @@ MarxGL2Din3DSpaceGraph::paintGL()
 
     glColor3f( red, green, blue );
 
-    glVertex3f( x_axis_stretch * (((float)i)*2/(float)buffersize) - 1.0, 
-		(val1/y_normalize_factor)*y_axis_stretch, 
-		0.0 );
-    glVertex3f( x_axis_stretch * (((float)i+1)*2/(float)buffersize) - 1.0, 
-		(val2/y_normalize_factor)*y_axis_stretch, 
-		0.0 );
+    glVertex3f( x_axis_stretch * (((float)i)*2/(float)buffersize) - 1.0,
+                (val1/y_normalize_factor)*y_axis_stretch,
+                0.0 );
+    glVertex3f( x_axis_stretch * (((float)i+1)*2/(float)buffersize) - 1.0,
+                (val2/y_normalize_factor)*y_axis_stretch,
+                0.0 );
   }
 
   glEnd();
@@ -245,7 +245,7 @@ MarxGL2Din3DSpaceGraph::paintGL()
 }
 
 
-void 
+void
 MarxGL2Din3DSpaceGraph::resizeGL(int width, int height)
 {
   glViewport(-1, -1, width, height);
@@ -253,7 +253,7 @@ MarxGL2Din3DSpaceGraph::resizeGL(int width, int height)
 
 
 // for testing... needs to be removed!!!
-void 
+void
 MarxGL2Din3DSpaceGraph::keyPressEvent ( QKeyEvent * e )
 {
   if (e->key() == Qt::Key_Y) {

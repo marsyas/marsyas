@@ -24,8 +24,8 @@ RealvecWidget::RealvecWidget( QWidget * parent ):
 
   m_display_type_selector = new QComboBox;
   m_display_type_selector->addItems( QStringList()
-                                  << "Table" << "Points" << "Precision"
-                                  << "Linear Interpolation" << "Polynomial Interpolation" );
+                                     << "Table" << "Points" << "Precision"
+                                     << "Linear Interpolation" << "Polynomial Interpolation" );
 
   m_table = new MarsyasQt::RealvecTableWidget;
   m_table->setEditable(false);

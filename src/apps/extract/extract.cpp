@@ -1,22 +1,22 @@
 /*
 ** Copyright (C) 2000 George Tzanetakis <gtzan@cs.princeton.edu>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
+/**
     extract: feature extraction for a single file
 */
 
@@ -28,8 +28,8 @@
 #include "Fanout.h"
 #include "CommandLineOptions.h"
 
-#include <iostream> 
-#include <string> 
+#include <iostream>
+#include <string>
 
 using namespace std;
 using namespace Marsyas;
@@ -56,7 +56,7 @@ CommandLineOptions cmd_options;
 
 
 
-void 
+void
 printUsage(string progName)
 {
   MRSDIAG("extract.cpp - printUsage");
@@ -65,7 +65,7 @@ printUsage(string progName)
   exit(1);
 }
 
-void 
+void
 printHelp(string progName)
 {
   MRSDIAG("extract.cpp - printHelp");
@@ -92,48 +92,48 @@ printHelp(string progName)
 
 
 
-void 
+void
 newExtract(string sfName)
 {
   MarSystemManager mng;
-  
-  // Find proper soundfile format and create SignalSource 
+
+  // Find proper soundfile format and create SignalSource
   MarSystem *src = mng.create("SoundFileSource", "src");
   src->updctrl("mrs_string/filename", sfName);
   src->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
-  // Calculate windowed power spectrum and then 
-  // calculate specific feature sets 
-  
+  // Calculate windowed power spectrum and then
+  // calculate specific feature sets
+
   MarSystem* spectralShape = mng.create("Series", "spectralShape");
   spectralShape->addMarSystem(mng.create("Windowing", "hamming"));
   spectralShape->addMarSystem(mng.create("Spectrum","spk"));
   spectralShape->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-  spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");  
-  
+  spectralShape->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");
+
   // Spectrum Shape descriptors
   MarSystem* spectrumFeatures = mng.create("Fanout","spectrumFeatures");
   spectrumFeatures->addMarSystem(mng.create("Centroid", "cntrd"));
-  spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));      
+  spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));
   spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
   spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
-  
-  
+
+
 
   // add the feature to spectral shape
   spectralShape->addMarSystem(spectrumFeatures);
-  
+
 
   MarSystem* fnet = mng.create("Series", "fnet");
-  
+
   fnet->addMarSystem(src);
   fnet->addMarSystem(spectralShape);
-  fnet->addMarSystem(mng.create("PlotSink", "psink"));  
+  fnet->addMarSystem(mng.create("PlotSink", "psink"));
   fnet->updctrl("PlotSink/psink/mrs_bool/sequence", false);
   fnet->updctrl("PlotSink/psink/mrs_string/separator", ",");
 
-  for (int i=0; i < 100; i++) 
+  for (int i=0; i < 100; i++)
     fnet->tick();
-  
+
 }
 
 
@@ -142,9 +142,9 @@ newExtract(string sfName)
 
 
 
-   
 
-void 
+
+void
 initOptions()
 {
   cmd_options.addBoolOption("help", "h", false);
@@ -159,7 +159,7 @@ initOptions()
 }
 
 
-void 
+void
 loadOptions()
 {
   verboseopt = cmd_options.getBoolOption("verbose");
@@ -178,7 +178,7 @@ main(int argc, const char **argv)
 {
   MRSDIAG("sfplay.cpp - main");
 
-  string progName = argv[0];  
+  string progName = argv[0];
   if (argc == 1)
     printUsage(progName);
 
@@ -186,28 +186,28 @@ main(int argc, const char **argv)
   initOptions();
   cmd_options.readOptions(argc, argv);
   loadOptions();
-  
 
-  if (helpopt) 
+
+  if (helpopt)
     printHelp(progName);
-  
+
   if (usageopt)
     printUsage(progName);
 
   int i;
   i =0;
-  
+
   Collection l;
-  
+
   vector<string> soundfiles = cmd_options.getRemaining();
   vector<string>::iterator sfi;
 
-  for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
-    {	
-      string sfname = *sfi;
-      newExtract(sfname);
-    }
-  
+  for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi)
+  {
+    string sfname = *sfi;
+    newExtract(sfname);
+  }
+
   exit(0);
 }
 

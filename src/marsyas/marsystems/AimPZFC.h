@@ -87,7 +87,7 @@ private:
 
   // Automatic Gain Control
   void AGCDampStep();
-  
+
 
   // Detector function - halfwave rectification etc. Used internally,
   // but not applied to the output.
@@ -104,7 +104,7 @@ private:
 
   double agc_factor_;
   double offset_;
-  
+
 
   // Parameters
   // User-settable scalars

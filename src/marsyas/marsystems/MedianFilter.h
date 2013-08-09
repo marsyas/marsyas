@@ -23,41 +23,41 @@
 
 namespace Marsyas
 {
-	/**
-	\ingroup	Processing
-	\brief		Apply median filter on input vector
-	\author		Matthias Varewyck
-	\date		20090518
+/**
+\ingroup	Processing
+\brief		Apply median filter on input vector
+\author		Matthias Varewyck
+\date		20090518
 
-	This class represents a median filter.  Each element in an input vector	is
-	replaced by the median of the elements that fall in a window surrounding the element,
-	defined as: element index + [0,1.. N-1] - floor(N/2) with N, the size of the window.
+This class represents a median filter.  Each element in an input vector	is
+replaced by the median of the elements that fall in a window surrounding the element,
+defined as: element index + [0,1.. N-1] - floor(N/2) with N, the size of the window.
 
-	Controls:
-	- \b mrs_real/WindowSize [rw] : adjust the window size (N)
-	*/
+Controls:
+- \b mrs_real/WindowSize [rw] : adjust the window size (N)
+*/
 
-	class MedianFilter: public MarSystem
-	{
-		public:
-			MedianFilter(mrs_string inName);
-			MedianFilter(const MedianFilter& inToCopy);
+class MedianFilter: public MarSystem
+{
+public:
+  MedianFilter(mrs_string inName);
+  MedianFilter(const MedianFilter& inToCopy);
 
-			~MedianFilter();
+  ~MedianFilter();
 
-			MarSystem* clone() const;
+  MarSystem* clone() const;
 
-			void addControls();
-			void myUpdate(MarControlPtr inSender);
-			void myProcess(realvec& inVec, realvec& outVec);
+  void addControls();
+  void myUpdate(MarControlPtr inSender);
+  void myProcess(realvec& inVec, realvec& outVec);
 
-		private:
-			// Pointer to MarControllers
-			MarControlPtr ctrl_WindowSize_;
+private:
+  // Pointer to MarControllers
+  MarControlPtr ctrl_WindowSize_;
 
-			// Member variable
-			mrs_natural WindowSize_;		// Size of moving window
-	};
+  // Member variable
+  mrs_natural WindowSize_;		// Size of moving window
+};
 
 }	// End namespace
 

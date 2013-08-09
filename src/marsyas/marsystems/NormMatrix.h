@@ -38,11 +38,11 @@ namespace Marsyas
 class NormMatrix: public MarSystem
 {
 public:
-	NormMatrix(std::string name);
-	~NormMatrix();
-	MarSystem* clone() const;
+  NormMatrix(std::string name);
+  ~NormMatrix();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

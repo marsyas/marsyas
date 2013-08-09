@@ -12,14 +12,14 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
 
   audio_file = au;
 
-  // create the Marsyas 
+  // create the Marsyas
   MarSystemManager mng;
   pnet = mng.create("Series", "pnet");
   pnet->addMarSystem(mng.create("SoundFileSource", "src"));
   pnet->addMarSystem(mng.create("Windowing", "hamming"));
   pnet->addMarSystem(mng.create("Spectrum","spk"));
   pnet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-  pnet->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");  
+  pnet->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");
 
 
   pnet->addMarSystem(mng.create("Memory", "mem"));
@@ -30,11 +30,11 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   pnet->updctrl("Gain/gain/mrs_real/gain", 2000.0);
   //pnet->addMarSystem(mng.create("PlotSink", "psink"));
   pnet->addMarSystem(mng.create("Gain", "gain1"));
-  
-  nTicks = 128;
-  
 
-  // initialize graphs 
+  nTicks = 128;
+
+
+  // initialize graphs
   int num = 256;
 
 
@@ -46,16 +46,16 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   QGroupBox* model_transforms_box = new QGroupBox( tr("Model Transformations") );
   QGroupBox* projection_transforms_box = new QGroupBox( tr("Projection Transformations") );
   QGroupBox* tick_box = new QGroupBox( tr("Song Increment") );
-  
+
   // MODEL TRANSFORMATION BOX
   QLabel* model_trans_label = new QLabel( "Model Translate" );
-  QLabel* model_rot_label = new QLabel( "Model Rotate" ); 
+  QLabel* model_rot_label = new QLabel( "Model Rotate" );
   model_trans_label->setAlignment( Qt::AlignTop );
   model_rot_label->setAlignment( Qt::AlignTop );
   model_trans_label->setSizePolicy( QSizePolicy( QSizePolicy::Maximum,
-						 QSizePolicy::Maximum) );
+                                    QSizePolicy::Maximum) );
   model_rot_label->setSizePolicy( QSizePolicy( QSizePolicy::Maximum,
-						 QSizePolicy::Maximum) );
+                                  QSizePolicy::Maximum) );
   Marx3dSlider* m_translate_3d_slider = new Marx3dSlider;
   Marx3dSlider* m_rotation_3d_slider = new Marx3dSlider;
 
@@ -81,8 +81,8 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   QVBoxLayout *model_rot_layout = new QVBoxLayout;
   model_rot_layout->addWidget( m_rotation_3d_slider );
   model_rot_layout->addWidget( model_rot_label );
-  
-  QGridLayout *modelTransfromLayout = new QGridLayout; 
+
+  QGridLayout *modelTransfromLayout = new QGridLayout;
   modelTransfromLayout->addLayout( model_trans_layout, 0, 0 );
   modelTransfromLayout->setColumnMinimumWidth( 1, 10 ); // padding
   modelTransfromLayout->addLayout( model_rot_layout, 0, 2 );
@@ -90,13 +90,13 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
 
   // PROJECTION TRANSFORMATION BOX
   QLabel* projection_trans_label = new QLabel( "Projection Translate" );
-  QLabel* projection_rot_label = new QLabel( "Projection Rotate" ); 
+  QLabel* projection_rot_label = new QLabel( "Projection Rotate" );
   projection_trans_label->setAlignment( Qt::AlignTop );
   projection_rot_label->setAlignment( Qt::AlignTop );
   projection_trans_label->setSizePolicy( QSizePolicy( QSizePolicy::Maximum,
-						 QSizePolicy::Maximum) );
+                                         QSizePolicy::Maximum) );
   projection_rot_label->setSizePolicy( QSizePolicy( QSizePolicy::Maximum,
-						 QSizePolicy::Maximum) );
+                                       QSizePolicy::Maximum) );
   Marx3dSlider* r_translate_3d_slider = new Marx3dSlider;
   Marx3dSlider* r_rotation_3d_slider = new Marx3dSlider;
 
@@ -122,8 +122,8 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   QVBoxLayout *projection_rot_layout = new QVBoxLayout;
   projection_rot_layout->addWidget( r_rotation_3d_slider );
   projection_rot_layout->addWidget( projection_rot_label );
-  
-  QGridLayout *projectionTransfromLayout = new QGridLayout; 
+
+  QGridLayout *projectionTransfromLayout = new QGridLayout;
   projectionTransfromLayout->addLayout( projection_trans_layout, 0, 0 );
   projectionTransfromLayout->setColumnMinimumWidth( 1, 10 ); // padding
   projectionTransfromLayout->addLayout( projection_rot_layout, 0, 2 );
@@ -139,19 +139,19 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
 
   tickLayout->addWidget(tickButton, 1, 0);
   tickLayout->addWidget(numTicksSpinBox, 1, 1);
-  
-  
+
+
   // SIGNALS AND SLOTS
   connect(tickButton, SIGNAL(clicked()), this, SLOT(tick()));
   connect(numTicksSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setTicks(int)));
-  connect(m_translate_3d_slider, SIGNAL(positionChanged(float, float, float)), 
-	  this, SLOT(xyzModelTranslation(float, float, float)) );
-  connect(m_rotation_3d_slider, SIGNAL(positionChanged(float, float, float)), 
-	  this, SLOT(xyzModelRotation(float, float, float))  );
-  connect(r_translate_3d_slider, SIGNAL(positionChanged(float, float, float)), 
-	  this, SLOT(xyzProjectionTranslation(float, float, float))   );
-  connect(r_rotation_3d_slider, SIGNAL(positionChanged(float, float, float)), this, 
-	  SLOT(xyzProjectionRotation(float, float, float))  );
+  connect(m_translate_3d_slider, SIGNAL(positionChanged(float, float, float)),
+          this, SLOT(xyzModelTranslation(float, float, float)) );
+  connect(m_rotation_3d_slider, SIGNAL(positionChanged(float, float, float)),
+          this, SLOT(xyzModelRotation(float, float, float))  );
+  connect(r_translate_3d_slider, SIGNAL(positionChanged(float, float, float)),
+          this, SLOT(xyzProjectionTranslation(float, float, float))   );
+  connect(r_rotation_3d_slider, SIGNAL(positionChanged(float, float, float)), this,
+          SLOT(xyzProjectionRotation(float, float, float))  );
 
 
   // put all the boxes together
@@ -170,7 +170,7 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   right_layout->addWidget( projection_transforms_box );
   right_layout->addWidget( tick_box );
 
-  QGridLayout *layout = new QGridLayout;  
+  QGridLayout *layout = new QGridLayout;
   layout->addWidget( graph, 0, 0 );
   layout->addLayout( right_layout, 0, 1 );
 
@@ -215,40 +215,40 @@ TopPanelNew::xyzProjectionRotation( float x, float y, float z )
 }
 
 
-void 
+void
 TopPanelNew::setTicks(int v)
 {
   nTicks = v;
 }
 
 
-void 
+void
 TopPanelNew::tick()
 {
-  
-  for (int i=0; i < nTicks; i++) 
-    {
-      pnet->tick();
-      pnet->updctrl("mrs_bool/probe", true);
+
+  for (int i=0; i < nTicks; i++)
+  {
+    pnet->tick();
+    pnet->updctrl("mrs_bool/probe", true);
 
 //       realvec out(512);
 //       out = pnet->getctrl("mrs_realvec/input0")->to<mrs_realvec>();
 
-      realvec out(256, 12);
+    realvec out(256, 12);
 //       cout << out.getRows() << "\t";
 //       cout << out.getCols() << "\n";
-      out = pnet->getctrl("mrs_realvec/input5")->to<mrs_realvec>();
+    out = pnet->getctrl("mrs_realvec/input5")->to<mrs_realvec>();
 
 //       out.setval(0.0);
 //       for (int g=0; g < 12; g++)
 //         for (int t=0; t < 256; t++)
 // 	  out(t, g) = 0.7;
-      //cout << out << endl;
+    //cout << out << endl;
 //       cout << out.getRows() << "\t";
 //       cout << out.getCols() << "\n";
 
-      graph->setBuffer( out );
-      
-    }
-  
+    graph->setBuffer( out );
+
+  }
+
 }

@@ -20,7 +20,7 @@ Window::Window()
   glWidget->setMaximumSize(800,400);
 
   createActions();
-  createMenus();  
+  createMenus();
 
   // Create the x,y,z rotation sliders
   xRotSlider = createRotationSlider(-180,180);
@@ -28,8 +28,8 @@ Window::Window()
 //   zRotSlider = createRotationSlider();
 
 //   // Create the x,y,z translation sliders
-   xTransSlider = createTranslationSlider();
-   yTransSlider = createTranslationSlider();
+  xTransSlider = createTranslationSlider();
+  yTransSlider = createTranslationSlider();
 //   zTransSlider = createTranslationSlider();
 
   // Fog sliders
@@ -105,8 +105,8 @@ Window::Window()
 //   connect(glWidget, SIGNAL(zRotationChanged(int)), zRotSlider, SLOT(setValue(int)));
 
 //   // Connect up the x,y,z rotation sliders with slots to set the rotation values
-   connect(xTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setXTranslation(int)));
-   connect(yTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setYTranslation(int)));
+  connect(xTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setXTranslation(int)));
+  connect(yTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setYTranslation(int)));
 //   connect(zTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setZTranslation(int)));
 
   // Connect up the other sliders
@@ -151,7 +151,7 @@ Window::Window()
 //   z_rot_slider_layout->addWidget(zRotSlider);
 //   gl_layout->addLayout(z_rot_slider_layout);
 
-	
+
 
 //   QHBoxLayout *z_trans_slider_layout = new QHBoxLayout;
 //   QLabel *z_trans_slider_label = new QLabel(("Z Trans"));
@@ -177,24 +177,24 @@ Window::Window()
   x_rot_slider_layout->addWidget(x_rot_slider_label);
   x_rot_slider_layout->addWidget(xRotSlider);
   controls_layout->addLayout(x_rot_slider_layout);
-	
+
   QHBoxLayout *y_rot_slider_layout = new QHBoxLayout;
   QLabel *y_rot_slider_label = new QLabel(("Y Rot"));
   y_rot_slider_layout->addWidget(y_rot_slider_label);
   y_rot_slider_layout->addWidget(yRotSlider);
   controls_layout->addLayout(y_rot_slider_layout);
 
-   QHBoxLayout *x_trans_slider_layout = new QHBoxLayout;
-   QLabel *x_trans_slider_label = new QLabel(("X Trans"));
-   x_trans_slider_layout->addWidget(x_trans_slider_label);
-   x_trans_slider_layout->addWidget(xTransSlider);
-   controls_layout->addLayout(x_trans_slider_layout);
+  QHBoxLayout *x_trans_slider_layout = new QHBoxLayout;
+  QLabel *x_trans_slider_label = new QLabel(("X Trans"));
+  x_trans_slider_layout->addWidget(x_trans_slider_label);
+  x_trans_slider_layout->addWidget(xTransSlider);
+  controls_layout->addLayout(x_trans_slider_layout);
 
-   QHBoxLayout *y_trans_slider_layout = new QHBoxLayout;
-   QLabel *y_trans_slider_label = new QLabel(("Y Trans"));
-   y_trans_slider_layout->addWidget(y_trans_slider_label);
-   y_trans_slider_layout->addWidget(yTransSlider);
-   controls_layout->addLayout(y_trans_slider_layout);
+  QHBoxLayout *y_trans_slider_layout = new QHBoxLayout;
+  QLabel *y_trans_slider_label = new QLabel(("Y Trans"));
+  y_trans_slider_layout->addWidget(y_trans_slider_label);
+  y_trans_slider_layout->addWidget(yTransSlider);
+  controls_layout->addLayout(y_trans_slider_layout);
 
   QHBoxLayout *fog_start_slider_layout = new QHBoxLayout;
   QLabel *fog_start_slider_label = new QLabel(("Fog Start"));
@@ -259,27 +259,27 @@ Window::Window()
   yRotSlider->setValue(0);
 //   zRotSlider->setValue(0);
 
-   xTransSlider->setValue(0);
-   yTransSlider->setValue(97);
+  xTransSlider->setValue(0);
+  yTransSlider->setValue(97);
 //   zTransSlider->setValue(61);
 
 //    fogStartSlider->setValue(-24);
 //    fogEndSlider->setValue(-49);
 
-   fogStartSlider->setValue(-94);
-   fogEndSlider->setValue(-117);
+  fogStartSlider->setValue(-94);
+  fogEndSlider->setValue(-117);
 
-   posSlider->setValue(0);
+  posSlider->setValue(0);
 
-   magnitudeCutoffSlider->setValue(50);
-   numVerticesSlider->setValue(10);
-   dotSizeSlider->setValue(32);
+  magnitudeCutoffSlider->setValue(50);
+  numVerticesSlider->setValue(10);
+  dotSizeSlider->setValue(32);
 //    displaySpeedSlider->setValue(50);
 
-    fftBinsCombo->setCurrentIndex(4);
+  fftBinsCombo->setCurrentIndex(4);
 
 //   yScaleSlider->setValue(350);
-	
+
   setWindowTitle(tr("MarPanning"));
 }
 
@@ -340,7 +340,7 @@ void Window::createMenus()
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAct);
 }
- 
+
 void Window::createActions()
 {
   openAct = new QAction(tr("&Open..."), this);
@@ -352,11 +352,11 @@ void Window::createActions()
   connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 }
 
-void 
+void
 Window::about()
 {
-  QMessageBox::about(this, tr("Marsyas MarPanning"),  
-					 tr("Marsyas MarPanning : Displays left/right panning of an audio file \n graphically in OpenGL. \n \n \n written by sness (c) 2009 GPL - sness@sness.net"));
+  QMessageBox::about(this, tr("Marsyas MarPanning"),
+                     tr("Marsyas MarPanning : Displays left/right panning of an audio file \n graphically in OpenGL. \n \n \n written by sness (c) 2009 GPL - sness@sness.net"));
 
 }
 
@@ -372,7 +372,7 @@ QSize Window::sizeHint() const
   return QSize(826, 544);
 }
 
-void 
+void
 Window::positionSlider(int val)
 {
   if (posSlider->isSliderDown() == false)

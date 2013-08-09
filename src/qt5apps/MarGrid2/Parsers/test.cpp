@@ -3,35 +3,35 @@
 #include "iTunesXmlHandler.h"
 
 int main( int argc, char *argv[] ) {
-	
-	MusicCollection *library = MusicCollection::getInstance();
-        iTunesXmlHandler *handler = new iTunesXmlHandler(library);
 
-        QXmlSimpleReader reader;
-        reader.setContentHandler(handler);
-        reader.setErrorHandler(handler);
+  MusicCollection *library = MusicCollection::getInstance();
+  iTunesXmlHandler *handler = new iTunesXmlHandler(library);
 
-        //QFile file("../iTunes-training.xml");
-        QFile file("../iTunesMusicLibrary-grid.xml");
-        //QFile file("../iTunesMusicLibrary.xml");
-        //QFile file("../iTunesMusicLibrary-small.xml");
+  QXmlSimpleReader reader;
+  reader.setContentHandler(handler);
+  reader.setErrorHandler(handler);
 
-        if ( file.open(QFile::ReadOnly | QFile::Text) ) {
+  //QFile file("../iTunes-training.xml");
+  QFile file("../iTunesMusicLibrary-grid.xml");
+  //QFile file("../iTunesMusicLibrary.xml");
+  //QFile file("../iTunesMusicLibrary-small.xml");
 
-                QXmlInputSource xmlSource(&file);
-                if ( reader.parse(xmlSource) ) {
+  if ( file.open(QFile::ReadOnly | QFile::Text) ) {
 
-                        library->display();
+    QXmlInputSource xmlSource(&file);
+    if ( reader.parse(xmlSource) ) {
 
-                } else {
-                        std::cout << "Error iTunes Parse Reader Error\n";
-                }
-        } else {
-        	std::cout << "Error iTunes XML Library File Not Found\n";
-        }
+      library->display();
 
-        delete handler;
-        delete library;
+    } else {
+      std::cout << "Error iTunes Parse Reader Error\n";
+    }
+  } else {
+    std::cout << "Error iTunes XML Library File Not Found\n";
+  }
 
-	return 0;
+  delete handler;
+  delete library;
+
+  return 0;
 }

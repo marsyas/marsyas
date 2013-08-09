@@ -50,31 +50,31 @@ namespace Marsyas
 class Fanout: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
-	void deleteSlices();
+  void addControls();
+  void myUpdate(MarControlPtr sender);
+  void deleteSlices();
 
 
-	realvec localIndices_;
+  realvec localIndices_;
 
-	mrs_natural enable_, enableChildIndex_;
-	mrs_natural disable_, disableChildIndex_;
+  mrs_natural enable_, enableChildIndex_;
+  mrs_natural disable_, disableChildIndex_;
 
-	mrs_string enableChild_;
-	mrs_string disableChild_;
+  mrs_string enableChild_;
+  mrs_string disableChild_;
 
-	MarControlPtr ctrl_enabled_;
-	MarControlPtr ctrl_muted_;
+  MarControlPtr ctrl_enabled_;
+  MarControlPtr ctrl_muted_;
 
-	std::vector<realvec*> slices_;
+  std::vector<realvec*> slices_;
 
 public:
-	Fanout(std::string name);
-	Fanout(const Fanout& a);
-	~Fanout();
-	MarSystem* clone() const;
+  Fanout(std::string name);
+  Fanout(const Fanout& a);
+  ~Fanout();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

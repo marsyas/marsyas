@@ -30,7 +30,7 @@ Marx3dSlider::Marx3dSlider( QWidget *parent ) :
 }
 
 
-void 
+void
 Marx3dSlider::paintEvent(QPaintEvent *)
 {
 
@@ -38,18 +38,18 @@ Marx3dSlider::paintEvent(QPaintEvent *)
 
   QPainter painter( this );
   //QPen pen;
-                                                                                    
+
   //pen.setColor( bgcolor );
   painter.setPen( QPen( bgcolor) );
   painter.setBrush( QBrush( bgcolor, Qt::SolidPattern ) );
   painter.setRenderHint( QPainter::Antialiasing );
-                                                                                          
+
   /* draw backdrop */
   painter.drawRect( QRectF( xpos, ypos, width, height ) );
-  painter.drawRect( QRectF( xpos + 1.025*width, 
-			    ypos, 
-			    width*.15, 
-			    height ) );
+  painter.drawRect( QRectF( xpos + 1.025*width,
+                            ypos,
+                            width*.15,
+                            height ) );
   painter.setPen( QPen( outline_color) );
   painter.setBrush( QBrush( outline_color, Qt::SolidPattern ) );
 
@@ -57,9 +57,9 @@ Marx3dSlider::paintEvent(QPaintEvent *)
   // the commented equation above reduces to the uncommented equation below
   float zbackground_xpos = xpos + 1.0925*width;
   painter.drawRect( QRectF( zbackground_xpos,
-			    ypos + height*.05,
-			    width*.015,
-			    height*.9) );
+                            ypos + height*.05,
+                            width*.015,
+                            height*.9) );
 
 
   drawXYKnob( xpos_knob, ypos_knob, &painter);
@@ -69,7 +69,7 @@ Marx3dSlider::paintEvent(QPaintEvent *)
 }
 
 
-void 
+void
 Marx3dSlider::resizeEvent(QResizeEvent *)
 {
 
@@ -187,7 +187,7 @@ Marx3dSlider::setXPos( float x )
       emit positionChanged( getXVal(), getYVal(), getZVal() );
     }
   }
-  
+
   update();
 }
 
@@ -218,7 +218,7 @@ Marx3dSlider::setZPos( float z )
     zpos_knob = z;
     emit positionChanged( getXVal(), getYVal(), getZVal() );
   }
-  
+
   update();
 }
 
@@ -227,26 +227,26 @@ void
 Marx3dSlider::drawXYKnob( float x, float y, QPainter *p)
 {
   p->setPen( QPen( outline_color ) );
-  p->setBrush( QBrush( fill_color, Qt::SolidPattern ) );  
+  p->setBrush( QBrush( fill_color, Qt::SolidPattern ) );
   p->drawEllipse( QRectF( x, y, width*.1, height*.1) );
 }
 
 void
-Marx3dSlider::mousePressEvent(QMouseEvent* me) 
+Marx3dSlider::mousePressEvent(QMouseEvent* me)
 {
   float mousex = (float)me->x();
   float mousey = (float)me->y();
 
-  if (mousex >= xpos_knob && 
+  if (mousex >= xpos_knob &&
       mousex <= xpos_knob + width*.1 &&
       mousey >= ypos_knob &&
       mousey <= ypos_knob + height*.1) {
     xy_moveable = true;
   }
-  else if (mousex >= xpos + 1.05*width && 
-	   mousex <= xpos + 1.15*width &&
-	   mousey >= zpos_knob &&
-	   mousey <= zpos_knob + height*.1) {
+  else if (mousex >= xpos + 1.05*width &&
+           mousex <= xpos + 1.15*width &&
+           mousey >= zpos_knob &&
+           mousey <= zpos_knob + height*.1) {
     z_moveable = true;
   }
 

@@ -42,7 +42,7 @@ void CARFAC::CARFAC_AGCStep(const std::vector<std::vector<double> > &avg_detects
         }
       }
       for (int i = 0; i < n_ch; i++) {
-          agcstep_stage_sum[i] = 0; // sum accumulating over mics at this stage
+        agcstep_stage_sum[i] = 0; // sum accumulating over mics at this stage
       }
     }
     double epsilon = CF.AGC_coeffs.AGC_epsilon[stage];
@@ -65,8 +65,8 @@ void CARFAC::CARFAC_AGCStep(const std::vector<std::vector<double> > &avg_detects
         } else {
           for (int i = 0; i < n_ch; i++) {
             agcstep_AGC_in[i] = CF.AGC_coeffs.AGC_stage_gain *
-                (CF.AGC_coeffs.AGC_mix_coeff * agcstep_prev_stage_mean[i] +
-                 (1 - CF.AGC_coeffs.AGC_mix_coeff) * CF.AGC_state[mic].AGC_memory[stage - 1][i]);
+                                (CF.AGC_coeffs.AGC_mix_coeff * agcstep_prev_stage_mean[i] +
+                                 (1 - CF.AGC_coeffs.AGC_mix_coeff) * CF.AGC_state[mic].AGC_memory[stage - 1][i]);
           }
         }
       }
@@ -98,18 +98,18 @@ void CARFAC::CARFAC_AGCStep(const std::vector<std::vector<double> > &avg_detects
 
 CARFAC::CARFAC(mrs_string name):MarSystem("CARFAC", name)
 {
-	addControls();
+  addControls();
 }
 
 CARFAC::CARFAC(const CARFAC& a) : MarSystem(a)
 {
-	ctrl_printcoeffs_ = getctrl("mrs_bool/printcoeffs");
-	ctrl_printstate_ = getctrl("mrs_bool/printstate");
-	ctrl_calculate_binaural_sai_ = getctrl("mrs_bool/calculate_binaural_sai");
+  ctrl_printcoeffs_ = getctrl("mrs_bool/printcoeffs");
+  ctrl_printstate_ = getctrl("mrs_bool/printstate");
+  ctrl_calculate_binaural_sai_ = getctrl("mrs_bool/calculate_binaural_sai");
 
-	ctrl_sai_output_binaural_sai_ = getctrl("mrs_realvec/sai_output_binaural_sai");
-	ctrl_sai_output_threshold_ = getctrl("mrs_realvec/sai_output_threshold");
-	ctrl_sai_output_strobes_ = getctrl("mrs_realvec/sai_output_strobes");
+  ctrl_sai_output_binaural_sai_ = getctrl("mrs_realvec/sai_output_binaural_sai");
+  ctrl_sai_output_threshold_ = getctrl("mrs_realvec/sai_output_threshold");
+  ctrl_sai_output_strobes_ = getctrl("mrs_realvec/sai_output_strobes");
 
   allocateVectors();
 }
@@ -121,7 +121,7 @@ CARFAC::~CARFAC()
 MarSystem*
 CARFAC::clone() const
 {
-	return new CARFAC(*this);
+  return new CARFAC(*this);
 }
 
 void
@@ -320,7 +320,7 @@ CARFAC::myProcess(realvec& in, realvec& out)
       for (int mic = 0; mic < n_mics; mic++) {
         for (int i = 0; i < n_ch; i++) {
           CF.filter_state[mic].dzB_memory[i] =
-              (CF.AGC_state[mic].sum_AGC[i] - CF.filter_state[mic].zB_memory[i]) / decim;
+            (CF.AGC_state[mic].sum_AGC[i] - CF.filter_state[mic].zB_memory[i]) / decim;
         }
       }
     }

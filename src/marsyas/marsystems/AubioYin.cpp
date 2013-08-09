@@ -46,7 +46,7 @@ AubioYin::clone() const
 void
 AubioYin::addControls()
 {
-  
+
   // The value of 0.15 was the default in Aubio
   addctrl("mrs_real/tolerance", 0.15, ctrl_tolerance_);
 
@@ -84,7 +84,7 @@ double AubioYin::vec_quadint_min(realvec *x,unsigned int pos, unsigned int span)
       res = AubioYin::aubio_quadfrac(s0, s1, s2, frac);
       if (res < resold) {
         resold = res;
-      } else {				
+      } else {
         exactpos += (frac-step)*span - span/2.;
         break;
       }
@@ -93,7 +93,7 @@ double AubioYin::vec_quadint_min(realvec *x,unsigned int pos, unsigned int span)
   return exactpos;
 }
 
-unsigned int AubioYin::vec_min_elem(realvec *s) 
+unsigned int AubioYin::vec_min_elem(realvec *s)
 {
   int i = 0;
   int j = 0;
@@ -101,8 +101,8 @@ unsigned int AubioYin::vec_min_elem(realvec *s)
   double tmp = (*s)(0,0);
 //   for (i=0; i < s->channels; ++i)
   for (j=0; j < s->getSize(); j++) {
-	pos = (tmp < (*s)(i,j))? pos : j;
-	tmp = (tmp < (*s)(i,j))? tmp : (*s)(i,j);
+    pos = (tmp < (*s)(i,j))? pos : j;
+    tmp = (tmp < (*s)(i,j))? tmp : (*s)(i,j);
   }
 //     }
   return pos;
@@ -130,28 +130,28 @@ AubioYin::myProcess(realvec& in, realvec& out)
   int period;
   double tmp = 0., tmp2 = 0.;
   yin(c,0) = 1.;
-  for (tau=1;tau<yin.getSize();tau++)
-	{
-// 	  cout << "tau=" << tau << endl;	  
-	  yin(c,tau) = 0.;
-	  for (j=0;j<yin.getSize();j++)
-		{
-		  tmp = in(c,j) - in(c,j+tau);
-		  yin(c,tau) += tmp * tmp;
-		}
-	  tmp2 += yin(c,tau);
-	  yin(c,tau) *= tau/tmp2;
-	  period = tau-3;
-	  if(tau > 4 && (yin(c,period) < tol) && 
-		 (yin(c,period) < yin(c,period+1))) {
-		pitch = vec_quadint_min(&yin,period,1);
-		break;
-	  }
-	}
+  for (tau=1; tau<yin.getSize(); tau++)
+  {
+// 	  cout << "tau=" << tau << endl;
+    yin(c,tau) = 0.;
+    for (j=0; j<yin.getSize(); j++)
+    {
+      tmp = in(c,j) - in(c,j+tau);
+      yin(c,tau) += tmp * tmp;
+    }
+    tmp2 += yin(c,tau);
+    yin(c,tau) *= tau/tmp2;
+    period = tau-3;
+    if(tau > 4 && (yin(c,period) < tol) &&
+        (yin(c,period) < yin(c,period+1))) {
+      pitch = vec_quadint_min(&yin,period,1);
+      break;
+    }
+  }
   if (pitch < 0) {
-	pitch = vec_quadint_min(&yin,vec_min_elem(&yin),1);
+    pitch = vec_quadint_min(&yin,vec_min_elem(&yin),1);
   }
 
-  out(0,0) = ctrl_osrate_/pitch; 
+  out(0,0) = ctrl_osrate_/pitch;
 
 }

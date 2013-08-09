@@ -43,7 +43,7 @@ namespace Marsyas
    Controls:
    - \b mrs_string/filename [w] : name of the sound file to read
    - \b mrs_bool/hasData [r] : is there any data left?
-   - \b mrs_bool/lastTickWithData [r]: true at the last buffer with data 
+   - \b mrs_bool/lastTickWithData [r]: true at the last buffer with data
    - \b mrs_natural/pos [rw] : sample position currently read, in samples
    - \b mrs_natural/loopPos [rw] : sample position at which to loop
    - \b mrs_string/allfilenames [w] : a long string containing every sound file to read.
@@ -64,7 +64,7 @@ namespace Marsyas
    - \b mrs_natural/cindex [rw] : number of the current sound file in the
    collection
    - \b mrs_string/currentlyPlaying [r] : filename of the current sound file.
-   - \b mrs_string/previouslyPlaying [r] : filename of the previous sound file. 
+   - \b mrs_string/previouslyPlaying [r] : filename of the previous sound file.
    - \b mrs_bool/regression [w] : switch to regression instead of
      classification
    - \b mrs_real/currentLabel [r] : current label of file played
@@ -73,8 +73,8 @@ namespace Marsyas
    - \b mrs_string/labelNames [r] : labels (for collections)
    - \b mrs_bool/currentHasData [r] : is there any audio data
      remaining (for collections)
-   - \b mrs_bool/currentLastTickWithData [r]: The current file 
-     in a collection is at the last tick with data 
+   - \b mrs_bool/currentLastTickWithData [r]: The current file
+     in a collection is at the last tick with data
    - \b mrs_bool/currentCollectionNewFile [r] : the current tick
      began reading a new file (for collections)
    - \b mrs_bool/startStable [r] : the current tick should begin a
@@ -85,65 +85,65 @@ namespace Marsyas
 */
 
 
-	class SoundFileSource: public MarSystem
-	{
-		private:
-			std::string filename_;
-			mrs_natural sampleSize_; //in bytes
-			mrs_natural samplesRead_;
-			mrs_natural samplesToRead_;
-			mrs_natural nChannels_;
+class SoundFileSource: public MarSystem
+{
+private:
+  std::string filename_;
+  mrs_natural sampleSize_; //in bytes
+  mrs_natural samplesRead_;
+  mrs_natural samplesToRead_;
+  mrs_natural nChannels_;
 
-			MarControlPtr ctrl_pos_;
-			MarControlPtr ctrl_loop_;
-			MarControlPtr ctrl_hasData_;
-			MarControlPtr ctrl_lastTickWithData_;
-			MarControlPtr ctrl_mute_;
-			MarControlPtr ctrl_advance_;
-			MarControlPtr ctrl_filename_;
-			MarControlPtr ctrl_currentlyPlaying_;
-			MarControlPtr ctrl_previouslyPlaying_;
-			MarControlPtr ctrl_regression_;
-			MarControlPtr ctrl_currentLabel_;
-			MarControlPtr ctrl_previousLabel_;
-			MarControlPtr ctrl_nLabels_;
-			MarControlPtr ctrl_labelNames_;
-			MarControlPtr ctrl_currentHasData_;
-			MarControlPtr ctrl_currentLastTickWithData_;
-			MarControlPtr ctrl_currentCollectionNewFile_;
-			MarControlPtr ctrl_startStable_;
-		
-			MarControlPtr ctrl_rewindToPos_;
+  MarControlPtr ctrl_pos_;
+  MarControlPtr ctrl_loop_;
+  MarControlPtr ctrl_hasData_;
+  MarControlPtr ctrl_lastTickWithData_;
+  MarControlPtr ctrl_mute_;
+  MarControlPtr ctrl_advance_;
+  MarControlPtr ctrl_filename_;
+  MarControlPtr ctrl_currentlyPlaying_;
+  MarControlPtr ctrl_previouslyPlaying_;
+  MarControlPtr ctrl_regression_;
+  MarControlPtr ctrl_currentLabel_;
+  MarControlPtr ctrl_previousLabel_;
+  MarControlPtr ctrl_nLabels_;
+  MarControlPtr ctrl_labelNames_;
+  MarControlPtr ctrl_currentHasData_;
+  MarControlPtr ctrl_currentLastTickWithData_;
+  MarControlPtr ctrl_currentCollectionNewFile_;
+  MarControlPtr ctrl_startStable_;
 
-			AbsSoundFileSource* src_;
+  MarControlPtr ctrl_rewindToPos_;
 
-			mrs_natural advance_;
-			std::string prev_ext_;
-		
+  AbsSoundFileSource* src_;
 
-			void addControls();
-			void myUpdate(MarControlPtr sender);
+  mrs_natural advance_;
+  std::string prev_ext_;
 
-			bool updateCurrDuration;	
 
-		public:
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-			SoundFileSource(std::string name);
-			SoundFileSource(const SoundFileSource& a);
+  bool updateCurrDuration;
 
-			~SoundFileSource();
-			MarSystem* clone() const;
+public:
 
-			virtual void myProcess(realvec& in,realvec& out);
-			virtual bool checkType();
-			virtual void getHeader();
+  SoundFileSource(std::string name);
+  SoundFileSource(const SoundFileSource& a);
 
-	};
+  ~SoundFileSource();
+  MarSystem* clone() const;
+
+  virtual void myProcess(realvec& in,realvec& out);
+  virtual bool checkType();
+  virtual void getHeader();
+
+};
 
 /// File name value to use for undefined files.
 
-// On OS X this does not get initialized and causes core dumps in the 
-// unit tests. Not sure why. 
+// On OS X this does not get initialized and causes core dumps in the
+// unit tests. Not sure why.
 
 // const mrs_string SOUNDFILESOURCE_UNDEFINEDFILENAME("defaultfile");
 #define SOUNDFILESOURCE_UNDEFINEDFILENAME "defaultfile"

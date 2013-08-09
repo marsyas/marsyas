@@ -13,10 +13,10 @@ MarsyasBExtractCentroid::MarsyasBExtractCentroid(float inputSampleRate) :
   m_network(0)
 {
   MarSystemManager mng;
-	// Overall extraction and classification network 
+  // Overall extraction and classification network
   m_network = mng.create("Series", "mainNetwork");
 
-  // Build the overall feature calculation network 
+  // Build the overall feature calculation network
   MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
 
   // Add a realvec as the source
@@ -82,7 +82,7 @@ bool
 MarsyasBExtractCentroid::initialise(size_t channels, size_t stepSize, size_t blockSize)
 {
   if (channels < getMinChannelCount() ||
-	  channels > getMaxChannelCount()) return false;
+      channels > getMaxChannelCount()) return false;
 
   m_stepSize = std::min(stepSize, blockSize);
 
@@ -129,13 +129,13 @@ MarsyasBExtractCentroid::getOutputDescriptors() const
 
 MarsyasBExtractCentroid::FeatureSet
 MarsyasBExtractCentroid::process(const float *const *inputBuffers,
-									  Vamp::RealTime timestamp)
+                                 Vamp::RealTime timestamp)
 {
   if (m_stepSize == 0) {
-	cerr << "ERROR: MarsyasBExtractSFM::process: "
-	     << "MarsyasBExtractSFM has not been initialised"
-	     << endl;
-	return FeatureSet();
+    cerr << "ERROR: MarsyasBExtractSFM::process: "
+         << "MarsyasBExtractSFM has not been initialised"
+         << endl;
+    return FeatureSet();
   }
 
   // The feature we are going to return to the host
@@ -146,7 +146,7 @@ MarsyasBExtractCentroid::process(const float *const *inputBuffers,
   // Stuff inputBuffers into a realvec
   realvec r(m_stepSize);
   for (size_t i = 0; i < m_stepSize; ++i) {
-	r(i) = inputBuffers[0][i];
+    r(i) = inputBuffers[0][i];
   }
 
   // Load the network with the data
@@ -158,7 +158,7 @@ MarsyasBExtractCentroid::process(const float *const *inputBuffers,
   // Get the data out of the network
   realvec output_realvec = m_network->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
   for (int i = 0; i < output_realvec.getRows(); ++i) {
-  feature.values.push_back(output_realvec(i));
+    feature.values.push_back(output_realvec(i));
   }
 
   returnFeatures[0].push_back(feature);

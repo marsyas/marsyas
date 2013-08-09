@@ -4,30 +4,30 @@
 using namespace Marsyas;
 
 Som::Som()
-: AbstractMarClusteringModel()
+  : AbstractMarClusteringModel()
 {
-   //to do
+  //to do
 }
 
 Som::~Som()
 {
-   //to do
+  //to do
 }
 
 void
 Som::train(realvec& data)
 {
-   //to do
+  //to do
 }
 
 void
 Som::predict(realvec& data)
 {
-   //to do
+  //to do
 }
 
 void
 Som::reset()
 {
-   //to do
+  //to do
 }

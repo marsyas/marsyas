@@ -9,7 +9,7 @@ using namespace std;
 
 class OSCReceiver : public QWidget
 {
-Q_OBJECT
+  Q_OBJECT
 
 public:
   void setName(string s);
@@ -17,9 +17,9 @@ public:
 
   OSCReceiver(QWidget *parent = 0);
 
-							
 
-public slots: 
+
+public slots:
   void setValue(int);
 
 private:

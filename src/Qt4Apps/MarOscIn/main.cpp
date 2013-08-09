@@ -26,8 +26,8 @@ int main(int argc, char **argv)
 {
 
   if (argc < 2) {
-	usage();
-	exit(0);
+    usage();
+    exit(0);
   }
 
   QApplication* app = new QApplication(argc, argv);
@@ -48,12 +48,12 @@ int main(int argc, char **argv)
   mrs_natural inputOscPort_ = 9000;
   mrs_natural outputOscPort_ = 9001;
 
-  // 
+  //
   // Create an OscMapper that maps messages to the app through a
   // MarSystemQtWrapper.
   //
-  OscMapper* oscMapper = new OscMapper(inputOscHostAddress_, inputOscPort_, outputOscHostAddress_, outputOscPort_, 
-									   app, win->getMarSystemQtWrapper ());
+  OscMapper* oscMapper = new OscMapper(inputOscHostAddress_, inputOscPort_, outputOscHostAddress_, outputOscPort_,
+                                       app, win->getMarSystemQtWrapper ());
 
   //
   // Map any messages coming to the OSC port "/gainSlider" to the

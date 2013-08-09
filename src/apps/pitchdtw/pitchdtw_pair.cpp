@@ -5,7 +5,7 @@
 //
 
 #include <cstdio>
-#include <vector> 
+#include <vector>
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 // #include "pngwriter.h"
@@ -49,22 +49,22 @@ void pitchdtw(realvec input_realvec,int size1, int size2)
 
 
   MarSystem* dtw = mng.create("DTW", "dtw");
-   dtw->updControl("mrs_string/lastPos","end");
-   dtw->updControl("mrs_string/startPos","zero");
-   dtw->updControl("mrs_bool/weight",false);
-   dtw->updControl("mrs_string/mode","normal");
-   net->addMarSystem(dtw);
+  dtw->updControl("mrs_string/lastPos","end");
+  dtw->updControl("mrs_string/startPos","zero");
+  dtw->updControl("mrs_bool/weight",false);
+  dtw->updControl("mrs_string/mode","normal");
+  net->addMarSystem(dtw);
 
-   cout << "in=" << input_realvec << endl;
+  cout << "in=" << input_realvec << endl;
   cout << "sizes=" << sizes << endl;
 
   net->tick();
 
   cout << net->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
 
-   cout << dtw->getctrl("mrs_real/totalDistance")->to<mrs_real>() << endl;  
+  cout << dtw->getctrl("mrs_real/totalDistance")->to<mrs_real>() << endl;
 }
-  
+
 void read_file_of_floats_into_vector(string name, vector<float> &file) {
 
   int readChars;
@@ -75,10 +75,10 @@ void read_file_of_floats_into_vector(string name, vector<float> &file) {
 
   do {
     readChars = fscanf(inFile,"%s", line );
-	if (readChars < 0) 
-	  break;
-	f = atof(line);
-	file.push_back(f);
+    if (readChars < 0)
+      break;
+    f = atof(line);
+    file.push_back(f);
   } while (readChars > 0);
 
 }
@@ -94,43 +94,43 @@ int main(int argc, const char **argv)
   realvec input_realvec;
 
   if (argc < 2) {
-	usage();
-	exit(1);
+    usage();
+    exit(1);
   } else {
-	inFileName1 = argv[1];
-	inFileName2 = argv[2];
+    inFileName1 = argv[1];
+    inFileName2 = argv[2];
   }
-  
+
   read_file_of_floats_into_vector(inFileName1,file1);
   read_file_of_floats_into_vector(inFileName2,file2);
 
   unsigned int max_size;
 
   if (file1.size() > file2.size()) {
-	max_size = file1.size();
+    max_size = file1.size();
   } else {
-	max_size = file2.size();
+    max_size = file2.size();
   }
 
-   input_realvec.create(2,max_size);
+  input_realvec.create(2,max_size);
 
-   // Copy both file1 and file2 into input_realvec
-   for(unsigned int i = 0; i < max_size; i++) {
- 	if (i < file1.size()) {
- 	  input_realvec(0,i) = file1[i];
- 	} else {
- 	  input_realvec(0,i) = 0;
- 	}
+  // Copy both file1 and file2 into input_realvec
+  for(unsigned int i = 0; i < max_size; i++) {
+    if (i < file1.size()) {
+      input_realvec(0,i) = file1[i];
+    } else {
+      input_realvec(0,i) = 0;
+    }
 
- 	if (i < file2.size()) {
- 	  input_realvec(1,i) = file2[i];
- 	} else {
- 	  input_realvec(1,i) = 0;
- 	}
-   }
+    if (i < file2.size()) {
+      input_realvec(1,i) = file2[i];
+    } else {
+      input_realvec(1,i) = 0;
+    }
+  }
 
 
-   pitchdtw(input_realvec,file1.size(),file2.size());
+  pitchdtw(input_realvec,file1.size(),file2.size());
 
   exit(0);
 

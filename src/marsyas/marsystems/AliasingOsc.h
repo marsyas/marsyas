@@ -49,35 +49,35 @@ namespace Marsyas
 class AliasingOsc: public MarSystem
 {
 private:
-	// Add specific controls needed by this MarSystem.
-	void addControls();
+  // Add specific controls needed by this MarSystem.
+  void addControls();
 
-	// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  // Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
-	mrs_real currentValue_;
-	mrs_real incr_;
-	mrs_real cyclicRate_;
-	mrs_bool cyclicIn_;
-	mrs_real israte_;
-	mrs_real frequency_;
-	mrs_natural type_;
+  mrs_real currentValue_;
+  mrs_real incr_;
+  mrs_real cyclicRate_;
+  mrs_bool cyclicIn_;
+  mrs_real israte_;
+  mrs_real frequency_;
+  mrs_natural type_;
 
 public:
-	// AliasingOsc constructor.
-	AliasingOsc(std::string name);
+  // AliasingOsc constructor.
+  AliasingOsc(std::string name);
 
-	// AliasingOsc copy constructor.
-	AliasingOsc(const AliasingOsc& a);
+  // AliasingOsc copy constructor.
+  AliasingOsc(const AliasingOsc& a);
 
-	// AliasingOsc destructor.
-	~AliasingOsc();
+  // AliasingOsc destructor.
+  ~AliasingOsc();
 
-	// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  // Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  // Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

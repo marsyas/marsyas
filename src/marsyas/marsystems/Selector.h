@@ -23,49 +23,49 @@
 
 namespace Marsyas
 {
-  /**
-	 \class Selector
-	 \ingroup Composites
-	 \brief Select different observations from input data
-    \author Steven Ness (sness@sness.net)
+/**
+ \class Selector
+ \ingroup Composites
+ \brief Select different observations from input data
+  \author Steven Ness (sness@sness.net)
 
-	 Select one or more observations from your input data and pass it
-	 to the next MarSystem.
+ Select one or more observations from your input data and pass it
+ to the next MarSystem.
 
-	 The enable and disable controls are used in a similar way to the
-	 way they are used in FanOut.
+ The enable and disable controls are used in a similar way to the
+ way they are used in FanOut.
 
-	 This is useful for cases like PitchPraat that output both a
-	 frequency and a confidence and you just are interested in one or
-	 the other.
+ This is useful for cases like PitchPraat that output both a
+ frequency and a confidence and you just are interested in one or
+ the other.
 
-	 Controls:
-	 - \b mrs_natural/disable [w] : passes in the number of the child
-	 MarSystem to disable.
-	 - \b mrs_natural/enable	[w] : pass in the number of the child MarSystem to
-	 enable.  (by default all children are enabled)
+ Controls:
+ - \b mrs_natural/disable [w] : passes in the number of the child
+ MarSystem to disable.
+ - \b mrs_natural/enable	[w] : pass in the number of the child MarSystem to
+ enable.  (by default all children are enabled)
 
-  */
+*/
 
 class marsyas_EXPORT Selector: public MarSystem
-  {
-  private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+{
+private:
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	mrs_natural enable_;
-	mrs_natural disable_;
+  mrs_natural enable_;
+  mrs_natural disable_;
 
-	MarControlPtr ctrl_enabled_;
+  MarControlPtr ctrl_enabled_;
 
-  public:
-	Selector(std::string name);
-	Selector(const Selector& a);
-	~Selector();
-	MarSystem* clone() const;
+public:
+  Selector(std::string name);
+  Selector(const Selector& a);
+  ~Selector();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
-  };
+  void myProcess(realvec& in, realvec& out);
+};
 
 }
 

@@ -109,7 +109,7 @@ void Grid::run()
   {
     cout << "Thread running"  << endl;
     buttonPressed.wait(&mutex);
-    switch(state_){
+    switch(state_) {
     case 1:
       extract();
       clearMode();
@@ -302,7 +302,7 @@ void Grid::extractAction(std::string filename)
 
 
   mrs_natural total_onObservations =
-      total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+    total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 
   som_in.create(total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
                 total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
@@ -331,7 +331,7 @@ void Grid::extractAction(std::string filename)
     cout << "Processed " << index + 1 << " file of "<<numFiles<<" files" << endl;
     cout << current  << "\n";
     // hash the resulting feature on file name
-    if(featureHash->find(current) == featureHash->end()){
+    if(featureHash->find(current) == featureHash->end()) {
       featureHash->insert(pair<string,realvec>(current,som_res));
     }
 
@@ -673,7 +673,7 @@ void Grid::predict() {
 }
 
 
-/* 
+/*
 Init works by extracting the dropped files, then trains the grid with them.
 The other files are then extracted and prediction is started.
 */
@@ -1267,5 +1267,5 @@ Grid::setValue(int i)
   _gridY1 = y1_->value;
 
   emit repaintSignal();
-  
+
 }

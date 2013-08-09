@@ -16,8 +16,8 @@
 /************************************************************************/
 #include "config.h"
 
-#include <cstdio> 
-#include <sys/types.h> 
+#include <cstdio>
+#include <sys/types.h>
 #include <complex>
 #include <limits>
 #include "MrsLog.h"
@@ -42,7 +42,7 @@
 #define MRSDEBUG(x) {std::ostringstream oss; MrsLog::mrsDebug((std::ostringstream&)(oss << x));}
 #else
 #define MRSDEBUG(x)
-#endif 
+#endif
 
 
 
@@ -65,17 +65,17 @@
 /*  MATLAB engine macros                                                */
 /************************************************************************/
 #ifdef MARSYAS_MATLAB
-	#include "MATLABengine.h"
-  #define MATLAB_PUT(var, name) {MATLABengine::getMatlabEng()->putVariable(var, name);}
-	#define MATLAB_GET(name, var) MATLABengine::getMatlabEng()->getVariable(name, var)
-	#define MATLAB_EVAL(s) {std::ostringstream oss; MATLABengine::getMatlabEng()->evalString((std::ostringstream&)(oss << s));}
+#include "MATLABengine.h"
+#define MATLAB_PUT(var, name) {MATLABengine::getMatlabEng()->putVariable(var, name);}
+#define MATLAB_GET(name, var) MATLABengine::getMatlabEng()->getVariable(name, var)
+#define MATLAB_EVAL(s) {std::ostringstream oss; MATLABengine::getMatlabEng()->evalString((std::ostringstream&)(oss << s));}
 #define MATLAB_CLOSE() MATLABengine::getMatlabEng()->closeMatlabEng()
 #else
-	#define MATLAB_PUT(var, name) {}
-	#define MATLAB_GET(name, var) {}
-	//#define MATLAB_GET(name, var) -1
-	#define MATLAB_EVAL(s)  {}
-	#define MATLAB_CLOSE()  {}
+#define MATLAB_PUT(var, name) {}
+#define MATLAB_GET(name, var) {}
+//#define MATLAB_GET(name, var) -1
+#define MATLAB_EVAL(s)  {}
+#define MATLAB_CLOSE()  {}
 #endif
 
 
@@ -88,12 +88,12 @@
 // FIXME: do we need to include _CYGWIN and _MINGW as well?
 
 #ifdef MARSYAS_WIN32 //|| defined (MARSYAS_MINGW)
-#include <windows.h> 
-#define SLEEP(milliseconds) Sleep((DWORD) milliseconds) 
-#else 
-#include <unistd.h> 
-#define SLEEP(milliseconds) usleep((unsigned long) (milliseconds) * 1000.0) 
-#endif 
+#include <windows.h>
+#define SLEEP(milliseconds) Sleep((DWORD) milliseconds)
+#else
+#include <unistd.h>
+#define SLEEP(milliseconds) usleep((unsigned long) (milliseconds) * 1000.0)
+#endif
 
 /************************************************************************/
 /*		WIN32 specific                                                    */
@@ -105,5 +105,5 @@
 #pragma warning(disable : 4996)
 #endif
 
-#endif /* !MARSYAS_COMMON_H */ 
-	
+#endif /* !MARSYAS_COMMON_H */
+

@@ -26,7 +26,7 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
-#include <vector> 
+#include <vector>
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
@@ -137,7 +137,7 @@ printHelp(string progName)
   cerr << "-o       --outputFilename                             : File to save data to." << endl;
   cerr << "-of      --outputFormat                                : Output file format (libsvm, sonicvisualiser)" << endl;
   cerr << "-w       --wekafile                : weka .arff filename " << endl;
-  
+
   return 0;
 }
 
@@ -170,7 +170,7 @@ void initOptions()
   // cmdOptions_.addBoolOption("zeroCrossings", "zcrs", false);
   // cmdOptions_.addBoolOption("lineSpectralPair", "lsp", false);
   // cmdOptions_.addBoolOption("linearPredictionCepstralCoefficients", "lpcc", false);
-  
+
   cmdOptions_.addBoolOption("rms", "", false);
   cmdOptions_.addBoolOption("yin", "", false);
 
@@ -229,7 +229,7 @@ void loadOptions()
   wekaFilename_ = cmdOptions_.getStringOption("wekaFilename");
 
   // // If no features were explicitly set, out a small standard set of features
-  // if ((mfccFeature_ == false) && 
+  // if ((mfccFeature_ == false) &&
   //     (centroidFeature_ == false) &&
   //     (rolloffFeature_ == false) &&
   //     (fluxFeature_ == false) &&
@@ -277,27 +277,27 @@ void extract(string inCollectionName)
   }
 
   // Spectrum based features
-  if (mfccFeature_ || centroidFeature_ || rolloffFeature_ || fluxFeature_ || 
-      kurtosisFeature_ || skewnessFeature_ || sfmFeature_ || scfFeature_ || 
+  if (mfccFeature_ || centroidFeature_ || rolloffFeature_ || fluxFeature_ ||
+      kurtosisFeature_ || skewnessFeature_ || sfmFeature_ || scfFeature_ ||
       chromaFeature_) {
     MarSystem* spectralSeries = mng.create("Series", "spectralSeries");
     spectralSeries->addMarSystem(mng.create("Spectrum", "spk"));
     spectralSeries->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-    
+
     MarSystem* spectralFanout = mng.create("Fanout", "spectralFanout");
     if (mfccFeature_) {
       spectralFanout->addMarSystem(mng.create("MFCC", "mfcc"));
       spectralFanout->updControl("MFCC/mfcc/mrs_natural/coefficients", numMfccs_);
     }
-    
+
     if (centroidFeature_) {
       spectralFanout->addMarSystem(mng.create("Centroid", "centroid"));
     }
-    
+
     if (rolloffFeature_) {
       spectralFanout->addMarSystem(mng.create("Rolloff", "rolloff"));
     }
-    
+
     if (fluxFeature_) {
       spectralFanout->addMarSystem(mng.create("Flux", "flux"));
     }
@@ -335,7 +335,7 @@ void extract(string inCollectionName)
     spectrogramSeries->addMarSystem(mng.create("Spectrum", "spk"));
     spectrogramSeries->addMarSystem(mng.create("PowerSpectrum", "pspk"));
     spectrogramSeries->addMarSystem(mng.create("Memory", "spectrogramMemory"));
-    
+
     mainFanout->addMarSystem(spectrogramSeries);
   }
 
@@ -351,9 +351,9 @@ void extract(string inCollectionName)
       saiSeries->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
     }
     saiSeries->addMarSystem(mng.create("AimHCL", "aimhcl"));
-	saiSeries->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
-	saiSeries->addMarSystem(mng.create("AimSAI", "aimsai"));
-	saiSeries->addMarSystem(mng.create("AimBoxes", "aimboxes"));
+    saiSeries->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
+    saiSeries->addMarSystem(mng.create("AimSAI", "aimsai"));
+    saiSeries->addMarSystem(mng.create("AimBoxes", "aimboxes"));
     mainFanout->addMarSystem(saiSeries);
   }
 
@@ -361,9 +361,9 @@ void extract(string inCollectionName)
 
   if (wekaFilename_ != EMPTYSTRING) {
     net->addMarSystem(mng.create("Annotator", "annotator"));
-	net->addMarSystem(mng.create("WekaSink", "wsink"));
+    net->addMarSystem(mng.create("WekaSink", "wsink"));
   }
-  
+
   if(memSize_ != 0) {
     net->addMarSystem(mng.create("TextureStats", "tStats"));
     net->updControl("TextureStats/tStats/mrs_natural/memSize", memSize_);
@@ -394,7 +394,7 @@ void extract(string inCollectionName)
   net->updControl("ShiftInput/si/mrs_natural/winSize", winSize_);
 
   if (spectrogramFeature_) {
-	spectrogramSeries->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", spectrogramType_);
+    spectrogramSeries->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", spectrogramType_);
     spectrogramSeries->updControl("Memory/spectrogramMemory/mrs_natural/memSize", spectrogramFrames_);
   }
 
@@ -402,7 +402,7 @@ void extract(string inCollectionName)
     saiSeries->updControl("AimBoxes/aimboxes/mrs_natural/box_size_spectral", saiBoxSizeSpectral_);
     saiSeries->updControl("AimBoxes/aimboxes/mrs_natural/box_size_temporal", saiBoxSizeTemporal_);
   }
-  
+
   if (wekaFilename_ != EMPTYSTRING) {
     net->updControl("WekaSink/wsink/mrs_string/filename", wekaFilename_);
     net->updControl("WekaSink/wsink/mrs_natural/downsample", downsample_);
@@ -423,7 +423,7 @@ void extract(string inCollectionName)
   MarControlPtr ctrl_currentlyPlaying = net->getctrl("mrs_string/currentlyPlaying");
 
   int i = 0;
-  while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() ){
+  while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() ) {
     net->tick();
     numTicks++;
 
@@ -446,7 +446,7 @@ void extract(string inCollectionName)
         int numRows = data.getRows();
         for (int col = 0; col < numCols; col++) {
           for (int row = 0; row < numRows; row++) {
-            
+
             if (outputFormat_ == "libsvm") {
               ofs << (col * numRows) + row + 1 << ":";
             }
@@ -466,7 +466,7 @@ void extract(string inCollectionName)
 
 
 }
-  
+
 
 int
 main(int argc, const char **argv)
@@ -474,10 +474,10 @@ main(int argc, const char **argv)
   string progName = argv[0];
 
   if (argc == 1)
-    {
-      printUsage(progName);
-      return 0;
-    }
+  {
+    printUsage(progName);
+    return 0;
+  }
 
   initOptions();
   cmdOptions_.readOptions(argc, argv);

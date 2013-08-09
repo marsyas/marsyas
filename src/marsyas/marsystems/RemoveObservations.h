@@ -46,30 +46,30 @@ class marsyas_EXPORT RemoveObservations: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
 
-	mrs_natural lowestObs_, numObs_;
+  mrs_natural lowestObs_, numObs_;
 
 public:
-	/// RemoveObservations constructor.
-	RemoveObservations(std::string name);
+  /// RemoveObservations constructor.
+  RemoveObservations(std::string name);
 
-	/// RemoveObservations copy constructor.
-	RemoveObservations(const RemoveObservations& a);
+  /// RemoveObservations copy constructor.
+  RemoveObservations(const RemoveObservations& a);
 
-	/// RemoveObservations destructor.
-	~RemoveObservations();
+  /// RemoveObservations destructor.
+  ~RemoveObservations();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

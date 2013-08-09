@@ -15,9 +15,9 @@ class GLWidget;
 
 class Window : public QMainWindow
 {
-Q_OBJECT
+  Q_OBJECT
 
-public slots: 
+public slots:
   void about();
 
 public:
@@ -45,11 +45,11 @@ private:
 
   QPushButton *playpause_button;
 
-  QMenu*   fileMenu;  
+  QMenu*   fileMenu;
   QMenu*   helpMenu;
   QAction* openAct;
   QAction* aboutAct;
-  
+
   void createMenus();
   void createActions();
 

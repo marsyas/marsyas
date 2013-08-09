@@ -9,21 +9,21 @@
 class PlaylistItem : public QTreeWidgetItem
 {
 public:
-	PlaylistItem(MusicPlaylist *playlist, QTreeWidget *parent=0);
-	QVariant data(int column, int role) const;
+  PlaylistItem(MusicPlaylist *playlist, QTreeWidget *parent=0);
+  QVariant data(int column, int role) const;
 
 private:
-	MusicPlaylist *_playlist;
+  MusicPlaylist *_playlist;
 };
 
 class PlaylistTrackItem : public QTreeWidgetItem
 {
 public:
-	PlaylistTrackItem(MusicTrack *track, QTreeWidgetItem *parent=0);
-	QVariant data(int column, int role) const;
+  PlaylistTrackItem(MusicTrack *track, QTreeWidgetItem *parent=0);
+  QVariant data(int column, int role) const;
 
 private:
-	MusicTrack *_track;
+  MusicTrack *_track;
 };
 
 #endif /* PLAYLISTITEM_H */

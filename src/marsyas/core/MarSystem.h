@@ -87,355 +87,355 @@ class marsyas_EXPORT MarSystem
 {
 
 //friend classes
-	friend class MarSystemManager;
-	friend class MarControl;
+  friend class MarSystemManager;
+  friend class MarControl;
 
 private:
-	void addControls();//add MarSystem default controls
-	virtual void activate(bool state);
+  void addControls();//add MarSystem default controls
+  virtual void activate(bool state);
 
 protected:
 
-	// Parent MarSystem (if in a composite, otherwise it's NULL)
-	MarSystem* parent_;
+  // Parent MarSystem (if in a composite, otherwise it's NULL)
+  MarSystem* parent_;
 
-	// Type of MarSystem
-	std::string type_;
+  // Type of MarSystem
+  std::string type_;
 
-	// Name of instance
-	std::string name_;
+  // Name of instance
+  std::string name_;
 
-	// /type_/name_/
-	std::string prefix_;
+  // /type_/name_/
+  std::string prefix_;
 
-	// /parent0Type/parent0Name/.../parentNType/parentNName/type_/name_/
-	// in case this MarSystem is part of a composite
-	// this is the absolute path to it
-	std::string absPath_;
+  // /parent0Type/parent0Name/.../parentNType/parentNName/type_/name_/
+  // in case this MarSystem is part of a composite
+  // this is the absolute path to it
+  std::string absPath_;
 
-	bool isComposite_;
+  bool isComposite_;
 
-	// children
-	std::vector<MarSystem*> marsystems_;
+  // children
+  std::vector<MarSystem*> marsystems_;
 
-	// Controls
-	mutable std::map<std::string, MarControlPtr> controls_;
-	typedef std::map<std::string, MarControlPtr>::iterator ControlItr;
+  // Controls
+  mutable std::map<std::string, MarControlPtr> controls_;
+  typedef std::map<std::string, MarControlPtr>::iterator ControlItr;
 
-	//in flow member vars
-	mrs_natural inObservations_;
-	mrs_natural inSamples_;
-	mrs_real israte_;
-	mrs_string inObsNames_;
-	mrs_natural inStabilizingDelay_;
+  //in flow member vars
+  mrs_natural inObservations_;
+  mrs_natural inSamples_;
+  mrs_real israte_;
+  mrs_string inObsNames_;
+  mrs_natural inStabilizingDelay_;
 
-	//out flow member vars
-	mrs_natural onObservations_;
-	mrs_natural onSamples_;
-	mrs_real osrate_;
-	mrs_string onObsNames_;
-	mrs_natural onStabilizingDelay_;
+  //out flow member vars
+  mrs_natural onObservations_;
+  mrs_natural onSamples_;
+  mrs_real osrate_;
+  mrs_string onObsNames_;
+  mrs_natural onStabilizingDelay_;
 
-	//temporary in flow vars
-	mrs_natural tinObservations_;
-	mrs_natural tinSamples_;
-	mrs_real		tisrate_;
-	mrs_string	tinObsNames_;
-	mrs_natural tinStabilizingDelay_;
+  //temporary in flow vars
+  mrs_natural tinObservations_;
+  mrs_natural tinSamples_;
+  mrs_real		tisrate_;
+  mrs_string	tinObsNames_;
+  mrs_natural tinStabilizingDelay_;
 
-	//temporary out flow vars
-	mrs_natural tonObservations_;
-	mrs_natural tonSamples_;
-	mrs_real		tosrate_;
-	mrs_string	tonObsNames_;
-	mrs_natural tonStabilizingDelay_;
+  //temporary out flow vars
+  mrs_natural tonObservations_;
+  mrs_natural tonSamples_;
+  mrs_real		tosrate_;
+  mrs_string	tonObsNames_;
+  mrs_natural tonStabilizingDelay_;
 
-	mrs_natural irows_;
-	mrs_natural icols_;
-	mrs_natural orows_;
-	mrs_natural ocols_;
+  mrs_natural irows_;
+  mrs_natural icols_;
+  mrs_natural orows_;
+  mrs_natural ocols_;
 
-	realvec inTick_;
-	realvec outTick_;
+  realvec inTick_;
+  realvec outTick_;
 
-	Scheduler scheduler_;
+  Scheduler scheduler_;
 
-	// scheduling purposes
-	mrs_natural count_;
+  // scheduling purposes
+  mrs_natural count_;
 
-	bool active_;
+  bool active_;
 
-	mrs_natural addToStabilizingDelay_; // value which is added to inStabilizingDelay to produce onStabilizingDelay.  Defaults to 0.
+  mrs_natural addToStabilizingDelay_; // value which is added to inStabilizingDelay to produce onStabilizingDelay.  Defaults to 0.
 
-	 // is true while inside update() -> used for children to check if an update came from their parent
-	bool isUpdating_;
+  // is true while inside update() -> used for children to check if an update came from their parent
+  bool isUpdating_;
 
-	std::string MATLABscript_;
+  std::string MATLABscript_;
 
-	// control paths
-	std::string getControlRelativePath(std::string cname) const;
-	std::string getControlLocalPath(std::string cname) const;
+  // control paths
+  std::string getControlRelativePath(std::string cname) const;
+  std::string getControlLocalPath(std::string cname) const;
 
-	/**
-	 * @brief Updates internal state due to a control change.
-	 * @param sender The control that triggered the update; more precisely,
-	 * any control passed to the update() method - could be an invalid one.
-	 * @protected
-	 *
-	 * Implement this method in subclass to define specific response
-	 * to control changes.
-	 */
-	virtual void myUpdate(MarControlPtr sender);
+  /**
+   * @brief Updates internal state due to a control change.
+   * @param sender The control that triggered the update; more precisely,
+   * any control passed to the update() method - could be an invalid one.
+   * @protected
+   *
+   * Implement this method in subclass to define specific response
+   * to control changes.
+   */
+  virtual void myUpdate(MarControlPtr sender);
 
-	virtual void localActivate(bool state);
+  virtual void localActivate(bool state);
 
-	/**
-	 * @brief Processes data.
-	 * @param in Input data to read.
-	 * @param out Output data to write.
-	 * @protected
-	 *
-	 * Implement this method in subclass to define specific data processing.
-	 */
-	virtual void myProcess(realvec& in, realvec& out) = 0;
+  /**
+   * @brief Processes data.
+   * @param in Input data to read.
+   * @param out Output data to write.
+   * @protected
+   *
+   * Implement this method in subclass to define specific data processing.
+   */
+  virtual void myProcess(realvec& in, realvec& out) = 0;
 
-	// Assignment operator (should never be called!) [!]
-	MarSystem& operator=(const MarSystem&)
-	{
-		assert(0);
-		return *this;
-	}
+  // Assignment operator (should never be called!) [!]
+  MarSystem& operator=(const MarSystem&)
+  {
+    assert(0);
+    return *this;
+  }
 
-	virtual std::ostream& put_html_worker(std::ostream& o);
+  virtual std::ostream& put_html_worker(std::ostream& o);
 
 public:
-	MarSystem(std::string type, std::string name);
-	MarSystem(const MarSystem& a);	// copy constructor
-	virtual ~MarSystem();
+  MarSystem(std::string type, std::string name);
+  MarSystem(const MarSystem& a);	// copy constructor
+  virtual ~MarSystem();
 
-	virtual MarSystem* clone() const = 0;
-	void relinkControls(const MarSystem& a);
+  virtual MarSystem* clone() const = 0;
+  void relinkControls(const MarSystem& a);
 
-	// Naming methods
-	virtual void setName(std::string name);
-	virtual void setType(std::string type);
-	std::string getType() const;
-	std::string getName() const;
-	std::string getPrefix() const;
-	std::string getAbsPath() const;
-	void updatePath();
+  // Naming methods
+  virtual void setName(std::string name);
+  virtual void setType(std::string type);
+  std::string getType() const;
+  std::string getName() const;
+  std::string getPrefix() const;
+  std::string getAbsPath() const;
+  void updatePath();
 
-    const std::map<std::string, MarControlPtr> & controls() { return controls_; }
+  const std::map<std::string, MarControlPtr> & controls() { return controls_; }
 
-	// Link controls
-	bool linkControl(std::string cname1, std::string cname2, bool update = true);
-	DEPRECATED(bool linkctrl(std::string cname1, std::string cname2, bool update = true))
-	{
-		return linkControl(cname1, cname2, update);
-	}
+  // Link controls
+  bool linkControl(std::string cname1, std::string cname2, bool update = true);
+  DEPRECATED(bool linkctrl(std::string cname1, std::string cname2, bool update = true))
+  {
+    return linkControl(cname1, cname2, update);
+  }
 
-	// Update controls
-	bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true);
-	bool updControl(const char* cname, MarControlPtr newcontrol, bool upd = true);
-	bool updControl(std::string cname, MarControlPtr newcontrol, bool upd = true);
-	void updControl(EvEvent* me);
-	void updControl(TmTime t, EvEvent* ev);
-	void updControl(TmTime t, Repeat r, EvEvent* ev);
-	void updControl(TmTime t, std::string cname, MarControlPtr control);
-	void updControl(TmTime t, Repeat r, std::string cname, MarControlPtr control);
+  // Update controls
+  bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true);
+  bool updControl(const char* cname, MarControlPtr newcontrol, bool upd = true);
+  bool updControl(std::string cname, MarControlPtr newcontrol, bool upd = true);
+  void updControl(EvEvent* me);
+  void updControl(TmTime t, EvEvent* ev);
+  void updControl(TmTime t, Repeat r, EvEvent* ev);
+  void updControl(TmTime t, std::string cname, MarControlPtr control);
+  void updControl(TmTime t, Repeat r, std::string cname, MarControlPtr control);
 
-	DEPRECATED(bool updctrl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true))
-	{
-		return updControl(control, newcontrol, upd);
-	}
+  DEPRECATED(bool updctrl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true))
+  {
+    return updControl(control, newcontrol, upd);
+  }
 
-	DEPRECATED(bool updctrl(const char *cname, MarControlPtr newcontrol, bool upd = true))
-	{
-		return updControl(cname, newcontrol, upd);
-	}
+  DEPRECATED(bool updctrl(const char *cname, MarControlPtr newcontrol, bool upd = true))
+  {
+    return updControl(cname, newcontrol, upd);
+  }
 
-	DEPRECATED(bool updctrl(std::string cname, MarControlPtr newcontrol, bool upd = true))
-	{
-		return updControl(cname, newcontrol, upd);
-	}
+  DEPRECATED(bool updctrl(std::string cname, MarControlPtr newcontrol, bool upd = true))
+  {
+    return updControl(cname, newcontrol, upd);
+  }
 
-	// set controls (does not call update())
-	bool setControl(std::string cname, MarControlPtr newcontrol)
-	{
-		return updControl(cname, newcontrol, NOUPDATE);
-	}
-	bool setctrl(const char *cname, MarControlPtr newcontrol)
-	{
-		return updControl(std::string(cname), newcontrol, NOUPDATE);
-	}
-	bool setctrl(std::string cname, MarControlPtr newcontrol)
-	{
-		return updControl(cname, newcontrol, NOUPDATE);
-	}
-	bool setctrl(MarControlPtr control, MarControlPtr newcontrol)
-	{
-		return updControl(control, newcontrol, NOUPDATE);
-	}
+  // set controls (does not call update())
+  bool setControl(std::string cname, MarControlPtr newcontrol)
+  {
+    return updControl(cname, newcontrol, NOUPDATE);
+  }
+  bool setctrl(const char *cname, MarControlPtr newcontrol)
+  {
+    return updControl(std::string(cname), newcontrol, NOUPDATE);
+  }
+  bool setctrl(std::string cname, MarControlPtr newcontrol)
+  {
+    return updControl(cname, newcontrol, NOUPDATE);
+  }
+  bool setctrl(MarControlPtr control, MarControlPtr newcontrol)
+  {
+    return updControl(control, newcontrol, NOUPDATE);
+  }
 
-	// query controls
-	bool hasControl(MarControlPtr control, bool searchChildren = true);
-	bool hasControlLocal(MarControlPtr control)
-	{
-		return hasControl(control, false);
-	}
-	bool hasControl(std::string cname, bool searchChildren = true);
-	bool hasControlLocal(std::string cname)
-	{
-		return hasControl(cname, false);
-	}
-	
-	bool isComposite()
-	{
-		return isComposite_;
-	}
+  // query controls
+  bool hasControl(MarControlPtr control, bool searchChildren = true);
+  bool hasControlLocal(MarControlPtr control)
+  {
+    return hasControl(control, false);
+  }
+  bool hasControl(std::string cname, bool searchChildren = true);
+  bool hasControlLocal(std::string cname)
+  {
+    return hasControl(cname, false);
+  }
 
-	// get controls
-	MarControlPtr getControl(std::string cname, bool searchParent = false, bool searchChildren = true);
-	MarControlPtr getControlLocal(std::string cname)
-	{
-		return getControl(cname, false, false);
-	}
-	MarControlPtr getctrl(std::string cname)
-	{
-		return getControl(cname);
-	}
+  bool isComposite()
+  {
+    return isComposite_;
+  }
 
-	//add controls
-	bool addControl(std::string cname, MarControlPtr v);
-	bool addControl(std::string cname, MarControlPtr v, MarControlPtr& ptr);
-	bool addctrl(std::string cname, MarControlPtr v)
-	{
-		return addControl(cname, v);
-	}
-	bool addctrl(std::string cname, MarControlPtr v, MarControlPtr& ptr)
-	{
-		return addControl(cname, v, ptr);
-	}
+  // get controls
+  MarControlPtr getControl(std::string cname, bool searchParent = false, bool searchChildren = true);
+  MarControlPtr getControlLocal(std::string cname)
+  {
+    return getControl(cname, false, false);
+  }
+  MarControlPtr getctrl(std::string cname)
+  {
+    return getControl(cname);
+  }
 
-	std::map<std::string, MarControlPtr> getControls(std::map<std::string, MarControlPtr>* cmap = NULL);
-	const std::map<std::string, MarControlPtr>& getLocalControls();
+  //add controls
+  bool addControl(std::string cname, MarControlPtr v);
+  bool addControl(std::string cname, MarControlPtr v, MarControlPtr& ptr);
+  bool addctrl(std::string cname, MarControlPtr v)
+  {
+    return addControl(cname, v);
+  }
+  bool addctrl(std::string cname, MarControlPtr v, MarControlPtr& ptr)
+  {
+    return addControl(cname, v, ptr);
+  }
 
-	// set control state
-	void setControlState(std::string cname, bool state);
-	void setctrlState(std::string cname, bool state)
-	{
-		setControlState(cname, state);
-	}
-	void setctrlState(const char * cname, bool state)
-	{
-		setControlState(std::string(cname), state);
-	}
-	void setctrlState(MarControlPtr control, bool state)
-	{
-		control->setState(state);
-	}
+  std::map<std::string, MarControlPtr> getControls(std::map<std::string, MarControlPtr>* cmap = NULL);
+  const std::map<std::string, MarControlPtr>& getLocalControls();
 
-	// get control state
-	bool hasControlState(std::string cname);
-	bool hasctrlState(std::string cname)
-	{
-		return hasControlState(cname);
-	}
-	bool hasctrlState(char* cname)
-	{
-		return hasControlState(std::string(cname));
-	}
-	bool hasctrlState(MarControlPtr control)
-	{
-		return control->hasState();
-	}
+  // set control state
+  void setControlState(std::string cname, bool state);
+  void setctrlState(std::string cname, bool state)
+  {
+    setControlState(cname, state);
+  }
+  void setctrlState(const char * cname, bool state)
+  {
+    setControlState(std::string(cname), state);
+  }
+  void setctrlState(MarControlPtr control, bool state)
+  {
+    control->setState(state);
+  }
 
-	// Composite interface
-	virtual bool addMarSystem(MarSystem *marsystem);
-	virtual MarSystem* getChildMarSystem(std::string childPath);
-	virtual void setParent(const MarSystem* parent);
-	MarSystem* getParent() const
-	{
-		return parent_;
-	}
-	virtual std::vector<MarSystem*> getChildren();
+  // get control state
+  bool hasControlState(std::string cname);
+  bool hasctrlState(std::string cname)
+  {
+    return hasControlState(cname);
+  }
+  bool hasctrlState(char* cname)
+  {
+    return hasControlState(std::string(cname));
+  }
+  bool hasctrlState(MarControlPtr control)
+  {
+    return control->hasState();
+  }
 
-	// Processing and update methods
-	bool isUpdating();
-	void checkFlow(realvec&in, realvec& out);
-	void update(MarControlPtr sender = MarControlPtr());
-	void process(realvec& in, realvec& out);
-	void tick();
+  // Composite interface
+  virtual bool addMarSystem(MarSystem *marsystem);
+  virtual MarSystem* getChildMarSystem(std::string childPath);
+  virtual void setParent(const MarSystem* parent);
+  MarSystem* getParent() const
+  {
+    return parent_;
+  }
+  virtual std::vector<MarSystem*> getChildren();
 
-	std::string toString();
-	std::string toStringShort();
-	std::string toStringGraphViz();
-	void toStringGraphViz(std::ostringstream& os_defs, std::ostringstream& os_links);
+  // Processing and update methods
+  bool isUpdating();
+  void checkFlow(realvec&in, realvec& out);
+  void update(MarControlPtr sender = MarControlPtr());
+  void process(realvec& in, realvec& out);
+  void tick();
 
-	virtual marostring& toString(marostring& m);
-	
-	// Derived class such as Composite can override put,
-	// essentially overriding operator<<
-	virtual std::ostream& put(std::ostream& o, bool verbose);
+  std::string toString();
+  std::string toStringShort();
+  std::string toStringGraphViz();
+  void toStringGraphViz(std::ostringstream& os_defs, std::ostringstream& os_links);
 
-	// The opposite of toString() and put() above, read in the parameters for a system.
-	virtual std::istream& put(std::istream& is);
+  virtual marostring& toString(marostring& m);
 
-	// Output the MarSystem as an HTML document with nested lists
-	virtual std::ostream& put_html(std::ostream& o);
+  // Derived class such as Composite can override put,
+  // essentially overriding operator<<
+  virtual std::ostream& put(std::ostream& o, bool verbose);
 
-	// the usual stream IO
-	marsyas_EXPORT friend std::ostream& operator<<(std::ostream&, MarSystem&);
+  // The opposite of toString() and put() above, read in the parameters for a system.
+  virtual std::istream& put(std::istream& is);
 
-	// controls serialization methods
-	marsyas_EXPORT friend std::istream& operator>>(std::istream&, MarSystem&); //[!]
-	marsyas_EXPORT friend std::ostream& operator<<(std::ostream&, const std::map<std::string,MarControlPtr>&);
+  // Output the MarSystem as an HTML document with nested lists
+  virtual std::ostream& put_html(std::ostream& o);
 
-	// MATLAB scripting
-	void setMATLABscript(std::string script);
-	std::string getMATLABscript();
+  // the usual stream IO
+  marsyas_EXPORT friend std::ostream& operator<<(std::ostream&, MarSystem&);
 
-	//////////////////////////////////////////////////////////////////////////
-	// EvEvent methods
-	//////////////////////////////////////////////////////////////////////////
-	mrs_natural getTime(std::string timer_name);
-	void updtimer(std::string tmr_ctrl_path, TmControlValue value);
-	void updtimer(std::string tmr_path, TmParam param);
-	void updtimer(std::string tmr_path, std::vector<TmParam> params);
-	void addTimer(std::string tmr_class, std::string tmr_ident);
-	void addTimer(std::string tmr_class, std::string tmr_ident, std::vector<TmParam> params);
-	//void addTimer(TmTimer* t);
-	void removeTimer(std::string name);
+  // controls serialization methods
+  marsyas_EXPORT friend std::istream& operator>>(std::istream&, MarSystem&); //[!]
+  marsyas_EXPORT friend std::ostream& operator<<(std::ostream&, const std::map<std::string,MarControlPtr>&);
 
-	void updctrl(EvEvent* me);
-	//void updctrl(std::string time, EvEvent* ev); //clashes with void upctrl(std::string cname, 0);
-	//void updctrl(std::string time, Repeat rep, EvEvent* ev);
-	//void updctrl(Repeat rep, EvEvent* ev);
-	//void updctrl(std::string time, std::string cname, MarControlPtr control);
-	//void updctrl(std::string time, Repeat rep, std::string cname, MarControlPtr control);
-	//void updctrl(Repeat rep, std::string cname, MarControlPtr control);
-	void updctrl(TmTime t, EvEvent* ev);
-	void updctrl(TmTime t, Repeat rep, EvEvent* ev);
-	void updctrl(TmTime t, std::string cname, MarControlPtr control);
-	void updctrl(TmTime t, Repeat rep, std::string cname, MarControlPtr control);
-	//////////////////////////////////////////////////////////////////////////
+  // MATLAB scripting
+  void setMATLABscript(std::string script);
+  std::string getMATLABscript();
 
-	//control pointers [!] should these be public?
-	MarControlPtr ctrl_inSamples_;
-	MarControlPtr ctrl_inObservations_;
-	MarControlPtr ctrl_israte_;
-	MarControlPtr ctrl_inObsNames_;
-	MarControlPtr ctrl_inStabilizingDelay_;
-	MarControlPtr ctrl_onSamples_;
-	MarControlPtr ctrl_onObservations_;
-	MarControlPtr ctrl_osrate_;
-	MarControlPtr ctrl_onObsNames_;
-	MarControlPtr ctrl_onStabilizingDelay_;
-	MarControlPtr ctrl_debug_;
-	MarControlPtr ctrl_verbose_;
-	MarControlPtr ctrl_mute_;
-	MarControlPtr ctrl_active_;
-	MarControlPtr ctrl_processedData_;
+  //////////////////////////////////////////////////////////////////////////
+  // EvEvent methods
+  //////////////////////////////////////////////////////////////////////////
+  mrs_natural getTime(std::string timer_name);
+  void updtimer(std::string tmr_ctrl_path, TmControlValue value);
+  void updtimer(std::string tmr_path, TmParam param);
+  void updtimer(std::string tmr_path, std::vector<TmParam> params);
+  void addTimer(std::string tmr_class, std::string tmr_ident);
+  void addTimer(std::string tmr_class, std::string tmr_ident, std::vector<TmParam> params);
+  //void addTimer(TmTimer* t);
+  void removeTimer(std::string name);
+
+  void updctrl(EvEvent* me);
+  //void updctrl(std::string time, EvEvent* ev); //clashes with void upctrl(std::string cname, 0);
+  //void updctrl(std::string time, Repeat rep, EvEvent* ev);
+  //void updctrl(Repeat rep, EvEvent* ev);
+  //void updctrl(std::string time, std::string cname, MarControlPtr control);
+  //void updctrl(std::string time, Repeat rep, std::string cname, MarControlPtr control);
+  //void updctrl(Repeat rep, std::string cname, MarControlPtr control);
+  void updctrl(TmTime t, EvEvent* ev);
+  void updctrl(TmTime t, Repeat rep, EvEvent* ev);
+  void updctrl(TmTime t, std::string cname, MarControlPtr control);
+  void updctrl(TmTime t, Repeat rep, std::string cname, MarControlPtr control);
+  //////////////////////////////////////////////////////////////////////////
+
+  //control pointers [!] should these be public?
+  MarControlPtr ctrl_inSamples_;
+  MarControlPtr ctrl_inObservations_;
+  MarControlPtr ctrl_israte_;
+  MarControlPtr ctrl_inObsNames_;
+  MarControlPtr ctrl_inStabilizingDelay_;
+  MarControlPtr ctrl_onSamples_;
+  MarControlPtr ctrl_onObservations_;
+  MarControlPtr ctrl_osrate_;
+  MarControlPtr ctrl_onObsNames_;
+  MarControlPtr ctrl_onStabilizingDelay_;
+  MarControlPtr ctrl_debug_;
+  MarControlPtr ctrl_verbose_;
+  MarControlPtr ctrl_mute_;
+  MarControlPtr ctrl_active_;
+  MarControlPtr ctrl_processedData_;
 };
 
 // Helper function for adding a prefix to each of the observation names.

@@ -11,19 +11,19 @@
 class PlayBox : public QGroupBox
 {
 public:
-	PlayBox(QWidget *parent=0);
+  PlayBox(QWidget *parent=0);
 
-	void updateCurrentlyPlaying(MusicTrack *track);
+  void updateCurrentlyPlaying(MusicTrack *track);
 
 private:
-	QLabel *_title;
-	QLabel *_artist;
-	QLabel *_album;
-	QLabel *_location;
-	QLabel *_genre;
-	QLabel *_kind;
-	QLabel *_year;
-	QLabel *_length;
+  QLabel *_title;
+  QLabel *_artist;
+  QLabel *_album;
+  QLabel *_location;
+  QLabel *_genre;
+  QLabel *_kind;
+  QLabel *_year;
+  QLabel *_length;
 };
 
 #endif /* PLAYBOX_H */

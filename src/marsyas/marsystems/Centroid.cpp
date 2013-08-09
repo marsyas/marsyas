@@ -25,8 +25,8 @@ using namespace Marsyas;
 
 Centroid::Centroid(mrs_string name):MarSystem("Centroid", name)
 {
-    m0_ = 0.0;
-    m1_ = 0.0;
+  m0_ = 0.0;
+  m1_ = 0.0;
 }
 
 Centroid::~Centroid()
@@ -36,13 +36,13 @@ Centroid::~Centroid()
 MarSystem*
 Centroid::clone() const
 {
-    return new Centroid(*this);
+  return new Centroid(*this);
 }
 
 void
 Centroid::myUpdate(MarControlPtr sender)
 {
-	(void) sender;  //suppress warning of unused parameter(s)
+  (void) sender;  //suppress warning of unused parameter(s)
 
   MRSDIAG("Centroid.cpp - Centroid:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
@@ -54,22 +54,22 @@ Centroid::myUpdate(MarControlPtr sender)
 void
 Centroid::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o,t;
-	// computer centroid of observations for each time sample
-	// using zero and first-order moments
-	for (t = 0; t < inSamples_; t++)
-	{
-			m0_ = 0.0;
-			m1_ = 0.0;
-			for (o=0; o < inObservations_; o++)
-			{
-					m1_ += o * in(o,t);
-					m0_ += in(o,t);
-			}
-			if (m0_ != 0.0)
-					out(0,t) = (m1_ / m0_) / inObservations_;
-			else
-					out(0,t) = 0.5;
-	}
+  mrs_natural o,t;
+  // computer centroid of observations for each time sample
+  // using zero and first-order moments
+  for (t = 0; t < inSamples_; t++)
+  {
+    m0_ = 0.0;
+    m1_ = 0.0;
+    for (o=0; o < inObservations_; o++)
+    {
+      m1_ += o * in(o,t);
+      m0_ += in(o,t);
+    }
+    if (m0_ != 0.0)
+      out(0,t) = (m1_ / m0_) / inObservations_;
+    else
+      out(0,t) = 0.5;
+  }
 
 }

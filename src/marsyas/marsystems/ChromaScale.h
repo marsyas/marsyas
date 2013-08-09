@@ -14,29 +14,29 @@
 
 namespace Marsyas
 {
-	/**
-	\ingroup MarSystem
-	\brief Scale related features of Chroma vector
+/**
+\ingroup MarSystem
+\brief Scale related features of Chroma vector
 
-	Controls:
-		
-	*/
-	
-	class ChromaScale: public MarSystem
-	{
-	private:
-		void addControls();
-		void myUpdate(MarControlPtr sender);
-		
-	public:
-		ChromaScale(std::string name);
-		ChromaScale(const ChromaScale& a);
-		~ChromaScale();
-		
-		MarSystem* clone() const;
-		
-		void myProcess(realvec& in, realvec& out);
-	};
+Controls:
+
+*/
+
+class ChromaScale: public MarSystem
+{
+private:
+  void addControls();
+  void myUpdate(MarControlPtr sender);
+
+public:
+  ChromaScale(std::string name);
+  ChromaScale(const ChromaScale& a);
+  ~ChromaScale();
+
+  MarSystem* clone() const;
+
+  void myProcess(realvec& in, realvec& out);
+};
 }
 
 #endif

@@ -1,4 +1,4 @@
-#ifndef COLOURMAP_H 
+#ifndef COLOURMAP_H
 #define COLOURMAP_H
 
 // Color definitions
@@ -23,7 +23,7 @@
 
 /***********************************************************
 
-ColourMapDisplay is an widget containing the widgets 
+ColourMapDisplay is an widget containing the widgets
 pertaining to the display of the genres of a grid square.
 
 
@@ -31,31 +31,31 @@ pertaining to the display of the genres of a grid square.
 
 class ColourMapDisplay : public QWidget
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	ColourMapDisplay(QWidget *parent = 0);
-	~ColourMapDisplay();
+  ColourMapDisplay(QWidget *parent = 0);
+  ~ColourMapDisplay();
 
 public slots:
-	void updateSquare(int * genreDensity, int numGenres);
+  void updateSquare(int * genreDensity, int numGenres);
 
 private:
-	int startPos;
-	int * genreDensity;
-	int numGenres;
-	SquareRenderArea *renderArea;
-	QGroupBox *colourKey;
-	QLabel classical;
-	QLabel blues;
-	QLabel country;
-	QLabel disco;
-	QLabel hiphop;
-	QLabel jazz;
-	QLabel metal;
-	QLabel reggae;
-	QLabel rock;
-	QLabel pop;
-	
+  int startPos;
+  int * genreDensity;
+  int numGenres;
+  SquareRenderArea *renderArea;
+  QGroupBox *colourKey;
+  QLabel classical;
+  QLabel blues;
+  QLabel country;
+  QLabel disco;
+  QLabel hiphop;
+  QLabel jazz;
+  QLabel metal;
+  QLabel reggae;
+  QLabel rock;
+  QLabel pop;
+
 };
 #endif /* COLOURMAP_H */

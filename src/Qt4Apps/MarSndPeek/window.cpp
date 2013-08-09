@@ -17,7 +17,7 @@ Window::Window(string inAudioFileName)
   glWidget->setMaximumSize(500,500);
 
   createActions();
-  createMenus();  
+  createMenus();
 
   // Create the x,y,z sliders
   xSlider = createRotationSlider();
@@ -89,7 +89,7 @@ Window::Window(string inAudioFileName)
   x_slider_layout->addWidget(x_slider_label);
   x_slider_layout->addWidget(xSlider);
   gl_layout->addLayout(x_slider_layout);
-	
+
   QHBoxLayout *y_slider_layout = new QHBoxLayout;
   QLabel *y_slider_label = new QLabel(("Y"));
   y_slider_layout->addWidget(y_slider_label);
@@ -131,7 +131,7 @@ Window::Window(string inAudioFileName)
   zSlider->setValue(0 * 16);
 
   yScaleSlider->setValue(350);
-	
+
   setWindowTitle(tr("MarSndPeek"));
 }
 
@@ -168,7 +168,7 @@ void Window::createMenus()
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAct);
 }
- 
+
 void Window::createActions()
 {
   openAct = new QAction(tr("&Open..."), this);
@@ -180,11 +180,11 @@ void Window::createActions()
   connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 }
 
-void 
+void
 Window::about()
 {
-  QMessageBox::about(this, tr("Marsyas MarSndPeek"),  
-					 tr("Marsyas MarSndPeek : A graphical user interface for real-time visualization \n of audio data, including waterfall spectrograms, waveform, and statistics. \n \n Inspired by sndpeek :  \n http://soundlab.cs.princeton.edu/software/sndpeek/ \n \n \n written by sness (c) 2009 GPL - sness@sness.net"));
+  QMessageBox::about(this, tr("Marsyas MarSndPeek"),
+                     tr("Marsyas MarSndPeek : A graphical user interface for real-time visualization \n of audio data, including waterfall spectrograms, waveform, and statistics. \n \n Inspired by sndpeek :  \n http://soundlab.cs.princeton.edu/software/sndpeek/ \n \n \n written by sness (c) 2009 GPL - sness@sness.net"));
 
 }
 

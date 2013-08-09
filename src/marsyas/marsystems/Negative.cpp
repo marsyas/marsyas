@@ -33,18 +33,18 @@ Negative::~Negative()
 MarSystem*
 Negative::clone() const
 {
-	return new Negative(*this);
+  return new Negative(*this);
 }
 
 void
 Negative::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
-	for (t = 0; t < inSamples_; t++)
-	{
-		for (o = 0; o < inObservations_; o++)
-		{
-			out(o, t) = -in(o, t);
-		}
-	}
+  mrs_natural t,o;
+  for (t = 0; t < inSamples_; t++)
+  {
+    for (o = 0; o < inObservations_; o++)
+    {
+      out(o, t) = -in(o, t);
+    }
+  }
 }

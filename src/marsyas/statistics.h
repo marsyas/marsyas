@@ -23,13 +23,13 @@
 #include <cmath>
 #include <cstdio>
 #include <vector>
-#include <limits> 
+#include <limits>
 #include "common_header.h"
 #include "realvec.h"
 
 namespace Marsyas
 {
-/** 
+/**
 \class statistics
 	\ingroup NotmarCore
 \brief Assorted Stastical Routines
@@ -39,19 +39,19 @@ namespace Marsyas
 class marsyas_EXPORT statistics
 {
 private:
-	static mrs_real momentN(const realvec& zData, const realvec& weights, int n);
-	static realvec zDataWeighted(const realvec& data, const realvec& weights, mrs_real mean);
+  static mrs_real momentN(const realvec& zData, const realvec& weights, int n);
+  static realvec zDataWeighted(const realvec& data, const realvec& weights, mrs_real mean);
 
 public:
 
-	statistics();
-	~statistics();
+  statistics();
+  ~statistics();
 
-	static mrs_real meanWeighted(const realvec& data, const realvec& weights);
-	static mrs_real stddevWeighted(const realvec& data, const realvec& weights, mrs_real mean);
-	static mrs_real varWeighted(const realvec& data, const realvec& weights, mrs_real mean);
-	static mrs_real skewnessWeighted(const realvec& data, const realvec& weights, mrs_real mean);
-	static mrs_real kurtosisWeighted(const realvec& data, const realvec& weights, mrs_real mean);
+  static mrs_real meanWeighted(const realvec& data, const realvec& weights);
+  static mrs_real stddevWeighted(const realvec& data, const realvec& weights, mrs_real mean);
+  static mrs_real varWeighted(const realvec& data, const realvec& weights, mrs_real mean);
+  static mrs_real skewnessWeighted(const realvec& data, const realvec& weights, mrs_real mean);
+  static mrs_real kurtosisWeighted(const realvec& data, const realvec& weights, mrs_real mean);
 };
 
 

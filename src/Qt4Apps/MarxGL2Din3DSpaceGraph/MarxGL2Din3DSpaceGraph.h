@@ -17,7 +17,7 @@
 */
 
 
-#ifndef MARXGL2DIN3DSPACEGRAPH_H 
+#ifndef MARXGL2DIN3DSPACEGRAPH_H
 #define MARXGL2DIN3DSPACEGRAPH_H
 
 #include <QGLWidget>
@@ -28,7 +28,7 @@
 
 class MarxGL2Din3DSpaceGraph : public QGLWidget
 {
-  
+
 public:
 
   MarxGL2Din3DSpaceGraph( QWidget *parent, long b=0 );
@@ -56,7 +56,7 @@ private:
   long buffersize;
 
   float x_axis_stretch;
-  float y_axis_stretch; 
+  float y_axis_stretch;
 
   float y_normalize_factor;
   float x_translation;

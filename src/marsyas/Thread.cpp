@@ -15,13 +15,13 @@
 #include "common_source.h"
 
 #if (defined(MARSYAS_LINUX) || defined(MARSYAS_CYGWIN) || defined(MARSYAS_MACOSX))
-  #include <pthread.h>
-  #define THREAD_TYPE
-  typedef pthread_t THREAD_HANDLE;
-  typedef void * THREAD_RETURN;
-  typedef void * (*THREAD_FUNCTION)(void *);
-  typedef pthread_mutex_t MUTEX;
-#endif 
+#include <pthread.h>
+#define THREAD_TYPE
+typedef pthread_t THREAD_HANDLE;
+typedef void * THREAD_RETURN;
+typedef void * (*THREAD_FUNCTION)(void *);
+typedef pthread_mutex_t MUTEX;
+#endif
 
 
 
@@ -31,15 +31,15 @@
 
 #ifndef NOMINMAX
 #define NOMINMAX
-#endif 
+#endif
 
-  #include <windows.h>
-  #include <process.h>
-  #define THREAD_TYPE __stdcall
-  typedef unsigned long THREAD_HANDLE;
-  typedef unsigned THREAD_RETURN;
-  typedef unsigned (__stdcall *THREAD_FUNCTION)(void *);
-  typedef CRITICAL_SECTION MUTEX;
+#include <windows.h>
+#include <process.h>
+#define THREAD_TYPE __stdcall
+typedef unsigned long THREAD_HANDLE;
+typedef unsigned THREAD_RETURN;
+typedef unsigned (__stdcall *THREAD_FUNCTION)(void *);
+typedef CRITICAL_SECTION MUTEX;
 
 #endif
 
@@ -50,15 +50,15 @@
 
 #ifndef NOMINMAX
 #define NOMINMAX
-#endif 
+#endif
 
-  #include <windows.h>
-  #include <process.h>
-  #define THREAD_TYPE __stdcall
-  typedef unsigned long THREAD_HANDLE;
-  typedef unsigned THREAD_RETURN;
-  typedef unsigned (__stdcall *THREAD_FUNCTION)(void *);
-  typedef CRITICAL_SECTION MUTEX;
+#include <windows.h>
+#include <process.h>
+#define THREAD_TYPE __stdcall
+typedef unsigned long THREAD_HANDLE;
+typedef unsigned THREAD_RETURN;
+typedef unsigned (__stdcall *THREAD_FUNCTION)(void *);
+typedef CRITICAL_SECTION MUTEX;
 
 #endif
 
@@ -156,7 +156,7 @@ Mutex :: Mutex()
 
   InitializeCriticalSection(&mutex);
 
-#endif 
+#endif
 }
 
 Mutex :: ~Mutex()
@@ -169,7 +169,7 @@ Mutex :: ~Mutex()
 
   DeleteCriticalSection(&mutex);
 
-#endif 
+#endif
 }
 
 void Mutex :: lock()
@@ -182,7 +182,7 @@ void Mutex :: lock()
 
   EnterCriticalSection(&mutex);
 
-#endif 
+#endif
 }
 
 void Mutex :: unlock()
@@ -195,5 +195,5 @@ void Mutex :: unlock()
 
   LeaveCriticalSection(&mutex);
 
-#endif 
+#endif
 }

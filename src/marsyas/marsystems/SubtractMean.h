@@ -40,24 +40,24 @@ class marsyas_EXPORT SubtractMean: public MarSystem
 {
 private:
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
 public:
-	/// SubtractMean constructor.
-	SubtractMean(std::string name);
+  /// SubtractMean constructor.
+  SubtractMean(std::string name);
 
-	/// SubtractMean copy constructor.
-	SubtractMean(const SubtractMean& a);
+  /// SubtractMean copy constructor.
+  SubtractMean(const SubtractMean& a);
 
-	/// SubtractMean destructor.
-	~SubtractMean();
+  /// SubtractMean destructor.
+  ~SubtractMean();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

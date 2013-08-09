@@ -2,7 +2,7 @@
 #define GLWIDGET_H
 
 #include <QGLWidget>
-#include <QTimer> 
+#include <QTimer>
 
 #ifdef MARSYAS_MACOSX
 #  include <OpenGL/glu.h>
@@ -68,7 +68,7 @@ public slots:
   //   void powerSpectrumModeChanged(int val);
 
   //   void setWaterfallVisible(bool val);
-  
+
   void animate();
 
 
@@ -154,7 +154,7 @@ private:
   void redrawScene();
   void addDataToRingBuffer();
   void emitControlChanges();
-  
+
   // Marsyas
   MarSystem* m_marsystem;
   MarsyasQt::System *m_system;
@@ -184,8 +184,8 @@ private:
 
   // How big the dots should be
   double dot_size_multiplier;
-  
-  
+
+
   // Test variables
   double test_x;
   double test_y;
@@ -202,7 +202,7 @@ private:
 
   //   void setAudioStats();
 
-  
+
   // The disk object
   GLUquadricObj *qobj;
   GLuint startList;
@@ -225,13 +225,13 @@ private:
   float magnitude_cutoff;
 
   float num_vertices;
-  
+
   void buildDiskLists();
 
   float display_speed;
 
   int init;
-  
+
 };
 
 #endif

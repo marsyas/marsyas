@@ -46,7 +46,7 @@ AimHCL2::clone() const
   return new AimHCL2(*this);
 }
 
-void 
+void
 AimHCL2::addControls()
 {
   addControl("mrs_bool/do_lowpass", true , ctrl_do_lowpass_);
@@ -81,7 +81,7 @@ AimHCL2::myUpdate(MarControlPtr sender)
   //
   // Does the MarSystem need a reset?
   //
-  if (reseted_inobservations != ctrl_inObservations_->to<mrs_natural>() || 
+  if (reseted_inobservations != ctrl_inObservations_->to<mrs_natural>() ||
       reseted_lowpass_order != ctrl_lowpass_order_->to<mrs_natural>()) {
     is_reset = false;
   }
@@ -96,13 +96,13 @@ AimHCL2::myUpdate(MarControlPtr sender)
 }
 
 
-bool 
+bool
 AimHCL2::InitializeInternal() {
   time_constant_ = 1.0 / (2.0 * PI * ctrl_lowpass_cutoff_->to<mrs_real>());
   return true;
 }
 
-void 
+void
 AimHCL2::ResetInternal() {
   xn_ = 0.0;
   yn_ = 0.0;
@@ -169,7 +169,7 @@ AimHCL2::myProcess(realvec& in, realvec& out)
       }
     }
   }
-  
+
 
 
 }

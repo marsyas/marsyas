@@ -48,29 +48,29 @@ namespace Marsyas
 	- \b mrs_natural/beta [w] : Sets the azimuth resolution
 */
 
-	class ADRess: public MarSystem
-	{
-		private:
-			mrs_natural N4_, N2_;
-			mrs_real rel_, iml_, rer_, imr_;
-			mrs_real minAZr_;
-			mrs_real minAZl_;
-			mrs_real maxAZr_;
-			mrs_real maxAZl_;
+class ADRess: public MarSystem
+{
+private:
+  mrs_natural N4_, N2_;
+  mrs_real rel_, iml_, rer_, imr_;
+  mrs_real minAZr_;
+  mrs_real minAZl_;
+  mrs_real maxAZr_;
+  mrs_real maxAZl_;
 
-			MarControlPtr ctrl_beta_;
+  MarControlPtr ctrl_beta_;
 
-			void addControls();
-			void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-		public:
-			ADRess(std::string name);
-			ADRess(const ADRess& a);
-			~ADRess();
-			MarSystem* clone() const;
+public:
+  ADRess(std::string name);
+  ADRess(const ADRess& a);
+  ~ADRess();
+  MarSystem* clone() const;
 
-			void myProcess(realvec& in, realvec& out);
-	};
+  void myProcess(realvec& in, realvec& out);
+};
 
 }
 

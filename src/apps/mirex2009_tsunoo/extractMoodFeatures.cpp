@@ -9,7 +9,7 @@ using namespace Marsyas;
 void recognize(string sfName, string outName)
 {
   MarSystemManager mng;
-  
+
   mrs_realvec out, tmpvec;
   mrs_natural inputsize, wsize;
   mrs_real samplingFreq;
@@ -36,11 +36,11 @@ void recognize(string sfName, string outName)
   MarSystem* wksnet = mng.create("Series", "wksnet");
 
   inputs.read(sfName);
-  
+
   mfccnet->addMarSystem(mng.create("Spectrum","spc2"));
   mfccnet->addMarSystem(mng.create("PowerSpectrum","psc2"));
   mfccnet->addMarSystem(mng.create("MFCC", "mfcc"));
-  
+
   total->addMarSystem(src);
   total->addMarSystem(ff);
   net->addMarSystem(spc);
@@ -66,7 +66,7 @@ void recognize(string sfName, string outName)
   wksnet->updControl("WekaSink/wks/mrs_string/filename", outName);
   tmpvec.create(all->getctrl("mrs_natural/onObservations")->to<mrs_natural>()+1,1);
 
-  for(size_t i=0; i<inputs.size(); ++i){
+  for(size_t i=0; i<inputs.size(); ++i) {
     cout << "Now processing: " << inputs.entry(i) << endl;
 
     src->updControl("mrs_string/filename", inputs.entry(i));
@@ -88,13 +88,13 @@ void recognize(string sfName, string outName)
     all->tick();
 
     out = all->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-    
+
     wksnet->updControl("Annotator/ant/mrs_natural/label", inputs.labelNum(inputs.labelEntry(i)));  // change to just 0
     wksnet->updControl("WekaSink/wks/mrs_string/currentlyPlaying", inputs.entry(i));
     wksnet->process(out, tmpvec);
 
   }
-  
+
   delete all;
   delete wksnet;
 
@@ -104,20 +104,20 @@ int main(int argc, const char **argv)
 {
   string fileName;
   string outName;
-  
+
   if(argc < 2)
-    {
-      cout << "Please enter filename." << endl;
-      exit(1);
-    }
+  {
+    cout << "Please enter filename." << endl;
+    exit(1);
+  }
   else
-    {
-      fileName = argv[1];
-      outName = argv[2];
-    }
+  {
+    fileName = argv[1];
+    outName = argv[2];
+  }
   cout << "Processing file " << fileName << endl;
 
   recognize(fileName,outName);
   exit(0);
 }
-  
+

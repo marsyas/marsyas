@@ -16,9 +16,9 @@ FanoutNode::FanoutNode(QString name,QWidget* parent)
 {
   QFontMetrics fm(font());
   QSize size = fm.size(Qt::TextSingleLine,name_);
-  
+
   setGeometry((parent->width()-width())/2,10,
-			     size.width()+12,size.height()+12);
+              size.width()+12,size.height()+12);
   QPixmap pix(width(),height());
 
   QPainter paint;
@@ -42,16 +42,16 @@ FanoutNode::FanoutNode(QString name,QWidget* parent)
 
 /**
  * Constructor
- * Creates the pix map for the Fanout.... 
+ * Creates the pix map for the Fanout....
  */
 FanoutNode::FanoutNode(MarSystem* msys,QWidget* parent)
   :CompositeNode(msys,parent)
 {
   QFontMetrics fm(font());
   QSize size = fm.size(Qt::TextSingleLine,name_);
-  
+
   setGeometry((parent->width()-width())/2,10,
-			     size.width()+12,size.height()+12);
+              size.width()+12,size.height()+12);
   QPixmap pix(width(),height());
 
   QPainter paint;
@@ -76,14 +76,14 @@ FanoutNode::FanoutNode(MarSystem* msys,QWidget* parent)
 bool
 FanoutNode::append(MarSystemNode* newTail)
 {
-  if(CompositeNode::append(newTail)){//Check that it was new
+  if(CompositeNode::append(newTail)) { //Check that it was new
     newTail->setPrev(NULL);
     newTail->setNext(NULL);
     placeAllWidgets();//Resize the fanout to include this
     newTail->show();
-    if(newTail->isCollection()){
+    if(newTail->isCollection()) {
       connect(newTail,SIGNAL(resized(int,int,int,int)),
-	      this,SLOT(handleChildResize(int,int,int,int)));
+              this,SLOT(handleChildResize(int,int,int,int)));
     }
     return true;
   }
@@ -93,7 +93,7 @@ FanoutNode::append(MarSystemNode* newTail)
 bool
 FanoutNode::insert(int index,MarSystemNode* newWidget)
 {
-  if(CompositeNode::insert(index,newWidget)){//Check it was new
+  if(CompositeNode::insert(index,newWidget)) { //Check it was new
     newWidget->setPrev(NULL);
     newWidget->setNext(NULL);
     placeAllWidgets();//Resize the fanout to include this
@@ -106,7 +106,7 @@ FanoutNode::insert(int index,MarSystemNode* newWidget)
 bool
 FanoutNode::insert(MarSystemNode* before,MarSystemNode* newWidget)
 {
-  if(CompositeNode::insert(before,newWidget)){//Check it was new
+  if(CompositeNode::insert(before,newWidget)) { //Check it was new
     newWidget->setPrev(NULL);
     newWidget->setNext(NULL);
     placeAllWidgets();//Resize the fanout to include this
@@ -129,30 +129,30 @@ void
 FanoutNode::placeAllWidgets()
 {
   QFontMetrics fm(font());
-  QSize size = fm.size(Qt::TextSingleLine, name_); 
+  QSize size = fm.size(Qt::TextSingleLine, name_);
 
   int maxX=width();
   int maxY=height();
   vector<MarSystemNode*>::iterator itr;
   MarSystemNode* prev = NULL;
-  for(itr=nodes_.begin();itr!=nodes_.end();itr++){
+  for(itr=nodes_.begin(); itr!=nodes_.end(); itr++) {
     //Move the MarSYstemNode
-    if((*itr)->x()<0){
+    if((*itr)->x()<0) {
       (*itr)->move(5,(*itr)->y());
     }
-    if(prev!=NULL && (*itr)->x()<prev->x()+prev->width()){
+    if(prev!=NULL && (*itr)->x()<prev->x()+prev->width()) {
       (*itr)->move(prev->x()+prev->width()+5,(*itr)->y());
     }
     //Stretch the Width
-    if((*itr)->x()+(*itr)->width()+5>maxX){
+    if((*itr)->x()+(*itr)->width()+5>maxX) {
       maxX=(*itr)->x()+(*itr)->width()+5;
     }
     //move the MarSystemNode Down
-    if((*itr)->y()<size.height()+10){
+    if((*itr)->y()<size.height()+10) {
       (*itr)->move((*itr)->x(),size.height()+10);
     }
     //Stretch the COntatiner
-    if(((*itr)->getBottom()+10)>maxY){
+    if(((*itr)->getBottom()+10)>maxY) {
       maxY+=(*itr)->getBottom()+10;
     }
     prev=(*itr);
@@ -200,12 +200,12 @@ FanoutNode::paintEvent(QPaintEvent*)
   paint.setBrush(Qt::NoBrush);
   paint.setPen(Qt::red);
   paint.drawLine(width()/2,0,width()/2,size.height()+6);
-  if(nodes_.size()>0){
+  if(nodes_.size()>0) {
     MarSystemNode* first = nodes_.front();
     MarSystemNode* last = nodes_.back();
     paint.drawLine(first->getCenter(),size.height()+6,last->getCenter(),size.height()+6);
     vector<MarSystemNode*>::iterator itr;
-    for(itr=nodes_.begin();itr!=nodes_.end();itr++){
+    for(itr=nodes_.begin(); itr!=nodes_.end(); itr++) {
       paint.drawLine((*itr)->getCenter(),size.height()+6,(*itr)->getCenter(),(*itr)->y());
       paint.drawLine((*itr)->getCenter(),(*itr)->getBottom(),(*itr)->getCenter(),height()-5);
     }
@@ -214,7 +214,7 @@ FanoutNode::paintEvent(QPaintEvent*)
   paint.drawLine(width()/2,height()-5,width()/2,height());
 }
 
-void 
+void
 FanoutNode::handleChildResize(int x,int y,int w,int h)
 {
   //TODO is this all?

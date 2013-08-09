@@ -28,71 +28,71 @@ using namespace std;
 int
 printHelp(string progName)
 {
-	MRSDIAG("audioCompare.cpp - printUsage");
-	cerr << "audioCompare, MARSYAS" << endl;
-	cerr << "-------------------------" << endl;
-	cerr << "Usage: " <<endl;
-	cerr << progName<<" file1 file2"<<endl;
-	return (1);
+  MRSDIAG("audioCompare.cpp - printUsage");
+  cerr << "audioCompare, MARSYAS" << endl;
+  cerr << "-------------------------" << endl;
+  cerr << "Usage: " <<endl;
+  cerr << progName<<" file1 file2"<<endl;
+  return (1);
 }
 
 int
 isClose(string infile1, string infile2)
 {
-	MarSystemManager mng;
-	MarSystem* pnet = mng.create("Series", "pnet");
+  MarSystemManager mng;
+  MarSystem* pnet = mng.create("Series", "pnet");
 
-	MarSystem* invnet = mng.create("Series", "invnet");
-	invnet->addMarSystem(mng.create("SoundFileSource", "src2"));
-	invnet->updControl("SoundFileSource/src2/mrs_string/filename", infile2);
-	invnet->addMarSystem(mng.create("Negative", "neg"));
+  MarSystem* invnet = mng.create("Series", "invnet");
+  invnet->addMarSystem(mng.create("SoundFileSource", "src2"));
+  invnet->updControl("SoundFileSource/src2/mrs_string/filename", infile2);
+  invnet->addMarSystem(mng.create("Negative", "neg"));
 
-	MarSystem* fanout = mng.create("Fanout", "fanout");
-	fanout->addMarSystem(mng.create("SoundFileSource", "src1"));
-	fanout->updControl("SoundFileSource/src1/mrs_string/filename", infile1);
-	fanout->addMarSystem(invnet);
+  MarSystem* fanout = mng.create("Fanout", "fanout");
+  fanout->addMarSystem(mng.create("SoundFileSource", "src1"));
+  fanout->updControl("SoundFileSource/src1/mrs_string/filename", infile1);
+  fanout->addMarSystem(invnet);
 
-	pnet->addMarSystem(fanout);
-	pnet->addMarSystem(mng.create("Sum", "sum"));
-	pnet->linkControl("mrs_bool/hasData",
-	                  "Fanout/fanout/SoundFileSource/src1/mrs_bool/hasData");
+  pnet->addMarSystem(fanout);
+  pnet->addMarSystem(mng.create("Sum", "sum"));
+  pnet->linkControl("mrs_bool/hasData",
+                    "Fanout/fanout/SoundFileSource/src1/mrs_bool/hasData");
 
-	mrs_natural i;
-	mrs_natural samples =
-	    pnet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-	while ( pnet->getctrl("mrs_bool/hasData")->to<mrs_bool>() )
-	{
-		pnet->tick();
-		const realvec& processedData =
-		    pnet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-		for (i=0; i<samples; ++i)
-		{
-			//  useful for tweaking CLOSE_ENOUGH
-			//cout<<processedData(i)<<" ";
-			if ( abs(processedData(i)) > CLOSE_ENOUGH )
-			{
-				delete pnet;
-				return(1);
-			}
-		}
-	}
-	delete pnet;
-	return 0;
+  mrs_natural i;
+  mrs_natural samples =
+    pnet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  while ( pnet->getctrl("mrs_bool/hasData")->to<mrs_bool>() )
+  {
+    pnet->tick();
+    const realvec& processedData =
+      pnet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+    for (i=0; i<samples; ++i)
+    {
+      //  useful for tweaking CLOSE_ENOUGH
+      //cout<<processedData(i)<<" ";
+      if ( abs(processedData(i)) > CLOSE_ENOUGH )
+      {
+        delete pnet;
+        return(1);
+      }
+    }
+  }
+  delete pnet;
+  return 0;
 }
 
 
 int
 main(int argc, const char **argv)
 {
-	string progName = argv[0];
-	if (argc != 3)
-	{
-		return printHelp(progName);
-	}
+  string progName = argv[0];
+  if (argc != 3)
+  {
+    return printHelp(progName);
+  }
 
-	string file1 = argv[1];
-	string file2 = argv[2];
+  string file1 = argv[1];
+  string file2 = argv[2];
 
-	return isClose(file1, file2);
+  return isClose(file1, file2);
 }
 

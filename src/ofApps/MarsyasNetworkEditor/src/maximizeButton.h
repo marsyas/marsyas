@@ -13,19 +13,19 @@
 
 namespace Marsyas
 {
-	
-	
-	class MaximizeButton : public Widget
-	{
-	public:
-		
-		MaximizeButton(int x0, int y0, int w, int h, GraphicalEnvironment* env);
-		
-		void update();
-		void draw();
 
-	};
-	
+
+class MaximizeButton : public Widget
+{
+public:
+
+  MaximizeButton(int x0, int y0, int w, int h, GraphicalEnvironment* env);
+
+  void update();
+  void draw();
+
+};
+
 }
 
 #endif

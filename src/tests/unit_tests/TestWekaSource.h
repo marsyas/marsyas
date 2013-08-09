@@ -28,12 +28,12 @@ public:
   setUp()
   {
   }
-	// "destructor"
-	void tearDown()
-	{
-	}
+  // "destructor"
+  void tearDown()
+  {
+  }
 
-  void test_pass(void) 
+  void test_pass(void)
   {
     MarSystemManager mng;
     MarSystem* net = mng.create("Series/net");
@@ -49,11 +49,11 @@ public:
     processedData = net->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
     TS_TRACE("Checking WekaSource reading data line 2");
     TS_ASSERT_EQUALS(processedData(0,0), 0.082136);
-    
+
     delete net;
   }
 
-  void test_memory_fold(void) 
+  void test_memory_fold(void)
   {
     TS_TRACE("Checking memory leak in wekasource fold");
     MarSystemManager mng;

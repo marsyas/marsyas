@@ -33,19 +33,19 @@ AimSSI::~AimSSI()
 {
 }
 
-bool 
+bool
 AimSSI::InitializeInternal() {
   return true;
 }
 
-void 
+void
 AimSSI::ResetInternal() {
 }
 
 // Calculates log2 of number.
 double
 AimSSI::Log2(double n) {
-  // log(n)/log(2) is log2.  
+  // log(n)/log(2) is log2.
   return log( n ) / log( 2.0f );
 }
 
@@ -56,7 +56,7 @@ AimSSI::clone() const
   return new AimSSI(*this);
 }
 
-void 
+void
 AimSSI::addControls()
 {
   addControl("mrs_bool/do_pitch_cutoff", false , ctrl_do_pitch_cutoff_);
@@ -112,7 +112,7 @@ AimSSI::myUpdate(MarControlPtr sender)
 
 // sness - Because we can't pass the centre_frequencies from one
 // MarSystem to the next, we need to recalculate them here.
-void 
+void
 AimSSI::CalculateCentreFrequencies() {
   int num_channels = ctrl_inObservations_->to<mrs_natural>();
   double erb_max = ERBTools::Freq2ERB(ctrl_max_frequency_->to<mrs_real>());
@@ -128,7 +128,7 @@ AimSSI::CalculateCentreFrequencies() {
   }
 }
 
-int 
+int
 AimSSI::ExtractPitchIndex(realvec& in) const {
   // Generate temporal profile of the SAI
   std::vector<double> sai_temporal_profile(ctrl_inSamples_->to<mrs_natural>(), 0.0);
@@ -161,7 +161,7 @@ AimSSI::myProcess(realvec& in, realvec& out)
   if (ctrl_do_pitch_cutoff_->to<mrs_bool>()) {
     pitch_index = ExtractPitchIndex(in);
   }
-  
+
   for (mrs_natural o = 0; o < ctrl_inObservations_->to<mrs_natural>(); o++) {
     double centre_frequency = centre_frequencies_[o];
     // Copy the buffer from input to output, addressing by h-value
@@ -172,8 +172,8 @@ AimSSI::myProcess(realvec& in, realvec& out)
         double gamma_min = -1.0;
         double gamma_max = Log2(ctrl_ssi_width_cycles_->to<mrs_real>());
         double gamma = gamma_min + (gamma_max - gamma_min)
-                                   * static_cast<double>(t)
-                                   / static_cast<double>(ssi_width_samples_);
+                       * static_cast<double>(t)
+                       / static_cast<double>(ssi_width_samples_);
         h = pow(2.0, gamma);
       } else {
         h = static_cast<double>(t) * ctrl_ssi_width_cycles_->to<mrs_real>()

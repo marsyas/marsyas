@@ -38,19 +38,19 @@ mrs_real/gain and put them in the output vector.
 class Gain: public MarSystem
 {
 private:
-	//Add specific controls needed by this MarSystem.
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  //Add specific controls needed by this MarSystem.
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	MarControlPtr ctrl_gain_;
+  MarControlPtr ctrl_gain_;
 
 public:
-	Gain(std::string name);
-	Gain(const Gain& a);
-	~Gain();
-	MarSystem* clone() const;
+  Gain(std::string name);
+  Gain(const Gain& a);
+  ~Gain();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

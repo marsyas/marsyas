@@ -12,16 +12,16 @@
 
 #include "common_source.h"
 #include "MarSystem.h"
-#include "MarSystemManager.h" 
+#include "MarSystemManager.h"
 #include "MarControl.h"
-#include "MarSystemQtWrapper.h" 
+#include "MarSystemQtWrapper.h"
 
 using namespace MarsyasQt;
 
 
 class MarOscMultiGainWindow : public QMainWindow
 {
-Q_OBJECT
+  Q_OBJECT
 
 public:
   QSlider* gain1Slider_;
@@ -29,9 +29,9 @@ public:
   QSlider* gain3Slider_;
 
   MarOscMultiGainWindow(string,string,string);
-  MarSystemQtWrapper* getMarSystemQtWrapper(){return mwr_;};
+  MarSystemQtWrapper* getMarSystemQtWrapper() {return mwr_;};
 
-public slots: 
+public slots:
   void gain1Changed(int value);
   void gain2Changed(int value);
   void gain3Changed(int value);
@@ -49,7 +49,7 @@ private:
 
   MarSystem* net_;
   MarSystemQtWrapper* mwr_;
- 
+
   MarControlPtr gain1Ptr_;
   MarControlPtr gain2Ptr_;
   MarControlPtr gain3Ptr_;
@@ -64,4 +64,4 @@ private:
 
 #endif
 
-	
+

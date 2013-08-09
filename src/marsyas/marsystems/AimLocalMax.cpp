@@ -35,9 +35,9 @@ AimLocalMax::AimLocalMax(mrs_string name):MarSystem("AimLocalMax",name)
 
 AimLocalMax::AimLocalMax(const AimLocalMax& a) : MarSystem(a)
 {
-  // For any MarControlPtr in a MarSystem 
-  // it is necessary to perform this getctrl 
-  // in the copy constructor in order for cloning to work 
+  // For any MarControlPtr in a MarSystem
+  // it is necessary to perform this getctrl
+  // in the copy constructor in order for cloning to work
   ctrl_decay_time_ms_ = getctrl("mrs_real/decay_time_ms");
   ctrl_timeout_ms_ = getctrl("mrs_real/timeout_ms");
 
@@ -60,7 +60,7 @@ AimLocalMax::clone() const
   return new AimLocalMax(*this);
 }
 
-void 
+void
 AimLocalMax::addControls()
 {
   addControl("mrs_real/decay_time_ms", 20.0 , ctrl_decay_time_ms_);
@@ -71,7 +71,7 @@ void
 AimLocalMax::myUpdate(MarControlPtr sender)
 {
   (void)sender;
-  
+
   MRSDIAG("AimLocalMax.cpp - AimLocalMax:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 
@@ -122,10 +122,10 @@ AimLocalMax::InitializeInternal() {
   strobe_timeout_samples_ = (int) floor(ctrl_timeout_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0);
   strobe_decay_samples_ = (int) floor(ctrl_decay_time_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0);
   return true;
-  
+
 }
 
-void 
+void
 AimLocalMax::ResetInternal() {
   threshold_.clear();
   threshold_.resize(channel_count_, 0.0);
@@ -191,7 +191,7 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
         if (prev_sample_[o] < curr_sample_[o]
             && next_sample_[o] < curr_sample_[o]) {
           // If there are no strobes so far in this channel, then the sample
-          // is definitely a strobe (this means that the timeout is not 
+          // is definitely a strobe (this means that the timeout is not
           // respected across frame boundaries. This is a minor bug, but I
           // don't believe that it's serious enough to warrant updating the
           // samples since last strobe all the time.)

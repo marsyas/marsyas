@@ -7,16 +7,16 @@
 
 class AbstractMarExtractor : public QObject
 {
-   Q_OBJECT
-   
+  Q_OBJECT
+
 public:
-   AbstractMarExtractor(){}
-	virtual ~AbstractMarExtractor(){}
-	
-	virtual void setup() = 0;
+  AbstractMarExtractor() {}
+  virtual ~AbstractMarExtractor() {}
+
+  virtual void setup() = 0;
 
 public slots:
-	virtual void extract(Marsyas::realvec& dest) = 0;
+  virtual void extract(Marsyas::realvec& dest) = 0;
 };
 
 

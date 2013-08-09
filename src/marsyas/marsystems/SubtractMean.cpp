@@ -23,15 +23,15 @@ using namespace std;
 using namespace Marsyas;
 
 SubtractMean::SubtractMean(mrs_string name) :
-	MarSystem("SubtractMean", name)
+  MarSystem("SubtractMean", name)
 {
-	// No controls to add
+  // No controls to add
 }
 
 SubtractMean::SubtractMean(const SubtractMean& a) :
-	MarSystem(a)
+  MarSystem(a)
 {
-	// No controls to add
+  // No controls to add
 }
 
 SubtractMean::~SubtractMean()
@@ -41,35 +41,35 @@ SubtractMean::~SubtractMean()
 MarSystem*
 SubtractMean::clone() const
 {
-	return new SubtractMean(*this);
+  return new SubtractMean(*this);
 }
 
 void SubtractMean::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("SubtractMean.cpp - SubtractMean:myUpdate");
+  MRSDIAG("SubtractMean.cpp - SubtractMean:myUpdate");
 
-	/// Use the default MarSystem setup with equal input/output stream format.
-	MarSystem::myUpdate(sender);
+  /// Use the default MarSystem setup with equal input/output stream format.
+  MarSystem::myUpdate(sender);
 }
 
 void SubtractMean::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
-	mrs_real mean;
-	/// Iterate over the observations and samples and do the processing.
-	for (o = 0; o < inObservations_; o++)
-	{
-		// Calculate channel mean
-		mean = 0;
-		for (t = 0; t < inSamples_; t++)
-		{
-			mean += in(o, t);
-		}
-		mean /= inSamples_;
-		// Subtract mean
-		for (t = 0; t < inSamples_; t++)
-		{
-			out(o, t) = in(o, t) - mean;
-		}
-	}
+  mrs_natural t,o;
+  mrs_real mean;
+  /// Iterate over the observations and samples and do the processing.
+  for (o = 0; o < inObservations_; o++)
+  {
+    // Calculate channel mean
+    mean = 0;
+    for (t = 0; t < inSamples_; t++)
+    {
+      mean += in(o, t);
+    }
+    mean /= inSamples_;
+    // Subtract mean
+    for (t = 0; t < inSamples_; t++)
+    {
+      out(o, t) = in(o, t) - mean;
+    }
+  }
 }

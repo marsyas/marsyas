@@ -15,20 +15,20 @@
 
 namespace Marsyas
 {
-	
-	class SimilarityMatrixWidget : public MarSystemWidget
-	{
-	private:
-		void addControls();
-		void updateControls();
-		
-		
-	public:
-		SimilarityMatrixWidget(MarSystem *msys, GraphicalEnvironment* env);
-		~SimilarityMatrixWidget();
-		
-		void drawConnections();
-	};
+
+class SimilarityMatrixWidget : public MarSystemWidget
+{
+private:
+  void addControls();
+  void updateControls();
+
+
+public:
+  SimilarityMatrixWidget(MarSystem *msys, GraphicalEnvironment* env);
+  ~SimilarityMatrixWidget();
+
+  void drawConnections();
+};
 }
 
 #endif

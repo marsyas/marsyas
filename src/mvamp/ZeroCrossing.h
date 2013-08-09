@@ -7,7 +7,7 @@
 
     Centre for Digital Music, Queen Mary, University of London.
     Copyright 2006 Chris Cannam.
-  
+
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation
     files (the "Software"), to deal in the Software without
@@ -41,7 +41,7 @@
 #include "vamp-sdk/Plugin.h"
 #include "Collection.h"
 #include "MarSystemManager.h"
-//#include <vector> 
+//#include <vector>
 
 //using namespace std;
 using namespace Marsyas;
@@ -54,32 +54,32 @@ using namespace Marsyas;
 class ZeroCrossing : public Vamp::Plugin
 {
 public:
-    ZeroCrossing(float inputSampleRate);
-    virtual ~ZeroCrossing();
+  ZeroCrossing(float inputSampleRate);
+  virtual ~ZeroCrossing();
 
-    bool initialise(size_t channels, size_t stepSize, size_t blockSize);
-    void reset();
+  bool initialise(size_t channels, size_t stepSize, size_t blockSize);
+  void reset();
 
-    InputDomain getInputDomain() const { return TimeDomain; }
+  InputDomain getInputDomain() const { return TimeDomain; }
 
-    std::string getIdentifier() const;
-    std::string getName() const;
-    std::string getDescription() const;
-    std::string getMaker() const;
-    int getPluginVersion() const;
-    std::string getCopyright() const;
+  std::string getIdentifier() const;
+  std::string getName() const;
+  std::string getDescription() const;
+  std::string getMaker() const;
+  int getPluginVersion() const;
+  std::string getCopyright() const;
 
-    OutputList getOutputDescriptors() const;
+  OutputList getOutputDescriptors() const;
 
-    FeatureSet process(const float *const *inputBuffers,
-                       Vamp::RealTime timestamp);
+  FeatureSet process(const float *const *inputBuffers,
+                     Vamp::RealTime timestamp);
 
-    FeatureSet getRemainingFeatures();
+  FeatureSet getRemainingFeatures();
 
 private:
-    size_t m_stepSize;
-    float m_previousSample;
-    MarSystem* m_network;
+  size_t m_stepSize;
+  float m_previousSample;
+  MarSystem* m_network;
 };
 
 

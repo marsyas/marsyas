@@ -28,8 +28,8 @@ namespace Marsyas
 /**
 	\class Spectrum2Chroma
 	\ingroup Analysis
-	\brief Convert spectrum magnitude (e.g. output from PowerSpectrum MarSystem) 
-	into a Chroma vector representation.  
+	\brief Convert spectrum magnitude (e.g. output from PowerSpectrum MarSystem)
+	into a Chroma vector representation.
 
 	Based in the fft2chromamx.m MATLAB script by Dan Ellis:
 	http://www.ee.columbia.edu/~dpwe/resources/matlab/chroma-ansyn/#1
@@ -44,29 +44,29 @@ namespace Marsyas
 class Spectrum2Chroma: public MarSystem
 {
 private:
-	realvec chromaMap_;
-	std::vector<std::string> noteNames_;
+  realvec chromaMap_;
+  std::vector<std::string> noteNames_;
 
-	MarControlPtr ctrl_nbins_;
-	MarControlPtr ctrl_middleAfreq_;
-	MarControlPtr ctrl_weightCenterFreq_;
-	MarControlPtr ctrl_weightStdDev_;
+  MarControlPtr ctrl_nbins_;
+  MarControlPtr ctrl_middleAfreq_;
+  MarControlPtr ctrl_weightCenterFreq_;
+  MarControlPtr ctrl_weightStdDev_;
 
-	mrs_natural pnbins_;
-	mrs_real pmiddleAfreq_;
-	mrs_real pweightCenterFreq_;
-	mrs_real pweightStdDev_;
+  mrs_natural pnbins_;
+  mrs_real pmiddleAfreq_;
+  mrs_real pweightCenterFreq_;
+  mrs_real pweightStdDev_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	Spectrum2Chroma(std::string name);
-	Spectrum2Chroma(const Spectrum2Chroma& a);
-	~Spectrum2Chroma();
-	MarSystem* clone() const;
+  Spectrum2Chroma(std::string name);
+  Spectrum2Chroma(const Spectrum2Chroma& a);
+  ~Spectrum2Chroma();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

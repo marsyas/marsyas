@@ -21,17 +21,17 @@ using namespace Marsyas;
 
 class AimSAI_runner : public CxxTest::TestSuite
 {
- public:
+public:
 
   void
   setUp()
   {
   }
 
-  	// "destructor"
-	void tearDown()
-	{
-	}
+  // "destructor"
+  void tearDown()
+  {
+  }
 
 
   //
@@ -43,12 +43,12 @@ class AimSAI_runner : public CxxTest::TestSuite
     MarSystemManager mng;
 
     MarSystem* net = mng.create("Series", "net");
-  
+
     net->addMarSystem(mng.create("SoundFileSource", "src"));
-	net->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
+    net->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
     net->addMarSystem(mng.create("AimHCL", "aimhcl"));
-	net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
-	net->addMarSystem(mng.create("AimSAI", "aimsai"));
+    net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
+    net->addMarSystem(mng.create("AimSAI", "aimsai"));
 
     net->updControl("SoundFileSource/src/mrs_string/filename", "files/test.wav");
 
@@ -56,21 +56,21 @@ class AimSAI_runner : public CxxTest::TestSuite
 
     out = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
-	// Check to see if the generated data is correct.  
+    // Check to see if the generated data is correct.
     //
     // This data was generated with the AIM-C version of SAI.  I
     // chose three points from the beginning, middle and end of the
     // range, and compare the Marsyas SAI implementation with these
     // results
-  	TS_ASSERT_DELTA(out(0,0),0.000493759,0.001);
-  	TS_ASSERT_DELTA(out(0,1),0.000492902,0.001);
-  	TS_ASSERT_DELTA(out(0,2),0.000490549,0.001);
-  	TS_ASSERT_DELTA(out(0,254),0.0,0.001);
-  	TS_ASSERT_DELTA(out(0,255),0.0,0.001);
-  	TS_ASSERT_DELTA(out(0,256),0.0,0.001);
-  	TS_ASSERT_DELTA(out(0,509),0.0,0.001);
-  	TS_ASSERT_DELTA(out(0,510),0.0,0.001);
-  	TS_ASSERT_DELTA(out(0,511),0.0,0.001);
+    TS_ASSERT_DELTA(out(0,0),0.000493759,0.001);
+    TS_ASSERT_DELTA(out(0,1),0.000492902,0.001);
+    TS_ASSERT_DELTA(out(0,2),0.000490549,0.001);
+    TS_ASSERT_DELTA(out(0,254),0.0,0.001);
+    TS_ASSERT_DELTA(out(0,255),0.0,0.001);
+    TS_ASSERT_DELTA(out(0,256),0.0,0.001);
+    TS_ASSERT_DELTA(out(0,509),0.0,0.001);
+    TS_ASSERT_DELTA(out(0,510),0.0,0.001);
+    TS_ASSERT_DELTA(out(0,511),0.0,0.001);
 
     //
     // Tick the network 3 more times to see if the values still line up
@@ -79,24 +79,24 @@ class AimSAI_runner : public CxxTest::TestSuite
     net->tick();
     net->tick();
     out = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-    
-	// Check to see if the generated data is correct.  
-    
+
+    // Check to see if the generated data is correct.
+
     // This data was generated with the AIM-C version of SAI.  I
     // chose three points from the beginning, middle and end of the
     // range, and compare the Marsyas SAI implementation with these
     // results
-  	TS_ASSERT_DELTA(out(0,0),0.0467726,0.001);
-  	TS_ASSERT_DELTA(out(0,1),0.0467948,0.001);
-  	TS_ASSERT_DELTA(out(0,2),0.0468055,0.001);
-  	TS_ASSERT_DELTA(out(0,254),1.22491e-13,0.001);
-  	TS_ASSERT_DELTA(out(0,255),1.03889e-13,0.001);
-  	TS_ASSERT_DELTA(out(0,256),8.81089e-14,0.001);
-  	TS_ASSERT_DELTA(out(0,509),0.264658,0.001);
-  	TS_ASSERT_DELTA(out(0,510),0.263065,0.001);
-  	TS_ASSERT_DELTA(out(0,511),0.261408,0.001);
-    
-    
+    TS_ASSERT_DELTA(out(0,0),0.0467726,0.001);
+    TS_ASSERT_DELTA(out(0,1),0.0467948,0.001);
+    TS_ASSERT_DELTA(out(0,2),0.0468055,0.001);
+    TS_ASSERT_DELTA(out(0,254),1.22491e-13,0.001);
+    TS_ASSERT_DELTA(out(0,255),1.03889e-13,0.001);
+    TS_ASSERT_DELTA(out(0,256),8.81089e-14,0.001);
+    TS_ASSERT_DELTA(out(0,509),0.264658,0.001);
+    TS_ASSERT_DELTA(out(0,510),0.263065,0.001);
+    TS_ASSERT_DELTA(out(0,511),0.261408,0.001);
+
+
     delete net;
 
   }

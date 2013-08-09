@@ -31,18 +31,18 @@ namespace Marsyas
 class PeakMask: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	MarControlPtr ctrl_gain_EXAMPLE_;
+  MarControlPtr ctrl_gain_EXAMPLE_;
 
 public:
-	PeakMask(std::string name);
-	PeakMask(const PeakMask& a);
-	~PeakMask();
-	MarSystem* clone() const;
+  PeakMask(std::string name);
+  PeakMask(const PeakMask& a);
+  ~PeakMask();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

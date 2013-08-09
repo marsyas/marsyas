@@ -25,7 +25,7 @@ namespace Marsyas
 {
 /**
 	\ingroup Processing
-	\brief Stretch samples using linear interpolation 
+	\brief Stretch samples using linear interpolation
 
 	Controls:
 	- **mrs_real/stretch**: Output/input sampling rate ratio
@@ -38,19 +38,19 @@ namespace Marsyas
 class ResampleLinear: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	MarControlPtr ctrl_stretch_;
-	MarControlPtr ctrl_samplingRateAdjustmentMode_;
+  MarControlPtr ctrl_stretch_;
+  MarControlPtr ctrl_samplingRateAdjustmentMode_;
 
 public:
-	ResampleLinear(std::string name);
-	ResampleLinear(const ResampleLinear& a);
-	~ResampleLinear();
-	MarSystem* clone() const;
+  ResampleLinear(std::string name);
+  ResampleLinear(const ResampleLinear& a);
+  ~ResampleLinear();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

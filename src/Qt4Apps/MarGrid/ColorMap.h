@@ -8,15 +8,15 @@
 class Colormap
 {
 public:
-	virtual ~Colormap() {}
+  virtual ~Colormap() {}
 
-	virtual int getDepth() const = 0;
-	virtual unsigned char getRed(int index) const = 0;
-	virtual unsigned char getGreen(int index) const = 0;
-	virtual unsigned char getBlue(int index) const = 0;
+  virtual int getDepth() const = 0;
+  virtual unsigned char getRed(int index) const = 0;
+  virtual unsigned char getGreen(int index) const = 0;
+  virtual unsigned char getBlue(int index) const = 0;
 
-	enum Colormaps {GreyScale, Spectra};
-	static Colormap* factory(Colormaps colormap);
+  enum Colormaps {GreyScale, Spectra};
+  static Colormap* factory(Colormaps colormap);
 private:
 
 };

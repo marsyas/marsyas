@@ -49,56 +49,56 @@ class RunningStatistics: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
-	/// Internal buffer for keeping the running sum.
-	realvec sumxBuffer_;
+  /// Internal buffer for keeping the running sum.
+  realvec sumxBuffer_;
 
-	/// Internal buffer for keeping the running sum of sample^2.
-	realvec sumx2Buffer_;
+  /// Internal buffer for keeping the running sum of sample^2.
+  realvec sumx2Buffer_;
 
-	/// Internal buffer for keeping the running sum of sample^3.
-	realvec sumx3Buffer_;
+  /// Internal buffer for keeping the running sum of sample^3.
+  realvec sumx3Buffer_;
 
-	/// Internal counter for counting the number of processed samples.
-	mrs_natural samplecounter_;
+  /// Internal counter for counting the number of processed samples.
+  mrs_natural samplecounter_;
 
-	/// MarControlPtr for enabling the mean.
-	MarControlPtr ctrl_enable_mean_;
-	/// Cache of the enable mean control value.
-	mrs_bool enable_mean_;
+  /// MarControlPtr for enabling the mean.
+  MarControlPtr ctrl_enable_mean_;
+  /// Cache of the enable mean control value.
+  mrs_bool enable_mean_;
 
-	/// MarControlPtr for enabling the standard deviation.
-	MarControlPtr ctrl_enable_stddev_;
-	/// Cache of the enable stddev control value.
-	mrs_bool enable_stddev_;
+  /// MarControlPtr for enabling the standard deviation.
+  MarControlPtr ctrl_enable_stddev_;
+  /// Cache of the enable stddev control value.
+  mrs_bool enable_stddev_;
 
-	/// MarControlPtr for enabling the skewness.
-	MarControlPtr ctrl_enable_skewness_;
-	/// Cache of the enable skewness control value.
-	mrs_bool enable_skewsness_;
+  /// MarControlPtr for enabling the skewness.
+  MarControlPtr ctrl_enable_skewness_;
+  /// Cache of the enable skewness control value.
+  mrs_bool enable_skewsness_;
 
-	/// MarControlPtr for the clear control.
-	MarControlPtr ctrl_clear_;
+  /// MarControlPtr for the clear control.
+  MarControlPtr ctrl_clear_;
 
-	/// MarControlPtr for the clearPerTick control
-	MarControlPtr ctrl_clearPerTick_;
+  /// MarControlPtr for the clearPerTick control
+  MarControlPtr ctrl_clearPerTick_;
 
-	/// Clear/initialize the internal buffers.
-	void clear(void);
+  /// Clear/initialize the internal buffers.
+  void clear(void);
 
 public:
-	RunningStatistics(std::string name);
-	RunningStatistics(const RunningStatistics& a);
-	~RunningStatistics();
-	MarSystem* clone() const;
+  RunningStatistics(std::string name);
+  RunningStatistics(const RunningStatistics& a);
+  ~RunningStatistics();
+  MarSystem* clone() const;
 
-	/// The core processing method of this MarSystem.
-	void myProcess(realvec& in, realvec& out);
+  /// The core processing method of this MarSystem.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

@@ -12,7 +12,7 @@
 
 #include <QtGui>
 #include "MarSystemManager.h"
-#include "MarSystem.h" 
+#include "MarSystem.h"
 #include <string>
 using namespace Marsyas;
 
@@ -22,7 +22,7 @@ class MarSystemNode:public QWidget
 {
   Q_OBJECT
 
- public:
+public:
   MarSystemNode(string type,QString name,QWidget* parent=0);
   MarSystemNode(MarSystem* ms,QWidget* parent=0);
   ~MarSystemNode();
@@ -51,7 +51,7 @@ class MarSystemNode:public QWidget
   //TODO make sure we don't need this
   //virtual MarSystemNode* getParentForChild();
 
- protected:
+protected:
   void mousePressEvent(QMouseEvent *event);
   QString type_;
   QString name_;

@@ -1,6 +1,6 @@
 /*
   MarCanvas.h - header File
-  MarCanvas is a surface upon which to draw MarSystemNodes.  
+  MarCanvas is a surface upon which to draw MarSystemNodes.
   It will act as a slot for  drag and drop signals.
   It will be a point of reference for all MarSystemNodes.
 
@@ -27,7 +27,7 @@ class MarCanvas : public CanvasWidget
 {
   Q_OBJECT
 
- public:
+public:
   MarCanvas(QWidget * parent=0);
   void loadFromFile(string filename);
   MarSystemNode* loadMarSystem(istream& is,QWidget* canvas=0);
@@ -37,30 +37,30 @@ class MarCanvas : public CanvasWidget
 
 public slots:
   void addNewMarSystemNode(QString widgetType);
- void handleChildResize(int x,int y,int w,int h);
- 
- signals:
- void canvasChanged(); 
+  void handleChildResize(int x,int y,int w,int h);
+
+signals:
+  void canvasChanged();
 
 
- protected:
- //virtual void paintEvent(QPaintEvent * event);
- //virtual void dragEnterEvent(QDragEnterEvent *event);
- //virtual void dragMoveEvent(QDragMoveEvent *event);
- //virtual void dropEvent(QDropEvent *event);
- //virtual QRect getDimensionsFor(MarSystemNode* widget);
- //MarSystemNode * paintWidget; 
+protected:
+//virtual void paintEvent(QPaintEvent * event);
+//virtual void dragEnterEvent(QDragEnterEvent *event);
+//virtual void dragMoveEvent(QDragMoveEvent *event);
+//virtual void dropEvent(QDropEvent *event);
+//virtual QRect getDimensionsFor(MarSystemNode* widget);
+//MarSystemNode * paintWidget;
 
 
- void dragEnterEvent(QDragEnterEvent *event);
- void dragMoveEvent(QDragMoveEvent *event);
- void dropEvent(QDropEvent *event);
- void paintEvent(QPaintEvent* event);
+  void dragEnterEvent(QDragEnterEvent *event);
+  void dragMoveEvent(QDragMoveEvent *event);
+  void dropEvent(QDropEvent *event);
+  void paintEvent(QPaintEvent* event);
 
 
- private:
- MarSystemNode * myMar;
- MarSystemNode * lastWidget;
+private:
+  MarSystemNode * myMar;
+  MarSystemNode * lastWidget;
 
 
 };

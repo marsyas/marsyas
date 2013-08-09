@@ -12,14 +12,14 @@
 /*.IX{VEKTOR}*/
 #define VVEKTOR  1                /* for a vector with elements       */
 /*.IX{VVEKTOR}*/
-                                  /* of given size                    */
+/* of given size                    */
 #define MATRIX   2                /* for a REAL matrix                */
 /*.IX{MATRIX}*/
 #define IMATRIX  3                /* for an int matrix                */
 /*.IX{IMATRIX}*/
 #define MMATRIX  4                /* for a matrix of 4x4 matrices     */
 /*.IX{PMATRIX}*/
-                                  /* (with elements of type `mat4x4') */
+/* (with elements of type `mat4x4') */
 #define UMATRIX  5                /* for a lower triangular matrix    */
 /*.IX{UMATRIX}*/
 #define PMATRIX  6                /* for a matrix of points in R3     */
@@ -31,30 +31,30 @@
 ***********************************************************************/
 
 void *vminit         /* create an empty vector/matrix list ...........*/
-        (
-         void
-        );                      /* address of list ...................*/
+(
+  void
+);                      /* address of list ...................*/
 
 
 void *vmalloc        /* create a dynamic vector or matrix ............*/
-        (
-         void   *vmblock,       /* address of a vector/matrix list ...*/
-         int    typ,            /* kind of vector or matrix ..........*/
-         size_t zeilen,         /* length (vector) or number of rows .*/
-         size_t spalten         /* number of columns or element size .*/
-        );                      /* address of the created object .....*/
+(
+  void   *vmblock,       /* address of a vector/matrix list ...*/
+  int    typ,            /* kind of vector or matrix ..........*/
+  size_t zeilen,         /* length (vector) or number of rows .*/
+  size_t spalten         /* number of columns or element size .*/
+);                      /* address of the created object .....*/
 
 
 bool  vmcomplete     /* check vector/matrix list for lack of memory ..*/
-        (
-         void *vmblock          /* address of list ...................*/
-        );                      /* no lack of memory? ................*/
+(
+  void *vmblock          /* address of list ...................*/
+);                      /* no lack of memory? ................*/
 
 
 void vmfree          /* free the memory for a vektor/matrix list .....*/
-        (
-         void *vmblock          /* address of list ...................*/
-        );
+(
+  void *vmblock          /* address of list ...................*/
+);
 
 #endif
 

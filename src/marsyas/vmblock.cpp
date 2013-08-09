@@ -9,8 +9,8 @@
 #include "common_source.h"
 #ifndef MARSYAS_MACOSX
 #include <malloc.h>
-#else 
-#include <malloc/malloc.h> 
+#else
+#include <malloc/malloc.h>
 #endif
 
 
@@ -120,7 +120,7 @@
 * Date:                 9.10.1992                                      *
 *                                                                      *
 ***********************************************************************/
-   
+
 
 /*--------------------------------------------------------------------*/
 
@@ -128,33 +128,33 @@ typedef struct VML          /* Element of a vector/matrix list        */
 {
   void       *vmzeiger;     /* pointer to the vector or matrix        */
   int        typ;           /* kind of pointer: vector or matrix      */
-                            /* (possible values: VEKTOR, VVEKTOR,     */
-                            /*                   MATRIX, IMATRIX,     */
-                            /*                   MMATRIX, UMATRIX,    */
-                            /*                   PMATRIX)             */
+  /* (possible values: VEKTOR, VVEKTOR,     */
+  /*                   MATRIX, IMATRIX,     */
+  /*                   MMATRIX, UMATRIX,    */
+  /*                   PMATRIX)             */
   size_t     groesse;       /* in the anchor element: the flag that   */
-                            /* indicates failed memory allocations;   */
-                            /* otherwise not used except for matrices */
-                            /* where `groesse' is "abused" to save    */
-                            /* the number of rows                     */
+  /* indicates failed memory allocations;   */
+  /* otherwise not used except for matrices */
+  /* where `groesse' is "abused" to save    */
+  /* the number of rows                     */
   size_t     spalten;       /* number of columns of matrices of       */
-                            /* points in R3                           */
+  /* points in R3                           */
   struct VML *naechst;      /* pointer to next element in the list    */
 } vmltyp;
 /*.IX{vmltyp}*/
 
 #define VMALLOC  (vmltyp *)malloc(sizeof(vmltyp)) /* allocate memory  */
 /*.IX{VMALLOC}*/
-                                                  /* for a new        */
-                                                  /* element of the   */
-                                                  /* list             */
+/* for a new        */
+/* element of the   */
+/* list             */
 
 #define LISTE    ((vmltyp *)vmblock)              /* for abbreviation */
 /*.IX{LISTE}*/
 #define MAGIC    410                              /* used to mark a   */
 /*.IX{MAGIC}*/
-                                                  /* valid anchor     */
-                                                  /* element          */
+/* valid anchor     */
+/* element          */
 
 
 
@@ -162,9 +162,9 @@ typedef struct VML          /* Element of a vector/matrix list        */
 
 void *vminit         /* create an empty vector/matrix list ...........*/
 /*.IX{vminit}*/
-        (
-         void
-        )                       /* address of list ...................*/
+(
+  void
+)                       /* address of list ...................*/
 
 /***********************************************************************
 * Generate an empty vector/matrix list. Such a list consists of a      *
@@ -204,10 +204,10 @@ void *vminit         /* create an empty vector/matrix list ...........*/
 
 static void matfree  /* free memory of a dynamic matrix ..............*/
 /*.IX{matfree}*/
-        (
-         void   **matrix,       /* [0..m-1,0..] matrix ...............*/
-         size_t m               /* number of rows of matrix ..........*/
-        )
+(
+  void   **matrix,       /* [0..m-1,0..] matrix ...............*/
+  size_t m               /* number of rows of matrix ..........*/
+)
 
 /***********************************************************************
 * free the memory of a matrix with m rows as allocated in matmalloc()  *
@@ -228,12 +228,12 @@ static void matfree  /* free memory of a dynamic matrix ..............*/
     while (m != 0)              /* free memory of matrix elements     */
       free(matrix[--m]);        /* row by row                         */
 #else                           /* more economical allocation method? */
-                                /* (assumes linear address space)     */
+    /* (assumes linear address space)     */
     for (tmp = matrix[0]; m != 0; )  /* find pointer with smallest    */
       if (matrix[--m] < tmp)         /* address (necessary because of */
         tmp = matrix[m];             /* possible permutation!)        */
     free(tmp);                  /* free memory of all matrix elements */
-                                /* at once                            */
+    /* at once                            */
 #endif
     free(matrix);               /* free all row pointers              */
   }
@@ -287,7 +287,7 @@ static void matfree  /* free memory of a dynamic matrix ..............*/
     }                                                                  \
 }
 #else                           /* more economical allocation method? */
-                                /* (assumes linear address space)     */
+/* (assumes linear address space)     */
 #define matmalloc(mat, m, n, typ, umat)                                \
 /*.IX{matmalloc}*/                                                     \
                                                                        \
@@ -321,11 +321,11 @@ static void matfree  /* free memory of a dynamic matrix ..............*/
 
 static void pmatfree  /* free memory of a matrix of R3 points ........*/
 /*.IX{pmatfree}*/
-        (
-         void   ***matrix,      /* [0..m-1,0..n-1] matrix of points ..*/
-         size_t m,              /* number of rows of matrix ..........*/
-         size_t n               /* number of columns of matrix .......*/
-        )
+(
+  void   ***matrix,      /* [0..m-1,0..n-1] matrix of points ..*/
+  size_t m,              /* number of rows of matrix ..........*/
+  size_t n               /* number of columns of matrix .......*/
+)
 
 /***********************************************************************
 * free a matrix with m rows and n columns as allocated in pmatmalloc() *
@@ -350,10 +350,10 @@ static void pmatfree  /* free memory of a matrix of R3 points ........*/
 
 static REAL ***pmatmalloc   /* allocate memory for a matrix of points */
 /*.IX{pmatmalloc}*/
-        (
-         size_t m,              /* number of rows of matrix ..........*/
-         size_t n               /* number of columns of matrix .......*/
-        )                       /* address of matrix .................*/
+(
+  size_t m,              /* number of rows of matrix ..........*/
+  size_t n               /* number of columns of matrix .......*/
+)                       /* address of matrix .................*/
 
 /***********************************************************************
 * Allocate memory for a [0..m-1,0..n-1,0..2] matrix with REAL elements *
@@ -377,12 +377,12 @@ static REAL ***pmatmalloc   /* allocate memory for a matrix of points */
     return NULL;                         /* report this lack          */
 
   for (i = 0; i < m; ++i)                /* allocate one (n,3) matrix */
-  {                                      /* for each row pointer      */
+  { /* for each row pointer      */
     matmalloc(matrix[i], n, 3, REAL, 0);
     if (matrix[i] == NULL)               /* lack of memory?           */
     {
       pmatfree((void ***)matrix, i, 3);  /* free (n,3) matrices       */
-                                         /* already allocated         */
+      /* already allocated         */
       return NULL;                       /* report lack of memory     */
     }
   }
@@ -397,12 +397,12 @@ static REAL ***pmatmalloc   /* allocate memory for a matrix of points */
 
 void *vmalloc        /* create a dynamic vector or matrix ............*/
 /*.IX{vmalloc}*/
-        (
-         void   *vmblock,       /* address of a vector/matrix list ...*/
-         int    typ,            /* kind of vector or matrix ..........*/
-         size_t zeilen,         /* length (vector) or number of rows .*/
-         size_t spalten         /* number of columns or element size .*/
-        )                       /* address of the created object .....*/
+(
+  void   *vmblock,       /* address of a vector/matrix list ...*/
+  int    typ,            /* kind of vector or matrix ..........*/
+  size_t zeilen,         /* length (vector) or number of rows .*/
+  size_t spalten         /* number of columns or element size .*/
+)                       /* address of the created object .....*/
 
 /***********************************************************************
 * Create an element according to `typ' (vector or matrix), whose size  *
@@ -435,63 +435,63 @@ void *vmalloc        /* create a dynamic vector or matrix ............*/
 
 
   if ((element = VMALLOC) == NULL)  /* ask for a new element          */
-  {                                 /* no success? =>                 */
+  { /* no success? =>                 */
     LISTE->groesse = 1;             /* indicate lack of memory        */
     return NULL;                    /* report error                   */
   }
 
   switch (typ)         /* allocate memory for the desired data        */
-  {                    /* structure (vector or matrix) and record its */
-                       /* address in the new list element             */
+  { /* structure (vector or matrix) and record its */
+    /* address in the new list element             */
 
-    case VEKTOR:          /* ---------- REAL vector?       ---------- */
-      element->vmzeiger = calloc(zeilen, sizeof(REAL));
-      break;
+  case VEKTOR:          /* ---------- REAL vector?       ---------- */
+    element->vmzeiger = calloc(zeilen, sizeof(REAL));
+    break;
 
-    case VVEKTOR:         /* ---------- arbitrary vector?  ---------- */
-      element->vmzeiger = calloc(zeilen, spalten);
-      break;
+  case VVEKTOR:         /* ---------- arbitrary vector?  ---------- */
+    element->vmzeiger = calloc(zeilen, spalten);
+    break;
 
-    case MATRIX:          /* ---------- REAL matrix?       ---------- */
-      matmalloc(element->vmzeiger, zeilen, spalten, REAL, 0);
-      element->groesse  = zeilen;      /* put row number into         */
-      break;                           /* `groesse' for vmfree()      */
+  case MATRIX:          /* ---------- REAL matrix?       ---------- */
+    matmalloc(element->vmzeiger, zeilen, spalten, REAL, 0);
+    element->groesse  = zeilen;      /* put row number into         */
+    break;                           /* `groesse' for vmfree()      */
 
-    case IMATRIX:         /* ---------- int matrix?        ---------- */
-      matmalloc(element->vmzeiger, zeilen, spalten, int, 0);
-      element->groesse  = zeilen;      /* put row number into         */
-      break;                           /* `groesse' for vmfree()      */
+  case IMATRIX:         /* ---------- int matrix?        ---------- */
+    matmalloc(element->vmzeiger, zeilen, spalten, int, 0);
+    element->groesse  = zeilen;      /* put row number into         */
+    break;                           /* `groesse' for vmfree()      */
 
-    case MMATRIX:         /* ---------- mat4x4 matrix?     ---------- */
-      matmalloc(element->vmzeiger, zeilen, spalten, mat4x4, 0);
-      element->groesse  = zeilen;      /* put row number into         */
-      break;                           /* `groesse' for vmfree()      */
+  case MMATRIX:         /* ---------- mat4x4 matrix?     ---------- */
+    matmalloc(element->vmzeiger, zeilen, spalten, mat4x4, 0);
+    element->groesse  = zeilen;      /* put row number into         */
+    break;                           /* `groesse' for vmfree()      */
 
-    case UMATRIX:         /* ---------- untere Dreiecksmatrix? ------ */
-      matmalloc(element->vmzeiger, zeilen, 0, mat4x4, 1);
-      element->groesse  = zeilen;      /* put row number into         */
-      break;                           /* `groesse' for vmfree()      */
+  case UMATRIX:         /* ---------- untere Dreiecksmatrix? ------ */
+    matmalloc(element->vmzeiger, zeilen, 0, mat4x4, 1);
+    element->groesse  = zeilen;      /* put row number into         */
+    break;                           /* `groesse' for vmfree()      */
 
-    case PMATRIX:         /* ---------- matrix with points in R3? --- */
-      element->vmzeiger = (void *)pmatmalloc(zeilen, spalten);
-      element->groesse  = zeilen;      /* put row number into         */
-      element->spalten  = spalten;     /* `groesse' and column number */
-      break;                           /* into `spalten' for vmfree() */
+  case PMATRIX:         /* ---------- matrix with points in R3? --- */
+    element->vmzeiger = (void *)pmatmalloc(zeilen, spalten);
+    element->groesse  = zeilen;      /* put row number into         */
+    element->spalten  = spalten;     /* `groesse' and column number */
+    break;                           /* into `spalten' for vmfree() */
 
-    default:              /* ---- invalid data type?   -------------  */
-      element->vmzeiger = NULL;        /* record zero pointer         */
+  default:              /* ---- invalid data type?   -------------  */
+    element->vmzeiger = NULL;        /* record zero pointer         */
   }
 
   if (element->vmzeiger == NULL)       /* no memory for the object?   */
     LISTE->groesse = 1;                /* Let's note that down.       */
 
   element->typ = typ;                  /* note kind of data structure */
-                                       /* in the list element         */
+  /* in the list element         */
   element->naechst = LISTE->naechst;   /* insert new element before   */
-                                       /* the first existing element, */
+  /* the first existing element, */
 
   LISTE->naechst = element;            /* but behind the anchor       */
-                                       /* element                     */
+  /* element                     */
 
   return element->vmzeiger;            /* return new vector/matrix    */
 }                                      /* address                     */
@@ -501,9 +501,9 @@ void *vmalloc        /* create a dynamic vector or matrix ............*/
 /*--------------------------------------------------------------------*/
 
 bool  vmcomplete     /* check vector/matrix list for lack of memory ..*/
-      (
-        void *vmblock           /* address of list ...................*/
-      )                         /* no lack of memory? ................*/
+(
+  void *vmblock           /* address of list ...................*/
+)                         /* no lack of memory? ................*/
 /***********************************************************************
 * Here just the negated value of the flag in the anchor element is     *
 * returned which belongs to the vector/matrix list represented by      *
@@ -524,9 +524,9 @@ bool  vmcomplete     /* check vector/matrix list for lack of memory ..*/
 
 void vmfree          /* free the memory for a vektor/matrix list .....*/
 /*.IX{vmfree}*/
-        (
-         void *vmblock          /* address of list ...................*/
-        )
+(
+  void *vmblock          /* address of list ...................*/
+)
 
 /***********************************************************************
 * free all dynamic memory consumed by the list beginning at `vmblock'  *
@@ -553,17 +553,17 @@ void vmfree          /* free the memory for a vektor/matrix list .....*/
 
     switch (LISTE->typ)
     {
-      case VEKTOR:
-      case VVEKTOR: if (LISTE->vmzeiger != NULL)
-                      free(LISTE->vmzeiger);
-                    break;
-      case MATRIX:
-      case IMATRIX:
-      case MMATRIX:
-      case UMATRIX: matfree((void **)LISTE->vmzeiger,
+    case VEKTOR:
+    case VVEKTOR: if (LISTE->vmzeiger != NULL)
+        free(LISTE->vmzeiger);
+      break;
+    case MATRIX:
+    case IMATRIX:
+    case MMATRIX:
+    case UMATRIX: matfree((void **)LISTE->vmzeiger,
                             LISTE->groesse);
-                    break;
-      case PMATRIX: pmatfree((void ***)LISTE->vmzeiger,
+      break;
+    case PMATRIX: pmatfree((void ***)LISTE->vmzeiger,
                              LISTE->groesse, LISTE->spalten);
     }
 

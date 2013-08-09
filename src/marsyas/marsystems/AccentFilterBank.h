@@ -37,18 +37,18 @@ namespace Marsyas
 class AccentFilterBank: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	MarControlPtr ctrl_gain_EXAMPLE_;
+  MarControlPtr ctrl_gain_EXAMPLE_;
 
 public:
-	AccentFilterBank(std::string name);
-	AccentFilterBank(const AccentFilterBank& a);
-	~AccentFilterBank();
-	MarSystem* clone() const;
+  AccentFilterBank(std::string name);
+  AccentFilterBank(const AccentFilterBank& a);
+  ~AccentFilterBank();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

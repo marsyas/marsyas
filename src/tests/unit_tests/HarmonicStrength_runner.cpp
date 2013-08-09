@@ -12,7 +12,7 @@
 #include <cxxtest/ErrorPrinter.h>
 
 int main() {
- return CxxTest::ErrorPrinter().run();
+  return CxxTest::ErrorPrinter().run();
 }
 #include "TestHarmonicStrength.h"
 
@@ -23,8 +23,8 @@ CxxTest::StaticSuiteDescription suiteDescription_HarmonicStrength_runner( "TestH
 
 static class TestDescription_HarmonicStrength_runner_test_process : public CxxTest::RealTestDescription {
 public:
- TestDescription_HarmonicStrength_runner_test_process() : CxxTest::RealTestDescription( Tests_HarmonicStrength_runner, suiteDescription_HarmonicStrength_runner, 31, "test_process" ) {}
- void runTest() { suite_HarmonicStrength_runner.test_process(); }
+  TestDescription_HarmonicStrength_runner_test_process() : CxxTest::RealTestDescription( Tests_HarmonicStrength_runner, suiteDescription_HarmonicStrength_runner, 31, "test_process" ) {}
+  void runTest() { suite_HarmonicStrength_runner.test_process(); }
 } testDescription_HarmonicStrength_runner_test_process;
 
 #include <cxxtest/Root.cpp>

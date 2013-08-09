@@ -15,21 +15,21 @@
 
 namespace Marsyas
 {
-	
-	class FlowThruWidget : public MarSystemWidget
-	{
-	private:
-		void addControls();
-		void updateControls();
-		
-		
-	public:
-		FlowThruWidget(MarSystem *msys, GraphicalEnvironment* env);
-		~FlowThruWidget();
-		
-		
-		void drawConnections();
-	};
+
+class FlowThruWidget : public MarSystemWidget
+{
+private:
+  void addControls();
+  void updateControls();
+
+
+public:
+  FlowThruWidget(MarSystem *msys, GraphicalEnvironment* env);
+  ~FlowThruWidget();
+
+
+  void drawConnections();
+};
 }
 
 #endif

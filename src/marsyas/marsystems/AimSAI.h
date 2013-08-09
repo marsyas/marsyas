@@ -77,7 +77,7 @@ private:
   mrs_real reseted_israte;
   mrs_natural reseted_inobservations;
   mrs_real reseted_frame_period_ms;
-  
+
   // Does the MarSystem need to recalculate the centre frequencies
   bool is_centre_frequencies_calculated;
 
@@ -94,35 +94,35 @@ private:
   MarControlPtr ctrl_strobe_weight_alpha_;
 
   // Buffer decay parameter
-  MarControlPtr ctrl_buffer_memory_decay_; 
+  MarControlPtr ctrl_buffer_memory_decay_;
 
   // Period in milliseconds between output frames
-  MarControlPtr ctrl_frame_period_ms_;  
+  MarControlPtr ctrl_frame_period_ms_;
 
   // The maximum number strobes that can be active at the same time.
-  MarControlPtr ctrl_max_concurrent_strobes_; 
+  MarControlPtr ctrl_max_concurrent_strobes_;
 
   // List of strobes for each channel
-  std::vector<StrobeList> active_strobes_; 
+  std::vector<StrobeList> active_strobes_;
 
   // Sample index of minimum strobe delay
-  int min_strobe_delay_idx_; 
+  int min_strobe_delay_idx_;
 
   // Sample index of maximum strobe delay
-  int max_strobe_delay_idx_; 
+  int max_strobe_delay_idx_;
 
   // Factor with which the SAI should be decayed
-  double sai_decay_factor_; 
+  double sai_decay_factor_;
 
   // Precomputed 1/n^alpha values for strobe weighting
-  std::vector<double> strobe_weights_; 
+  std::vector<double> strobe_weights_;
 
   // Next Strobe for each channels
-  std::vector<int> next_strobes_;  
+  std::vector<int> next_strobes_;
 
   // Temporary buffer for constructing the current SAI frame
   realvec sai_temp_;
-  
+
   int fire_counter_;
   int frame_period_samples_;
   // int channel_count_;

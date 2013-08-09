@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2013 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -48,16 +48,16 @@ AudioSink::~AudioSink()
   delete audio_;
 }
 
-MarSystem* 
+MarSystem*
 AudioSink::clone() const
 {
   return new AudioSink(*this);
 }
 
-void 
+void
 AudioSink::addControls()
 {
-  
+
   //TODO: Why is this still here?
 #ifdef MARSYAS_MACOSX
   addctrl("mrs_natural/bufferSize", 512);
@@ -67,16 +67,16 @@ AudioSink::addControls()
 
   addctrl("mrs_bool/initAudio", false);
   setctrlState("mrs_bool/initAudio", true);
-  
+
   addctrl("mrs_natural/device", 0);
-  
+
   addControl("mrs_string/backend", "");
 
   addControl("mrs_bool/realtime", false);
   setControlState("mrs_bool/realtime", true);
 }
 
-void 
+void
 AudioSink::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("AudioSink::myUpdate");
@@ -135,13 +135,13 @@ AudioSink::myUpdate(MarControlPtr sender)
 }
 
 
-void 
+void
 AudioSink::initRtAudio(
-    unsigned int sample_rate,
-    unsigned int *block_size,
-    unsigned int channel_count,
-    bool realtime
-    )
+  unsigned int sample_rate,
+  unsigned int *block_size,
+  unsigned int channel_count,
+  bool realtime
+)
 {
   mrs_string backend = getControl("mrs_string/backend")->to<mrs_string>();
 
@@ -226,7 +226,7 @@ AudioSink::start()
   }
 }
 
-void 
+void
 AudioSink::stop()
 {
   if ( !stopped_) {
@@ -306,7 +306,7 @@ bool AudioSink::reformatBuffer(size_t source_block_size,
   return true;
 }
 
-void 
+void
 AudioSink::myProcess(realvec& in, realvec& out)
 {
   for (mrs_natural t=0; t < inSamples_; t++)
@@ -344,8 +344,8 @@ AudioSink::myProcess(realvec& in, realvec& out)
     std::unique_lock<std::mutex> locker(shared.mutex);
 
     shared.condition.wait (
-          locker,
-          [&producer, this]()
+      locker,
+      [&producer, this]()
     {
       //          cout << "Producer awake..." << endl;
       bool ok = producer.reserve(onSamples_);

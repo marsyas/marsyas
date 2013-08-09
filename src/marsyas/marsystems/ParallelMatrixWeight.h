@@ -23,43 +23,43 @@
 
 namespace Marsyas
 {
-	/**
-	\ingroup Processing
-	\brief Multiply each observation with a different factor.
+/**
+\ingroup Processing
+\brief Multiply each observation with a different factor.
 
-	Controls:
-	- \b mrs_realvec/weights [rw] : weights
-	*/
+Controls:
+- \b mrs_realvec/weights [rw] : weights
+*/
 
-	class marsyas_EXPORT ParallelMatrixWeight: public MarSystem
-	{
-	private:
+class marsyas_EXPORT ParallelMatrixWeight: public MarSystem
+{
+private:
 
-		/// Add specific controls needed by this MarSystem.
-		void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-		/// Reads changed controls and sets up variables if necessary.
-		void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
-		/// MarControlPtr for the gain control
-		MarControlPtr	ctrl_weights_;
+  /// MarControlPtr for the gain control
+  MarControlPtr	ctrl_weights_;
 
-	public:
-		/// ParallelMatrixWeight constructor.
-		ParallelMatrixWeight(std::string name);
+public:
+  /// ParallelMatrixWeight constructor.
+  ParallelMatrixWeight(std::string name);
 
-		/// ParallelMatrixWeight copy constructor.
-		ParallelMatrixWeight(const ParallelMatrixWeight& a);
+  /// ParallelMatrixWeight copy constructor.
+  ParallelMatrixWeight(const ParallelMatrixWeight& a);
 
-		/// ParallelMatrixWeight destructor.
-		~ParallelMatrixWeight();
+  /// ParallelMatrixWeight destructor.
+  ~ParallelMatrixWeight();
 
-		/// Implementation of the MarSystem::clone() method.
-		MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-		/// Implementation of the MarSystem::myProcess method.
-		void myProcess(realvec& in, realvec& out);
-	};
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
+};
 
 }
 //namespace Marsyas

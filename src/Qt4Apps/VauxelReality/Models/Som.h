@@ -6,16 +6,16 @@
 
 class Som : public AbstractMarClusteringModel
 {
-   Q_OBJECT
-   
-public:
-   Som();
-   ~Som();
+  Q_OBJECT
 
-public slots:   
-   void train(Marsyas::realvec& data);
-   void predict(Marsyas::realvec& data);
-   void reset();
+public:
+  Som();
+  ~Som();
+
+public slots:
+  void train(Marsyas::realvec& data);
+  void predict(Marsyas::realvec& data);
+  void reset();
 };
 
 #endif

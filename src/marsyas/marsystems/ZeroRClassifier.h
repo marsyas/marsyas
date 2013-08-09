@@ -38,16 +38,16 @@ MarSystem results.
 class ZeroRClassifier: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
-	realvec labelSizes_;
-	mrs_string prev_mode_;
+  void addControls();
+  void myUpdate(MarControlPtr sender);
+  realvec labelSizes_;
+  mrs_string prev_mode_;
 public:
-	ZeroRClassifier(std::string name);
-	~ZeroRClassifier();
-	MarSystem* clone() const;
+  ZeroRClassifier(std::string name);
+  ~ZeroRClassifier();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

@@ -37,55 +37,55 @@ class MarSystem;
 class marsyas_EXPORT MarSystemManager
 {
 protected:
-	std::map<std::string, MarSystem*> registry_;
-	std::map<std::string, MarSystem*> workingSet_;
-	std::map<std::string, int       > compositesMap_;
+  std::map<std::string, MarSystem*> registry_;
+  std::map<std::string, MarSystem*> workingSet_;
+  std::map<std::string, int       > compositesMap_;
 
-	enum compositePrototypes_
-	{
-		STUB,
-		MULTIPITCH,
-		DEVIBOT,
-		STEREO2MONO,
-		TEXTURESTATS,
-		LPCNET,
-		POWERSPECTRUMNET,
-		POWERSPECTRUMNET1,
-		STFT_FEATURES,
-		TIMBREFEATURES,
-		STEREOPANNINGSPECTRUMFEATURES,
-		STEREOFEATURES,
-		PHASEVOCODER,
-		PHASEVOCODEROSCBANK,
-		PITCHSACF,
-		PITCHPRAAT,
-		PEAKANALYSE,
-		WHASPNET,
-		STEREOFEATURES2,
-		CLASSIFIER,
-		PIPE_BLOCK,
-		AFB_BLOCK_A,
-		AFB_BLOCK_B,
-		AFB_BLOCK_C,
-		DECIMATING_QMF
-	};
+  enum compositePrototypes_
+  {
+    STUB,
+    MULTIPITCH,
+    DEVIBOT,
+    STEREO2MONO,
+    TEXTURESTATS,
+    LPCNET,
+    POWERSPECTRUMNET,
+    POWERSPECTRUMNET1,
+    STFT_FEATURES,
+    TIMBREFEATURES,
+    STEREOPANNINGSPECTRUMFEATURES,
+    STEREOFEATURES,
+    PHASEVOCODER,
+    PHASEVOCODEROSCBANK,
+    PITCHSACF,
+    PITCHPRAAT,
+    PEAKANALYSE,
+    WHASPNET,
+    STEREOFEATURES2,
+    CLASSIFIER,
+    PIPE_BLOCK,
+    AFB_BLOCK_A,
+    AFB_BLOCK_B,
+    AFB_BLOCK_C,
+    DECIMATING_QMF
+  };
 
-	void registerComposite(std::string);
+  void registerComposite(std::string);
 
 public:
-	MarSystemManager();
-	~MarSystemManager();
-	void registerPrototype(std::string type, MarSystem *);
-	MarSystem* getPrototype(std::string type);
-	MarSystem* create(std::string type, std::string name);
-	MarSystem* create(std::string fullname);
-	MarSystem* getMarSystem(std::istream& is, MarSystem *parent=NULL);
-	MarSystem* loadFromFile(std::string fname);
-	std::map<std::string, MarSystem*> getWorkingSet(std::istream& is);
+  MarSystemManager();
+  ~MarSystemManager();
+  void registerPrototype(std::string type, MarSystem *);
+  MarSystem* getPrototype(std::string type);
+  MarSystem* create(std::string type, std::string name);
+  MarSystem* create(std::string fullname);
+  MarSystem* getMarSystem(std::istream& is, MarSystem *parent=NULL);
+  MarSystem* loadFromFile(std::string fname);
+  std::map<std::string, MarSystem*> getWorkingSet(std::istream& is);
 
-	bool isRegistered (std::string name);
+  bool isRegistered (std::string name);
 
-	std::vector <std::string> registeredPrototypes();
+  std::vector <std::string> registeredPrototypes();
 };
 
 }//namespace Marsyas

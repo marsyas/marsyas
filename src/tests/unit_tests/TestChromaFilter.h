@@ -24,13 +24,13 @@ class Sum_runner : public CxxTest::TestSuite
 {
 public:
 
-  void test_chroma(void) 
+  void test_chroma(void)
   {
-	MarSystemManager mng;
+    MarSystemManager mng;
 
-	MarSystem* net = mng.create("Series", "series");
-	net->addMarSystem(mng.create("SoundFileSource", "src"));
-	net->addMarSystem(mng.create("ChromaFilter", "chromafilter"));
+    MarSystem* net = mng.create("Series", "series");
+    net->addMarSystem(mng.create("SoundFileSource", "src"));
+    net->addMarSystem(mng.create("ChromaFilter", "chromafilter"));
 
     delete net;
   }

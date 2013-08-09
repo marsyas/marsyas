@@ -18,54 +18,54 @@ class Transcriber: public TranscriberExtract
 {
 
 public:
-	Transcriber();
-	~Transcriber();
+  Transcriber();
+  ~Transcriber();
 
-	/** \name General fuctions */
+  /** \name General fuctions */
 /// non-Transcriber-specific functions, but I don't think they're
 /// useful enough to add to realvec.
-	//@{
-	static mrs_real findMedianWithoutZeros(const mrs_natural start,
-	                                       const mrs_natural length,
-	                                       const realvec& array);
-	static realvec findValleys(const realvec& list);
-	static realvec findPeaks(const realvec& list, const
-			mrs_real cutoff);
-	static mrs_real findNextPeakValue(const realvec& list,
-	                                  const mrs_natural start);
-	//@}
+  //@{
+  static mrs_real findMedianWithoutZeros(const mrs_natural start,
+                                         const mrs_natural length,
+                                         const realvec& array);
+  static realvec findValleys(const realvec& list);
+  static realvec findPeaks(const realvec& list, const
+                           mrs_real cutoff);
+  static mrs_real findNextPeakValue(const realvec& list,
+                                    const mrs_natural start);
+  //@}
 
 
-	/** \name Pitch stuff */
-	//@{
-	static void pitchSegment(const realvec& pitchList,
-realvec& boundaries, const mrs_natural width);
-	static realvec findPitchBoundaries(const realvec&
-pitchList, const mrs_natural width);
-	//@}
+  /** \name Pitch stuff */
+  //@{
+  static void pitchSegment(const realvec& pitchList,
+                           realvec& boundaries, const mrs_natural width);
+  static realvec findPitchBoundaries(const realvec&
+                                     pitchList, const mrs_natural width);
+  //@}
 
 
-	/** \name Amplitude stuff */
-	//@{
-	static void ampSegment(const realvec& ampList, realvec&
-		boundaries,const mrs_real cutoff);
-	static void filterAmpBoundaries(realvec& ampList, realvec&
-	                                boundaries);
-	static void discardEndingTotalSilenceAmpsOnly(realvec& ampList);
-	//@}
+  /** \name Amplitude stuff */
+  //@{
+  static void ampSegment(const realvec& ampList, realvec&
+                         boundaries,const mrs_real cutoff);
+  static void filterAmpBoundaries(realvec& ampList, realvec&
+                                  boundaries);
+  static void discardEndingTotalSilenceAmpsOnly(realvec& ampList);
+  //@}
 
 
-	/** \name Note stuff */
-	//@{
-	static realvec getNotes(const realvec& pitchList, const realvec&
-	                        ampList, const realvec& boundaries);
-	static void discardBeginEndSilences(const realvec& pitchList, const
-	                                    realvec& ampList, realvec& boundaries);
-	static void discardBeginEndSilencesAmpsOnly(const realvec& ampList,
-	        realvec& boundaries);
-	static void getRelativeDurations(const realvec& boundaries,
-	                                 realvec &durations);
-	//@}
+  /** \name Note stuff */
+  //@{
+  static realvec getNotes(const realvec& pitchList, const realvec&
+                          ampList, const realvec& boundaries);
+  static void discardBeginEndSilences(const realvec& pitchList, const
+                                      realvec& ampList, realvec& boundaries);
+  static void discardBeginEndSilencesAmpsOnly(const realvec& ampList,
+      realvec& boundaries);
+  static void getRelativeDurations(const realvec& boundaries,
+                                   realvec &durations);
+  //@}
 
 };
 }

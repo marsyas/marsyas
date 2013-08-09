@@ -26,8 +26,8 @@ namespace Marsyas
 /**
 	\class Spectrum2Mel
 	\ingroup Analysis
-	\brief Convert spectrum magnitude (e.g. output from PowerSpectrum MarSystem) 
-	into Mel frequency scale.  
+	\brief Convert spectrum magnitude (e.g. output from PowerSpectrum MarSystem)
+	into Mel frequency scale.
 
 	In order to duplicate the mel matrix in Slaney's mfcc.m use the following parameters:
 	- fftsize = 512
@@ -54,32 +54,32 @@ namespace Marsyas
 class Spectrum2Mel: public MarSystem
 {
 private:
-	realvec melMap_;
+  realvec melMap_;
 
-	MarControlPtr ctrl_melBands_;
-	MarControlPtr ctrl_bandWidth_;
-	MarControlPtr ctrl_bandLowEdge_;
-	MarControlPtr ctrl_bandHighEdge_;
-	MarControlPtr ctrl_htkMel_;
-	MarControlPtr ctrl_constAmp_;
+  MarControlPtr ctrl_melBands_;
+  MarControlPtr ctrl_bandWidth_;
+  MarControlPtr ctrl_bandLowEdge_;
+  MarControlPtr ctrl_bandHighEdge_;
+  MarControlPtr ctrl_htkMel_;
+  MarControlPtr ctrl_constAmp_;
 
-	mrs_natural pmelBands_;
-	mrs_real pbandWidth_;
-	mrs_real pbandLowEdge_;
-	mrs_real pbandHighEdge_;
-	bool phtkMel_;
-	bool pconstAmp_;
+  mrs_natural pmelBands_;
+  mrs_real pbandWidth_;
+  mrs_real pbandLowEdge_;
+  mrs_real pbandHighEdge_;
+  bool phtkMel_;
+  bool pconstAmp_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	Spectrum2Mel(std::string name);
-	Spectrum2Mel(const Spectrum2Mel& a);
-	~Spectrum2Mel();
-	MarSystem* clone() const;
+  Spectrum2Mel(std::string name);
+  Spectrum2Mel(const Spectrum2Mel& a);
+  ~Spectrum2Mel();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

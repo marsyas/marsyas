@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
   std::string progName = argv[0];
 
   TopPanel* panel = new TopPanel();
-  
+
   panel->setGeometry(50, 50, 800, 500);
   panel->show();
 

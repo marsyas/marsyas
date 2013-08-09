@@ -33,26 +33,26 @@ FullWaveRectifier::~FullWaveRectifier()
 MarSystem*
 FullWaveRectifier::clone() const
 {
-	return new FullWaveRectifier(*this);
+  return new FullWaveRectifier(*this);
 }
 
 void
 FullWaveRectifier::myUpdate(MarControlPtr sender)
 {
-	/// Use the default MarSystem setup with equal input/output stream format.
-	MarSystem::myUpdate(sender);
+  /// Use the default MarSystem setup with equal input/output stream format.
+  MarSystem::myUpdate(sender);
 }
 
 void
 FullWaveRectifier::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o,t;
-	// Copy the absolute values of the samples from the input to the output.
-	for (o = 0; o < inObservations_; o++)
-	{
-		for (t = 0; t < inSamples_; t++)
-		{
-			out(o, t) = (in(o, t) > 0) ? in(o, t) : -in(o, t);
-		}
-	}
+  mrs_natural o,t;
+  // Copy the absolute values of the samples from the input to the output.
+  for (o = 0; o < inObservations_; o++)
+  {
+    for (t = 0; t < inSamples_; t++)
+    {
+      out(o, t) = (in(o, t) > 0) ? in(o, t) : -in(o, t);
+    }
+  }
 }

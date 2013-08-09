@@ -33,15 +33,15 @@ namespace Marsyas
 class Square: public MarSystem
 {
 private:
-	void myUpdate(MarControlPtr sender);
+  void myUpdate(MarControlPtr sender);
 
 public:
-	Square(std::string name);
-	Square(const Square& a);
-	~Square();
-	MarSystem* clone() const;
+  Square(std::string name);
+  Square(const Square& a);
+  ~Square();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

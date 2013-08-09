@@ -38,19 +38,19 @@ namespace Marsyas
 class ResampleNearestNeighbour: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	MarControlPtr ctrl_stretch_;
-	MarControlPtr ctrl_samplingRateAdjustmentMode_;
+  MarControlPtr ctrl_stretch_;
+  MarControlPtr ctrl_samplingRateAdjustmentMode_;
 
 public:
-	ResampleNearestNeighbour(std::string name);
-	ResampleNearestNeighbour(const ResampleNearestNeighbour& a);
-	~ResampleNearestNeighbour();
-	MarSystem* clone() const;
+  ResampleNearestNeighbour(std::string name);
+  ResampleNearestNeighbour(const ResampleNearestNeighbour& a);
+  ~ResampleNearestNeighbour();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

@@ -44,20 +44,20 @@ statistics::~statistics()
 mrs_real
 statistics::momentN(const realvec& zData, const realvec& weights, int n)
 {
-	if (zData.getSize() != weights.getSize())
-	{
-		MRSERR("statistics::momentN - wrong size for weights vector!");
-		return -1.0;
-	}
+  if (zData.getSize() != weights.getSize())
+  {
+    MRSERR("statistics::momentN - wrong size for weights vector!");
+    return -1.0;
+  }
 
-	mrs_real sum = 0.0;
-  
-	for (mrs_natural i=0; i < zData.getSize(); i++)
-	{
-		sum += weights(i) * pow(zData(i), n);
-	}
-    
-	return sum;
+  mrs_real sum = 0.0;
+
+  for (mrs_natural i=0; i < zData.getSize(); i++)
+  {
+    sum += weights(i) * pow(zData(i), n);
+  }
+
+  return sum;
 }
 
 
@@ -67,30 +67,30 @@ statistics::momentN(const realvec& zData, const realvec& weights, int n)
 realvec
 statistics::zDataWeighted(const realvec& data, const realvec& weights, mrs_real mean)
 {
-	realvec zData;
-	zData.create(data.getSize());
+  realvec zData;
+  zData.create(data.getSize());
 
-	if (data.getSize() != weights.getSize())
-	{
-		MRSERR("statistics::zDataWeighted - wrong size for weights vector!");
-		return zData;
-	}
+  if (data.getSize() != weights.getSize())
+  {
+    MRSERR("statistics::zDataWeighted - wrong size for weights vector!");
+    return zData;
+  }
 
-	mrs_real sd = statistics::stddevWeighted(data, weights, mean);
+  mrs_real sd = statistics::stddevWeighted(data, weights, mean);
 
-	if (sd == 0)
-	{
-		MRSWARN("statistics::zDataWeighted - standard deviation is 0.");
-		return zData;
-	}
+  if (sd == 0)
+  {
+    MRSWARN("statistics::zDataWeighted - standard deviation is 0.");
+    return zData;
+  }
 
-	for (mrs_natural i=0; i < zData.getSize(); i++)
-		zData(i) = (data(i) - mean) / sd;
+  for (mrs_natural i=0; i < zData.getSize(); i++)
+    zData(i) = (data(i) - mean) / sd;
 
-	return zData;
+  return zData;
 }
 
-	
+
 
 // PUBLIC
 
@@ -100,25 +100,25 @@ statistics::zDataWeighted(const realvec& data, const realvec& weights, mrs_real 
 mrs_real
 statistics::meanWeighted(const realvec& data, const realvec& weights)
 {
-	if (data.getSize() != weights.getSize())
-	{
-		MRSERR("statistics::meanWeighted - wrong size for weights vector!");
-		return -1.0;
-	}
+  if (data.getSize() != weights.getSize())
+  {
+    MRSERR("statistics::meanWeighted - wrong size for weights vector!");
+    return -1.0;
+  }
 
-	mrs_real sum = 0.0;
-	mrs_real weightsSum = 0.0;
-  
-	for (mrs_natural i=0; i < data.getSize(); i++)
-	{
-		mrs_real w = weights(i);
+  mrs_real sum = 0.0;
+  mrs_real weightsSum = 0.0;
 
-		sum += w * data(i);
-		weightsSum += w;
-	}
-    
-	if (weightsSum != 0.0) sum /= weightsSum;
-	return sum;
+  for (mrs_natural i=0; i < data.getSize(); i++)
+  {
+    mrs_real w = weights(i);
+
+    sum += w * data(i);
+    weightsSum += w;
+  }
+
+  if (weightsSum != 0.0) sum /= weightsSum;
+  return sum;
 }
 
 
@@ -128,51 +128,51 @@ statistics::meanWeighted(const realvec& data, const realvec& weights)
 mrs_real
 statistics::stddevWeighted(const realvec& data, const realvec& weights, mrs_real mean)
 {
-    mrs_real variance = varWeighted(data, weights, mean);
-		return sqrt(variance);
+  mrs_real variance = varWeighted(data, weights, mean);
+  return sqrt(variance);
 }
 
 // Computes the variance for a vector where each element has an
 // associated weight.
 // Assumes weights sum to 1.
-mrs_real 
+mrs_real
 statistics::varWeighted(const realvec& data, const realvec& weights, mrs_real mean)
 {
-	if (data.getSize() != weights.getSize())
-	{
-		MRSERR("statistics::varWeighted - wrong size for weights vector!");
-		return -1.0;
-	}
+  if (data.getSize() != weights.getSize())
+  {
+    MRSERR("statistics::varWeighted - wrong size for weights vector!");
+    return -1.0;
+  }
 
-	mrs_real sum = 0.0;
+  mrs_real sum = 0.0;
 
-	for (mrs_natural i=0; i < data.getSize(); i++)
-	{
-		mrs_real w = weights(i);
-		mrs_real diff = data(i) - mean;
+  for (mrs_natural i=0; i < data.getSize(); i++)
+  {
+    mrs_real w = weights(i);
+    mrs_real diff = data(i) - mean;
 
-		sum += w * diff * diff;
-	}
+    sum += w * diff * diff;
+  }
 
-	return sum;
+  return sum;
 }
 
 // Computes the weighted skewness (3rd moment) about the given mean value.
 // Assumes weights sum to 1
-mrs_real 
+mrs_real
 statistics::skewnessWeighted(const realvec& data, const realvec& weights, mrs_real mean)
 {
-	realvec zData = zDataWeighted(data, weights, mean);
-	return statistics::momentN(zData, weights, 3);
+  realvec zData = zDataWeighted(data, weights, mean);
+  return statistics::momentN(zData, weights, 3);
 }
 
 
 // Computes the weighted kurtosis (4rd moment) about the given mean value.
 // Assumes weights sum to 1
-mrs_real 
+mrs_real
 statistics::kurtosisWeighted(const realvec& data, const realvec& weights, mrs_real mean)
 {
-	realvec zData = zDataWeighted(data, weights, mean);
-	return statistics::momentN(zData, weights, 4) - 3.0;
+  realvec zData = zDataWeighted(data, weights, mean);
+  return statistics::momentN(zData, weights, 4) - 3.0;
 }
 

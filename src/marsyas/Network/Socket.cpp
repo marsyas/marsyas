@@ -101,7 +101,7 @@ Socket :: ~Socket()
 {
 #if (defined(MARSYAS_IRIX) || defined(MARSYAS_CYGWIN) || defined(MARSYAS_MACOSX))
 
-  
+
   ::close( soket );
 
 #elif defined(MARSYAS_WIN32)

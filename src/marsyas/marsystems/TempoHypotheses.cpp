@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -32,9 +32,9 @@ TempoHypotheses::TempoHypotheses(mrs_string name):MarSystem("TempoHypotheses", n
 
 TempoHypotheses::TempoHypotheses(const TempoHypotheses& a) : MarSystem(a)
 {
-  // For any MarControlPtr in a MarSystem 
-  // it is necessary to perform this getctrl 
-  // in the copy constructor in order for cloning to work 
+  // For any MarControlPtr in a MarSystem
+  // it is necessary to perform this getctrl
+  // in the copy constructor in order for cloning to work
   ctrl_nPhases_ = getctrl("mrs_natural/nPhases");
   ctrl_nPeriods_ = getctrl("mrs_natural/nPeriods");
   ctrl_inductionTime_ = getctrl("mrs_natural/inductionTime");
@@ -58,13 +58,13 @@ TempoHypotheses::~TempoHypotheses()
 {
 }
 
-MarSystem* 
-TempoHypotheses::clone() const 
+MarSystem*
+TempoHypotheses::clone() const
 {
   return new TempoHypotheses(*this);
 }
 
-void 
+void
 TempoHypotheses::addControls()
 {
   //Add specific controls needed by this MarSystem.
@@ -94,182 +94,182 @@ TempoHypotheses::myUpdate(MarControlPtr sender)
 {
   (void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("TempoHypotheses.cpp - TempoHypotheses:myUpdate");
-  
-	nPhases_ = ctrl_nPhases_->to<mrs_natural>();
-	nPeriods_ = ctrl_nPeriods_->to<mrs_natural>();
-	inductionSize_ = ctrl_inductionTime_->to<mrs_natural>();
-	srcFs_ = ctrl_srcFs_->to<mrs_real>();
-	hopSize_ = ctrl_hopSize_->to<mrs_natural>();
-	triggerInduction_ = ctrl_triggerInduction_->to<mrs_bool>();
-	accSize_ = ctrl_accSize_->to<mrs_natural>();
-	dumbInductionRequest_ = ctrl_dumbInductionRequest_->to<mrs_bool>();
-	maxPeriod_ = ctrl_maxPeriod_->to<mrs_natural>();
-	minPeriod_ = ctrl_minPeriod_->to<mrs_natural>();
 
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	setctrl("mrs_natural/onSamples", 3);
-	setctrl("mrs_natural/onObservations", nPhases_ * nPeriods_);
+  nPhases_ = ctrl_nPhases_->to<mrs_natural>();
+  nPeriods_ = ctrl_nPeriods_->to<mrs_natural>();
+  inductionSize_ = ctrl_inductionTime_->to<mrs_natural>();
+  srcFs_ = ctrl_srcFs_->to<mrs_real>();
+  hopSize_ = ctrl_hopSize_->to<mrs_natural>();
+  triggerInduction_ = ctrl_triggerInduction_->to<mrs_bool>();
+  accSize_ = ctrl_accSize_->to<mrs_natural>();
+  dumbInductionRequest_ = ctrl_dumbInductionRequest_->to<mrs_bool>();
+  maxPeriod_ = ctrl_maxPeriod_->to<mrs_natural>();
+  minPeriod_ = ctrl_minPeriod_->to<mrs_natural>();
+
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+  setctrl("mrs_natural/onSamples", 3);
+  setctrl("mrs_natural/onObservations", nPhases_ * nPeriods_);
 }
 
 
-void 
+void
 TempoHypotheses::myProcess(realvec& in, realvec& out)
 {
-	//timeElapsed_ is constantly updated with the referee's next time frame
-	timeElapsed_ = ctrl_tickCount_->to<mrs_natural>();
+  //timeElapsed_ is constantly updated with the referee's next time frame
+  timeElapsed_ = ctrl_tickCount_->to<mrs_natural>();
 
-	//cout << "THyp: " << timeElapsed_ << "; Ind: " << inductionSize_ << "; accSize: " << accSize_ 
-	//	<< "; maxPer: " << maxPeriod_ << "; minPer: " << minPeriod_ << endl;
+  //cout << "THyp: " << timeElapsed_ << "; Ind: " << inductionSize_ << "; accSize: " << accSize_
+  //	<< "; maxPer: " << maxPeriod_ << "; minPer: " << minPeriod_ << endl;
 
-	triggerInduction_ = ctrl_triggerInduction_->to<mrs_bool>();
-	if(triggerInduction_)
-	{
-		mrs_natural maxPeriod = 0;
+  triggerInduction_ = ctrl_triggerInduction_->to<mrs_bool>();
+  if(triggerInduction_)
+  {
+    mrs_natural maxPeriod = 0;
 
-		//reset flags
-		foundPeriods_ = false;
-		foundPhases_ = false;
-		if(!dumbInductionRequest_) //if not in dumb induction mode (requested by user)
-		{
-			//retrieve Max Period Peak and check if found periods and/or phases
-			mrs_real maxPeriodPeak = 0.0;
-			for (int i=0; i < nPeriods_; i++)
-			{
-				if(in(0, 2*i+1) > 1) //if found any period (period > 1 because it may appear as decimals meaning 0)
-					foundPeriods_ = true;
-				
-				if(in(0, 2*i) > maxPeriodPeak)
-					maxPeriodPeak = in(0, 2*i);
+    //reset flags
+    foundPeriods_ = false;
+    foundPhases_ = false;
+    if(!dumbInductionRequest_) //if not in dumb induction mode (requested by user)
+    {
+      //retrieve Max Period Peak and check if found periods and/or phases
+      mrs_real maxPeriodPeak = 0.0;
+      for (int i=0; i < nPeriods_; i++)
+      {
+        if(in(0, 2*i+1) > 1) //if found any period (period > 1 because it may appear as decimals meaning 0)
+          foundPeriods_ = true;
 
-				//keep maximum period
-				if(in(0, 2*i+1) > maxPeriod)
-					maxPeriod = (mrs_natural)in(0, 2*i+1);
+        if(in(0, 2*i) > maxPeriodPeak)
+          maxPeriodPeak = in(0, 2*i);
 
-				int z = 0;
-				//cout << "TH-Phases: " << endl;
-				for (int j = (i * nPhases_); j < ((i+1) * nPhases_); j++)
-				{
-					//cout << "i: " << in(1, 2*z+1) << "; ";
-					if(in(1, 2*z+1) > 0) //if found any phases
-						foundPhases_ = true;
-						//foundPhases_ = false;
-					z++;
-				}
-				//cout << endl;
-			}
+        //keep maximum period
+        if(in(0, 2*i+1) > maxPeriod)
+          maxPeriod = (mrs_natural)in(0, 2*i+1);
 
-			//cout << "FoundPer: " << foundPeriods_ << "; foundPh: " << foundPhases_ << endl;
+        int z = 0;
+        //cout << "TH-Phases: " << endl;
+        for (int j = (i * nPhases_); j < ((i+1) * nPhases_); j++)
+        {
+          //cout << "i: " << in(1, 2*z+1) << "; ";
+          if(in(1, 2*z+1) > 0) //if found any phases
+            foundPhases_ = true;
+          //foundPhases_ = false;
+          z++;
+        }
+        //cout << endl;
+      }
 
-			if(foundPeriods_) //if found periods
-			{
-				for (int i=0; i < nPeriods_; i++)
-				{	
-					int z = 0;
-					for (int j = (i * nPhases_); j < ((i+1) * nPhases_); j++)
-					{
-						out(j, 0) = in(0, 2*i+1); //Periods
-						out(j, 1) = in(1, 2*z+1); //Phases
-						out(j, 2) = in(0, 2*i);// / maxPeriodPeak; //Normalized period peak magnitudes
-						
-						z++;
-					}
-				}
-			}
-		}
-		
-		//if no periods found or in dumb induction mode (requested by user)
-		if(!foundPeriods_ || dumbInductionRequest_)
-		{
-			//Manual assorted values for filling BPM hypotheses vector when none are generated
-			int manualBPMs_[] = {120, 60, 240, 100, 160, 200, 80, 140, 180, 220, 150};
+      //cout << "FoundPer: " << foundPeriods_ << "; foundPh: " << foundPhases_ << endl;
 
-			if(!foundPeriods_ && !dumbInductionRequest_)
-				cerr << "\nUnable to find salient periodicities within the given induction window..." << endl;
-			if(dumbInductionRequest_)
-				cerr << "\nDumb Induction Mode..." << endl;
-			
-			cerr << "...Replacing induction with the following BPMs: ";
+      if(foundPeriods_) //if found periods
+      {
+        for (int i=0; i < nPeriods_; i++)
+        {
+          int z = 0;
+          for (int j = (i * nPhases_); j < ((i+1) * nPhases_); j++)
+          {
+            out(j, 0) = in(0, 2*i+1); //Periods
+            out(j, 1) = in(1, 2*z+1); //Phases
+            out(j, 2) = in(0, 2*i);// / maxPeriodPeak; //Normalized period peak magnitudes
 
-			mrs_natural assignedPerCount = 0;
-			for (unsigned int i=0; i < (sizeof(manualBPMs_) / sizeof(int)); i++)
-			{
-				if(assignedPerCount == nPeriods_) break;
+            z++;
+          }
+        }
+      }
+    }
 
-				mrs_natural manualPeriod = (mrs_natural) (((mrs_real) 60 / (manualBPMs_[i] * hopSize_)) * (srcFs_));
-				
-				//cout << i << "-> manBPM: " << manualBPMs_[i] << "[" << manualPeriod << "] maxPer: " 
-				//	<< maxPeriod_ << "; minPer: " << minPeriod_ << "; ASS: " << assignedPerCount << endl;
+    //if no periods found or in dumb induction mode (requested by user)
+    if(!foundPeriods_ || dumbInductionRequest_)
+    {
+      //Manual assorted values for filling BPM hypotheses vector when none are generated
+      int manualBPMs_[] = {120, 60, 240, 100, 160, 200, 80, 140, 180, 220, 150};
 
-				//assure that the chosen manual periods are within the user-defined BPM range
-				if(manualPeriod >= minPeriod_ && manualPeriod <= maxPeriod_)
-				{
-					cerr << manualBPMs_[i] << "; ";
-				
-					int z = 0;
-					for (int j = (assignedPerCount * nPhases_); j < ((assignedPerCount+1) * nPhases_); j++)
-					{
-						out(j, 0) = manualPeriod; //Periods
-						out(j, 1) = in(1, 2*z+1); //Phases
-						out(j, 2) = 1.0; //equal (max) peak sizes to all manual periods
-						z++;
+      if(!foundPeriods_ && !dumbInductionRequest_)
+        cerr << "\nUnable to find salient periodicities within the given induction window..." << endl;
+      if(dumbInductionRequest_)
+        cerr << "\nDumb Induction Mode..." << endl;
 
-						if(out(j,0) > maxPeriod) //save maximum manual period
-							maxPeriod = (mrs_natural) out(j,0);
-					}
+      cerr << "...Replacing induction with the following BPMs: ";
 
-					assignedPerCount++;
-				}
-			}
+      mrs_natural assignedPerCount = 0;
+      for (unsigned int i=0; i < (sizeof(manualBPMs_) / sizeof(int)); i++)
+      {
+        if(assignedPerCount == nPeriods_) break;
 
-			//request dumbInduction to PhaseLock
-			ctrl_dumbInduction_->setValue(true); 
-		}
+        mrs_natural manualPeriod = (mrs_natural) (((mrs_real) 60 / (manualBPMs_[i] * hopSize_)) * (srcFs_));
 
-		if(!foundPhases_) //if no phases found
-		{
-			//cerr << "\nUnable to find potential phases (onsets) within the given induction window..." << endl;
-			//cerr << "...Assuming the maximum nr. of possible phases." << endl;
+        //cout << i << "-> manBPM: " << manualBPMs_[i] << "[" << manualPeriod << "] maxPer: "
+        //	<< maxPeriod_ << "; minPer: " << minPeriod_ << "; ASS: " << assignedPerCount << endl;
 
-			//calculate minimum spacing between possible phases
-			mrs_natural spacing = (mrs_natural) ceil(((mrs_real)maxPeriod / (mrs_real)nPhases_));
-			//start phases on the analysis start point of the given induction window
-			mrs_natural accBeginning = (accSize_-1-inductionSize_);
+        //assure that the chosen manual periods are within the user-defined BPM range
+        if(manualPeriod >= minPeriod_ && manualPeriod <= maxPeriod_)
+        {
+          cerr << manualBPMs_[i] << "; ";
 
-			//fill phases vector
-			mrs_realvec phases(nPhases_);
-			mrs_natural index = 0;
-			for(int ph = accBeginning; ph <= accBeginning+maxPeriod+spacing; ph += spacing)
-			{
-				if(index == nPhases_) break;
-				
-				phases(index) = ph; //Phases
-				index++;
-			}
+          int z = 0;
+          for (int j = (assignedPerCount * nPhases_); j < ((assignedPerCount+1) * nPhases_); j++)
+          {
+            out(j, 0) = manualPeriod; //Periods
+            out(j, 1) = in(1, 2*z+1); //Phases
+            out(j, 2) = 1.0; //equal (max) peak sizes to all manual periods
+            z++;
 
-			for (int i=0; i < nPeriods_; i++)
-			{	
-				int z = 0;
-				for (int j = (i * nPhases_); j < ((i+1) * nPhases_); j++)
-				{
-					out(j, 1) = phases(z); //Phases
-					z++;
-				}
-			}
-			//MATLAB_PUT(in, "BeatData");
-			//MATLAB_PUT(out, "TempoHypotheses");
-		}
+            if(out(j,0) > maxPeriod) //save maximum manual period
+              maxPeriod = (mrs_natural) out(j,0);
+          }
 
-		//MATLAB_PUT(out, "TempoHypotheses2");	
-		//MATLAB_PUT(in, "BeatData");
-		//MATLAB_EVAL("plot(BeatData)");
-	}
-	
-	/*
-	//FOR TESTING ONSETS IN REPEATED INDUCTION=========================
-	MATLAB_PUT((mrs_natural)triggerInduction_, "Induction_flag");
-	MATLAB_EVAL("Induction = Induction2;");
-	MATLAB_EVAL("Induction(end) = Induction_flag*max(PeakerOnset_in);");
-	*/
+          assignedPerCount++;
+        }
+      }
+
+      //request dumbInduction to PhaseLock
+      ctrl_dumbInduction_->setValue(true);
+    }
+
+    if(!foundPhases_) //if no phases found
+    {
+      //cerr << "\nUnable to find potential phases (onsets) within the given induction window..." << endl;
+      //cerr << "...Assuming the maximum nr. of possible phases." << endl;
+
+      //calculate minimum spacing between possible phases
+      mrs_natural spacing = (mrs_natural) ceil(((mrs_real)maxPeriod / (mrs_real)nPhases_));
+      //start phases on the analysis start point of the given induction window
+      mrs_natural accBeginning = (accSize_-1-inductionSize_);
+
+      //fill phases vector
+      mrs_realvec phases(nPhases_);
+      mrs_natural index = 0;
+      for(int ph = accBeginning; ph <= accBeginning+maxPeriod+spacing; ph += spacing)
+      {
+        if(index == nPhases_) break;
+
+        phases(index) = ph; //Phases
+        index++;
+      }
+
+      for (int i=0; i < nPeriods_; i++)
+      {
+        int z = 0;
+        for (int j = (i * nPhases_); j < ((i+1) * nPhases_); j++)
+        {
+          out(j, 1) = phases(z); //Phases
+          z++;
+        }
+      }
+      //MATLAB_PUT(in, "BeatData");
+      //MATLAB_PUT(out, "TempoHypotheses");
+    }
+
+    //MATLAB_PUT(out, "TempoHypotheses2");
+    //MATLAB_PUT(in, "BeatData");
+    //MATLAB_EVAL("plot(BeatData)");
+  }
+
+  /*
+  //FOR TESTING ONSETS IN REPEATED INDUCTION=========================
+  MATLAB_PUT((mrs_natural)triggerInduction_, "Induction_flag");
+  MATLAB_EVAL("Induction = Induction2;");
+  MATLAB_EVAL("Induction(end) = Induction_flag*max(PeakerOnset_in);");
+  */
 }
 
 
@@ -278,4 +278,4 @@ TempoHypotheses::myProcess(realvec& in, realvec& out)
 
 
 
-	
+

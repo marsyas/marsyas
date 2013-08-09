@@ -27,8 +27,8 @@ namespace Marsyas
 	\ingroup Analysis
 	\brief Compute SNR and variations
 
-	Computes the SNR between two mono audio signals. 
-	One signal is observation 0 and the other is observation 1. 
+	Computes the SNR between two mono audio signals.
+	One signal is observation 0 and the other is observation 1.
 
 	The output is:
 
@@ -51,24 +51,24 @@ namespace Marsyas
 class SNR: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	MarControlPtr ctrl_mode_;
-	MarControlPtr ctrl_done_;
-	mrs_real nsum_;
-	mrs_real nbsum_;
-	mrs_real  psum_;
-	mrs_real dsum_;
-	mrs_real diff_;
-	mrs_real r_;
+  MarControlPtr ctrl_mode_;
+  MarControlPtr ctrl_done_;
+  mrs_real nsum_;
+  mrs_real nbsum_;
+  mrs_real  psum_;
+  mrs_real dsum_;
+  mrs_real diff_;
+  mrs_real r_;
 public:
-	SNR(std::string name);
-	SNR(const SNR& a);
-	~SNR();
-	MarSystem* clone() const;
+  SNR(std::string name);
+  SNR(const SNR& a);
+  ~SNR();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

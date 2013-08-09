@@ -36,37 +36,37 @@
  */
 class QOscServer : public QOscBase
 {
-	Q_OBJECT
-	friend class PathObject;
-	public:
-		/**
-		 * Creates an OSC-server that listens on all interfaces on the specified
-		 * port for incoming datagrams.
-		 */
-		QOscServer( quint16 port, QObject* p );
-		/**
-		 * Creates an OSC-server that listens on the specified address and port
-		 * for incoming datagrams.
-		 */
-		QOscServer( QHostAddress address, quint16 port, QObject* p );
-		/// destructor
-		~QOscServer();
+  Q_OBJECT
+  friend class PathObject;
+public:
+  /**
+   * Creates an OSC-server that listens on all interfaces on the specified
+   * port for incoming datagrams.
+   */
+  QOscServer( quint16 port, QObject* p );
+  /**
+   * Creates an OSC-server that listens on the specified address and port
+   * for incoming datagrams.
+   */
+  QOscServer( QHostAddress address, quint16 port, QObject* p );
+  /// destructor
+  ~QOscServer();
 
-		/**
-		 * @brief Don't allow changing the socket.
-		 */
-		void setSocket( QUdpSocket* ) {}
+  /**
+   * @brief Don't allow changing the socket.
+   */
+  void setSocket( QUdpSocket* ) {}
 
-	signals:
-		void data( QString path, QVariant data );
+signals:
+  void data( QString path, QVariant data );
 
-	private slots:
-		void readyRead();
-	private:
+private slots:
+  void readyRead();
+private:
 
-		void registerPathObject( PathObject* );
-		void unregisterPathObject( PathObject* );
-		QList<PathObject*> paths;
+  void registerPathObject( PathObject* );
+  void unregisterPathObject( PathObject* );
+  QList<PathObject*> paths;
 };
 
 #endif // QOSCSERVER_H

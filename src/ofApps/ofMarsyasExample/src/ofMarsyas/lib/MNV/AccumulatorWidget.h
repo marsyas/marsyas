@@ -17,24 +17,24 @@
 
 namespace Marsyas
 {
-	
-	class AccumulatorWidget : public MarSystemWidget
-	{
-	private:
-		void addControls();
-		void updateControls();
-		
-	public:
-		AccumulatorWidget(MarSystem *msys, GraphicalEnvironment* env);
-		~AccumulatorWidget();
-		
-		//void update();
-		
-		void drawConnections();
-		void updateSize();
-		void updateChildrenPos();
-		void updateChildrenWidgets();
-	};
+
+class AccumulatorWidget : public MarSystemWidget
+{
+private:
+  void addControls();
+  void updateControls();
+
+public:
+  AccumulatorWidget(MarSystem *msys, GraphicalEnvironment* env);
+  ~AccumulatorWidget();
+
+  //void update();
+
+  void drawConnections();
+  void updateSize();
+  void updateChildrenPos();
+  void updateChildrenWidgets();
+};
 }
 
 #endif

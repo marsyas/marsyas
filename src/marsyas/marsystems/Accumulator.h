@@ -32,7 +32,7 @@ namespace Marsyas
 	Accumulate result of multiple tick process calls
 	to child (i.e internal) MarSystem. Spit output only once when
 	all the results are accumulated (either using a predefined
-    number of processing ticks or when explicitly "flushed"). 
+    number of processing ticks or when explicitly "flushed").
     Used to change the rate of process requests.
 
 	For example, if \c mode is "countTicks" and \c nTimes is 5, then
@@ -46,27 +46,27 @@ namespace Marsyas
       the result of multiple tick process calls to the child MarSystem
       until the \c flush control is set to true, subsequently sending
       the accumulated data to the output.
- 
+
 	- \b mrs_natural/nTimes [rw] : when in "countTicks" mode, it is
 		the multiplier of ticks() for the child (i.e. internal)
 		MarSystem. Ignored in "explicitFlush" mode.
- 
+
     - \b mrs_bool/flush [w] : when in "explicitFlush" mode, setting it
       to true stops the current accumulator procedure and outputs the
       accumulated data. Ignored in "countTicks" mode.
- 
+
     - \b mrs_natural/maxTimes [rw] : when in "explicitFlush" mode,
       this sets the maximum number of times the Accumulator ticks the
       child MarSystem, in the absence of a flush event (e.g. used to
       avoid an "infinite" accumulation of data in case a flush event
       fails to exist). Ignored in "countTicks" mode.
- 
+
     - \b mrs_natural/minTimes [rw] : when in "explicitFlush" mode,
       this sets the minimum number of times the Accumulator ticks the
       child MarSystem, even in the presence of a flush event
       (e.g. used to set a minimum "distance" between consecutive
       flushes). Ignored in "countTicks" mode.
- 
+
     - \b mrs_natural/timesToKeep [rw] : when in "explicitFlush" mode,
       this control specifies the number of tick (i.e
       processing)results output by the child MarSystem that will not
@@ -85,9 +85,9 @@ namespace Marsyas
       graphical example, where each dot (".") represents an
       accumulated output from the child MarSystem, and the X is a
       special output where some flush decision should be made:
- 
+
         ..........X.
-        
+
         So, having the graphic above in mind, supose we have an
         Accumulator in "explicitFlush", with a child onset detector
         MarSystem that at each tick, looks at its previous output and
@@ -109,39 +109,39 @@ namespace Marsyas
         to 2 (i.e. both the previous and current data outputs will be
         kept internally, and all the previous accumulated data output
         - we could call it the pre-onset data).
- 
- 
+
+
 */
 class Accumulator: public MarSystem
 {
 private:
-	MarControlPtr ctrl_nTimes_;
-	MarControlPtr ctrl_maxTimes_;
-	MarControlPtr ctrl_minTimes_;
-	MarControlPtr ctrl_timesToKeep_;
+  MarControlPtr ctrl_nTimes_;
+  MarControlPtr ctrl_maxTimes_;
+  MarControlPtr ctrl_minTimes_;
+  MarControlPtr ctrl_timesToKeep_;
 
-	MarControlPtr ctrl_flush_;
-	MarControlPtr ctrl_mode_;
+  MarControlPtr ctrl_flush_;
+  MarControlPtr ctrl_mode_;
 
-	mrs_natural nTimes_;
+  mrs_natural nTimes_;
 
-	mrs_natural childOnSamples_;
-	mrs_natural keptOnSamples_;
+  mrs_natural childOnSamples_;
+  mrs_natural keptOnSamples_;
 
-	realvec childOut_;
-	realvec tout_;
+  realvec childOut_;
+  realvec tout_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	Accumulator(std::string name);
-	Accumulator(const Accumulator& a);
-	~Accumulator();
-	MarSystem* clone() const;
+  Accumulator(std::string name);
+  Accumulator(const Accumulator& a);
+  ~Accumulator();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
-	bool addMarSystem(MarSystem *marsystem);
+  void myProcess(realvec& in, realvec& out);
+  bool addMarSystem(MarSystem *marsystem);
 
 };
 

@@ -101,7 +101,7 @@ int perform_compare( MarSystem * system, const std::string & filename )
   cout << "Comparing " << rec->records.size() << " records..." << endl;
   cout << "Comparing paths:" << endl;
 
-  for ( const auto & path : rec->paths )
+for ( const auto & path : rec->paths )
   {
     cout << path << endl;
   }

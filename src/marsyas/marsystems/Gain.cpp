@@ -23,14 +23,14 @@ using namespace Marsyas;
 
 Gain::Gain(mrs_string name):MarSystem("Gain", name)
 {
-	//Add any specific controls needed by Gain
-	//(default controls all MarSystems should have
-	//were already added by MarSystem::addControl(),
-	//called by :MarSystem(name) constructor).
-	//If no specific controls are needed by a MarSystem
-	//there is no need to implement and call this addControl()
-	//method (see for e.g. Rms.cpp)
-	addControls();
+  //Add any specific controls needed by Gain
+  //(default controls all MarSystems should have
+  //were already added by MarSystem::addControl(),
+  //called by :MarSystem(name) constructor).
+  //If no specific controls are needed by a MarSystem
+  //there is no need to implement and call this addControl()
+  //method (see for e.g. Rms.cpp)
+  addControls();
 }
 
 Gain::Gain(const Gain& a) : MarSystem(a)
@@ -48,39 +48,39 @@ Gain::~Gain()
 MarSystem*
 Gain::clone() const
 {
-	return new Gain(*this);
+  return new Gain(*this);
 }
 
 void
 Gain::addControls()
 {
-	//Add specific controls needed by this MarSystem.
-	addctrl("mrs_real/gain", 1.0, ctrl_gain_);
+  //Add specific controls needed by this MarSystem.
+  addctrl("mrs_real/gain", 1.0, ctrl_gain_);
 }
 
 
 void
 Gain::myUpdate(MarControlPtr sender)
 {
-	// no change to network flow
-	MarSystem::myUpdate(sender);
+  // no change to network flow
+  MarSystem::myUpdate(sender);
 }
 
 void
 Gain::myProcess(realvec& in, realvec& out)
 {
-	mrs_real gainValue = ctrl_gain_->to<mrs_real>();
-	MRSDIAG(type_ << "/" << name_ << "/mrs_real/gain = " << gainValue);
+  mrs_real gainValue = ctrl_gain_->to<mrs_real>();
+  MRSDIAG(type_ << "/" << name_ << "/mrs_real/gain = " << gainValue);
 
-	// It is important to loop over both observations
-	// and channels so that for example a gain can be
-	// applied to multi-channel signals
-	for (mrs_natural o=0; o < inObservations_; o++)
-	{
-		for (mrs_natural t = 0; t < inSamples_; t++)
-		{
-			//apply gain to all channels
-		  out(o,t) = gainValue * in(o,t);
-		}
-	}
+  // It is important to loop over both observations
+  // and channels so that for example a gain can be
+  // applied to multi-channel signals
+  for (mrs_natural o=0; o < inObservations_; o++)
+  {
+    for (mrs_natural t = 0; t < inSamples_; t++)
+    {
+      //apply gain to all channels
+      out(o,t) = gainValue * in(o,t);
+    }
+  }
 }

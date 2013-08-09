@@ -4,11 +4,11 @@
 #include <QWidget>
 #include "PreferencesDialog.h"
 
-class ColorPage : public PreferencesPage 
+class ColorPage : public PreferencesPage
 {
 public:
-	ColorPage(QWidget *parent=0);
-	void update() {}
+  ColorPage(QWidget *parent=0);
+  void update() {}
 };
 
 #endif /* COLOR_H */

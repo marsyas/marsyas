@@ -5,13 +5,13 @@
 
 #include "MusicCollection.h"
 
-class MusicCollectionIO 
+class MusicCollectionIO
 {
 public:
-	enum ParserTypes { ITUNES, MARXML, MARCSV };
-	//static bool parse(ParserTypes which, QFile &file, MusicCollection *collection);
-	static bool parse(QFile &file, MusicCollection *collection);
-   static bool write(QFile &file, MusicCollection *collection);
+  enum ParserTypes { ITUNES, MARXML, MARCSV };
+  //static bool parse(ParserTypes which, QFile &file, MusicCollection *collection);
+  static bool parse(QFile &file, MusicCollection *collection);
+  static bool write(QFile &file, MusicCollection *collection);
 };
 
 

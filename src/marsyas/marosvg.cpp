@@ -27,63 +27,63 @@ using namespace Marsyas;
 marosvg::SVGObj_::SVGObj_(SVGObj_* p, std::string t, std::string n)
 {
   parent_=p; t=t; n_=n;
-  if(parent_!=NULL){
-	parent_->addChild(this);
+  if(parent_!=NULL) {
+    parent_->addChild(this);
   }
 }
 marosvg::SVGObj_::~SVGObj_()
 {
   while(children_.size()>0) {
-	SVGObj_* c = children_.back();
-	children_.pop_back();
-	delete c;
+    SVGObj_* c = children_.back();
+    children_.pop_back();
+    delete c;
   }
 }
 void
 marosvg::SVGObj_::addChild(SVGObj_* c)
 {
   if(c!=NULL)
-	children_.push_back(c);
+    children_.push_back(c);
 }
 
 void
 marosvg::SVGObj_::sizeAdj()
 {
   if (children_.size()>0) {
-	if(t=="Series") {
-	  int max_height=0;
-	  int w=0;
+    if(t=="Series") {
+      int max_height=0;
+      int w=0;
 
-	  for(int i=0; i < (int)children_.size(); ++i) {
-		SVGObj_* s=children_[i];
-		s->sizeAdj();
+      for(int i=0; i < (int)children_.size(); ++i) {
+        SVGObj_* s=children_[i];
+        s->sizeAdj();
 
-		if (s->h_>max_height)
-		  max_height = s->h_;
-		w = w + 20 + s->w_;
-	  }
-	  h_ = max_height + 20 + 20;
-	  w_ = w + 20;
-	}
-	else if (t=="Fanout" || t=="Parallel") {
-	  int max_width=0;
-	  int h=0;
+        if (s->h_>max_height)
+          max_height = s->h_;
+        w = w + 20 + s->w_;
+      }
+      h_ = max_height + 20 + 20;
+      w_ = w + 20;
+    }
+    else if (t=="Fanout" || t=="Parallel") {
+      int max_width=0;
+      int h=0;
 
-	  for(int i=0; i < (int)children_.size(); ++i) {
-		SVGObj_* s=children_[i];
-		s->sizeAdj();
+      for(int i=0; i < (int)children_.size(); ++i) {
+        SVGObj_* s=children_[i];
+        s->sizeAdj();
 
-		h = h + 20 + s->h_;
-		if (s->w_ > max_width)
-		  max_width = s->w_;
-	  }
-	  h_ = h + 20;
-	  w_ = max_width + 20 + 20;
-	}
+        h = h + 20 + s->h_;
+        if (s->w_ > max_width)
+          max_width = s->w_;
+      }
+      h_ = h + 20;
+      w_ = max_width + 20 + 20;
+    }
   }
   else {
-	h_=40;
-	w_=100;
+    h_=40;
+    w_=100;
   }
 }
 
@@ -94,22 +94,22 @@ marosvg::SVGObj_::posAdj(int x, int y)
   int midY = (h_ >> 1) + y;
   x+=20;
   if (children_.size()>0) {
-	if (t=="Series") {
-	  for(int i=0; i < (int)children_.size(); ++i) {
-		SVGObj_* s=children_[i];
-		int sy = midY - (s->h_ >> 1);
-		s->posAdj(x,sy);
-		x = x + s->w_ + 20;
-	  }
-	}
-	else if (t=="Fanout" || t=="Parallel") {
-	  y += 20;
-	  for(int i=0; i < (int)children_.size(); ++i) {
-		SVGObj_* s=children_[i];
-		s->posAdj(x,y);
-		y = y + s->h_ + 20;
-	  }
-	}
+    if (t=="Series") {
+      for(int i=0; i < (int)children_.size(); ++i) {
+        SVGObj_* s=children_[i];
+        int sy = midY - (s->h_ >> 1);
+        s->posAdj(x,sy);
+        x = x + s->w_ + 20;
+      }
+    }
+    else if (t=="Fanout" || t=="Parallel") {
+      y += 20;
+      for(int i=0; i < (int)children_.size(); ++i) {
+        SVGObj_* s=children_[i];
+        s->posAdj(x,y);
+        y = y + s->h_ + 20;
+      }
+    }
   }
 }
 
@@ -125,46 +125,46 @@ marosvg::SVGObj_::str()
   else if (parallel) { op << "class=\"parallel\" "; }
   else if (series) { op << "class=\"series\" "; }
   op << "x=\"" << x_
-	 << "\" y=\"" << y_
-	 << "\" width=\"" << w_
-	 << "\" height=\"" << h_
-	 << "\" />\n";//style=\"fill:rgb(230,230,255);stroke-width:1; stroke:rgb(0,0,0)\"/>\n";
+     << "\" y=\"" << y_
+     << "\" width=\"" << w_
+     << "\" height=\"" << h_
+     << "\" />\n";//style=\"fill:rgb(230,230,255);stroke-width:1; stroke:rgb(0,0,0)\"/>\n";
 
   op << "<text class=\"marsysid\" x=\"" << (x_+5) << "\" y=\"" << (y_+15) << "\">" << t << "/" << n_ << "</text>\n";
 
   int my = y_ + (h_ >> 1);
   if (series) {
-	op << "<line class=\"wire\" x1=\"" << x_
-	   << "\" y1=\"" << my
-	   << "\" x2=\"" << (x_+w_)
-	   << "\" y2=\"" << my
-	   << "\" />\n";
+    op << "<line class=\"wire\" x1=\"" << x_
+       << "\" y1=\"" << my
+       << "\" x2=\"" << (x_+w_)
+       << "\" y2=\"" << my
+       << "\" />\n";
   }
 
   for(int i=0; i < (int)children_.size(); ++i) {
-	SVGObj_* c = children_[i];
-	int cmy = c->y_ + (c->h_ >> 1);
-	if(fanout) {
-	  op << "<line class=\"wire\" x1=\"" << x_
-		 << "\" y1=\"" << my
-		 << "\" x2=\"" << c->x_
-		 << "\" y2=\"" << cmy
-		 << "\" />";
+    SVGObj_* c = children_[i];
+    int cmy = c->y_ + (c->h_ >> 1);
+    if(fanout) {
+      op << "<line class=\"wire\" x1=\"" << x_
+         << "\" y1=\"" << my
+         << "\" x2=\"" << c->x_
+         << "\" y2=\"" << cmy
+         << "\" />";
 
-	  op << "<line class=\"wire\" x1=\"" << c->x_
-		 << "\" y1=\"" << cmy
-		 << "\" x2=\"" << (x_+w_)
-		 << "\" y2=\"" << cmy
-		 << "\" />\n";
-	}
-	else if (parallel) {
-	  op << "<line class=\"wire\" x1=\"" << x_
-		 << "\" y1=\"" << cmy
-		 << "\" x2=\"" << (x_+w_)
-		 << "\" y2=\"" << cmy
-		 << "\" />\n";
-	}
-	op << c->str();
+      op << "<line class=\"wire\" x1=\"" << c->x_
+         << "\" y1=\"" << cmy
+         << "\" x2=\"" << (x_+w_)
+         << "\" y2=\"" << cmy
+         << "\" />\n";
+    }
+    else if (parallel) {
+      op << "<line class=\"wire\" x1=\"" << x_
+         << "\" y1=\"" << cmy
+         << "\" x2=\"" << (x_+w_)
+         << "\" y2=\"" << cmy
+         << "\" />\n";
+    }
+    op << c->str();
   }
   return op.str();
 }
@@ -199,7 +199,7 @@ marosvg::end_marsystem(bool isComposite, std::string type, std::string name)
   //"<rect x=\"50\" y=\"50\" width=\"300\" height=\"100\" style=\"fill:rgb(0,0,255);stroke-width:1; stroke:rgb(0,0,0)\"/>"
   // return parent to the root of the tree
   if(curr_!=NULL && curr_->parent_!=NULL)
-	curr_=curr_->parent_;
+    curr_=curr_->parent_;
 }
 
 void
@@ -257,42 +257,42 @@ marosvg::output_properties(std::string property)
   std::map<std::string,std::string>::iterator iter;
 
   for (iter = prop.begin(); iter != prop.end(); ++iter ) {
-	result_ << iter->first << ':' << iter->second << ';';
+    result_ << iter->first << ':' << iter->second << ';';
   }
 }
 std::string
 marosvg::str()
 {
   if (curr_!=NULL) {
-	curr_->sizeAdj();
-	curr_->posAdj(0,0);
+    curr_->sizeAdj();
+    curr_->posAdj(0,0);
 
-	int ww = curr_->w_;
-	int hh = curr_->h_;
-	std::map<std::string,std::string>::iterator iter;
+    int ww = curr_->w_;
+    int hh = curr_->h_;
+    std::map<std::string,std::string>::iterator iter;
 
-	result_ << "<?xml version=\"1.0\"?>\n"
-			<< "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
-			<< "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"  width=\""<<ww<<"\" height=\""<<hh<<"\">\n"
+    result_ << "<?xml version=\"1.0\"?>\n"
+            << "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
+            << "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"  width=\""<<ww<<"\" height=\""<<hh<<"\">\n"
 
-			<< "<style>\n";
+            << "<style>\n";
 
-	result_ << "  line.wire{"; output_properties("wire"); result_ << "}\n";
+    result_ << "  line.wire{"; output_properties("wire"); result_ << "}\n";
 
-	result_ << "  rect{"; output_properties("marsystem"); result_ << "}\n";
+    result_ << "  rect{"; output_properties("marsystem"); result_ << "}\n";
 
-	result_ << "  rect.series{"; output_properties("series"); result_ << "}\n";
+    result_ << "  rect.series{"; output_properties("series"); result_ << "}\n";
 
-	result_ << "  rect.parallel{"; output_properties("parallel"); result_ << "}\n";
+    result_ << "  rect.parallel{"; output_properties("parallel"); result_ << "}\n";
 
-	result_ << "  rect.fanout{"; output_properties("fanout"); result_ << "}\n";
+    result_ << "  rect.fanout{"; output_properties("fanout"); result_ << "}\n";
 
-	result_ << "  text.marsysid{"; output_properties("marsysid"); result_ << "}\n";
+    result_ << "  text.marsysid{"; output_properties("marsysid"); result_ << "}\n";
     result_ << "</style>\n";
 
-	result_ << curr_->str();
-	result_ << "\n</svg>\n";
-	return result_.str();
+    result_ << curr_->str();
+    result_ << "\n</svg>\n";
+    return result_.str();
   }
   return "";
 }
@@ -302,7 +302,7 @@ marosvg::clear()
 {
   marostring::clear();
   if (curr_!=NULL) {
-	delete curr_;
-	curr_=NULL;
+    delete curr_;
+    curr_=NULL;
   }
 }

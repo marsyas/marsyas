@@ -21,17 +21,17 @@ using namespace Marsyas;
 
 class CARFAC_runner : public CxxTest::TestSuite
 {
- public:
+public:
 
   void
   setUp()
   {
   }
 
-  	// "destructor"
-	void tearDown()
-	{
-	}
+  // "destructor"
+  void tearDown()
+  {
+  }
 
 
   //
@@ -52,7 +52,7 @@ class CARFAC_runner : public CxxTest::TestSuite
 
     out = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
     // cout << out << endl;
-	// Check to see if the generated data is correct.
+    // Check to see if the generated data is correct.
     //
     // This data was generated with the MATLAB version of CARFAC.  I
     // chose 10 points at the start (mic 1) and 10 points at the end

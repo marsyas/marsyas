@@ -34,18 +34,18 @@ namespace Marsyas
 class StretchLinear: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	MarControlPtr ctrl_stretch_;
+  MarControlPtr ctrl_stretch_;
 
 public:
-	StretchLinear(std::string name);
-	StretchLinear(const StretchLinear& a);
-	~StretchLinear();
-	MarSystem* clone() const;
+  StretchLinear(std::string name);
+  StretchLinear(const StretchLinear& a);
+  ~StretchLinear();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

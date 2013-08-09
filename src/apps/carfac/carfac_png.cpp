@@ -29,16 +29,16 @@
 
 #include <cstdio>
 #include "Collection.h"
-#include "FileName.h" 
+#include "FileName.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 #include "common_source.h"
 
 #ifdef MARSYAS_PNG
 #include "pngwriter.h"
-#endif 
+#endif
 
-#include <vector> 
+#include <vector>
 #include <iomanip>
 
 using namespace std;
@@ -204,7 +204,7 @@ int getFileLengthForSummaryITD(string inFileName, double& min, double& max, doub
   // cout << "maxBin = " << maxBin << endl;
 
   int length = 0;
-  while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() 
+  while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
           && (ticks_ == -1 || length < ticks_)) {
     net->tick();
     length++;

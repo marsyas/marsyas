@@ -19,7 +19,7 @@ class SineChanger
 public:
   SineChanger();
   ~SineChanger();
-	
+
   void setup();
   void destroy();
   void update();
@@ -29,7 +29,7 @@ public:
 
 protected:
   void threadedFunction();
-	
+
 private:
 
   ofxOscReceiver	receiver;
@@ -42,7 +42,7 @@ private:
   string			mouseButtonState;
 
   int counter;
-	
-public:	
+
+public:
 
 };

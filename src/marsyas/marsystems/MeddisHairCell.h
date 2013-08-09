@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -23,23 +23,23 @@
 
 namespace Marsyas
 {
-/** 
+/**
     \class MeddisHairCell
     \ingroup Analysis
-    \brief MeddisHairCell for auditory models 
+    \brief MeddisHairCell for auditory models
 
-    Directed port from the Auditory toolbox by Malcolm Slaney 
+    Directed port from the Auditory toolbox by Malcolm Slaney
 */
 
 
 class MeddisHairCell: public MarSystem
 {
-private: 
+private:
   void addControls();
-	void myUpdate(MarControlPtr sender);
-  
+  void myUpdate(MarControlPtr sender);
+
   mrs_natural numChannels;
-  
+
   //parameters
   mrs_real M;
   mrs_real A;
@@ -50,7 +50,7 @@ private:
   mrs_real r;
   mrs_real x;
   mrs_real h;
-  
+
   //internal constants
   mrs_real dt;
   mrs_real gdt;
@@ -58,25 +58,25 @@ private:
   mrs_real ldt;
   mrs_real rdt;
   mrs_real xdt;
-  
+
   //initial values
   mrs_real kt;
   mrs_real spont;
-  
+
   realvec c;
   realvec q;
   realvec w;
-  
+
 public:
   MeddisHairCell(std::string name);
   ~MeddisHairCell();
-  
+
   MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out); 
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas
 
-#endif 
+#endif
 

@@ -26,7 +26,7 @@ namespace Marsyas
 // From ERBTools.h in AIMC
 //
 class ERBTools {
- public:
+public:
   static double Freq2ERB(double freq) {
     return 21.4 * log10(4.37 * freq / 1000.0 + 1.0);
   }

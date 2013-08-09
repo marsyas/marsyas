@@ -14,10 +14,10 @@ using namespace Marsyas;
 
 globalMouse::globalMouse()
 {
-	x = 0;
-	y = 0;
-	click = -1;
-	drag = -1;
+  x = 0;
+  y = 0;
+  click = -1;
+  drag = -1;
 }
 
 

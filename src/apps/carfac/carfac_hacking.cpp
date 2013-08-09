@@ -75,82 +75,82 @@ CommandLineOptions cmd_options;
 void
 printUsage(string progName)
 {
-	MRSDIAG("carfac_hacking.cpp - printUsage");
-	cerr << "Usage : " << progName << " in.wav out.png" << endl;
-	cerr << endl;
-	cerr << "where : " << endl;
-	cerr << "   in.wav is a sound file in a MARSYAS supported format" << endl;
-	cerr << "   out.png is the name of the PNG file to be generated" << endl;
-	exit(1);
+  MRSDIAG("carfac_hacking.cpp - printUsage");
+  cerr << "Usage : " << progName << " in.wav out.png" << endl;
+  cerr << endl;
+  cerr << "where : " << endl;
+  cerr << "   in.wav is a sound file in a MARSYAS supported format" << endl;
+  cerr << "   out.png is the name of the PNG file to be generated" << endl;
+  exit(1);
 }
 
 void
 printHelp(string progName)
 {
-	MRSDIAG("carfac_hacking.cpp - printHelp");
-	cerr << "carfac_hacking" << endl;
-	cerr << "-------------------------------------------------------------" << endl;
-	cerr << "Generate a PNG of an input audio file.  The PNG can either be" << endl;
-	cerr << "the waveform or the spectrogram of the audio file" << endl;
-	cerr << endl;
-	cerr << "written by sness (c) 2010 GPL - sness@sness.net" << endl;
-	cerr << endl;
-	cerr << "Usage : " << progName << " in.wav [out.png]" << endl;
-	cerr << endl;
-	cerr << "where : " << endl;
-	cerr << "   in.wav is a sound file in a MARSYAS supported format" << endl;
-	cerr << "   out.png is the optional name of the PNG file to be generated" << endl;
-	cerr << "Help Options:" << endl;
-	cerr << "-u --usage        : display short usage info" << endl;
-	cerr << "-h --help         : display this information " << endl;
-	cerr << "-v --verbose      : verbose output" << endl;
-	cerr << "------------------------------------------" << endl;
+  MRSDIAG("carfac_hacking.cpp - printHelp");
+  cerr << "carfac_hacking" << endl;
+  cerr << "-------------------------------------------------------------" << endl;
+  cerr << "Generate a PNG of an input audio file.  The PNG can either be" << endl;
+  cerr << "the waveform or the spectrogram of the audio file" << endl;
+  cerr << endl;
+  cerr << "written by sness (c) 2010 GPL - sness@sness.net" << endl;
+  cerr << endl;
+  cerr << "Usage : " << progName << " in.wav [out.png]" << endl;
+  cerr << endl;
+  cerr << "where : " << endl;
+  cerr << "   in.wav is a sound file in a MARSYAS supported format" << endl;
+  cerr << "   out.png is the optional name of the PNG file to be generated" << endl;
+  cerr << "Help Options:" << endl;
+  cerr << "-u --usage        : display short usage info" << endl;
+  cerr << "-h --help         : display this information " << endl;
+  cerr << "-v --verbose      : verbose output" << endl;
+  cerr << "------------------------------------------" << endl;
 
-	exit(1);
+  exit(1);
 }
 
 void
 initOptions()
 {
-	cmd_options.addBoolOption("help", "h", false);
-	cmd_options.addBoolOption("usage", "u", false);
-	cmd_options.addBoolOption("verbose", "v", false);
-	cmd_options.addNaturalOption("windowsize", "ws", 512);
-	cmd_options.addNaturalOption("hopsize", "hs", 256);
-	cmd_options.addNaturalOption("memorysize", "ms", 300);
-	cmd_options.addRealOption("gain", "g", 1.5);
-	cmd_options.addNaturalOption("maxfreq", "mxf", 22050);
-	cmd_options.addNaturalOption("minfreq", "mnf", 0);
-	cmd_options.addNaturalOption("ticks", "t", -1);
-	cmd_options.addNaturalOption("position", "p", 0);
-	cmd_options.addStringOption("mode" , "m", "spectrogram");
-	cmd_options.addRealOption("start", "s", 0.0);
-	cmd_options.addRealOption("length", "l", -1.0);
-	cmd_options.addNaturalOption("width", "wd", -1);
-	cmd_options.addBoolOption("audio", "a", false);
+  cmd_options.addBoolOption("help", "h", false);
+  cmd_options.addBoolOption("usage", "u", false);
+  cmd_options.addBoolOption("verbose", "v", false);
+  cmd_options.addNaturalOption("windowsize", "ws", 512);
+  cmd_options.addNaturalOption("hopsize", "hs", 256);
+  cmd_options.addNaturalOption("memorysize", "ms", 300);
+  cmd_options.addRealOption("gain", "g", 1.5);
+  cmd_options.addNaturalOption("maxfreq", "mxf", 22050);
+  cmd_options.addNaturalOption("minfreq", "mnf", 0);
+  cmd_options.addNaturalOption("ticks", "t", -1);
+  cmd_options.addNaturalOption("position", "p", 0);
+  cmd_options.addStringOption("mode" , "m", "spectrogram");
+  cmd_options.addRealOption("start", "s", 0.0);
+  cmd_options.addRealOption("length", "l", -1.0);
+  cmd_options.addNaturalOption("width", "wd", -1);
+  cmd_options.addBoolOption("audio", "a", false);
 }
 
 
 void
 loadOptions()
 {
-	helpopt_ = cmd_options.getBoolOption("help");
-	usageopt_ = cmd_options.getBoolOption("usage");
-	verboseopt_ = cmd_options.getBoolOption("verbose");
-	windowSize_ = cmd_options.getNaturalOption("windowsize");
-	memorySize_ = cmd_options.getNaturalOption("memorysize");
-	hopSize_ = cmd_options.getNaturalOption("hopsize");
-	gain_ = cmd_options.getRealOption("gain");
-	highFreq_ = cmd_options.getNaturalOption("maxfreq");
-	lowFreq_ = cmd_options.getNaturalOption("minfreq");
-	position_ = cmd_options.getNaturalOption("position");
-	ticks_ = cmd_options.getNaturalOption("ticks");
-	mode_ = cmd_options.getStringOption("mode");
-	start_ = cmd_options.getRealOption("start");
-	length_ = cmd_options.getRealOption("length");
-	width_ = cmd_options.getNaturalOption("width");
-	height_ = cmd_options.getNaturalOption("height");
-	audioopt_ = cmd_options.getBoolOption("audio");
+  helpopt_ = cmd_options.getBoolOption("help");
+  usageopt_ = cmd_options.getBoolOption("usage");
+  verboseopt_ = cmd_options.getBoolOption("verbose");
+  windowSize_ = cmd_options.getNaturalOption("windowsize");
+  memorySize_ = cmd_options.getNaturalOption("memorysize");
+  hopSize_ = cmd_options.getNaturalOption("hopsize");
+  gain_ = cmd_options.getRealOption("gain");
+  highFreq_ = cmd_options.getNaturalOption("maxfreq");
+  lowFreq_ = cmd_options.getNaturalOption("minfreq");
+  position_ = cmd_options.getNaturalOption("position");
+  ticks_ = cmd_options.getNaturalOption("ticks");
+  mode_ = cmd_options.getStringOption("mode");
+  start_ = cmd_options.getRealOption("start");
+  length_ = cmd_options.getRealOption("length");
+  width_ = cmd_options.getNaturalOption("width");
+  height_ = cmd_options.getNaturalOption("height");
+  audioopt_ = cmd_options.getBoolOption("audio");
 }
 
 void carfac_setup(string inAudioFileName)
@@ -274,38 +274,38 @@ void idle(void)
 int
 main(int argc, const char **argv)
 {
-	MRSDIAG("carfac_hacking.cpp - main");
+  MRSDIAG("carfac_hacking.cpp - main");
 
-	string progName = argv[0];
-	if (argc == 1)
-		printUsage(progName);
+  string progName = argv[0];
+  if (argc == 1)
+    printUsage(progName);
 
-	// handling of command-line options
-	initOptions();
-	cmd_options.readOptions(argc, argv);
-	loadOptions();
+  // handling of command-line options
+  initOptions();
+  cmd_options.readOptions(argc, argv);
+  loadOptions();
 
-	vector<string> files = cmd_options.getRemaining();
-	if (helpopt_)
-		printHelp(progName);
+  vector<string> files = cmd_options.getRemaining();
+  if (helpopt_)
+    printHelp(progName);
 
-	if (usageopt_)
-		printUsage(progName);
+  if (usageopt_)
+    printUsage(progName);
 
-    carfac_setup(files[0]);
+  carfac_setup(files[0]);
 
-    glutInit(&argc, (char**) argv);
+  glutInit(&argc, (char**) argv);
 
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-    glutInitWindowSize(1000, 500);
+  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+  glutInitWindowSize(1000, 500);
 
-    (void)glutCreateWindow("GLUT Program");
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutIdleFunc(idle);
+  (void)glutCreateWindow("GLUT Program");
+  glutDisplayFunc(display);
+  glutReshapeFunc(reshape);
+  glutIdleFunc(idle);
 
-    glutMainLoop();
+  glutMainLoop();
 
-    exit(0);
+  exit(0);
 
 }

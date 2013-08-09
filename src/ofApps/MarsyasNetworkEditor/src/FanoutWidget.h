@@ -14,24 +14,24 @@
 
 namespace Marsyas
 {
-	
-	class FanoutWidget : public MarSystemWidget
-	{
-	private:
-		
-		void addControls();
-		void updateControls();
-		void updateSize();
-		void updateChildrenWidgets();
-				
-		
-	public:
-		FanoutWidget(MarSystem *msys, GraphicalEnvironment* env);
-		~FanoutWidget();
-		
-		
-		void drawConnections();
-	};
+
+class FanoutWidget : public MarSystemWidget
+{
+private:
+
+  void addControls();
+  void updateControls();
+  void updateSize();
+  void updateChildrenWidgets();
+
+
+public:
+  FanoutWidget(MarSystem *msys, GraphicalEnvironment* env);
+  ~FanoutWidget();
+
+
+  void drawConnections();
+};
 }
 
 #endif

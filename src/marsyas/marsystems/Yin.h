@@ -30,10 +30,10 @@ namespace Marsyas
 
 	This algorithm was developped by A. de Cheveigne and H. Kawahara and
 	published in:
-  
+
 	De Cheveigne, A., Kawahara, H. (2002) "YIN, a fundamental frequency
-	estimator for speech and music", J. Acoust. Soc. Am. 111, 1917-1930.  
- 
+	estimator for speech and music", J. Acoust. Soc. Am. 111, 1917-1930.
+
 	See http://recherche.ircam.fr/equipes/pcm/pub/people/cheveign.html
 
 	This code was adapted from aubio (http://aubio.org) by sness.
@@ -52,12 +52,12 @@ namespace Marsyas
 class Yin: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	MarControlPtr ctrl_tolerance_;
-	MarControlPtr ctrl_frequency_min_;
-	MarControlPtr ctrl_frequency_max_;
+  MarControlPtr ctrl_tolerance_;
+  MarControlPtr ctrl_frequency_min_;
+  MarControlPtr ctrl_frequency_max_;
 
   double aubio_quadfrac(double s0, double s1, double s2, double pf);
   double vec_quadint_min(realvec * x,unsigned int pos, unsigned int span);
@@ -65,12 +65,12 @@ private:
   mrs_realvec yin_buffer_realvec_;
 
 public:
-	Yin(std::string name);
-	Yin(const Yin& a);
-	~Yin();
-	MarSystem* clone() const;
+  Yin(std::string name);
+  Yin(const Yin& a);
+  ~Yin();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

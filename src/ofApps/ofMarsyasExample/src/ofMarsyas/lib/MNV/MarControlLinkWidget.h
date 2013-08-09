@@ -15,31 +15,31 @@
 
 namespace Marsyas
 {
-	
-	class MarControlWidget;
-	
-	class MarControlLinkWidget : public Widget
-	{
-	private:
-		MarControlWidget* src_;
-		MarControlWidget* dest_;
-	
-	public:
-		MarControlLinkWidget(MarControlWidget *src, MarControlWidget *dest);
-		~MarControlLinkWidget();
-		
-		void setup(MarControlWidget *src, MarControlWidget *dest);
 
-		
-		MarControlWidget *getSrc();
-		MarControlWidget *getDst();
-		
-		void update();
-		void draw();
-		
-		void printLinks();
-	};
-	
+class MarControlWidget;
+
+class MarControlLinkWidget : public Widget
+{
+private:
+  MarControlWidget* src_;
+  MarControlWidget* dest_;
+
+public:
+  MarControlLinkWidget(MarControlWidget *src, MarControlWidget *dest);
+  ~MarControlLinkWidget();
+
+  void setup(MarControlWidget *src, MarControlWidget *dest);
+
+
+  MarControlWidget *getSrc();
+  MarControlWidget *getDst();
+
+  void update();
+  void draw();
+
+  void printLinks();
+};
+
 }
 
 #endif

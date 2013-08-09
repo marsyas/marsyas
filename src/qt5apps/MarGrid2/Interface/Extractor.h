@@ -2,13 +2,13 @@
 #define EXTRACTOR_H
 
 
-class Extractor 
+class Extractor
 {
 public:
-	virtual ~Extractor();
-	
-	virtual void setup();
-	virtual void extract();
+  virtual ~Extractor();
+
+  virtual void setup();
+  virtual void extract();
 };
 
 

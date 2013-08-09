@@ -4,11 +4,11 @@
 #include <QWidget>
 #include "PreferencesDialog.h"
 
-class ClassifierPage : public PreferencesPage 
+class ClassifierPage : public PreferencesPage
 {
 public:
-	ClassifierPage(QWidget *parent=0);
-	void update() {}
+  ClassifierPage(QWidget *parent=0);
+  void update() {}
 };
 
 #endif /* CLASSIFIER_H */

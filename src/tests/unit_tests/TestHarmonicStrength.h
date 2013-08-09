@@ -13,42 +13,42 @@ using namespace Marsyas;
 class HarmonicStrength_runner: public CxxTest::TestSuite
 {
 public:
-	MarSystemManager mng;
+  MarSystemManager mng;
 
-	// "constructor"
-	void setUp()
-	{
-	}
+  // "constructor"
+  void setUp()
+  {
+  }
 
-	// "destructor"
-	void tearDown()
-	{
-	}
+  // "destructor"
+  void tearDown()
+  {
+  }
 
-	/**
-	 * Example test of the HarmonicStrength process.
-	 */
-	void test_process()
-	{
+  /**
+   * Example test of the HarmonicStrength process.
+   */
+  void test_process()
+  {
     MarSystem* net = mng.create("Series/net");
     net->addMarSystem(mng.create("SoundFileSource/src"));
-	net->addMarSystem(mng.create("Windowing", "win"));
-	net->addMarSystem(mng.create("Spectrum", "spec"));
-	net->addMarSystem(mng.create("PowerSpectrum", "pspec"));
+    net->addMarSystem(mng.create("Windowing", "win"));
+    net->addMarSystem(mng.create("Spectrum", "spec"));
+    net->addMarSystem(mng.create("PowerSpectrum", "pspec"));
     MarSystem* harmonicStrength = mng.create("HarmonicStrength/harm");
     net->addMarSystem(harmonicStrength);
 
     net->updControl("SoundFileSource/src/mrs_string/filename", "files/harmonic-mix.wav");
 
-		harmonicStrength->updControl("mrs_natural/harmonicsSize", 5);
-		harmonicStrength->updControl("mrs_real/harmonicsWidth", 0.01);
-		harmonicStrength->updControl("mrs_natural/type", 0);
-		harmonicStrength->updControl("mrs_real/base_frequency", 1000.0);
+    harmonicStrength->updControl("mrs_natural/harmonicsSize", 5);
+    harmonicStrength->updControl("mrs_real/harmonicsWidth", 0.01);
+    harmonicStrength->updControl("mrs_natural/type", 0);
+    harmonicStrength->updControl("mrs_real/base_frequency", 1000.0);
 
-        net->update();
+    net->update();
 
-        net->tick(); // get rid of initial fuzziness in data
-        net->tick();
+    net->tick(); // get rid of initial fuzziness in data
+    net->tick();
 
     mrs_realvec out = net->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
 
@@ -59,6 +59,6 @@ public:
     TS_ASSERT_DELTA(out(4,0),0.00,0.001);
 
     delete net;
-    }
+  }
 };
 

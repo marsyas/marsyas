@@ -13,15 +13,15 @@
 class WidgetButton:public QPushButton
 {
   Q_OBJECT
- public:
+public:
   WidgetButton(QString name,QString widgetType,QWidget* parent =0);
-  
-  public slots:
-    void catchClick();
- signals:
+
+public slots:
+  void catchClick();
+signals:
   void reemitClick(QString widgetType);
 
- private:
+private:
   QString myWidgetType;
 };
 

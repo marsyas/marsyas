@@ -24,21 +24,21 @@ using namespace Marsyas;
 
 WaveletPyramid::WaveletPyramid(mrs_string name):MarSystem("WaveletPyramid",name)
 {
-	waveletStep_ = NULL;
+  waveletStep_ = NULL;
 
-	addControls();
+  addControls();
 }
 
 WaveletPyramid::~WaveletPyramid()
 {
-	delete waveletStep_;
+  delete waveletStep_;
 }
 
 
 // copy constructor
 WaveletPyramid::WaveletPyramid(const WaveletPyramid& a):MarSystem(a)
 {
-	waveletStep_ = NULL;
+  waveletStep_ = NULL;
 }
 
 
@@ -46,35 +46,35 @@ WaveletPyramid::WaveletPyramid(const WaveletPyramid& a):MarSystem(a)
 MarSystem*
 WaveletPyramid::clone() const
 {
-	return new WaveletPyramid(*this);
+  return new WaveletPyramid(*this);
 }
 
 void
 WaveletPyramid::addControls()
 {
-	addctrl("mrs_bool/forward", true);
+  addctrl("mrs_bool/forward", true);
 }
 
 void
 WaveletPyramid::myUpdate(MarControlPtr sender)
 {
-	(void) sender;  //suppress warning of unused parameter(s)
+  (void) sender;  //suppress warning of unused parameter(s)
 
-	if (waveletStep_ == NULL)
-	{
-		// TODO: why is this in myUpdate and not in the constructors?
-		waveletStep_ = new Daub4("daub4");
-	}
+  if (waveletStep_ == NULL)
+  {
+    // TODO: why is this in myUpdate and not in the constructors?
+    waveletStep_ = new Daub4("daub4");
+  }
 
-	MRSDIAG("WaveletPyramid.cpp - WaveletPyramid:myUpdate");
+  MRSDIAG("WaveletPyramid.cpp - WaveletPyramid:myUpdate");
 
-	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-	waveletStep_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-	waveletStep_->updControl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
-	waveletStep_->updControl("mrs_real/israte", getctrl("mrs_real/israte"));
+  waveletStep_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+  waveletStep_->updControl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+  waveletStep_->updControl("mrs_real/israte", getctrl("mrs_real/israte"));
 
 }
 
@@ -82,47 +82,47 @@ WaveletPyramid::myUpdate(MarControlPtr sender)
 void
 WaveletPyramid::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o,t;
-	mrs_natural nn;
-	mrs_natural n;
-	mrs_bool forward;
+  mrs_natural o,t;
+  mrs_natural nn;
+  mrs_natural n;
+  mrs_bool forward;
 
-	n = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  n = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
-	if (n < 4)
-	{
-		// TODO: why do we return here immediately, and not after copying the
-		// input to the output for example? Please explain.
-		return;
-	}
+  if (n < 4)
+  {
+    // TODO: why do we return here immediately, and not after copying the
+    // input to the output for example? Please explain.
+    return;
+  }
 
-	// Copy input to output.
-	for (o = 0; o < inObservations_; o++)
-	{
-		for (t = 0; t < inSamples_; t++)
-		{
-			out(o, t) = in(o, t);
-		}
-	}
+  // Copy input to output.
+  for (o = 0; o < inObservations_; o++)
+  {
+    for (t = 0; t < inSamples_; t++)
+    {
+      out(o, t) = in(o, t);
+    }
+  }
 
-	forward = getctrl("mrs_bool/forward")->to<mrs_bool>();
+  forward = getctrl("mrs_bool/forward")->to<mrs_bool>();
 
-	waveletStep_->updControl("mrs_bool/forward", forward);
-	if (forward)
-	{
-		for (nn = n; nn >=4; nn >>= 1)
-		{
-			waveletStep_->setctrl("mrs_natural/processSize", nn);
-			waveletStep_->process(out, out);
-		}
-	}
-	else
-	{
-		for (nn = 4; nn <= n; nn <<= 1)
-		{
-			waveletStep_->setctrl("mrs_natural/processSize", nn);
-			waveletStep_->process(out, out);
-		}
-	}
+  waveletStep_->updControl("mrs_bool/forward", forward);
+  if (forward)
+  {
+    for (nn = n; nn >=4; nn >>= 1)
+    {
+      waveletStep_->setctrl("mrs_natural/processSize", nn);
+      waveletStep_->process(out, out);
+    }
+  }
+  else
+  {
+    for (nn = 4; nn <= n; nn <<= 1)
+    {
+      waveletStep_->setctrl("mrs_natural/processSize", nn);
+      waveletStep_->process(out, out);
+    }
+  }
 
 }

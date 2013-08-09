@@ -21,14 +21,14 @@ using namespace std;
 
 class MarSystemNodeFactory
 {
- public:
+public:
   static MarSystemNodeFactory* getInstance();
   MarSystemNode* newNode(string type,QString name,QWidget* parent);
   MarSystemNode* newNode(MarSystem* msys,QWidget* parent,bool isComposite=0);
   static string GAIN_TYPE;
   static string FANOUT_TYPE;
   static string SERIES_TYPE;
- private:
+private:
   MarSystemNodeFactory();
   static MarSystemNodeFactory* instance;
   MarSystemManager* msManager;

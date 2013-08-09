@@ -54,10 +54,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>     /*  for  fabs, sqrt, pow, exp, sin, cos, log,   */
-                      /*       atan, acos                             */
-#include <float.h>    /*  for  DBL_EPSILON, DBL_MAX */ 
+/*       atan, acos                             */
+#include <float.h>    /*  for  DBL_EPSILON, DBL_MAX */
 #include <string.h>
-                 
+
 #ifdef sun            /*  for  GNU CC under SunOS                     */
 #include <unistd.h>   /*  for  SEEK_END                               */
 #else
@@ -66,7 +66,7 @@
 #endif
 #endif
 #ifndef SEEK_END      /* SEEK_END not yet defined (such as for        */
-                      /* GNU CC 2.1 for an i386 MS-DOS computer)?     */                            
+/* GNU CC 2.1 for an i386 MS-DOS computer)?     */
 #endif
 
 
@@ -122,24 +122,24 @@ typedef double    LONG_REAL;     /* more precise floating point type  */
 #ifdef FLT_MIN                   /* ANSI C compiler? .................*/
 #define POSMIN    (REAL)FLT_MIN  /* smallest positive floating point  */
 /*.IX{POS\unt MIN}*/
-                                 /* number ...........................*/
+/* number ...........................*/
 #else                            /* not an ANSI C compiler ? .........*/
 #define POSMIN    posmin()
 #endif
 
 #define LZS       ""             /* length prefix for formatted       */
 /*.IX{LZS}*/
-                                 /* input of floating point numbers ..*/
+/* input of floating point numbers ..*/
 #define LZP       ""             /* length prefix for formatted       */
 /*.IX{LZP}*/
-                                 /* output of floating point numbers .*/
+/* output of floating point numbers .*/
 
 
 #else
 #ifdef LDOUBLE                   /* maximal precision ? ..............*/
 
 typedef long double  REAL;       /* Standard floating point type      */
-                                 /* long double                       */
+/* long double                       */
 /*.IX{REAL}*/
 typedef long double  LONG_REAL;  /* "more precise" floating point type*/
 /*.IX{LONG\unt REAL}*/
@@ -175,16 +175,16 @@ typedef long double  LONG_REAL;  /* "more precise" floating point type*/
 
 #define LZS       "L"            /* length prefix for formatted       */
 /*.IX{LZS}*/
-                                 /* input of floating point numbers ..*/
+/* input of floating point numbers ..*/
 #define LZP       "L"            /* length prefix for formatted       */
 /*.IX{LZP}*/
-                                 /* output of floating point numbers .*/
+/* output of floating point numbers .*/
 
 
 #else                            /* double precision ? ...............*/
 
 typedef double       REAL;       /* Standard floating point type      */
-                                 /* double                            */
+/* double                            */
 /*.IX{REAL}*/
 typedef long double  LONG_REAL;  /* more precise floating point type  */
 /*.IX{LONG\unt REAL}*/
@@ -213,10 +213,10 @@ typedef long double  LONG_REAL;  /* more precise floating point type  */
 #ifdef DBL_MIN                   /* ANSI C compiler? .................*/
 #ifdef __BORLANDC__
 #if __BORLANDC__ <= 0x0200       /* Borland C++ 2.0 for DOS? .........*/
-                                           /* because the value       */
+/* because the value       */
 #define POSMIN    2.2250738585072017E-308  /* 2.2250738585072014E-308 */
 #else                                      /* from `float.h' is       */
-                                           /* regarded as zero!       */
+/* regarded as zero!       */
 #define POSMIN    DBL_MIN        /* smallest positive floating point  */
 #endif                           /* number ...........................*/
 #else
@@ -229,10 +229,10 @@ typedef long double  LONG_REAL;  /* more precise floating point type  */
 
 #define LZS       "l"            /* length prefix for formatted       */
 /*.IX{LZS}*/
-                                 /* input of floating point numbers ..*/
+/* input of floating point numbers ..*/
 #define LZP       ""             /* length prefix for formatted       */
 /*.IX{LZP}*/
-                                 /* output of floating point numbers .*/
+/* output of floating point numbers .*/
 #endif
 #endif
 
@@ -247,9 +247,9 @@ typedef long double  LONG_REAL;  /* more precise floating point type  */
 //#undef FALSE
 //#undef TRUE
 #ifndef TRUE
-  #ifndef boolean
-    typedef enum {FALSE, TRUE} boolean;
-  #endif
+#ifndef boolean
+typedef enum {FALSE, TRUE} boolean;
+#endif
 #endif
 /*.IX{FALSE}*/
 /*.IX{TRUE}*/
@@ -300,16 +300,16 @@ typedef REAL mat4x4[4][4];       /* type for bicubic splines          */
  * Type declarations by Albert Becker                                 *
  *--------------------------------------------------------------------*/
 
- /* Real functions ...................................................*/
- typedef REAL (* REALFCT)  (REAL);
+/* Real functions ...................................................*/
+typedef REAL (* REALFCT)  (REAL);
 /*.IX{REALFCT}*/
 
- /* Real multi-dimensional functions .................................*/
- typedef int (* FNFCT)  (int, REAL [], REAL []);
+/* Real multi-dimensional functions .................................*/
+typedef int (* FNFCT)  (int, REAL [], REAL []);
 /*.IX{FNFCT}*/
 
- /* Functions for finding the Jacobi matrix ..........................*/
- typedef int (* JACOFCT)  (int, REAL [], REAL * []);
+/* Functions for finding the Jacobi matrix ..........................*/
+typedef int (* JACOFCT)  (int, REAL [], REAL * []);
 /*.IX{JACOFCT}*/
 
 
@@ -335,7 +335,7 @@ typedef REAL mat4x4[4][4];       /* type for bicubic splines          */
 /*.IX{EPSQUAD}*/
 #define MAXROOT   maxroot()       /* square root of the largest       */
 /*.IX{MAXROOT}*/
-                                  /* floating point number            */
+/* floating point number            */
 #ifndef PI
 #define PI        pi()            /* pi = 3.14...                     */
 /*.IX{PI}*/
@@ -368,17 +368,17 @@ typedef REAL mat4x4[4][4];       /* type for bicubic splines          */
 
 #ifdef __BORLANDC__
 #if __BORLANDC__ >= 0x0400          /* a BC distinguishable from BC2  */
-                                    /* and with long double functions */
-                                    /* (at least Borland C++ 3.1 or   */
-                                    /* Borland C++ 1.00 for OS/2)?    */
+/* and with long double functions */
+/* (at least Borland C++ 3.1 or   */
+/* Borland C++ 1.00 for OS/2)?    */
 #define BC3                         /* define `BC3' automatically     */
 #endif
 #endif
 
 #ifdef _MSC_VER
 #if _MSC_VER     >= 0x0258          /* a MC distinguishable from QC2  */
-                                    /* and with long double functions */
-                                    /* (at least Microsoft C 6.00A)?  */
+/* and with long double functions */
+/* (at least Microsoft C 6.00A)?  */
 #define MC6                         /* define MC6 automatically       */
 #endif
 #endif
@@ -386,7 +386,7 @@ typedef REAL mat4x4[4][4];       /* type for bicubic splines          */
 #if defined(LDOUBLE) &&                     /* Borland C++ 3.0 or    */\
     (defined(BC3) || defined(MC6) ||        /* Microsoft C 6.0 or    */\
      defined(EMX09B))                       /* emx 0.9b (GCC272) with */
-                                            /* maximal precision?     */
+/* maximal precision?     */
 #define FABS(x)    fabsl((x))               /* use the long double    */
 /*.IX{FABS}*/
 #define SQRT(x)    sqrtl((x))               /* versions of the basic  */
@@ -409,7 +409,7 @@ typedef REAL mat4x4[4][4];       /* type for bicubic splines          */
 /*.IX{COSH}*/
 
 #else                                       /* less precision or not a*/
-                                            /* BC3 and not a MC6 ?    */
+/* BC3 and not a MC6 ?    */
 #define FABS(x)    (REAL)fabs((double)(x))  /* declare names of basic */
 #ifdef LONG_DOUBLE_USED                     /* floating point         */
 #define SQRT(x)    sqrtlong((x))            /* functions that can be  */
@@ -437,8 +437,8 @@ typedef REAL mat4x4[4][4];       /* type for bicubic splines          */
 #endif
 
 #undef sign
-//lmartins: #undef min 
-//lmartins: #undef max 
+//lmartins: #undef min
+//lmartins: #undef max
 #define sign(x, y) (((y) < ZERO) ? -FABS(x) :     /* |x| times     */  \
 /*.IX{sign}*/                                                          \
                                     FABS(x))      /* sign of y     */
@@ -456,7 +456,7 @@ typedef REAL mat4x4[4][4];       /* type for bicubic splines          */
 #define SIGN(X,Y) \
 /*.IX{SIGN}*/     \
              (((Y) < ZERO) ? -ABS(X) : ABS(X))    /* sign of Y times  */
-                                                  /* ABS(X)           */
+/* ABS(X)           */
 #define SQR(X) ((X) * (X))                     /* square of X         */
 /*.IX{SQR}*/
 
@@ -492,7 +492,7 @@ REAL epsquad(void);          /* find square of machine constant       */
 REAL maxroot(void);   /* Root of the largest representable number ....*/
 
 REAL posmin(void);           /* find smallst positive floating point  */
-                             /* number                                */
+/* number                                */
 
 REAL pi(void);               /* find  pi                              */
 
@@ -501,60 +501,60 @@ REAL exp_1(void);            /* find e                                */
 REAL sqr(REAL x);            /* square a floating point number        */
 
 void fehler_melden   /* Write error messages to stdout and stderr ....*/
-                  (
-                   char text[],          /* error description ........*/
-                   int  fehlernummer,    /* Number of error ..........*/
-                   char dateiname[],     /* file with error  .........*/
-                   int  zeilennummer     /* file name, row number ....*/
-                  );
+(
+  char text[],          /* error description ........*/
+  int  fehlernummer,    /* Number of error ..........*/
+  char dateiname[],     /* file with error  .........*/
+  int  zeilennummer     /* file name, row number ....*/
+);
 
 int umleiten            /* Perhaps redirect stdin or stdout to a file */
-            (
-             int argc,       /* number of arguments in command line ..*/
-             char *argv[]    /* Vector of arguments ..................*/
-            );               /* error code ...........................*/
+(
+  int argc,       /* number of arguments in command line ..*/
+  char *argv[]    /* Vector of arguments ..................*/
+);               /* error code ...........................*/
 
 void readln(void);             /* Skip the remainder of line in stdin */
 
 void getline          /* Read one line from stdin ....................*/
-            (
-             char kette[],    /* Vector with the read text ...........*/
-             int limit        /* maximal length of kette .............*/
-            );
+(
+  char kette[],    /* Vector with the read text ...........*/
+  int limit        /* maximal length of kette .............*/
+);
 
 int intervall    /* Find the number for a value inside a partition ...*/
-             (
-              int n,         /* lenght of partition ..................*/
-              REAL xwert,    /* number whose interval index is wanted */
-              REAL x[]       /* partition ............................*/
-             );              /* Index for xwert ......................*/
+(
+  int n,         /* lenght of partition ..................*/
+  REAL xwert,    /* number whose interval index is wanted */
+  REAL x[]       /* partition ............................*/
+);              /* Index for xwert ......................*/
 
 REAL horner        /* Horner scheme for polynomial evaluations .......*/
-           (
-            int n,                         /* Polynomial degree ......*/
-            REAL a[],                      /* Polynomial coefficients */
-            REAL x                         /* place of evaluation ....*/
-           );                              /* Polynomial value at x ..*/
+(
+  int n,                         /* Polynomial degree ......*/
+  REAL a[],                      /* Polynomial coefficients */
+  REAL x                         /* place of evaluation ....*/
+);                              /* Polynomial value at x ..*/
 
 REAL norm_max      /* Find the maximum norm of a REAL vector .........*/
-             (
-              REAL vektor[],               /* vector .................*/
-              int  n                       /* length of vector .......*/
-             );                            /* Maximum norm ...........*/
+(
+  REAL vektor[],               /* vector .................*/
+  int  n                       /* length of vector .......*/
+);                            /* Maximum norm ...........*/
 
 REAL skalprod           /* standard scalar product of two REAL vectors*/
-        (
-         REAL v[],                 /* 1st vector .....................*/
-         REAL w[],                 /* 2nd vector .....................*/
-         int  n                    /* vector length...................*/
-        );                         /* scalar product .................*/
+(
+  REAL v[],                 /* 1st vector .....................*/
+  REAL w[],                 /* 2nd vector .....................*/
+  int  n                    /* vector length...................*/
+);                         /* scalar product .................*/
 
 void copy_vector        /* copy a REAL vector ........................*/
-                (
-                 REAL ziel[],            /* copied vector ............*/
-                 REAL quelle[],          /* original vector ..........*/
-                 int  n                  /* length of vector .........*/
-                );
+(
+  REAL ziel[],            /* copied vector ............*/
+  REAL quelle[],          /* original vector ..........*/
+  int  n                  /* length of vector .........*/
+);
 
 
 /*--------------------------------------------------------------------*
@@ -564,73 +564,73 @@ void copy_vector        /* copy a REAL vector ........................*/
 long double sqrtlong  (long double x);
 
 int comdiv              /* Complex division ..........................*/
-           (
-            REAL   ar,            /* Real part of numerator ..........*/
-            REAL   ai,            /* Imaginary part of numerator .....*/
-            REAL   br,            /* Real part of denominator ........*/
-            REAL   bi,            /* Imaginary part of denominator ...*/
-            REAL * cr,            /* Real part of quotient ...........*/
-            REAL * ci             /* Imaginary part of quotient ......*/
-           );
+(
+  REAL   ar,            /* Real part of numerator ..........*/
+  REAL   ai,            /* Imaginary part of numerator .....*/
+  REAL   br,            /* Real part of denominator ........*/
+  REAL   bi,            /* Imaginary part of denominator ...*/
+  REAL * cr,            /* Real part of quotient ...........*/
+  REAL * ci             /* Imaginary part of quotient ......*/
+);
 
 REAL comabs             /* Complex absolute value ....................*/
-              (
-               REAL  ar,          /* Real part .......................*/
-               REAL  ai           /* Imaginary part ..................*/
-              );
+(
+  REAL  ar,          /* Real part .......................*/
+  REAL  ai           /* Imaginary part ..................*/
+);
 
 void quadsolv           /* Complex quadratic equation ................*/
-             (
-               REAL    ar,        /* second degree coefficient .......*/
-               REAL    ai,
-               REAL    br,        /* linear coefficient ..............*/
-               REAL    bi,
-               REAL    cr,        /* polynomial constant .............*/
-               REAL    ci,
-               REAL *  tr,        /* solution ........................*/
-               REAL *  ti
-             );
+(
+  REAL    ar,        /* second degree coefficient .......*/
+  REAL    ai,
+  REAL    br,        /* linear coefficient ..............*/
+  REAL    bi,
+  REAL    cr,        /* polynomial constant .............*/
+  REAL    ci,
+  REAL *  tr,        /* solution ........................*/
+  REAL *  ti
+);
 
 void SetVec             /* initialize vector .........................*/
-           (int n, REAL x[], REAL val);
+(int n, REAL x[], REAL val);
 
 void CopyVec            /* copy vector ...............................*/
-            (int n, REAL source[], REAL dest[]);
+(int n, REAL source[], REAL dest[]);
 
 int ReadVec             /* read vector from input index starts at zero*/
-           (FILE *fp, int n, REAL x[]);
+(FILE *fp, int n, REAL x[]);
 
 int ReadVec1            /* read vector from input index starts at one */
-           (FILE *fp, int n, REAL x[]);
+(FILE *fp, int n, REAL x[]);
 
 int WriteVec            /* write vector to output index starts at zero*/
-           (FILE *fp, int n, REAL x[]);
+(FILE *fp, int n, REAL x[]);
 
 int WriteVec1           /* write vector to output index starts at one */
-           (FILE *fp, int n, REAL x[]);
+(FILE *fp, int n, REAL x[]);
 
 void SetMat             /* initialize matrix .........................*/
-           (int m, int n, REAL * a[], REAL val);
+(int m, int n, REAL * a[], REAL val);
 
 void CopyMat            /* copy matrix ...............................*/
-            (int m, int n, REAL * source[], REAL * dest[]);
+(int m, int n, REAL * source[], REAL * dest[]);
 
 int ReadMat             /* read matrix from input index starts at zero*/
-           (FILE *fp, int m, int n, REAL * a[]);
+(FILE *fp, int m, int n, REAL * a[]);
 int ReadMat1            /* read matrix from input index starts at one */
-           (FILE *fp, int m, int n, REAL * a[]);
+(FILE *fp, int m, int n, REAL * a[]);
 
 int WriteMat            /* write matrix to output index starts at zero*/
-            (FILE *fp, int m, int n, REAL * mat[]);
+(FILE *fp, int m, int n, REAL * mat[]);
 int WriteMat1           /* write matrix to output index starts at one */
-            (FILE *fp, int m, int n, REAL * mat[]);
+(FILE *fp, int m, int n, REAL * mat[]);
 
 int WriteHead  (FILE *fp, char *s); /* write header to file   ........*/
 
 int WriteEnd  (FILE *fp);         /* write separator to file   .......*/
 
 void LogError           /* write error message to stdout .............*/
-             (char *s, int rc, char *file, int line);
+(char *s, int rc, char *file, int line);
 
 
 

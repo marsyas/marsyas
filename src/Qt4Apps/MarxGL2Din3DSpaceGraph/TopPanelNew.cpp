@@ -11,19 +11,19 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
 
   audio_file = au;
 
-  // create the Marsyas 
+  // create the Marsyas
   MarSystemManager mng;
   pnet = mng.create("Series", "pnet");
   pnet->addMarSystem(mng.create("SoundFileSource", "src"));
   pnet->addMarSystem(mng.create("AudioSink", "dest"));
   pnet->updctrl( "SoundFileSource/src/mrs_string/filename", au );
-//   pnet->updctrl("SoundFileSource/src/mrs_string/filename", 
+//   pnet->updctrl("SoundFileSource/src/mrs_string/filename",
 // 		"/usr/home/sardine/build/marsyas-0.2.4/Marx2DGraph/permiteme.au");
-  
-  nTicks = 128;
-  
 
-  // initialize graphs 
+  nTicks = 128;
+
+
+  // initialize graphs
   int num = 512;
   float y_rot = 120.0;
   float x_tran = 0.4;
@@ -53,7 +53,7 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   QGroupBox* translation_box = new QGroupBox( tr("Model Translation") );
   QGroupBox* tick_box = new QGroupBox( tr("Song Increment") );
 
-  
+
   // ROTATION GROUP BOX
   QSlider* rotation_slider = new QSlider( Qt::Horizontal, rotation_box );
   rotation_slider->setMinimum( 0 );
@@ -72,7 +72,7 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   x_translation_slider->setMaximum( 10 );
   x_translation_slider->setSliderPosition( (int)(x_tran*10) );
   x_translation_slider->setTickPosition( QSlider::TicksBelow );
-  x_translation_slider->setTickInterval( 1 );  
+  x_translation_slider->setTickInterval( 1 );
   QLabel* x_tran_label = new QLabel( "X", translation_box );
 
   QHBoxLayout *xhlayout = new QHBoxLayout;
@@ -85,7 +85,7 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   y_translation_slider->setMaximum( 10 );
   y_translation_slider->setSliderPosition( (int)(y_tran*10) );
   y_translation_slider->setTickPosition( QSlider::TicksBelow );
-  y_translation_slider->setTickInterval( 1 );  
+  y_translation_slider->setTickInterval( 1 );
   QLabel* y_tran_label = new QLabel( "Y", translation_box );
 
   QHBoxLayout *yhlayout = new QHBoxLayout;
@@ -99,12 +99,12 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   z_translation_slider->setMaximum( 40 );
   z_translation_slider->setSliderPosition( (int)(z_tran*10) );
   z_translation_slider->setTickPosition( QSlider::TicksBelow );
-  z_translation_slider->setTickInterval( 1 );  
+  z_translation_slider->setTickInterval( 1 );
   QHBoxLayout *zhlayout = new QHBoxLayout;
   zhlayout->addWidget( z_tran_label );
   zhlayout->addWidget( z_translation_slider );
 
-  
+
   QGridLayout *translationLayout = new QGridLayout;
   translationLayout->addLayout( xhlayout, 0, 0 );
   translationLayout->addLayout( yhlayout, 1, 0 );
@@ -119,10 +119,10 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   x_stretch_slider->setMaximum( 80 );
   x_stretch_slider->setSliderPosition( (int)(x_stretch) );
   x_stretch_slider->setTickPosition( QSlider::TicksBelow );
-  x_stretch_slider->setTickInterval( 1 );  
+  x_stretch_slider->setTickInterval( 1 );
   QHBoxLayout *xslayout = new QHBoxLayout;
   xslayout->addWidget( x_stretch_label );
-  xslayout->addWidget( x_stretch_slider ); 
+  xslayout->addWidget( x_stretch_slider );
 
   QSlider* y_stretch_slider = new QSlider( Qt::Horizontal, stretch_box );
   QLabel* y_stretch_label = new QLabel( "Y", stretch_box );
@@ -130,10 +130,10 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   y_stretch_slider->setMaximum( 50 );
   y_stretch_slider->setSliderPosition( (int)(y_stretch*10) );
   y_stretch_slider->setTickPosition( QSlider::TicksBelow );
-  y_stretch_slider->setTickInterval( 1 );  
+  y_stretch_slider->setTickInterval( 1 );
   QHBoxLayout *yslayout = new QHBoxLayout;
   yslayout->addWidget( y_stretch_label );
-  yslayout->addWidget( y_stretch_slider ); 
+  yslayout->addWidget( y_stretch_slider );
 
   QGridLayout *stretchLayout = new QGridLayout;
   stretchLayout->addLayout( xslayout, 0, 0 );
@@ -152,8 +152,8 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
 
   tickLayout->addWidget(tickButton, 1, 0);
   tickLayout->addWidget(numTicksSpinBox, 1, 1);
-  
-  
+
+
   // SIGNALS AND SLOTS
   connect(tickButton, SIGNAL(clicked()), this, SLOT(tick()));
   connect(numTicksSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setTicks(int)));
@@ -171,7 +171,7 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
   tick_box->setLayout( tickLayout );
 
   QVBoxLayout *layout = new QVBoxLayout;
-  layout->addWidget(graph); 
+  layout->addWidget(graph);
   layout->addWidget(rotation_box);
   layout->addWidget(translation_box);
   layout->addWidget(stretch_box);
@@ -181,35 +181,35 @@ TopPanelNew::TopPanelNew(string au, QWidget *parent)
 }
 
 
-void 
+void
 TopPanelNew::setXAxisStretch(int v)
 {
   graph->setXAxisStretch((float)v);
 }
 
 
-void 
+void
 TopPanelNew::setYAxisStretch(int v)
 {
   graph->setYAxisStretch(((float)v)/10.0);
 }
 
 
-void 
+void
 TopPanelNew::setZTranslation(int v)
 {
   graph->setZTranslation( ((float)v)/10.0 );
 }
 
-	
-void 
+
+void
 TopPanelNew::setYTranslation(int v)
 {
   graph->setYTranslation( ((float)v)/10.0 );
 }
 
 
-void 
+void
 TopPanelNew::setXTranslation(int v)
 {
   graph->setXTranslation( ((float)v)/10.0 );
@@ -223,7 +223,7 @@ TopPanelNew::setYRotation(int v)
 }
 
 
-void 
+void
 TopPanelNew::setTicks(int v)
 {
 //   cout << "setTicks called" << endl;
@@ -231,26 +231,26 @@ TopPanelNew::setTicks(int v)
 }
 
 
-void 
+void
 TopPanelNew::tick()
 {
 //   cout << "Tick called" << endl;
-  
-  for (int i=0; i < nTicks; i++) 
-    {
-      pnet->tick();
-      pnet->updctrl("mrs_bool/probe", true);
-      realvec out(512);
-      out = pnet->getctrl("mrs_realvec/input0")->to<mrs_realvec>();
+
+  for (int i=0; i < nTicks; i++)
+  {
+    pnet->tick();
+    pnet->updctrl("mrs_bool/probe", true);
+    realvec out(512);
+    out = pnet->getctrl("mrs_realvec/input0")->to<mrs_realvec>();
 
 
-      graph->setBuffer( out );
-      
-    }
-  
+    graph->setBuffer( out );
 
-  
+  }
 
-  
-  
+
+
+
+
+
 }

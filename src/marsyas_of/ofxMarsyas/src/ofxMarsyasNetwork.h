@@ -8,28 +8,28 @@
 class ofxMarsyasNetwork : public ofxThread, public Marsyas::Series
 {
 public:
-	ofxMarsyasNetwork(string name = "net");
-	virtual ~ofxMarsyasNetwork();
+  ofxMarsyasNetwork(string name = "net");
+  virtual ~ofxMarsyasNetwork();
 
-	virtual void setup()  {};
-	virtual void update() {};
-	virtual void draw()   {};
-	
-	void threadedFunction();
-	void run();
-	void stop();
-	
-	static Marsyas::MarSystemManager mng;
+  virtual void setup()  {};
+  virtual void update() {};
+  virtual void draw()   {};
 
-	float targetRate;	
-	float rate;
-	
-	unsigned long thisTick;
-	unsigned long lastTick;
+  void threadedFunction();
+  void run();
+  void stop();
+
+  static Marsyas::MarSystemManager mng;
+
+  float targetRate;
+  float rate;
+
+  unsigned long thisTick;
+  unsigned long lastTick;
 
 #ifndef TARGET_WIN32
-	float targetPriority;
-	float priority;
+  float targetPriority;
+  float priority;
 #endif
 };
 

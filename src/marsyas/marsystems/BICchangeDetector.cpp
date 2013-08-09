@@ -109,7 +109,7 @@ BICchangeDetector::addControls()
   nrPrevDists_ = getctrl("mrs_natural/prevDists")->to<mrs_natural>();
   prevDists_->updControl("mrs_natural/memSize", nrPrevDists_); //store 3 previous distances, for dynamic thresholding
   prev_change_time_ = 0.0;
-  
+
 }
 
 /**
@@ -153,38 +153,38 @@ BICchangeDetector::myUpdate(MarControlPtr sender)
   // For now, hop is set fixed as 1/5 of inSamples [!]
   //
   if(segFrames_ != ctrl_inSamples_->to<mrs_natural>()*2/5 ||
-	 nfeats_ != ctrl_inObservations_->to<mrs_natural>()) //hardcoded [!]
+      nfeats_ != ctrl_inObservations_->to<mrs_natural>()) //hardcoded [!]
   {
-	segFrames_ = ctrl_inSamples_->to<mrs_natural>()*2/5; // hardcoded [!]
-	segHop_ = ctrl_inSamples_->to<mrs_natural>()*1/5; // hardcoded [!]
-	
-	
-	hopSeconds_ = 0.001*segHop_*(mrs_real)ctrl_hopMS_->to<mrs_natural>();
-	nfeats_ = ctrl_inObservations_->to<mrs_natural>();
-	/* C1_.allocate(nfeats, segFrames_);
-	   C2_.allocate(nfeats, segFrames_);
-	   C3_.allocate(nfeats, segFrames_);
-	   C4_.allocate(nfeats, segFrames_);
-	*/
-	// there is no allocate anymore in realvec
-	// not sure how it compiled. Gustavo ?
+    segFrames_ = ctrl_inSamples_->to<mrs_natural>()*2/5; // hardcoded [!]
+    segHop_ = ctrl_inSamples_->to<mrs_natural>()*1/5; // hardcoded [!]
 
-	// cooplogic - this shouldn't be needed since it is
-	//  done every time in myProcess
-	// 		C1_.create(nfeats_, segFrames_);
-	// 		C2_.create(nfeats_, segFrames_);
-	// 		C3_.create(nfeats_, segFrames_);
-	// 		C4_.create(nfeats_, segFrames_);
-	
+
+    hopSeconds_ = 0.001*segHop_*(mrs_real)ctrl_hopMS_->to<mrs_natural>();
+    nfeats_ = ctrl_inObservations_->to<mrs_natural>();
+    /* C1_.allocate(nfeats, segFrames_);
+       C2_.allocate(nfeats, segFrames_);
+       C3_.allocate(nfeats, segFrames_);
+       C4_.allocate(nfeats, segFrames_);
+    */
+    // there is no allocate anymore in realvec
+    // not sure how it compiled. Gustavo ?
+
+    // cooplogic - this shouldn't be needed since it is
+    //  done every time in myProcess
+    // 		C1_.create(nfeats_, segFrames_);
+    // 		C2_.create(nfeats_, segFrames_);
+    // 		C3_.create(nfeats_, segFrames_);
+    // 		C4_.create(nfeats_, segFrames_);
+
   }
 
   if(ctrl_reset_->to<bool>())
   {
-	QGMMmodel_.resetModel();
-	prevDists_->updControl("mrs_bool/reset", true);
-	pdists_.setval(0.0);
-	pIndex_ = 0;
-	ctrl_reset_->setValue(false, NOUPDATE);
+    QGMMmodel_.resetModel();
+    prevDists_->updControl("mrs_bool/reset", true);
+    pdists_.setval(0.0);
+    pIndex_ = 0;
+    ctrl_reset_->setValue(false, NOUPDATE);
   }
 }
 
@@ -192,15 +192,15 @@ void
 BICchangeDetector::myProcess(realvec& in, realvec& out)
 {
 
-	// skip initial hops that have zeroes 
-	if (BICTick_ < 5) 
-	{
-		BICTick_ ++;
-		return;
-	}
-	 
-	
-	
+  // skip initial hops that have zeroes
+  if (BICTick_ < 5)
+  {
+    BICTick_ ++;
+    return;
+  }
+
+
+
 
   mrs_natural o,t;
   // [!note!] if CX_ matrices are reused they need to be resized since
@@ -213,23 +213,23 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
 
   for(o=0; o < inObservations_; ++o)
   {
-	//get segments => use pointers to "in" instead of copies?! [!]
-	for(t=0; t < segFrames_ ; ++t)
-	{
-	  C1_(o, t) = in(o, t);
-	  C2_(o, t) = in(o, t + segFrames_);
-	  C3_(o, t) = in(o, t + segHop_);
-	  C4_(o, t) = in(o, t + segHop_ + segFrames_);
-	}
+    //get segments => use pointers to "in" instead of copies?! [!]
+    for(t=0; t < segFrames_ ; ++t)
+    {
+      C1_(o, t) = in(o, t);
+      C2_(o, t) = in(o, t + segFrames_);
+      C3_(o, t) = in(o, t + segHop_);
+      C4_(o, t) = in(o, t + segHop_ + segFrames_);
+    }
 
-	//bypass input to output unchanged [!]
-	for(t=0; t < inSamples_; ++t)
-	  out(o, t) = in(o, t);
+    //bypass input to output unchanged [!]
+    for(t=0; t < inSamples_; ++t)
+      out(o, t) = in(o, t);
   }
 
 
-  
-  
+
+
 
   //calculate covariance matrix for each segment
   realvec tmp;
@@ -282,9 +282,9 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
 
   //just to avoid "spurious" peaks in the audio stream borders (i.e. start and end of stream)...
   if(distanceLeft == 0.0)
-	distanceLeft = dist12_;
+    distanceLeft = dist12_;
   if(distanceRight == 0.0)
-	distanceRight = dist12_;
+    distanceRight = dist12_;
 
 
 
@@ -297,78 +297,78 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
   // (i.e. distance is local maxima and is above the dynamic threshold)
   //		time_t currTime = ((mrs_real)BICTick_)*0.675;
   //time_t currTime = ((mrs_real)BICTick_-2)*hopSeconds_; // debug only
-  
-  
+
+
   mrs_real change_time = ((mrs_real)BICTick_-2) * hopSeconds_;
-  
-  
+
+
   //tm * currTm = gmtime(&currTime);  // for debug only
-    
-  
+
+
   if (dist12_ > distanceRight && dist12_ > distanceLeft && dist12_ > dynThres_)
   {
 
-	  mrs_real confidence = 1.0 - dynThres_/dist12_;
+    mrs_real confidence = 1.0 - dynThres_/dist12_;
 
 
-	  
-	//if this a potential change point, validate it using BIC and the current model
-	BICdist_ = QGMMmodel_.BICdistance(C2_, segFrames_, ctrl_lambda_->to<mrs_real>());
+
+    //if this a potential change point, validate it using BIC and the current model
+    BICdist_ = QGMMmodel_.BICdistance(C2_, segFrames_, ctrl_lambda_->to<mrs_real>());
 
 
 // 	cout> << name_ << ": Potential change, with confidence " << confidence
 // 		 << " at " << currTm->tm_hour << "h::"
 // 		 << currTm->tm_min << "m::"
 // 		 << currTm->tm_sec << "s" << endl;
-	 
 
 
 
 
-	//Apply BIC criteria
-	if (BICdist_ > 0.0)
-	{
-	  //BIC validated the change point!
 
-	  //reset current model, because we will now start a new one
-	  // (we could also store these models for future use - e.g. clustering)
-	  QGMMmodel_.resetModel();
+    //Apply BIC criteria
+    if (BICdist_ > 0.0)
+    {
+      //BIC validated the change point!
 
-	  //do something to mark the detected change POINT:
-	  // - print a message
-	  // - write to a file
-	  // - generate a sound (e.g. a beep)
-	  // - ...
-	  // 			mrs_real confidence = 1.0 - dynThres_/dist12_;
-	  // cout << " confirmed!";
+      //reset current model, because we will now start a new one
+      // (we could also store these models for future use - e.g. clustering)
+      QGMMmodel_.resetModel();
 
-	  if (confidence > 0.0)
-	  {
+      //do something to mark the detected change POINT:
+      // - print a message
+      // - write to a file
+      // - generate a sound (e.g. a beep)
+      // - ...
+      // 			mrs_real confidence = 1.0 - dynThres_/dist12_;
+      // cout << " confirmed!";
 
-	  cout  << prev_change_time_ << "\t" << change_time << "\t" << confidence << endl;
-	  prev_change_time_ = change_time;	  
+      if (confidence > 0.0)
+      {
+
+        cout  << prev_change_time_ << "\t" << change_time << "\t" << confidence << endl;
+        prev_change_time_ = change_time;
 
 
 // 		  cout  << prev_change_time_ << "\t" << change_time << "\t" << confidence << endl;
-// 		  prev_change_time_ = change_time;	  
-	  }
-	 
-	}
-	else
-	{
-		// cout << " UNCONFIRMED.";
-	  //BIC rejected potential change point
-	  //do something here? Probably not...
-	}
-	// cout << endl;
+// 		  prev_change_time_ = change_time;
+      }
+
+    }
+    else
+    {
+      // cout << " UNCONFIRMED.";
+      //BIC rejected potential change point
+      //do something here? Probably not...
+    }
+    // cout << endl;
   }
   // 	cout << "TESTING TICKS: "
   // 	     << " at " << currTm->tm_hour << "h::"
   // 	     << currTm->tm_min << "m::"
   // 	     << currTm->tm_sec << "s"
   // 	     << endl;
-  
 
-  ++BICTick_;  
-  
+
+  ++BICTick_;
+
 }

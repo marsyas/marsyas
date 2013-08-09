@@ -18,7 +18,7 @@ using namespace std;
 
 #include "window.h"
 
-void usage() 
+void usage()
 {
   cout << "MarSndPeek : Display a realtime spectrum waterfall and waveform of an audio file" << endl;
   cout << endl;
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
   QApplication app(argc, argv);
   string inAudioFileName = "";
   if (argc > 1) {
-	inAudioFileName = argv[1];	  
+    inAudioFileName = argv[1];
   }
   Window window(inAudioFileName);
   window.show();

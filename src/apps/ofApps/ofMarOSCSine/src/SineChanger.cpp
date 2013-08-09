@@ -10,10 +10,10 @@ SineChanger::SineChanger()
   // listen on the given port
   cout << "listening for osc messages on port " << PORT << "\n";
   receiver.setup( PORT );
-  
+
   current_msg_string = 0;
   counter = 0;
-  
+
   ofBackground( 30, 30, 130 );
 
 }
@@ -37,7 +37,7 @@ void
 SineChanger::destroy()
 {
   if (isThreadRunning())
-	stopThread();
+    stopThread();
 }
 
 
@@ -48,44 +48,44 @@ SineChanger::threadedFunction()
   cout << "threadedFunction" << endl;
 
   for (;;) {
-	if( lock() ){
+    if( lock() ) {
 
-	  // hide old messages
-	  for ( int i=0; i<NUM_MSG_STRINGS; i++ )
-		{
-		  if ( timers[i] < ofGetElapsedTimef() )
-			msg_strings[i] = "";
-		}
+      // hide old messages
+      for ( int i=0; i<NUM_MSG_STRINGS; i++ )
+      {
+        if ( timers[i] < ofGetElapsedTimef() )
+          msg_strings[i] = "";
+      }
 
-	  // check for waiting messages
-	  while( receiver.hasWaitingMessages() )
-		{
-		  // get the next message
-		  ofxOscMessage m;
-		  receiver.getNextMessage( &m );
+      // check for waiting messages
+      while( receiver.hasWaitingMessages() )
+      {
+        // get the next message
+        ofxOscMessage m;
+        receiver.getNextMessage( &m );
 
-		  // check for mouse moved message
-		  if ( m.getAddress() == "/counter" )
-			{
-			  // both the arguments are int32's
-			  counter = m.getArgAsInt32( 0 );
-			}
-		}
+        // check for mouse moved message
+        if ( m.getAddress() == "/counter" )
+        {
+          // both the arguments are int32's
+          counter = m.getArgAsInt32( 0 );
+        }
+      }
 
-	  // count++;
-	  // if(count > 500) count = 200;
-	  unlock();
-	  ofSleepMillis(20);
-	}
-	// cout << "in thread.  count=" << count << endl;
+      // count++;
+      // if(count > 500) count = 200;
+      unlock();
+      ofSleepMillis(20);
+    }
+    // cout << "in thread.  count=" << count << endl;
   }
 }
 
-void SineChanger::update(){
+void SineChanger::update() {
   cout << "update" << endl;
 }
 
-void SineChanger::draw(){
+void SineChanger::draw() {
   cout << "draw" << endl;
 }
 

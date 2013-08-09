@@ -4,7 +4,7 @@
 using namespace Marsyas;
 
 MarExtractor::MarExtractor()
-: AbstractMarExtractor()
+  : AbstractMarExtractor()
 {
 //to do
 }

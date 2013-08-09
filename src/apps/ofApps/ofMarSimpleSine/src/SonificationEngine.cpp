@@ -3,9 +3,9 @@
 
 //--------------------------------------------------------------
 SonificationEngine::SonificationEngine(string name)
-: ofxMarsyasNetwork(name)
+  : ofxMarsyasNetwork(name)
 {
-	priority	= 2;
+  priority	= 2;
 }
 
 //--------------------------------------------------------------
@@ -13,7 +13,7 @@ void
 SonificationEngine::setup()
 {
   cout << "setup" << endl;
-  
+
   addMarSystem(mng.create("SineSource", "src"));
   addMarSystem(mng.create("AudioSink", "dest"));
 

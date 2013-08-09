@@ -118,6 +118,7 @@ public:
   }
 };
 
-}} // namespace Marsyas::RealTime
+}
+} // namespace Marsyas::RealTime
 
 #endif // MARSYAS_REALTIME_STAGE_INCLUDED

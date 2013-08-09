@@ -35,7 +35,7 @@
 #include <QtOpenGL>
 
 
-#include <iostream> 
+#include <iostream>
 using namespace std;
 
 
@@ -46,33 +46,33 @@ class MarWidgets : public QScrollArea
 public:
   MarWidgets();
 
-  
+
   void setup();
-  
+
 protected:
-  
-  
+
+
 private slots:
-  
-  
+
+
 private:
 
   QString strippedName(const QString &fullFileName);
-  
+
   QString curFile;
   bool isUntitled;
   MarSystem* pnet;
   MarSystemQtWrapper* mwr;
-  
-  
+
+
   QPushButton* playButton;
   QPushButton* stepButton;
   // QPushButton* probeButton;
   QCheckBox* probeButton;
-  
+
   QSlider* slider;
   QScrollArea *glWidgetArea;
-  
+
 };
 
 #endif

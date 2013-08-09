@@ -8,7 +8,7 @@
 
 #include <qvariant.h>
 #include <qmainwindow.h>
-#include <QGroupBox> 
+#include <QGroupBox>
 #include <iostream>
 #include "MarCanvas.h"
 #include "WidgetButton.h"
@@ -19,21 +19,21 @@ class MainWindow:public QMainWindow
 {
   Q_OBJECT
 
- public:
+public:
   MainWindow();
   //
 
 public slots:
-    virtual void fileNew();
-    virtual void helpAbout();
-    virtual void exitApp();
-    virtual void closeEvent( QCloseEvent * );
-    virtual void openFile();
-    virtual void saveFile();
+  virtual void fileNew();
+  virtual void helpAbout();
+  virtual void exitApp();
+  virtual void closeEvent( QCloseEvent * );
+  virtual void openFile();
+  virtual void saveFile();
 
- private:
+private:
   MarCanvas* theCanvas;//keep a pointer to the canvas inorder to
-		       //invoke signals and member functions
+  //invoke signals and member functions
   QMenuBar *MenuBar;//Main menu bar
   QMenu *fileMenu; // File Menu...new,load, save, quit...
   QMenu *helpMenu;//Help Menu - about...
@@ -43,9 +43,9 @@ public slots:
   QAction* openAction;//load
   QAction* saveAction;//save
   QLineEdit* widgetNameEdit;
-  QComboBox* collectionNameEdit; 
-  private:
-    void init();
+  QComboBox* collectionNameEdit;
+private:
+  void init();
 };
 
 

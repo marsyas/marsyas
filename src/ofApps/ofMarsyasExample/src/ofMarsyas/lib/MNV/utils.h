@@ -13,18 +13,18 @@
 
 namespace Marsyas
 {
-	
-	class globalMouse
-	{
-	public:
-		int x;
-		int y;
-		int click;
-		int drag;
-		globalMouse();
-	};
-	
-	
-    
+
+class globalMouse
+{
+public:
+  int x;
+  int y;
+  int click;
+  int drag;
+  globalMouse();
+};
+
+
+
 }
 #endif

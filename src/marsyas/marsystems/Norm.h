@@ -39,11 +39,11 @@ namespace Marsyas
 class Norm: public MarSystem
 {
 public:
-	Norm(std::string name);
-	~Norm();
-	MarSystem* clone() const;
+  Norm(std::string name);
+  ~Norm();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

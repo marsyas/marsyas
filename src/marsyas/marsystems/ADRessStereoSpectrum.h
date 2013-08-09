@@ -30,25 +30,25 @@ namespace Marsyas
    and outputs the panning coefficient for each spectral bin (N/2+1 bins).
 */
 
-	class ADRessStereoSpectrum: public MarSystem
-	{
-		private:
-			mrs_natural N2_;
-			mrs_natural beta_;
-			mrs_real maxVal_;
-			mrs_natural maxIndex_;
+class ADRessStereoSpectrum: public MarSystem
+{
+private:
+  mrs_natural N2_;
+  mrs_natural beta_;
+  mrs_real maxVal_;
+  mrs_natural maxIndex_;
 
-			void addControls();
-			void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-		public:
-			ADRessStereoSpectrum(std::string name);
-			ADRessStereoSpectrum(const ADRessStereoSpectrum& a);
-			~ADRessStereoSpectrum();
-			MarSystem* clone() const;
+public:
+  ADRessStereoSpectrum(std::string name);
+  ADRessStereoSpectrum(const ADRessStereoSpectrum& a);
+  ~ADRessStereoSpectrum();
+  MarSystem* clone() const;
 
-			void myProcess(realvec& in, realvec& out);
-	};
+  void myProcess(realvec& in, realvec& out);
+};
 
 }
 

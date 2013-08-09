@@ -128,7 +128,7 @@ MarPlayer::seekPos()
 void MarPlayer::about()
 {
   QMessageBox::about(this, tr("About Marsyas SoundFile Player"),
-                    tr("The example demonstrates how to write a GUI that"
+                     tr("The example demonstrates how to write a GUI that"
                         " combines Qt and Marsyas"));
 
 }

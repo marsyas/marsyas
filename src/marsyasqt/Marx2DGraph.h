@@ -4,7 +4,7 @@
 
 
 #ifndef MARX2DGRAPH_H
-#define MARX2DGRAPH_H 
+#define MARX2DGRAPH_H
 
 #include <QWidget>
 #include <QPen>
@@ -42,9 +42,9 @@ class Marx2DGraph : public QWidget
 {
   Q_OBJECT
 
- public: 
+public:
 
-  Marx2DGraph( QWidget *parent=0 ); //warning C4520: 'Marx2DGraph' : multiple default constructors specified [!]	
+  Marx2DGraph( QWidget *parent=0 ); //warning C4520: 'Marx2DGraph' : multiple default constructors specified [!]
   Marx2DGraph( int size=0, QWidget *parent=0 );//warning C4520: 'Marx2DGraph' : multiple default constructors specified [!]
 
   bool setBuffer( Marsyas::realvec& );
@@ -66,27 +66,27 @@ class Marx2DGraph : public QWidget
   void setYAxisLabel( std::string );
   void setXAxisLabelOn( bool );
   void setYAxisLabelOn( bool );
-		void setYMaxMin(float ymax, float ymin);
+  void setYMaxMin(float ymax, float ymin);
   void displayXaxis( bool );
-  
+
   void addLabel( std::string );
 
 
   enum { POINTS, PRECISION, LINEAR_INTERPOLATION, POLYNOMIAL_INTERPOLATION };
   enum { CIRCLES, SQUARES, XS }; // point display shape
   enum { CONNECTED, BROKEN };    // axis display types
-  
 
- protected:
+
+protected:
   void mousePressEvent(QMouseEvent *);
   void mouseMoveEvent(QMouseEvent *);
   void mouseReleaseEvent(QMouseEvent *);
   void paintEvent(QPaintEvent *);
   void resizeEvent(QResizeEvent *);
 
-		
 
- private:
+
+private:
   QPainter painter;
 
   void plotpoints(QPainter *);
@@ -110,12 +110,12 @@ class Marx2DGraph : public QWidget
   float dvalue;  // value associated with mouse click
   std::string dsamplestring;
   std::string dvaluestring;
-  
-/*   float* buffer; */
+
+  /*   float* buffer; */
   Marsyas::realvec* buffer;
   long buffersize;
-		float ymaxval, yminval;
-		
+  float ymaxval, yminval;
+
 
   int plot_type;
   int axis_display_type;

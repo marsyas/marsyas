@@ -21,7 +21,7 @@
 #include "MatchBassModel.h"
 #include "Metric2.h"
 
- 
+
 using std::ostringstream;
 using std::cout;
 using std::endl;
@@ -66,7 +66,7 @@ MatchBassModel::clone() const
   return new MatchBassModel(*this);
 }
 
-void 
+void
 MatchBassModel::addControls()
 {
   addControl("mrs_natural/nTemplates", 3, ctrl_nTemplates_);
@@ -119,37 +119,37 @@ void MatchBassModel::myUpdate(MarControlPtr sender)
 
   // calculate log frequency
   logFreq_.create(freq_.getSize());
-  for(i=0; i<logFreq_.getSize(); ++i){
+  for(i=0; i<logFreq_.getSize(); ++i) {
     logFreq_(i) = log(lowFreq_)+(log(highFreq_)-log(lowFreq_))/(double)(logFreq_.getSize()-1)*(double)i;
   }
   // calculate start vector
   start_.create(seg_.getSize());
   i=0;
   j=0;
-  while(i<inSamples_ && j<seg_.getSize()){
-    if(seg_(j) <= time_(i)){
+  while(i<inSamples_ && j<seg_.getSize()) {
+    if(seg_(j) <= time_(i)) {
       start_(j) = i;
       j++;
     } else {
       ++i;
     }
   }
-  if(j<seg_.getSize()){
+  if(j<seg_.getSize()) {
     start_.stretch(j+1);
     start_(j) = i;
   }
-  i=0; 
-  while(freq_(i) < rootFreq_ && i<inObservations_){
+  i=0;
+  while(freq_(i) < rootFreq_ && i<inObservations_) {
     ++i;
   }
   rootBin_ = i;
   i=0;
-  while(freq_(i) < lowFreq_ && i<inObservations_){
+  while(freq_(i) < lowFreq_ && i<inObservations_) {
     ++i;
   }
   rootMin_ = i;// - rootBin_;
   i=0;
-  while(freq_(i) < highFreq_ && i<inObservations_){
+  while(freq_(i) < highFreq_ && i<inObservations_) {
     ++i;
   }
   rootMax_ = i;// - rootBin_;
@@ -163,9 +163,9 @@ void MatchBassModel::myUpdate(MarControlPtr sender)
   k_.create(seg_.getSize()-1);
   costVector_.create(rootMax_-rootMin_,K_);
   distance_.create(K_,seg_.getSize()-1);
-  
-	unsigned int child_count = marsystems_.size();
-	if(child_count == 1 && inSamples_ > 0){
+
+  unsigned int child_count = marsystems_.size();
+  if(child_count == 1 && inSamples_ > 0) {
     // configure the metric child MarSystem:
     // the input to metric are the two vectors to process stacked vertically
     i_featVec_.create(rootMax_-rootMin_, I_);
@@ -175,9 +175,9 @@ void MatchBassModel::myUpdate(MarControlPtr sender)
     marsystems_[0]->setctrl("mrs_natural/inSamples", 1);
     marsystems_[0]->setctrl("mrs_real/israte", ctrl_israte_->to<mrs_real>());
     oss.clear();
-    for(i=0; i<2; ++i){
-      for(o=0; o<rootMax_-rootMin_; o++){
-	oss << "MatchBassModel_" << o << ",";
+    for(i=0; i<2; ++i) {
+      for(o=0; o<rootMax_-rootMin_; o++) {
+        oss << "MatchBassModel_" << o << ",";
       }
     }
     marsystems_[0]->setctrl("mrs_string/inObsNames", oss.str());
@@ -189,149 +189,149 @@ void MatchBassModel::myUpdate(MarControlPtr sender)
       ctrl_childCovMat->linkTo(ctrl_covMatrix_);
     metricResult_.create(1,1);
     if(marsystems_[0]->getctrl("mrs_natural/onObservations") != 1 ||
-       marsystems_[0]->getctrl("mrs_natural/onSamples") != 1){
+        marsystems_[0]->getctrl("mrs_natural/onSamples") != 1) {
       MRSWARN("MatchBassModel:myUpdate - invalid Child Metric MarSystem (does not output a real value)!");
     }
-  } else if(child_count > 1){
+  } else if(child_count > 1) {
     MRSWARN("MatchBassModel:myUpdate - more than one children MarSystem exist! Only one MarSystem should be added as a metric!");
   }
-  
+
 }
 
 void
 MatchBassModel::myProcess(realvec& in, realvec& out)
 {
-	unsigned int child_count = marsystems_.size();
+  unsigned int child_count = marsystems_.size();
   mrs_natural i, j, k, l, m, d;
   mrs_real tmpreal, min;
   realvec covMatrix, tmpvec;
 
-  if(inSamples_ > 0){
-    if(child_count == 1){
+  if(inSamples_ > 0) {
+    if(child_count == 1) {
       // copy input realvec to output realvec
-      for(i=0; i<inSamples_; ++i){
-	for(j=0; j<inObservations_; j++){
-	  out(j,i) = in(j,i);
-	}
+      for(i=0; i<inSamples_; ++i) {
+        for(j=0; j<inObservations_; j++) {
+          out(j,i) = in(j,i);
+        }
       }
 
       // normalize features if necessary
-      for(i=0; i<I_*K_; ++i){
-	for(j=0; j<(rootMax_-rootMin_)*2; j++){
-	  j_featVec_(j,i) = templates_(j,i);
-	}
+      for(i=0; i<I_*K_; ++i) {
+        for(j=0; j<(rootMax_-rootMin_)*2; j++) {
+          j_featVec_(j,i) = templates_(j,i);
+        }
       }
-      for(i=0; i<inSamples_; ++i){
-	for(j=rootMin_; j<rootMax_; j++){
-	  invec_(j-rootMin_, i) = in(j,i);
-	}
+      for(i=0; i<inSamples_; ++i) {
+        for(j=rootMin_; j<rootMax_; j++) {
+          invec_(j-rootMin_, i) = in(j,i);
+        }
       }
-      if(ctrl_normalize_->to<mrs_string>() == "MinMax"){
-	invec_.normObsMinMax();  // (x - min)/(max - min)
-	j_featVec_.normObsMinMax();
-      } else if(ctrl_normalize_->to<mrs_string>() == "MeanStd"){
-	invec_.normObs();  // (x - mean)/std
-	j_featVec_.normObs();
+      if(ctrl_normalize_->to<mrs_string>() == "MinMax") {
+        invec_.normObsMinMax();  // (x - min)/(max - min)
+        j_featVec_.normObsMinMax();
+      } else if(ctrl_normalize_->to<mrs_string>() == "MeanStd") {
+        invec_.normObs();  // (x - mean)/std
+        j_featVec_.normObs();
       }
       distance_.stretch(K_,seg_.getSize()-1);
 
       // calculate the Covariance Matrix from the inputm, in case
-      if(ctrl_calcCovMatrix_->to<mrs_natural>() & MatchBassModel::fixedStdDev){
-	covMatrix.create(rootMax_-rootMin_, rootMax_-rootMin_);
-	tmpreal = ctrl_stdDev_->to<mrs_real>();
-	tmpreal *= tmpreal;
-	for(i=0; i<rootMax_-rootMin_; ++i){
-	  covMatrix(i,i) = tmpreal;
-	}
-      } else if(ctrl_calcCovMatrix_->to<mrs_natural>() & MatchBassModel::diagCovMatrix){
-	covMatrix.create(rootMax_-rootMin_, rootMax_-rootMin_);
-	invec_.varObs(tmpvec);
-	for(i=0; i<rootMax_-rootMin_; ++i){
-	  covMatrix(i,i) = tmpvec(i);
-	}
-      } else if(ctrl_calcCovMatrix_->to<mrs_natural>() & MatchBassModel::fullCovMatrix){
-	covMatrix.create(rootMax_-rootMin_, rootMax_-rootMin_);
-	invec_.covariance(covMatrix);
-      } else if(ctrl_calcCovMatrix_->to<mrs_natural>() & MatchBassModel::noCovMatrix){
-	ctrl_covMatrix_->setValue(realvec());
+      if(ctrl_calcCovMatrix_->to<mrs_natural>() & MatchBassModel::fixedStdDev) {
+        covMatrix.create(rootMax_-rootMin_, rootMax_-rootMin_);
+        tmpreal = ctrl_stdDev_->to<mrs_real>();
+        tmpreal *= tmpreal;
+        for(i=0; i<rootMax_-rootMin_; ++i) {
+          covMatrix(i,i) = tmpreal;
+        }
+      } else if(ctrl_calcCovMatrix_->to<mrs_natural>() & MatchBassModel::diagCovMatrix) {
+        covMatrix.create(rootMax_-rootMin_, rootMax_-rootMin_);
+        invec_.varObs(tmpvec);
+        for(i=0; i<rootMax_-rootMin_; ++i) {
+          covMatrix(i,i) = tmpvec(i);
+        }
+      } else if(ctrl_calcCovMatrix_->to<mrs_natural>() & MatchBassModel::fullCovMatrix) {
+        covMatrix.create(rootMax_-rootMin_, rootMax_-rootMin_);
+        invec_.covariance(covMatrix);
+      } else if(ctrl_calcCovMatrix_->to<mrs_natural>() & MatchBassModel::noCovMatrix) {
+        ctrl_covMatrix_->setValue(realvec());
       }
 
       totaldis_ = 0.0;
       tmpvec.stretch(rootMax_-rootMin_, I_);
-      for(j=0; j<(int)start_.getSize()-1; j++){
-	tmpreal = 0.0;
-	for(i=0; i<rootMax_-rootMin_; ++i){
-	  for(k=0; k<K_; k++){
-	    costVector_(i,k) = 0;
-	  }
-	}
-	for(i=0; i<I_; ++i){
-	  for(l=0; l<rootMax_-rootMin_; l++){
-	    i_featVec_(l,i) = 0;
-	    tmpvec(l,i) = 0;
-	  }
-	}
-	for(i=0; i<I_; ++i){
-	  for(m=(mrs_natural)(((double)i/I_*(start_(j+1)-start_(j)))+start_(j)); m<(int)((double)(i+1)/I_*(start_(j+1)-start_(j)))+start_(j); m++){
-	    for(l=0; l<rootMax_-rootMin_; l++){
-	      i_featVec_(l,i) += invec_(l, m);
-	      tmpvec(l,i) ++;
-	    }
-	  }
-	}
-	for(i=0; i<I_; ++i){
-	  for(l=0; l<rootMax_-rootMin_; l++){
-	    if(tmpvec(l,i) > 0){
-	      i_featVec_(l,i) /= tmpvec(l,i);
-	    }
-	  }
-	}
-	for(k=0; k<K_; k++){
-	  for(i=0; i<I_; ++i){
-	    for(l=0; l<rootMax_-rootMin_; l++){
-	      stackedFeatVecs_(l,0) = i_featVec_(l,i);
-	    }
-	    for(d=0; d<rootMax_-rootMin_; d++){
-	      for(l=0; l<rootMax_-rootMin_; l++){
-		stackedFeatVecs_(l+rootMax_-rootMin_,0) = j_featVec_(l+rootMax_-rootMin_-d,k*I_+i);
-	      }
-	      marsystems_[0]->process(stackedFeatVecs_, metricResult_);
-	      costVector_(d, k) += metricResult_(0,0);
-	    }
-	  }
-	}
-	min = costVector_(0,0);
-	d_(j) = 0;
-	k_(j) = 0;
-	for(d=0; d<rootMax_-rootMin_; d++){
-	  for(k=0; k<K_; k++){
-	    if(min>costVector_(d, k)){
-	      min = costVector_(d,k);
-	      d_(j) = d;
-	      k_(j) = k;
-	    }
-	  }
-	}
-	totaldis_ += min;
-	for(k=0; k<K_; k++){
-	  min = costVector_(0,k);
-	  for(d=0; d<rootMax_-rootMin_; d++){
-	    if(min > costVector_(d,k)){
-	      min = costVector_(d,k);
-	    }
-	  }
-	  distance_(k,j) = min;
-	}
+      for(j=0; j<(int)start_.getSize()-1; j++) {
+        tmpreal = 0.0;
+        for(i=0; i<rootMax_-rootMin_; ++i) {
+          for(k=0; k<K_; k++) {
+            costVector_(i,k) = 0;
+          }
+        }
+        for(i=0; i<I_; ++i) {
+          for(l=0; l<rootMax_-rootMin_; l++) {
+            i_featVec_(l,i) = 0;
+            tmpvec(l,i) = 0;
+          }
+        }
+        for(i=0; i<I_; ++i) {
+          for(m=(mrs_natural)(((double)i/I_*(start_(j+1)-start_(j)))+start_(j)); m<(int)((double)(i+1)/I_*(start_(j+1)-start_(j)))+start_(j); m++) {
+            for(l=0; l<rootMax_-rootMin_; l++) {
+              i_featVec_(l,i) += invec_(l, m);
+              tmpvec(l,i) ++;
+            }
+          }
+        }
+        for(i=0; i<I_; ++i) {
+          for(l=0; l<rootMax_-rootMin_; l++) {
+            if(tmpvec(l,i) > 0) {
+              i_featVec_(l,i) /= tmpvec(l,i);
+            }
+          }
+        }
+        for(k=0; k<K_; k++) {
+          for(i=0; i<I_; ++i) {
+            for(l=0; l<rootMax_-rootMin_; l++) {
+              stackedFeatVecs_(l,0) = i_featVec_(l,i);
+            }
+            for(d=0; d<rootMax_-rootMin_; d++) {
+              for(l=0; l<rootMax_-rootMin_; l++) {
+                stackedFeatVecs_(l+rootMax_-rootMin_,0) = j_featVec_(l+rootMax_-rootMin_-d,k*I_+i);
+              }
+              marsystems_[0]->process(stackedFeatVecs_, metricResult_);
+              costVector_(d, k) += metricResult_(0,0);
+            }
+          }
+        }
+        min = costVector_(0,0);
+        d_(j) = 0;
+        k_(j) = 0;
+        for(d=0; d<rootMax_-rootMin_; d++) {
+          for(k=0; k<K_; k++) {
+            if(min>costVector_(d, k)) {
+              min = costVector_(d,k);
+              d_(j) = d;
+              k_(j) = k;
+            }
+          }
+        }
+        totaldis_ += min;
+        for(k=0; k<K_; k++) {
+          min = costVector_(0,k);
+          for(d=0; d<rootMax_-rootMin_; d++) {
+            if(min > costVector_(d,k)) {
+              min = costVector_(d,k);
+            }
+          }
+          distance_(k,j) = min;
+        }
       }
       ctrl_intervals_->setValue(d_);
       ctrl_selections_->setValue(k_);
       ctrl_totalDistance_->setValue(totaldis_);
       ctrl_distance_->setValue(distance_);
     } else {
-      if(child_count == 0){
-	MRSWARN("MatchBassModel::myProcess - no Child Metric MarSystem added");
+      if(child_count == 0) {
+        MRSWARN("MatchBassModel::myProcess - no Child Metric MarSystem added");
       } else {
-	MRSWARN("MatchBassModel::myProcess - more than on Child MarSystem exists (i.e. invalid metric)");
+        MRSWARN("MatchBassModel::myProcess - more than on Child MarSystem exists (i.e. invalid metric)");
       }
     }
   } else {

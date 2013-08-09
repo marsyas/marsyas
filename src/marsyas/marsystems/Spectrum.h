@@ -50,26 +50,26 @@ namespace Marsyas
 class Spectrum: public MarSystem
 {
 private:
-	fft myfft_;
+  fft myfft_;
 
-	mrs_real cutoff_;
-	mrs_real lowcutoff_;
-	mrs_real re_,im_;
-	mrs_natural ponObservations_;
+  mrs_real cutoff_;
+  mrs_real lowcutoff_;
+  mrs_real re_,im_;
+  mrs_natural ponObservations_;
 
-	MarControlPtr ctrl_cutoff_;
-	MarControlPtr ctrl_lowcutoff_;
+  MarControlPtr ctrl_cutoff_;
+  MarControlPtr ctrl_lowcutoff_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	Spectrum(std::string name);
-	Spectrum(const Spectrum&);
-	~Spectrum();
-	MarSystem* clone() const;
+  Spectrum(std::string name);
+  Spectrum(const Spectrum&);
+  ~Spectrum();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

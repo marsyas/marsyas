@@ -12,7 +12,7 @@
 #include <cxxtest/ErrorPrinter.h>
 
 int main() {
- return CxxTest::ErrorPrinter().run();
+  return CxxTest::ErrorPrinter().run();
 }
 #include "TestAimGammatone.h"
 
@@ -23,14 +23,14 @@ CxxTest::StaticSuiteDescription suiteDescription_AimGammatone_runner( "TestAimGa
 
 static class TestDescription_AimGammatone_runner_test_one_window_1000hz : public CxxTest::RealTestDescription {
 public:
- TestDescription_AimGammatone_runner_test_one_window_1000hz() : CxxTest::RealTestDescription( Tests_AimGammatone_runner, suiteDescription_AimGammatone_runner, 32, "test_one_window_1000hz" ) {}
- void runTest() { suite_AimGammatone_runner.test_one_window_1000hz(); }
+  TestDescription_AimGammatone_runner_test_one_window_1000hz() : CxxTest::RealTestDescription( Tests_AimGammatone_runner, suiteDescription_AimGammatone_runner, 32, "test_one_window_1000hz" ) {}
+  void runTest() { suite_AimGammatone_runner.test_one_window_1000hz(); }
 } testDescription_AimGammatone_runner_test_one_window_1000hz;
 
 static class TestDescription_AimGammatone_runner_test_wav_file : public CxxTest::RealTestDescription {
 public:
- TestDescription_AimGammatone_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimGammatone_runner, suiteDescription_AimGammatone_runner, 75, "test_wav_file" ) {}
- void runTest() { suite_AimGammatone_runner.test_wav_file(); }
+  TestDescription_AimGammatone_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimGammatone_runner, suiteDescription_AimGammatone_runner, 75, "test_wav_file" ) {}
+  void runTest() { suite_AimGammatone_runner.test_wav_file(); }
 } testDescription_AimGammatone_runner_test_wav_file;
 
 #include <cxxtest/Root.cpp>

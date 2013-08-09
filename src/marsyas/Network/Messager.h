@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -24,20 +24,20 @@
 #define STK_MIDI        0x0001
 #define STK_PIPE        0x0002
 #define STK_SOCKET      0x0004
-#define MY_FLOAT 
+#define MY_FLOAT
 
 #define __STK_REALTIME__
 
 #ifndef WIN32
 #include <sys/types.h>
-#include <sys/select.h> 
-#endif 
+#include <sys/select.h>
+#endif
 
 #include <cstring>
 
 #include "Thread.h"
 #include "NetworkSocket.h"
-#include "common_source.h" 
+#include "common_source.h"
 
 #define RT_BUFFER_SIZE 512
 
@@ -49,17 +49,17 @@ namespace Marsyas
 /*! \class Messager
   \ingroup Networking
   \brief Control message parser.
-  
+
   This class reads and parses control messages
-  from a socket connection or pipe. 
-  
+  from a socket connection or pipe.
+
   For each call to nextMessage(), the active
   input sources are queried to see if a new
   control message is available.
-  
-  This class is primarily for use in 
+
+  This class is primarily for use in
   event loops.
-  
+
   One of the original goals in creating this
   class was to simplify the message acquisition
   process by removing all threads.  If the
@@ -71,9 +71,9 @@ namespace Marsyas
   messages via a socket connection to the
   message socket server.  Perhaps in the future,
   it will be possible to simplify things.
-  
-  This class is canibalized from the Synthesis 
-  Toolkit by Perry Cook and Gary Scavone. 
+
+  This class is canibalized from the Synthesis
+  Toolkit by Perry Cook and Gary Scavone.
 */
 /***************************************************/
 
@@ -81,7 +81,7 @@ namespace Marsyas
 
 class Messager // : public Stk
 {
-  
+
 public:
   //! Constructor performs initialization based on an input mask and an optional socket port.
   /*!
@@ -126,7 +126,7 @@ public:
   //! Return the channel number for the current message.
   long getChannel() const;
 
- protected:
+protected:
 
   long type;
   long channel;
@@ -146,7 +146,7 @@ public:
   Thread *thread;
   NetworkSocket *soket;
 
-  unsigned int nSockets;  
+  unsigned int nSockets;
   fd_set mask;
   int maxfd;
   int pipefd;

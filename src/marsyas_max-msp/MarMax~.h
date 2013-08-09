@@ -21,27 +21,27 @@ using namespace std;
 */
 
 ////////////////////////// object struct
-typedef struct _MarMax 
+typedef struct _MarMax
 {
-	t_pxobject					ob;			// the object itself (t_pxobject in MSP)
-	float						offset; 
-	double	d_SR;
-	void* outletBeat;
-	void* outletTempo;
-	MarMaxIBT *ibt;
-	//Ctestdll testdll;
-	MarSystem* m_MarsyasNetwork;
-	t_int pos;                    /*frames%dspblocksize */
-    t_int bufsize;
-    t_int hopsize;
-	t_float inductionTime;
-	t_int minBPM;
-	t_int maxBPM;
-	bool stateRecovery;
-	char *outPathName;
-	//unused for now
-	t_int onlineFlag;
-	t_int metricalChangesFlag;
+  t_pxobject					ob;			// the object itself (t_pxobject in MSP)
+  float						offset;
+  double	d_SR;
+  void* outletBeat;
+  void* outletTempo;
+  MarMaxIBT *ibt;
+  //Ctestdll testdll;
+  MarSystem* m_MarsyasNetwork;
+  t_int pos;                    /*frames%dspblocksize */
+  t_int bufsize;
+  t_int hopsize;
+  t_float inductionTime;
+  t_int minBPM;
+  t_int maxBPM;
+  bool stateRecovery;
+  char *outPathName;
+  //unused for now
+  t_int onlineFlag;
+  t_int metricalChangesFlag;
 } t_MarMax;
 
 ///////////////////////// function prototypes

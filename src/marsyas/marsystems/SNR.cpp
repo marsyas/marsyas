@@ -24,21 +24,21 @@ using namespace Marsyas;
 
 SNR::SNR(mrs_string name):MarSystem("SNR", name)
 {
-	addControls();
-	nsum_ = 0.0;
-	nbsum_ = 0.0;
-	psum_ = 0.0;
-	dsum_ = 0.0;
+  addControls();
+  nsum_ = 0.0;
+  nbsum_ = 0.0;
+  psum_ = 0.0;
+  dsum_ = 0.0;
 }
 
 SNR::SNR(const SNR& a) : MarSystem(a)
 {
-	ctrl_mode_ = getctrl("mrs_string/mode");
-	ctrl_done_ = getctrl("mrs_bool/done");
-	nsum_ = 0.0;
-	dsum_ = 0.0;
-	nbsum_ = 0.0;
-	psum_ = 0.0;
+  ctrl_mode_ = getctrl("mrs_string/mode");
+  ctrl_done_ = getctrl("mrs_bool/done");
+  nsum_ = 0.0;
+  dsum_ = 0.0;
+  nbsum_ = 0.0;
+  psum_ = 0.0;
 }
 
 
@@ -49,7 +49,7 @@ SNR::~SNR()
 MarSystem*
 SNR::clone() const
 {
-	return new SNR(*this);
+  return new SNR(*this);
 }
 
 void
@@ -57,7 +57,7 @@ SNR::addControls()
 {
   addctrl("mrs_string/mode", "standard", ctrl_mode_);
   addctrl("mrs_bool/done", false, ctrl_done_);
-  
+
 }
 
 void
@@ -76,57 +76,57 @@ SNR::myUpdate(MarControlPtr sender)
 void
 SNR::myProcess(realvec& in, realvec& out)
 {
-	const mrs_string& mode = ctrl_mode_->to<mrs_string>();
-	mrs_bool accumulateNow = true;
+  const mrs_string& mode = ctrl_mode_->to<mrs_string>();
+  mrs_bool accumulateNow = true;
 
-	out.setval (0.);
+  out.setval (0.);
 
-	mrs_real	nsum	= 0, 
-		nbsum	= 0,
-		psum	= 0,
-		diff	= 0,
-		dsum	= 0;
+  mrs_real	nsum	= 0,
+             nbsum	= 0,
+             psum	= 0,
+              diff	= 0,
+               dsum	= 0;
 
-	for (mrs_natural t = 0; t < inSamples_; t++)
-	{
-		nsum	+= (in(0,t) * in(0,t));
-		nbsum	+= (in(1,t) * in(1,t));
-		psum	+= (in(0,t) * in(1,t));
-		diff	= (in(0,t) - in(1,t));
-		dsum 	+= (diff * diff);
-	}
+  for (mrs_natural t = 0; t < inSamples_; t++)
+  {
+    nsum	+= (in(0,t) * in(0,t));
+    nbsum	+= (in(1,t) * in(1,t));
+    psum	+= (in(0,t) * in(1,t));
+    diff	= (in(0,t) - in(1,t));
+    dsum 	+= (diff * diff);
+  }
 
-	if (mode == "checkRef4Silence")
-	{
-		if (nbsum/inSamples_ < 1e-6) //-60dB
-			accumulateNow	= false;
-	}
+  if (mode == "checkRef4Silence")
+  {
+    if (nbsum/inSamples_ < 1e-6) //-60dB
+      accumulateNow	= false;
+  }
 
-	if (accumulateNow)
-	{
-		nsum_	+= nsum;
-		nbsum_	+= nbsum;
-		psum_	+= psum;
-		dsum_	+= dsum;
-	}
+  if (accumulateNow)
+  {
+    nsum_	+= nsum;
+    nbsum_	+= nbsum;
+    psum_	+= psum;
+    dsum_	+= dsum;
+  }
 
-	if (nsum_ != 0 && dsum_ != 0)
-		out(0,0) = 10. * log10(nsum_ / dsum_);
+  if (nsum_ != 0 && dsum_ != 0)
+    out(0,0) = 10. * log10(nsum_ / dsum_);
 
-	if (nsum_ != 0 && nbsum_ != 0)
-		r_ = (psum_ / sqrt(nsum_ * nbsum_));
-	else
-		r_ = 0;
+  if (nsum_ != 0 && nbsum_ != 0)
+    r_ = (psum_ / sqrt(nsum_ * nbsum_));
+  else
+    r_ = 0;
 
-	out(1,0) = 10. * log10(1 / (1 - (r_ * r_)));
+  out(1,0) = 10. * log10(1 / (1 - (r_ * r_)));
 
-	if (ctrl_done_->to<mrs_bool>() == true) 
-	{
-		nsum_ = 0.0;
-		nbsum_ = 0.0;
-		dsum_ = 0.0;
-		psum_ = 0.0;
-	}
+  if (ctrl_done_->to<mrs_bool>() == true)
+  {
+    nsum_ = 0.0;
+    nbsum_ = 0.0;
+    dsum_ = 0.0;
+    psum_ = 0.0;
+  }
 
 
 

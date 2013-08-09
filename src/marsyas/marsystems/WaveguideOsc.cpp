@@ -24,7 +24,7 @@ using namespace Marsyas;
 WaveguideOsc::WaveguideOsc(mrs_string name):MarSystem("WaveguideOsc", name)
 {
 
-	addControls();
+  addControls();
 }
 
 WaveguideOsc::WaveguideOsc(const WaveguideOsc& a) : MarSystem(a)
@@ -40,44 +40,44 @@ WaveguideOsc::~WaveguideOsc()
 
 MarSystem* WaveguideOsc::clone() const
 {
-	return new WaveguideOsc(*this);
+  return new WaveguideOsc(*this);
 }
 
 void WaveguideOsc::addControls()
 {
-	addctrl("mrs_real/frequency", 440.0);
-	addctrl("mrs_bool/noteon", false);
+  addctrl("mrs_real/frequency", 440.0);
+  addctrl("mrs_bool/noteon", false);
 
-	setctrlState("mrs_real/frequency", true);
-	setctrlState("mrs_bool/noteon", true);
+  setctrlState("mrs_real/frequency", true);
+  setctrlState("mrs_bool/noteon", true);
 }
 
 
 void WaveguideOsc::myUpdate(MarControlPtr sender)
 {
-	// x1n1_ is initialized with an impluse
-	x1n1_ = 0.95;
-	x2n1_ = 0;
+  // x1n1_ is initialized with an impluse
+  x1n1_ = 0.95;
+  x2n1_ = 0;
 
-	frequency_ = (getctrl("mrs_real/frequency")->to<mrs_real>());
-	israte_ = (getctrl("mrs_real/israte")->to<mrs_real>());
+  frequency_ = (getctrl("mrs_real/frequency")->to<mrs_real>());
+  israte_ = (getctrl("mrs_real/israte")->to<mrs_real>());
 
-	k_ = cos((TWOPI*frequency_)/israte_);
-	MarSystem::myUpdate(sender);
+  k_ = cos((TWOPI*frequency_)/israte_);
+  MarSystem::myUpdate(sender);
 }
 
 void WaveguideOsc::myProcess(realvec& in, realvec& out)
 {
-	mrs_real x1, x2;
+  mrs_real x1, x2;
 
-	for (mrs_natural t = 0; t < inSamples_; t++)
-	{
-		k_ = cos((TWOPI*frequency_*(in(0,t) + 1))/israte_);
-		x1 = (2* k_ * x1n1_) - x2n1_;
-		x2 = x1n1_;
-		x1n1_ = x1;
-		x2n1_ = x2;
+  for (mrs_natural t = 0; t < inSamples_; t++)
+  {
+    k_ = cos((TWOPI*frequency_*(in(0,t) + 1))/israte_);
+    x1 = (2* k_ * x1n1_) - x2n1_;
+    x2 = x1n1_;
+    x1n1_ = x1;
+    x2n1_ = x2;
 
-		out(0,t) = x1 - x2;
-	}
+    out(0,t) = x1 - x2;
+  }
 }

@@ -113,10 +113,10 @@ public:
     QVariant variant =
   }
 
-  void setControlValue( const QString & path, const QVariant & variant )
+    void setControlValue( const QString & path, const QVariant & variant )
   {
     any value =
-        thread.setControlValue( path.toStdString(), value );
+      thread.setControlValue( path.toStdString(), value );
   }
 #endif
 

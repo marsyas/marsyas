@@ -18,64 +18,64 @@
 
 class VauxelRealityMainWindow : public QMainWindow
 {
-   Q_OBJECT
-   
+  Q_OBJECT
+
 public:
-   VauxelRealityMainWindow();
-   ~VauxelRealityMainWindow();
-   
+  VauxelRealityMainWindow();
+  ~VauxelRealityMainWindow();
+
 signals:
-   void libraryUpdated();
+  void libraryUpdated();
 
 private slots:
-	void openiTunesLibrary();
-   void openMarXmlLibrary();
-   void openMarCsvLibrary();
-   void updateCurrentlyPlaying(MusicTrack *);
-   void about();
-   void display();
-   void openPreferences();
-   void saveiTunesLibrary();   
+  void openiTunesLibrary();
+  void openMarXmlLibrary();
+  void openMarCsvLibrary();
+  void updateCurrentlyPlaying(MusicTrack *);
+  void about();
+  void display();
+  void openPreferences();
+  void saveiTunesLibrary();
 
 private:
-	void createActions();
-   void createToolbars();
-   void createWindow();
-   void createMenus();
+  void createActions();
+  void createToolbars();
+  void createWindow();
+  void createMenus();
 
-   AbstractMarExtractor *_extractor;   
-   AbstractMarClusteringModel *_model;
-   
-   //Widgets
-   AbstractMarClusteringViewer *_display;   
-   PlayGroupBoxW *_playBox;
-   PlayListW *_playlist;
-   TrackListW *_tracklist;
+  AbstractMarExtractor *_extractor;
+  AbstractMarClusteringModel *_model;
 
-   //Dialogs
-   PreferencesDialog *_preferencesDialog;
+  //Widgets
+  AbstractMarClusteringViewer *_display;
+  PlayGroupBoxW *_playBox;
+  PlayListW *_playlist;
+  TrackListW *_tracklist;
 
-   QMenu *_fileMenu;
-   QMenu *_openMenu;
-   QMenu *_debugMenu;
-   QMenu *_helpMenu;
+  //Dialogs
+  PreferencesDialog *_preferencesDialog;
 
-   QToolBar *_toolbar;
+  QMenu *_fileMenu;
+  QMenu *_openMenu;
+  QMenu *_debugMenu;
+  QMenu *_helpMenu;
 
-   QAction *_openiTunesAction;
-   QAction *_openXmlAction;
-   QAction *_openCsvAction;
-   QAction *_coutAction;
-   QAction *_exitAction;
-   QAction *_aboutAction;
-   QAction *_extractAction;;
-   QAction *_predictAction;
-   QAction *_trainingAction;
-   QAction *_openPreferencesAction;
-   QAction *_saveAction;
+  QToolBar *_toolbar;
 
-   MusicCollection *_library;   
-   
+  QAction *_openiTunesAction;
+  QAction *_openXmlAction;
+  QAction *_openCsvAction;
+  QAction *_coutAction;
+  QAction *_exitAction;
+  QAction *_aboutAction;
+  QAction *_extractAction;;
+  QAction *_predictAction;
+  QAction *_trainingAction;
+  QAction *_openPreferencesAction;
+  QAction *_saveAction;
+
+  MusicCollection *_library;
+
 };
 
 #endif // VAUXELREALITYMAINWINDOW_H_

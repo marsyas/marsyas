@@ -5,113 +5,113 @@
 *                                                         *
 * "Numerical Algorithms with C, by Gisela Engeln-Muellges *
 *  and Frank Uhlig, Springer-Verlag, 1996".               *
-**********************************************************/   
+**********************************************************/
 #include "basis.h"
-     
-  REAL sqr(REAL x)                    /* square a floating point number */
-  /***********************************************************************
-  * Compute the square of a floating point number.                       *
-  *                                                                      *
-  * global names used:                                                   *
-  * ==================                                                   *
-  * REAL                                                                 *
-  ***********************************************************************/
+
+REAL sqr(REAL x)                    /* square a floating point number */
+/***********************************************************************
+* Compute the square of a floating point number.                       *
+*                                                                      *
+* global names used:                                                   *
+* ==================                                                   *
+* REAL                                                                 *
+***********************************************************************/
+{
+  return x * x;
+}
+
+REAL norm_max      /* Find the maximum norm of a REAL vector .........*/
+(
+  REAL vektor[],               /* vector .................*/
+  int  n                       /* length of vector .......*/
+)                             /* Maximum norm ...........*/
+
+/***********************************************************************
+* Return the maximum norm of a [0..n-1] vector  v.                     *
+*                                                                      *
+* global names used:                                                   *
+* ==================                                                   *
+* REAL, FABS, ZERO                                                     *
+***********************************************************************/
+{
+  REAL norm,                                             /* local max */
+       betrag;                            /* magnitude of a component */
+
+  for (n--, norm = ZERO; n >= 0; n--, vektor++)
+    if ((betrag = FABS(*vektor)) > norm)
+      norm = betrag;
+
+  return norm;
+}
+
+void copy_vector        /* copy a REAL vector ........................*/
+(
+  REAL ziel[],            /* copied vector ............*/
+  REAL quelle[],          /* original vector ..........*/
+  int  n                  /* length of vector .........*/
+)
+/***********************************************************************
+* copy the n elements of the vector quelle into the vector ziel.       *
+*                                                                      *
+* global names used:                                                   *
+* ==================                                                   *
+* REAL                                                                 *
+***********************************************************************/
+{
+  for (n--; n >= 0; n--)
+    *ziel++ = *quelle++;
+}
+
+/***********************************************************************
+* read a vector x of size n from input file fp (index begins at zero)  *
+*                                                                      *
+* global names used:                                                   *
+* ==================                                                   *
+* REAL                                                                 *
+***********************************************************************/
+int ReadVec (FILE *fp, int n, REAL x[])
+{
+  int i;
+  REAL tmp;
+
+  for (i = 0; i < n; ++i)
   {
-    return x * x;
+    if (fscanf (fp,FORMAT_IN, &tmp) <= 0) return (-1);
+    x[i] = (REAL) tmp;
   }
 
-  REAL norm_max      /* Find the maximum norm of a REAL vector .........*/
-             (
-              REAL vektor[],               /* vector .................*/
-              int  n                       /* length of vector .......*/
-             )                             /* Maximum norm ...........*/
+  return (0);
+}
 
-  /***********************************************************************
-  * Return the maximum norm of a [0..n-1] vector  v.                     *
-  *                                                                      *
-  * global names used:                                                   *
-  * ==================                                                   *
-  * REAL, FABS, ZERO                                                     *
-  ***********************************************************************/
+/***********************************************************************
+* read a vector x of size n from input file fp (index begins at one)   *
+*                                                                      *
+* global names used:                                                   *
+* ==================                                                   *
+* REAL                                                                 *
+***********************************************************************/
+int ReadVec1 (FILE *fp, int n, REAL x[])
+{
+  int i;
+  REAL tmp;
+
+  for (i = 1; i < n+1; ++i)
   {
-    REAL norm,                                             /* local max */
-         betrag;                            /* magnitude of a component */
-
-    for (n--, norm = ZERO; n >= 0; n--, vektor++)
-      if ((betrag = FABS(*vektor)) > norm)
-        norm = betrag;
-
-    return norm;
+    if (fscanf (fp,FORMAT_IN, &tmp) <= 0) return (-1);
+    x[i] = (REAL) tmp;
   }
-  
-  void copy_vector        /* copy a REAL vector ........................*/
-                (
-                 REAL ziel[],            /* copied vector ............*/
-                 REAL quelle[],          /* original vector ..........*/
-                 int  n                  /* length of vector .........*/
-                )
-  /***********************************************************************
-  * copy the n elements of the vector quelle into the vector ziel.       *
-  *                                                                      *
-  * global names used:                                                   *
-  * ==================                                                   *
-  * REAL                                                                 *
-  ***********************************************************************/
-  {
-    for (n--; n >= 0; n--)
-      *ziel++ = *quelle++;
-  }  
 
-  /***********************************************************************
-  * read a vector x of size n from input file fp (index begins at zero)  *
-  *                                                                      *
-  * global names used:                                                   *
-  * ==================                                                   *
-  * REAL                                                                 *
-  ***********************************************************************/
-  int ReadVec (FILE *fp, int n, REAL x[])
-  {
-    int i;
-    REAL tmp;
+  return (0);
+}
 
-    for (i = 0; i < n; ++i)
-    {
-      if (fscanf (fp,FORMAT_IN, &tmp) <= 0) return (-1);
-      x[i] = (REAL) tmp;
-    }
+void SetVec (int n, REAL x[], REAL val)
+{
+  int i;
 
-    return (0);
-  }
-  
-  /***********************************************************************
-  * read a vector x of size n from input file fp (index begins at one)   *
-  *                                                                      *
-  * global names used:                                                   *
-  * ==================                                                   *
-  * REAL                                                                 *
-  ***********************************************************************/
-  int ReadVec1 (FILE *fp, int n, REAL x[])
-  {
-    int i;
-    REAL tmp;
+  for (i = 0; i < n; ++i)
+    x[i] = val;
+}
 
-    for (i = 1; i < n+1; ++i)
-    {
-      if (fscanf (fp,FORMAT_IN, &tmp) <= 0) return (-1);
-      x[i] = (REAL) tmp;
-    }
-
-    return (0);
-  }
-     
-  void SetVec (int n, REAL x[], REAL val)
-  {
-    int i;
-
-    for (i = 0; i < n; ++i)
-      x[i] = val;
-  }     
-     
 int WriteVec (FILE *fp, int n, REAL x[])
 /*====================================================================*
  *                                                                    *
@@ -141,7 +141,7 @@ int WriteVec (FILE *fp, int n, REAL x[])
   if (fprintf (fp,"\n") <= 0) return (-1);
 
   return 0;
-}     
+}
 
 int WriteVec1 (FILE *fp, int n, REAL x[])
 /*====================================================================*
@@ -172,12 +172,12 @@ int WriteVec1 (FILE *fp, int n, REAL x[])
   if (fprintf (fp,"\n") <= 0) return (-1);
 
   return 0;
-}     
-     
-  REAL pi() {
-    return 4.0*atan(1.0);
-  }     
-    
+}
+
+REAL pi() {
+  return 4.0*atan(1.0);
+}
+
 void CopyMat (int m, int n, REAL * source[], REAL * dest[])
 /*====================================================================*
  *                                                                    *
@@ -209,8 +209,8 @@ void CopyMat (int m, int n, REAL * source[], REAL * dest[])
   for (i = 0; i < m; ++i)
     for (j = 0; j < n; j++)
       dest[i][j] = source[i][j];
-}    
-           
+}
+
 REAL maxroot(void)    /* Root of the largest representable number ....*/
 /***********************************************************************
 * Compute the square root of the largest machine number 2 ^ (MAX_EXP/2)*
@@ -238,20 +238,20 @@ REAL maxroot(void)    /* Root of the largest representable number ....*/
   }
 
   return save_maxroot;
-}           
+}
 
-  
+
 void quadsolv           /* Complex quadratic equation ................*/
-             (
-               REAL    ar,        /* second degree coefficient .......*/
-               REAL    ai,
-               REAL    br,        /* linear coefficient ..............*/
-               REAL    bi,
-               REAL    cr,        /* polynomial constant .............*/
-               REAL    ci,
-               REAL *  tr,        /* solution ........................*/
-               REAL *  ti
-             )
+(
+  REAL    ar,        /* second degree coefficient .......*/
+  REAL    ai,
+  REAL    br,        /* linear coefficient ..............*/
+  REAL    bi,
+  REAL    cr,        /* polynomial constant .............*/
+  REAL    ci,
+  REAL *  tr,        /* solution ........................*/
+  REAL *  ti
+)
 /*====================================================================*
  *                                                                    *
  *  Compute the least magnitude solution of the quadratic equation    *
@@ -306,7 +306,7 @@ void quadsolv           /* Complex quadratic equation ................*/
   if (pi < ZERO) qi = -qi;
 
   h = qr * br + qi * bi;     /* p = -b +/- q, choose sign for large  */
-                             /* magnitude  p                         */
+  /* magnitude  p                         */
   if (h > ZERO)
   {
     qr = -qr;
@@ -327,14 +327,14 @@ void quadsolv           /* Complex quadratic equation ................*/
     *tr = TWO * (cr * pr + ci * pi) / h;
     *ti = TWO * (ci * pr - cr * pi) / h;
   }
-} //quadsolv 
-   
-   
+} //quadsolv
+
+
 REAL comabs             /* Complex absolute value ....................*/
-              (
-               REAL  ar,          /* Real part .......................*/
-               REAL  ai           /* Imaginary part ..................*/
-              )
+(
+  REAL  ar,          /* Real part .......................*/
+  REAL  ai           /* Imaginary part ..................*/
+)
 /*====================================================================*
  *                                                                    *
  *  Complex absolute value of   a                                     *
@@ -363,19 +363,19 @@ REAL comabs             /* Complex absolute value ....................*/
   if (ai > ar)                                  /* Switch  ai and ar */
     SWAP (REAL, ai, ar)
 
-  return ((ai == ZERO) ? (ar) : (ar * SQRT (ONE + ai / ar * ai / ar)));
-}   
- 
- 
+    return ((ai == ZERO) ? (ar) : (ar * SQRT (ONE + ai / ar * ai / ar)));
+}
+
+
 int comdiv              /* Complex division ..........................*/
-           (
-            REAL   ar,            /* Real part of numerator ..........*/
-            REAL   ai,            /* Imaginary part of numerator .....*/
-            REAL   br,            /* Real part of denominator ........*/
-            REAL   bi,            /* Imaginary part of denominator ...*/
-            REAL * cr,            /* Real part of quotient ...........*/
-            REAL * ci             /* Imaginary part of quotient ......*/
-           )
+(
+  REAL   ar,            /* Real part of numerator ..........*/
+  REAL   ai,            /* Imaginary part of numerator .....*/
+  REAL   br,            /* Real part of denominator ........*/
+  REAL   bi,            /* Imaginary part of denominator ...*/
+  REAL * cr,            /* Real part of quotient ...........*/
+  REAL * ci             /* Imaginary part of quotient ......*/
+)
 /*====================================================================*
  *                                                                    *
  *  Complex division  c = a / b                                       *
@@ -421,11 +421,11 @@ int comdiv              /* Complex division ..........................*/
     bi   = tmp * br + bi;
     *cr  = (tmp * ar + ai) / bi;
     *ci  = (tmp * ai - ar) / bi;
- }
+  }
 
- return (0);
-}       
-   
+  return (0);
+}
+
 int ReadMat (FILE *fp, int m, int n, REAL * a[])
 /*====================================================================*
  *                                                                    *
@@ -516,7 +516,7 @@ int WriteMat (FILE *fp, int m, int n, REAL * a[])
   if (fprintf (fp,"\n") <= 0) return (-1);
 
   return (0);
-}   
+}
 
 //same as WriteMat, but beginning at index 1
 int WriteMat1 (FILE *fp, int m, int n, REAL * a[])
@@ -535,9 +535,9 @@ int WriteMat1 (FILE *fp, int m, int n, REAL * a[])
   if (fprintf (fp,"\n") <= 0) return (-1);
 
   return (0);
-}   
+}
 
-         
+
 void SetMat (int m, int n, REAL * a[], REAL val)
 /*====================================================================*
  *                                                                    *
@@ -566,11 +566,11 @@ void SetMat (int m, int n, REAL * a[], REAL val)
   for (i = 0; i < m; ++i)
     for (j = 0; j < n; j++)
       a[i][j] = val;
-}         
-         
+}
+
 static char Separator[] =
-"--------------------------------------------------------------------";   
-   
+  "--------------------------------------------------------------------";
+
 int WriteHead (FILE *fp, char * string)
 /*====================================================================*
  *                                                                    *
@@ -643,7 +643,7 @@ int WriteEnd (FILE *fp)
 {
   if (fprintf (fp,"\n%s\n\n", Separator) <= 0) return (-1);
   return 0;
-}   
+}
 
 int WriteEnd1(void)
 /*====================================================================*
@@ -661,8 +661,8 @@ int WriteEnd1(void)
 {
   if (printf ("\n%s\n\n", Separator) <= 0) return (-1);
   return 0;
-}   
-   
+}
+
 void LogError (char * string, int rc, char * file, int line)
 /*====================================================================*
  *                                                                    *
@@ -693,11 +693,11 @@ void LogError (char * string, int rc, char * file, int line)
     printf ("ERROR: %s, File %s, Line %d\n", string, file, line);
   else
     printf ("ERROR: %s, rc = %d, File %s, Line %d\n",
-             string, rc, file, line);
+            string, rc, file, line);
   return;
 }
-  
-  
+
+
 REAL epsroot(void)  /* Compute square root of the machine constant ...*/
 /***********************************************************************
 * Compute square root of the machine constant, if not already done.    *
@@ -716,9 +716,9 @@ REAL epsroot(void)  /* Compute square root of the machine constant ...*/
     save_mach_eps_root = SQRT(MACH_EPS);
 
   return save_mach_eps_root;
-} 
-   
-   
+}
+
+
 REAL epsquad(void)      /* Find the machine constant squared .........*/
 /***********************************************************************
 * Compute the square of the machine constant, if not already done.     *
@@ -738,5 +738,5 @@ REAL epsquad(void)      /* Find the machine constant squared .........*/
 
   return save_mach_eps_quad;
 }
-   
+
 // End of file basis_r.cpp

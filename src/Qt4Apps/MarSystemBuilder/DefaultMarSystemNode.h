@@ -11,10 +11,10 @@ using namespace std;
 class DefaultMarSystemNode:public MarSystemNode
 {
   Q_OBJECT
- public:
+public:
   DefaultMarSystemNode(string type,QString name,QWidget* parent);
   DefaultMarSystemNode(MarSystem* msys, QWidget* parent);
- protected:
+protected:
   //void paintEvent(QPaintEvent* event);
   void resizeEvent(QResizeEvent*);
 };

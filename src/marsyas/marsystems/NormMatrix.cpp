@@ -33,12 +33,12 @@ NormMatrix::~NormMatrix()
 MarSystem*
 NormMatrix::clone() const
 {
-	return new NormMatrix(*this);
+  return new NormMatrix(*this);
 }
 
 void
 NormMatrix::myProcess(realvec& in, realvec& out)
 {
-	out = in;
-	out.norm();
+  out = in;
+  out.norm();
 }

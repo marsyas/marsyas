@@ -40,18 +40,18 @@ namespace Marsyas
 class Differentiator: public MarSystem
 {
 private:
-	void myUpdate(MarControlPtr sender);
+  void myUpdate(MarControlPtr sender);
 
-	/// Buffer for storing the last column of samples in a slice.
-	realvec buffer_;
+  /// Buffer for storing the last column of samples in a slice.
+  realvec buffer_;
 
 public:
-	Differentiator(std::string name);
-	Differentiator(const Differentiator& a);
-	~Differentiator();
-	MarSystem* clone() const;
+  Differentiator(std::string name);
+  Differentiator(const Differentiator& a);
+  ~Differentiator();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

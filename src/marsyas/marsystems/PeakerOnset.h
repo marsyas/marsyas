@@ -29,8 +29,8 @@ namespace Marsyas
 	\brief Detects if input contains a onset point
 
 	PeakerOnset is based on the onset peak picking algorithm presented in:
-	
-	Dixon, S. (2006). Onset detection revisited. In Proc. International Conference on Digital 
+
+	Dixon, S. (2006). Onset detection revisited. In Proc. International Conference on Digital
 	Audio Effects (DAFx), Montreal, Canada.
 
 	It takes as input an onset function over time (i.e. a row vector with the times series
@@ -51,24 +51,24 @@ namespace Marsyas
 class PeakerOnset: public MarSystem
 {
 private:
-	MarControlPtr ctrl_lookAheadSamples_;
-	MarControlPtr ctrl_threshold_;
-	MarControlPtr ctrl_onsetDetected_;
-	MarControlPtr ctrl_confidence_;
+  MarControlPtr ctrl_lookAheadSamples_;
+  MarControlPtr ctrl_threshold_;
+  MarControlPtr ctrl_onsetDetected_;
+  MarControlPtr ctrl_confidence_;
 
-	mrs_real prevValue_;
-	mrs_natural t_;
+  mrs_real prevValue_;
+  mrs_natural t_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	PeakerOnset(std::string name);
-	PeakerOnset(const PeakerOnset& a);
-	~PeakerOnset();
-	MarSystem* clone() const;
+  PeakerOnset(std::string name);
+  PeakerOnset(const PeakerOnset& a);
+  ~PeakerOnset();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

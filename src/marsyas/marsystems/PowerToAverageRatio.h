@@ -36,28 +36,28 @@ class marsyas_EXPORT PowerToAverageRatio: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
 
 public:
-	/// PowerToAverageRatio constructor.
-	PowerToAverageRatio(std::string name);
+  /// PowerToAverageRatio constructor.
+  PowerToAverageRatio(std::string name);
 
-	/// PowerToAverageRatio copy constructor.
-	PowerToAverageRatio(const PowerToAverageRatio& a);
+  /// PowerToAverageRatio copy constructor.
+  PowerToAverageRatio(const PowerToAverageRatio& a);
 
-	/// PowerToAverageRatio destructor.
-	~PowerToAverageRatio();
+  /// PowerToAverageRatio destructor.
+  ~PowerToAverageRatio();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

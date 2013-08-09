@@ -10,24 +10,24 @@
 
 class Playlist : public QListWidget
 {
-	Q_OBJECT
+  Q_OBJECT
 public:
-	Playlist(Tracklist *tracklist, QWidget *parent=0);
-	~Playlist();
+  Playlist(Tracklist *tracklist, QWidget *parent=0);
+  ~Playlist();
 
 signals:
-	void SelectedPlaylist(QString);
+  void SelectedPlaylist(QString);
 
 public slots:
-	void playlistClicked(int currentRow);
-	void updatePlaylist();
+  void playlistClicked(int currentRow);
+  void updatePlaylist();
 
 protected:
-	void mousePressEvent(QMouseEvent *event);
+  void mousePressEvent(QMouseEvent *event);
 
 private:
-	Tracklist *_tracklist;
-	MusicCollection *_library;
+  Tracklist *_tracklist;
+  MusicCollection *_library;
 };
 
 #endif /* PLAYLIST_H */

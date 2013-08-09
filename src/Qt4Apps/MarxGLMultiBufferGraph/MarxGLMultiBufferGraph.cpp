@@ -19,7 +19,7 @@
 /**
    \class MarxGLMultiBufferGraph.cpp
    \brief Graphing multiple buffers along the z-axis
-                                                                                        
+
 Provides graphing for Marsyas realvecs where older buffers are moved
 further back along the Z axis as new buffers are introduced.
 */
@@ -31,7 +31,7 @@ using namespace Marsyas;
 
 
 MarxGLMultiBufferGraph::MarxGLMultiBufferGraph( QWidget* parent, long n, int d )
-  : QGLWidget(parent) 
+  : QGLWidget(parent)
 {
   buffersize = n*d;
   depth = d;
@@ -49,7 +49,7 @@ MarxGLMultiBufferGraph::MarxGLMultiBufferGraph( QWidget* parent, long n, int d )
   projection_rotate_z = 0.0f;
   projection_translate_x = 0.0f;
   projection_translate_y = -0.5f;
-  projection_translate_z = -2.f; 
+  projection_translate_z = -2.f;
 
   bgcolor = QColor::fromRgbF(1.0, 1.0, 1.0);
 }
@@ -96,7 +96,7 @@ MarxGLMultiBufferGraph::getZProjectionRotation()
   return projection_rotate_z;
 }
 
-void 
+void
 MarxGLMultiBufferGraph::modelRotate( int axis, float v )
 {
 
@@ -116,7 +116,7 @@ MarxGLMultiBufferGraph::modelRotate( int axis, float v )
 }
 
 
-void 
+void
 MarxGLMultiBufferGraph::modelTranslate( int axis, float v )
 {
 
@@ -136,7 +136,7 @@ MarxGLMultiBufferGraph::modelTranslate( int axis, float v )
 }
 
 
-void 
+void
 MarxGLMultiBufferGraph::projectionRotate( int axis, float v )
 {
 
@@ -156,7 +156,7 @@ MarxGLMultiBufferGraph::projectionRotate( int axis, float v )
 }
 
 
-void 
+void
 MarxGLMultiBufferGraph::projectionTranslate( int axis, float v )
 {
 
@@ -179,17 +179,17 @@ MarxGLMultiBufferGraph::projectionTranslate( int axis, float v )
 bool
 MarxGLMultiBufferGraph::setBuffer( realvec& rv )
 {
-    if ( rv.getSize() == buffersize ) { 
-     buffer = rv;
-     updateGL();
-      
+  if ( rv.getSize() == buffersize ) {
+    buffer = rv;
+    updateGL();
+
     return true;
   }
   return false;
 }
 
 
-void 
+void
 MarxGLMultiBufferGraph::initializeGL()
 {
   glEnable( GL_LINE_SMOOTH );
@@ -198,7 +198,7 @@ MarxGLMultiBufferGraph::initializeGL()
 }
 
 
-/* 
+/*
    currently this is a messy two-pass deal, necessitated by the
    drawing of a wireframe.  opengl is good aboud hidden surface
    removal, but hidden line removal is trickier business apparently.
@@ -208,7 +208,7 @@ MarxGLMultiBufferGraph::initializeGL()
 
    clean-up and improvement projects for a rainy day.
 */
-void 
+void
 MarxGLMultiBufferGraph::paintGL()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -217,9 +217,9 @@ MarxGLMultiBufferGraph::paintGL()
   glMatrixMode( GL_PROJECTION );
   glLoadIdentity( );
   gluPerspective ( 60, 1, 0, depth*2 );
-  glTranslatef( projection_translate_x, 
-		projection_translate_y, 
-		projection_translate_z);
+  glTranslatef( projection_translate_x,
+                projection_translate_y,
+                projection_translate_z);
   glRotatef( projection_rotate_x, 1.f, 0.f, 0.f );
   glRotatef( projection_rotate_y, 0.f, 1.f, 0.f );
   glRotatef( projection_rotate_z, 0.f, 0.f, 1.f );
@@ -227,9 +227,9 @@ MarxGLMultiBufferGraph::paintGL()
   // set the transformation to apply to the model
   glMatrixMode( GL_MODELVIEW );
   glLoadIdentity( );
-  glTranslatef( model_translate_x, 
-		model_translate_y, 
-		model_translate_z);
+  glTranslatef( model_translate_x,
+                model_translate_y,
+                model_translate_z);
   glRotatef( model_rotate_x, 1.f, 0.f, 0.f );
   glRotatef( model_rotate_y, 0.f, 1.f, 0.f );
   glRotatef( model_rotate_z, 0.f, 0.f, 1.f );
@@ -241,21 +241,21 @@ MarxGLMultiBufferGraph::paintGL()
   float h = 0.0;
   for (int g=0; g<depth || g<buffer.getCols(); g++) { // add the bottom half of the data first
 
-    // now construct the model  
+    // now construct the model
     glBegin( GL_LINES );
     glColor3f( 0.f, 0.f, 0.f );
-    
+
     for (int i=0; i<buffer.getRows(); i++) {
       float val1 = (float)buffer(i, g);
       float val2 = (float)buffer(i+1, g);
 
       if (val1 < 0) {
-	glVertex3f( (((float)i)*2.f/(float)buffer.getRows()) - 1.0, 
-		    val1,
-		    -1. * h );
-	glVertex3f( (((float)i+1)*2/(float)buffer.getRows()) - 1.0, 
-		    val2,
-		    -1. * h);
+        glVertex3f( (((float)i)*2.f/(float)buffer.getRows()) - 1.0,
+                    val1,
+                    -1. * h );
+        glVertex3f( (((float)i+1)*2/(float)buffer.getRows()) - 1.0,
+                    val2,
+                    -1. * h);
       }
 
     }
@@ -275,7 +275,7 @@ MarxGLMultiBufferGraph::paintGL()
 
   for (float i=-1.0; i<=1; i+=.5) {
     glVertex3d( i, 0.0, 0.f);
-    glVertex3d( i, 0.0, -1*(depth-1));  
+    glVertex3d( i, 0.0, -1*(depth-1));
   }
   glEnd( );
 
@@ -283,21 +283,21 @@ MarxGLMultiBufferGraph::paintGL()
   h = 0.0;
   for (int g=0; g<depth || g<buffer.getCols(); g++) { // now add the top half of the data
 
-    // now construct the model  
+    // now construct the model
     glBegin( GL_LINES );
     glColor3f( 0.f, 0.f, 0.f );
-    
+
     for (int i=0; i<buffer.getRows(); i++) {
       float val1 = (float)buffer(i, g);
       float val2 = (float)buffer(i+1, g);
 
       if (val1 > 0) {
-	glVertex3f( (((float)i)*2.f/(float)buffer.getRows()) - 1.0, 
-		    val1,
-		    -1. * h );
-	glVertex3f( (((float)i+1)*2/(float)buffer.getRows()) - 1.0, 
-		    val2,
-		    -1. * h);
+        glVertex3f( (((float)i)*2.f/(float)buffer.getRows()) - 1.0,
+                    val1,
+                    -1. * h );
+        glVertex3f( (((float)i+1)*2/(float)buffer.getRows()) - 1.0,
+                    val2,
+                    -1. * h);
       }
     }
 

@@ -21,14 +21,14 @@
 
 
 
-	
+
 
 using std::ostringstream;
 using namespace Marsyas;
 
 Median::Median(mrs_string name):MarSystem("Median", name)
 {
-	addControls();
+  addControls();
 }
 
 Median::Median(const Median& a) : MarSystem(a)
@@ -43,7 +43,7 @@ Median::~Median()
 MarSystem*
 Median::clone() const
 {
-	return new Median(*this);
+  return new Median(*this);
 }
 
 void
@@ -69,27 +69,27 @@ Median::myUpdate(MarControlPtr sender)
   ostringstream oss;
   mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
   for (int i = 0; i < inObservations_; ++i)
-	{
-	  mrs_string inObsName;
-	  mrs_string temp;
-	  inObsName = inObsNames.substr(0, inObsNames.find(","));
-	  temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
-	  inObsNames = temp;
-	  oss << "Median" << "_" << inObsName << ",";
-	}
+  {
+    mrs_string inObsName;
+    mrs_string temp;
+    inObsName = inObsNames.substr(0, inObsNames.find(","));
+    temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
+    inObsNames = temp;
+    oss << "Median" << "_" << inObsName << ",";
+  }
   ctrl_onObsNames_->setValue(oss.str(),NOUPDATE);
 }
 
 void
 Median::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
-	out.setval(0.0);
-	for (o=0; o < inObservations_; o++) {
-	  for (t = 0; t < inSamples_; t++) {
-		obsrow_(t) = in(o,t);
-	  }
-	  out(o,0) = obsrow_.median();
-	}
+  mrs_natural t,o;
+  out.setval(0.0);
+  for (o=0; o < inObservations_; o++) {
+    for (t = 0; t < inSamples_; t++) {
+      obsrow_(t) = in(o,t);
+    }
+    out(o,0) = obsrow_.median();
+  }
 
 }

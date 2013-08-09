@@ -27,7 +27,7 @@ using std::endl;
 
 Reverse::Reverse(mrs_string name):MarSystem("Reverse", name)
 {
-	addControls();
+  addControls();
 }
 
 Reverse::Reverse(const Reverse& a) : MarSystem(a)
@@ -42,7 +42,7 @@ Reverse::~Reverse()
 MarSystem*
 Reverse::clone() const
 {
-	return new Reverse(*this);
+  return new Reverse(*this);
 }
 
 void
@@ -54,16 +54,16 @@ Reverse::addControls()
 void
 Reverse::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("Reverse.cpp - Reverse:myUpdate");
+  MRSDIAG("Reverse.cpp - Reverse:myUpdate");
 
-	MarSystem::myUpdate(sender);
+  MarSystem::myUpdate(sender);
 }
 
 void
 Reverse::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o,t;
-	for (o=0; o < inObservations_; o++)
-		for (t = 0; t < inSamples_; t++)
-			out(o,t) = in(o,inSamples_-1-t);
+  mrs_natural o,t;
+  for (o=0; o < inObservations_; o++)
+    for (t = 0; t < inSamples_; t++)
+      out(o,t) = in(o,inSamples_-1-t);
 }

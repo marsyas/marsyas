@@ -23,50 +23,50 @@
 
 namespace Marsyas
 {
-	/**
-	\class EnhADRess
-	\ingroup Analysis
-	\brief Azimuth Discrimination and Resynthesis (EnhADRess) implementation, 
-	which takes a stereo input (i.e. input is expected to be the output of a
-	parallel of two Spectrum MarSystems, one for each stereo channel), and
-	outputs the magnitudes, phases and panning indexes for N/2+1 bins, 
-	stacked vertically:
+/**
+\class EnhADRess
+\ingroup Analysis
+\brief Azimuth Discrimination and Resynthesis (EnhADRess) implementation,
+which takes a stereo input (i.e. input is expected to be the output of a
+parallel of two Spectrum MarSystems, one for each stereo channel), and
+outputs the magnitudes, phases and panning indexes for N/2+1 bins,
+stacked vertically:
 
-	[Mag]
-	[Phases]
-	[Pan]
+[Mag]
+[Phases]
+[Pan]
 
-	This enhanced version of the ADRess algorithm was proposed by Cooney et al,
-	"An Enhanced implemantation of the ADRess Music Source Separation Algorithm",
-	121st AES Convention, October 2006. 
+This enhanced version of the ADRess algorithm was proposed by Cooney et al,
+"An Enhanced implemantation of the ADRess Music Source Separation Algorithm",
+121st AES Convention, October 2006.
 
-	*/
+*/
 
-	class EnhADRess: public MarSystem
-	{
-	private:
-		mrs_natural N4_, N2_;
-		mrs_real rel_, iml_, rer_, imr_;
-		mrs_real Lk_;
-		mrs_real Rk_;
-		mrs_real minLk_;
-		mrs_real minRk_;
-		mrs_real phaseL_;
-		mrs_real phaseR_;
-		mrs_real deltaPhase_;
-		mrs_real azim_;
+class EnhADRess: public MarSystem
+{
+private:
+  mrs_natural N4_, N2_;
+  mrs_real rel_, iml_, rer_, imr_;
+  mrs_real Lk_;
+  mrs_real Rk_;
+  mrs_real minLk_;
+  mrs_real minRk_;
+  mrs_real phaseL_;
+  mrs_real phaseR_;
+  mrs_real deltaPhase_;
+  mrs_real azim_;
 
-		void addControls();
-		void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	public:
-		EnhADRess(std::string name);
-		EnhADRess(const EnhADRess& a);
-		~EnhADRess();
-		MarSystem* clone() const;
+public:
+  EnhADRess(std::string name);
+  EnhADRess(const EnhADRess& a);
+  ~EnhADRess();
+  MarSystem* clone() const;
 
-		void myProcess(realvec& in, realvec& out);
-	};
+  void myProcess(realvec& in, realvec& out);
+};
 
 }
 

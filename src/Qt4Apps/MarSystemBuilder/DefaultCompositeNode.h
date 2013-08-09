@@ -5,7 +5,7 @@
  * MarSystemNodest.
  * All That remains is determining how to draw a SeriesNode on
  * the MarCanvas.  A SeriesNode does not need the pixmaps of it's
- * children the same way that a 
+ * children the same way that a
  */
 
 #ifndef DEFAULTCOMPOSITENODE_H
@@ -18,7 +18,7 @@ class DefaultCompositeNode:public CompositeNode
 
   Q_OBJECT
 
- public:
+public:
   DefaultCompositeNode(QString name,QWidget* parent);
   DefaultCompositeNode(MarSystem* msys,QWidget* parent);
 
@@ -28,13 +28,13 @@ class DefaultCompositeNode:public CompositeNode
   virtual QWidget* getChildrenCanvas();
   void drawAllWidgets();
 
-  public slots:
-    void handleChildResize(int x,int y,int w,int h);
-  
- signals:
+public slots:
+  void handleChildResize(int x,int y,int w,int h);
+
+signals:
   void resized(int x,int y,int w,int h);
 
- protected:
+protected:
   virtual void resizeEvent(QResizeEvent* event);
   virtual void paintEvent(QPaintEvent* event);
   virtual void dragEnterEvent(QDragEnterEvent *event);

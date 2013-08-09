@@ -1,10 +1,10 @@
 #ifndef TOPPANELNEW_H
-#define TOPPANELNEW_H 
+#define TOPPANELNEW_H
 
 #include "MarxGLMultiBufferGraph.h"
 #include "Marx3dSlider.h"
-#include "MarSystemManager.h" 
-#include <QPushButton> 
+#include "MarSystemManager.h"
+#include <QPushButton>
 #include <QSpinBox>
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -14,12 +14,12 @@
 
 class TopPanelNew : public QWidget
 {
-   Q_OBJECT
+  Q_OBJECT
 
 public:
-	TopPanelNew(std::string au = "", QWidget *parent = 0);
+  TopPanelNew(std::string au = "", QWidget *parent = 0);
 
-public slots: 
+public slots:
   void tick();
   void setTicks(int);
   void xyzModelTranslation(float, float, float);
@@ -28,14 +28,14 @@ public slots:
   void xyzProjectionRotation(float, float, float);
 
 
-private: 
+private:
   MarxGLMultiBufferGraph* graph;
   Marsyas::MarSystem* pnet;
-  
+
   int nTicks;
   std::string audio_file;
-  
+
 };
 
-	
-#endif 
+
+#endif

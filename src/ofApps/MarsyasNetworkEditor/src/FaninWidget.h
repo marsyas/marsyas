@@ -15,24 +15,24 @@
 
 namespace Marsyas
 {
-	
-	class FaninWidget : public MarSystemWidget
-	{
-	private:
-		
-		void addControls();
-		void updateControls();
-		void updateSize();
-		void updateChildrenWidgets();
-		
-		
-	public:
-		FaninWidget(MarSystem *msys, GraphicalEnvironment* env);
-		~FaninWidget();
-		
-		
-		void drawConnections();
-	};
+
+class FaninWidget : public MarSystemWidget
+{
+private:
+
+  void addControls();
+  void updateControls();
+  void updateSize();
+  void updateChildrenWidgets();
+
+
+public:
+  FaninWidget(MarSystem *msys, GraphicalEnvironment* env);
+  ~FaninWidget();
+
+
+  void drawConnections();
+};
 }
 
 #endif

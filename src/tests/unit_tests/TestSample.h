@@ -61,88 +61,88 @@ using namespace Marsyas;
 class FooBar_runner: public CxxTest::TestSuite
 {
 public:
-	realvec in, out;
-	MarSystemManager mng;
-	FooBar *foobar;
+  realvec in, out;
+  MarSystemManager mng;
+  FooBar *foobar;
 
-	// "constructor"
-	void setUp()
-	{
-		// Use the normal way for getting a Marsystem from the MarSystemManager
-		// to make sure we don't bypass crucial things that should work
-		// (e.g. the copy constructor).
-		foobar = (FooBar*) mng.create("FooBar", "foobar");
-	}
+  // "constructor"
+  void setUp()
+  {
+    // Use the normal way for getting a Marsystem from the MarSystemManager
+    // to make sure we don't bypass crucial things that should work
+    // (e.g. the copy constructor).
+    foobar = (FooBar*) mng.create("FooBar", "foobar");
+  }
 
-	// "destructor"
-	void tearDown()
-	{
-		delete foobar;
-	}
+  // "destructor"
+  void tearDown()
+  {
+    delete foobar;
+  }
 
-	/**
-	 * Example test of the FooBar flow settings.
-	 */
-	void test_flow_settings()
-	{
-		// The input and expected output flow settings.
-		mrs_natural inObservations = 10;
-		mrs_natural inSamples = 128;
-		mrs_natural onObservations = 5;
-		mrs_natural onSamples = 16;
+  /**
+   * Example test of the FooBar flow settings.
+   */
+  void test_flow_settings()
+  {
+    // The input and expected output flow settings.
+    mrs_natural inObservations = 10;
+    mrs_natural inSamples = 128;
+    mrs_natural onObservations = 5;
+    mrs_natural onSamples = 16;
 
-		// Set up the input flow.
-		foobar->updControl("mrs_natural/inObservations", inObservations);
-		foobar->updControl("mrs_natural/inSamples", inSamples);
+    // Set up the input flow.
+    foobar->updControl("mrs_natural/inObservations", inObservations);
+    foobar->updControl("mrs_natural/inSamples", inSamples);
 
-		// Check the output flow.
-		TS_ASSERT_EQUALS(foobar->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
-		TS_ASSERT_EQUALS(foobar->getControl("mrs_natural/onSamples")->to<mrs_natural>(), onSamples);
-	}
+    // Check the output flow.
+    TS_ASSERT_EQUALS(foobar->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
+    TS_ASSERT_EQUALS(foobar->getControl("mrs_natural/onSamples")->to<mrs_natural>(), onSamples);
+  }
 
-	/**
-	 * Example test of the FooBar process.
-	 */
-	void test_process()
-	{
-		// The input and expected output flow settings.
-		mrs_natural inObservations = 10;
-		mrs_natural inSamples = 128;
-		mrs_natural onObservations = 5;
-		mrs_natural onSamples = 16;
+  /**
+   * Example test of the FooBar process.
+   */
+  void test_process()
+  {
+    // The input and expected output flow settings.
+    mrs_natural inObservations = 10;
+    mrs_natural inSamples = 128;
+    mrs_natural onObservations = 5;
+    mrs_natural onSamples = 16;
 
-		// Set up the input flow.
-		foobar->updControl("mrs_natural/inObservations", inObservations);
-		foobar->updControl("mrs_natural/inSamples", inSamples);
+    // Set up the input flow.
+    foobar->updControl("mrs_natural/inObservations", inObservations);
+    foobar->updControl("mrs_natural/inSamples", inSamples);
 
-		// Allocate the input and output slices.
-		in.create(inObservations, inSamples);
-		out.create(onObservations, onSamples);
+    // Allocate the input and output slices.
+    in.create(inObservations, inSamples);
+    out.create(onObservations, onSamples);
 
-		// Fill the input slice.
-		for (mrs_natural o = 0; o < inObservations; o++)
-		{
-			for (mrs_natural t = 0; t < inSamples; t++)
-			{
-				in(o, t) = o + t;
-			}
-		}
+    // Fill the input slice.
+    for (mrs_natural o = 0; o < inObservations; o++)
+    {
+      for (mrs_natural t = 0; t < inSamples; t++)
+      {
+        in(o, t) = o + t;
+      }
+    }
 
-		// Process.
-		foobar->myProcess(in, out);
+    // Process.
+    foobar->myProcess(in, out);
 
-		// Check output slice.
-		mrs_real expected;
-		for (mrs_natural o = 0; o < onObservations; o++)
-		{
-			for (mrs_natural t = 0; t < onSamples; t++)
-			{
-				expected = o * t;
-				TS_ASSERT_EQUALS(out(o, t), expected);
-			}
-		}
+    // Check output slice.
+    mrs_real expected;
+    for (mrs_natural o = 0; o < onObservations; o++)
+    {
+      for (mrs_natural t = 0; t < onSamples; t++)
+      {
+        expected = o * t;
+        TS_ASSERT_EQUALS(out(o, t), expected);
+      }
+    }
 
-	}
+  }
 
 };
 

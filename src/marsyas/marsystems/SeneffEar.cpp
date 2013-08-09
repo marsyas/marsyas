@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -35,29 +35,29 @@ SeneffEar::SeneffEar(mrs_string name):MarSystem("SeneffEar",name)
   fs = 0.0f;
   stage = 4;
 
-	addControls();
+  addControls();
 }
 
 SeneffEar::~SeneffEar()
 {
 }
 
-MarSystem* 
-SeneffEar::clone() const 
+MarSystem*
+SeneffEar::clone() const
 {
   return new SeneffEar(*this);
 }
 
-void 
+void
 SeneffEar::addControls()
 {
   addctrl("mrs_natural/stage", stage);
 }
 
-void 
+void
 SeneffEar::myUpdate(MarControlPtr sender)
 {
-	(void) sender;  //suppress warning of unused parameter(s)
+  (void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("SeneffEar.cpp - SeneffEar:myUpdate");
 
   ostringstream name;
@@ -158,9 +158,9 @@ SeneffEar::myUpdate(MarControlPtr sender)
     b(2) = 1.0f;
     polyConv(a, b, c);
     SeneffPreemphasisCoeffs.create(c.getSize());
-	  
+
     for (mrs_natural i = 0; i < c.getSize(); ++i)
-		SeneffPreemphasisCoeffs(i) = c(c.getSize() - i - 1);
+      SeneffPreemphasisCoeffs(i) = c(c.getSize() - i - 1);
 
     //SeneffFilterBank coefficients computation
     channels = FilterBankRThetaCoeffs.getRows();
@@ -180,7 +180,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
     SeneffForwardCoeffs.create(mrs_natural(5), static_cast<mrs_natural>(channels));
     SeneffBackwardCoeffs.create(mrs_natural(5), static_cast<mrs_natural>(channels));
     a.create(3),b.create(3);
-    for (mrs_natural j = 0; j < channels; j++){
+    for (mrs_natural j = 0; j < channels; j++) {
       a(0) = FilterBankRThetaCoeffs(j,4)*FilterBankRThetaCoeffs(j,4);
       a(1) = -2.0f*FilterBankRThetaCoeffs(j,4)*cos(FilterBankRThetaCoeffs(j,3)/2);
       a(2) = 1.0f;
@@ -438,7 +438,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
   setctrl("mrs_real/osrate", AGCfilter->getctrl("mrs_real/osrate"));
 }
 
-void 
+void
 SeneffEar::polyConv(realvec& a, realvec& b, realvec& c)
 {
   mrs_natural la(a.getSize());
@@ -449,8 +449,8 @@ SeneffEar::polyConv(realvec& a, realvec& b, realvec& c)
   realvec tb(b); tb.stretch(n);
   realvec tc;    tc.create(n);
 
-  for (mrs_natural k = 0; k < n; k++){
-    for (mrs_natural i = 0; i <= k; ++i){
+  for (mrs_natural k = 0; k < n; k++) {
+    for (mrs_natural i = 0; i <= k; ++i) {
       tc(k) += ta(i)*tb(k-i);
     }
   }
@@ -458,24 +458,24 @@ SeneffEar::polyConv(realvec& a, realvec& b, realvec& c)
   c = tc;
 }
 
-void 
+void
 SeneffEar::polyFlip(realvec& a)
 {
   mrs_natural la(a.getSize());
   realvec ta(a);
 
-  for (mrs_natural i = 0; i < la; ++i){
+  for (mrs_natural i = 0; i < la; ++i) {
     a(i) = ta(la - i - 1);
   }
 }
 
 
-void 
+void
 SeneffEar::myProcess(realvec& in, realvec& out)
 {
   checkFlow(in, out);
   //lmartins: if (mute_) return;
-	if(getctrl("mrs_bool/mute")->to<mrs_bool>()) return;
+  if(getctrl("mrs_bool/mute")->to<mrs_bool>()) return;
 
   mrs_natural s = 0;
   stage = getctrl("mrs_natural/stage")->to<mrs_natural>();

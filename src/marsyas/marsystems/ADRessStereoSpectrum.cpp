@@ -25,7 +25,7 @@ using namespace Marsyas;
 
 ADRessStereoSpectrum::ADRessStereoSpectrum(mrs_string name):MarSystem("ADRessStereoSpectrum", name)
 {
-	addControls();
+  addControls();
 }
 
 ADRessStereoSpectrum::ADRessStereoSpectrum(const ADRessStereoSpectrum& a) : MarSystem(a)
@@ -40,7 +40,7 @@ ADRessStereoSpectrum::~ADRessStereoSpectrum()
 MarSystem*
 ADRessStereoSpectrum::clone() const
 {
-	return new ADRessStereoSpectrum(*this);
+  return new ADRessStereoSpectrum(*this);
 }
 
 void
@@ -51,57 +51,57 @@ ADRessStereoSpectrum::addControls()
 void
 ADRessStereoSpectrum::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("ADRessStereoSpectrum.cpp - ADRessStereoSpectrum:myUpdate");
+  MRSDIAG("ADRessStereoSpectrum.cpp - ADRessStereoSpectrum:myUpdate");
 
-	(void) sender;  //suppress warning of unused parameter(s)
+  (void) sender;  //suppress warning of unused parameter(s)
 
-	N2_ = ctrl_inObservations_->to<mrs_natural>()/2; //i.e. N/2+1
+  N2_ = ctrl_inObservations_->to<mrs_natural>()/2; //i.e. N/2+1
 
-	ctrl_onSamples_->setValue(1, NOUPDATE);
-	ctrl_onObservations_->setValue(N2_, NOUPDATE);
-	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+  ctrl_onSamples_->setValue(1, NOUPDATE);
+  ctrl_onObservations_->setValue(N2_, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
-	ostringstream oss;
-	for (mrs_natural n=0; n < N2_; n++)
-		oss << "ADRess_stereobin_" << n << ",";
-	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
+  ostringstream oss;
+  for (mrs_natural n=0; n < N2_; n++)
+    oss << "ADRess_stereobin_" << n << ",";
+  ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 
-	beta_ = ctrl_inSamples_->to<mrs_natural>()-2;
+  beta_ = ctrl_inSamples_->to<mrs_natural>()-2;
 }
 
 void
 ADRessStereoSpectrum::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o,t;
-	for(o=0; o < N2_; ++o)
-	{
-		//look for the maximum in the azimuth plane
-		//NOTE: first column of input is dedicated to bin phases...
-		maxVal_ = 0.0;
-		maxIndex_ = beta_;
-		for(t=0;t<=beta_; ++t)
-		{
-			if(in(o,t+1) > maxVal_)//AZl
-			{
-				maxVal_ = in(o,t+1);
-				maxIndex_ = t;
-			}
-			if(in(N2_+o, t+1) > maxVal_)//AZr
-			{
-				maxVal_ = in(N2_+o,t+1);
-				maxIndex_ = beta_*2+1-t;
-			}
-		}
+  mrs_natural o,t;
+  for(o=0; o < N2_; ++o)
+  {
+    //look for the maximum in the azimuth plane
+    //NOTE: first column of input is dedicated to bin phases...
+    maxVal_ = 0.0;
+    maxIndex_ = beta_;
+    for(t=0; t<=beta_; ++t)
+    {
+      if(in(o,t+1) > maxVal_)//AZl
+      {
+        maxVal_ = in(o,t+1);
+        maxIndex_ = t;
+      }
+      if(in(N2_+o, t+1) > maxVal_)//AZr
+      {
+        maxVal_ = in(N2_+o,t+1);
+        maxIndex_ = beta_*2+1-t;
+      }
+    }
 
-		//avoid two indexes for center panning
-		if(maxIndex_ > beta_)
-			maxIndex_--;
+    //avoid two indexes for center panning
+    if(maxIndex_ > beta_)
+      maxIndex_--;
 
-		//convert panning index to range [-1,1]
-		//and save it to corresponding output
-		out(o,0) = (mrs_real)maxIndex_/(beta_*2.0)*2.0 - 1.0;
-	}
+    //convert panning index to range [-1,1]
+    //and save it to corresponding output
+    out(o,0) = (mrs_real)maxIndex_/(beta_*2.0)*2.0 - 1.0;
+  }
 
-    // MATLAB_PUT(out, "ADRessBinPan");
-	// MATLAB_EVAL("figure(3);plot(ADRessBinPan);");
+  // MATLAB_PUT(out, "ADRessBinPan");
+  // MATLAB_EVAL("figure(3);plot(ADRessBinPan);");
 }

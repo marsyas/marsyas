@@ -43,33 +43,33 @@ namespace Marsyas
 class Windowing: public MarSystem
 {
 private:
-	realvec envelope_;
-	realvec tmp_;
-	//mrs_real norm_;
-	mrs_natural delta_;
+  realvec envelope_;
+  realvec tmp_;
+  //mrs_real norm_;
+  mrs_natural delta_;
 
-	mrs_natural zeroPadding_;
-	mrs_natural size_;
+  mrs_natural zeroPadding_;
+  mrs_natural size_;
 
-	MarControlPtr ctrl_type_;
-	MarControlPtr ctrl_zeroPhasing_;
-	MarControlPtr ctrl_zeroPadding_;
-	MarControlPtr ctrl_size_;
-	MarControlPtr ctrl_variance_;
-	MarControlPtr ctrl_normalize_;
+  MarControlPtr ctrl_type_;
+  MarControlPtr ctrl_zeroPhasing_;
+  MarControlPtr ctrl_zeroPadding_;
+  MarControlPtr ctrl_size_;
+  MarControlPtr ctrl_variance_;
+  MarControlPtr ctrl_normalize_;
 
 
-	void addcontrols();
-	void myUpdate(MarControlPtr sender);
+  void addcontrols();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	Windowing(std::string name);
-	Windowing(const Windowing& a);
-	~Windowing();
+  Windowing(std::string name);
+  Windowing(const Windowing& a);
+  ~Windowing();
 
-	MarSystem* clone() const;
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 
 };
 
@@ -89,7 +89,7 @@ inline
 void
 windowingFillHamming(realvec& envelope)
 {
-	windowingFillRaisedCosine(envelope, 0.54, 0.46);
+  windowingFillRaisedCosine(envelope, 0.54, 0.46);
 }
 
 /**
@@ -104,7 +104,7 @@ inline
 void
 windowingFillHanning(realvec& envelope)
 {
-	windowingFillRaisedCosine(envelope, 0.5, 0.5);
+  windowingFillRaisedCosine(envelope, 0.5, 0.5);
 }
 
 /// \brief Triangle window function (non zero endpoints).

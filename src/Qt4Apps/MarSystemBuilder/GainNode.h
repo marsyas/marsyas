@@ -11,11 +11,11 @@
 class GainNode:public MarSystemNode
 {
   Q_OBJECT
- public:
+public:
   GainNode(QString name,QWidget* parent);
   GainNode(MarSystem* msys,QWidget* parent);
-  
- protected:
+
+protected:
   void paintEvent(QPaintEvent* event);
   void resizeEvent(QResizeEvent* event);
 };

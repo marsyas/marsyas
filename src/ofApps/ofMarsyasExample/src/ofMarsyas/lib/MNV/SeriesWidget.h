@@ -18,21 +18,21 @@ class testApp;
 
 namespace Marsyas
 {
-	
-	class SeriesWidget : public MarSystemWidget
-	{
-	private:
-		void addControls();
-		void updateControls();
-		
-		
-	public:
-		SeriesWidget(MarSystem* msys, GraphicalEnvironment* env);
-		~SeriesWidget();
-		
-		
-		void drawConnections();
-	};
+
+class SeriesWidget : public MarSystemWidget
+{
+private:
+  void addControls();
+  void updateControls();
+
+
+public:
+  SeriesWidget(MarSystem* msys, GraphicalEnvironment* env);
+  ~SeriesWidget();
+
+
+  void drawConnections();
+};
 }
 
 #endif

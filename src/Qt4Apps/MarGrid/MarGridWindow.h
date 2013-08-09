@@ -35,62 +35,62 @@
 #include <QLineEdit>
 #include <QSizePolicy>
 
-#include <iostream> 
+#include <iostream>
 using namespace std;
 #include "MarGrid.h"
 
 class MarGridWindow : public QMainWindow
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    MarGridWindow();
+  MarGridWindow();
 
-public slots: 
-   void about();
-   void playingFile(QString);
+public slots:
+  void about();
+  void playingFile(QString);
   void openTrainFile();
   void openPredictFile();
   void openPredictionGrid();
   void savePredictionGrid();
   void resizeGrid(int,int);
-		
- signals: 
-		void trainFile(QString);
-		void predictFile(QString);
-		void openPredictGridFile(QString);
-		void savePredictGridFile(QString);
-		void playbackMode(bool);
-		void blackwhiteMode(bool);
-		void gridSize(bool, int);
 
-		
+signals:
+  void trainFile(QString);
+  void predictFile(QString);
+  void openPredictGridFile(QString);
+  void savePredictGridFile(QString);
+  void playbackMode(bool);
+  void blackwhiteMode(bool);
+  void gridSize(bool, int);
+
+
 private:
-		void createMenus();
-		void createActions();
-		
-		
-		QMenu*   fileMenu;  
-		QMenu*   helpMenu;
-		QAction* openTrainAct;
-		QAction* openPredictAct;
-		QAction* aboutAct;
-		QAction* playbackAct;
-		QAction* blackwhiteAct;
-		QAction* openPredictGridAct;
-		QAction* savePerdictGridAct;
-		
-		QLabel*  playLabel;  
-		QLabel* trainLabel;
-		QLabel* predictLabel;
-		QLabel* gridHeightLabel;
-		QLabel* gridWidthLabel;
+  void createMenus();
+  void createActions();
 
-		QLineEdit* gridWidth;
-		QLineEdit* gridHeight;
-  
+
+  QMenu*   fileMenu;
+  QMenu*   helpMenu;
+  QAction* openTrainAct;
+  QAction* openPredictAct;
+  QAction* aboutAct;
+  QAction* playbackAct;
+  QAction* blackwhiteAct;
+  QAction* openPredictGridAct;
+  QAction* savePerdictGridAct;
+
+  QLabel*  playLabel;
+  QLabel* trainLabel;
+  QLabel* predictLabel;
+  QLabel* gridHeightLabel;
+  QLabel* gridWidthLabel;
+
+  QLineEdit* gridWidth;
+  QLineEdit* gridHeight;
+
 };
 
 #endif
 
-	
+

@@ -39,7 +39,7 @@ namespace Marsyas
 
     Ported to Marsyas from AIM-C by Steven Ness (sness@sness.net).
 
-	AimPZFC2 is a re-write of the AimPZFC to be more Marsyas like. 
+	AimPZFC2 is a re-write of the AimPZFC to be more Marsyas like.
 
 	The original source code for these functions in AIM-C can be found at:
 	http://code.google.com/p/aimc/
@@ -89,7 +89,7 @@ private:
 
   // Automatic Gain Control
   void AGCDampStep();
-  
+
 
   // Detector function - halfwave rectification etc. Used internally,
   // but not applied to the output.
@@ -106,7 +106,7 @@ private:
 
   double agc_factor_;
   double offset_;
-  
+
 
   // Parameters
   // User-settable scalars
@@ -127,13 +127,13 @@ private:
   // Internal Buffers
   // Initialised once
   //
-  
+
   mrs_realvec pole_dampings_;
   mrs_realvec agc_epsilons_;
   mrs_realvec agc_gains_;
   mrs_realvec pole_frequencies_;
-  
-  
+
+
 
   std::vector<double> za0_;
   std::vector<double> za1_;
@@ -150,7 +150,7 @@ private:
   std::vector<double> state_2_;
   // std::vector<double> previous_out_;
   mrs_realvec previous_out_;
-  
+
   std::vector<double> pole_damps_mod_;
   mrs_realvec inputs_;
 

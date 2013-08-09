@@ -15,21 +15,21 @@
 
 namespace Marsyas
 {
-	
-	class SilenceRemoveWidget : public MarSystemWidget
-	{
-	private:
-		void addControls();
-		void updateControls();
-		
-		
-	public:
-		SilenceRemoveWidget(MarSystem *msys, GraphicalEnvironment* env);
-		~SilenceRemoveWidget();
-		
-		
-		void drawConnections();
-	};
+
+class SilenceRemoveWidget : public MarSystemWidget
+{
+private:
+  void addControls();
+  void updateControls();
+
+
+public:
+  SilenceRemoveWidget(MarSystem *msys, GraphicalEnvironment* env);
+  ~SilenceRemoveWidget();
+
+
+  void drawConnections();
+};
 }
 
 #endif

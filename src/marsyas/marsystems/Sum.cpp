@@ -66,7 +66,7 @@ Sum::myUpdate(MarControlPtr sender)
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
 
-  
+
   // get name of first observation and use for sum
   mrs_string inObsName = stringSplit(ctrl_inObsNames_->to<mrs_string>(), ",")[0];
   ctrl_onObsNames_->setValue("Sum_" + inObsName+",", NOUPDATE);
@@ -77,28 +77,28 @@ Sum::myUpdate(MarControlPtr sender)
   // refactor this code out
 
   if(ctrl_mode_->to<mrs_string>() == "orig") {
-	/// ... but set the number of output observations correctly.
-	mrs_bool stereo = ctrl_stereo_->to<mrs_bool>();
-	if (!stereo) {
-	  ctrl_onObservations_->setValue(1, NOUPDATE);
-	} else {
-	  ctrl_onObservations_->setValue(2, NOUPDATE);
-	}
+    /// ... but set the number of output observations correctly.
+    mrs_bool stereo = ctrl_stereo_->to<mrs_bool>();
+    if (!stereo) {
+      ctrl_onObservations_->setValue(1, NOUPDATE);
+    } else {
+      ctrl_onObservations_->setValue(2, NOUPDATE);
+    }
   } else {
 
-	// sness - New Sum code
-	if (ctrl_mode_->to<mrs_string>() == "sum_observations") {
-	  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
-	  ctrl_onSamples_->setValue(1, NOUPDATE);
-	  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>() / ctrl_inSamples_->to<mrs_natural>(), NOUPDATE);
+    // sness - New Sum code
+    if (ctrl_mode_->to<mrs_string>() == "sum_observations") {
+      ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+      ctrl_onSamples_->setValue(1, NOUPDATE);
+      ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>() / ctrl_inSamples_->to<mrs_natural>(), NOUPDATE);
 
-	} else if (ctrl_mode_->to<mrs_string>() == "sum_samples") {
-	  ctrl_onObservations_->setValue(1, NOUPDATE);
-	  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-	} else if (ctrl_mode_->to<mrs_string>() == "sum_whole") {
-	  ctrl_onObservations_->setValue(1, NOUPDATE);
-	  ctrl_onSamples_->setValue(1, NOUPDATE);
-	}
+    } else if (ctrl_mode_->to<mrs_string>() == "sum_samples") {
+      ctrl_onObservations_->setValue(1, NOUPDATE);
+      ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+    } else if (ctrl_mode_->to<mrs_string>() == "sum_whole") {
+      ctrl_onObservations_->setValue(1, NOUPDATE);
+      ctrl_onSamples_->setValue(1, NOUPDATE);
+    }
   }
 
 
@@ -118,58 +118,58 @@ Sum::myProcess(realvec& in, realvec& out)
   // refactor this code out
   if (ctrl_mode_->to<mrs_string>() == "orig")
   {
-	// Sum the observation channels per sample.
-	if (!stereo)
-	{
-	  for (t = 0; t < inSamples_; t++)
-	  {
-		out(0, t) = 0;
-		for (o = 0; o < inObservations_; o++)
-		{
-		  out(0, t) += (weightValue * in(o, t));
-		}
-	  }
-	}
-	else 			// stereo
-	{
-	  for (t = 0; t < inSamples_; t++)
-		for (c=0; c < 2; ++c)
-		{
-		  out(c, t) = 0;
-		  for (o = c; o < inObservations_; o+=2)
-		  {
-			out(c, t) += (weightValue * in(o, t));
-		  }
-		}
-	}
+    // Sum the observation channels per sample.
+    if (!stereo)
+    {
+      for (t = 0; t < inSamples_; t++)
+      {
+        out(0, t) = 0;
+        for (o = 0; o < inObservations_; o++)
+        {
+          out(0, t) += (weightValue * in(o, t));
+        }
+      }
+    }
+    else 			// stereo
+    {
+      for (t = 0; t < inSamples_; t++)
+        for (c=0; c < 2; ++c)
+        {
+          out(c, t) = 0;
+          for (o = c; o < inObservations_; o+=2)
+          {
+            out(c, t) += (weightValue * in(o, t));
+          }
+        }
+    }
   } else {
-	// sness - New Sum code
-	for (o = 0; o < onObservations_; o++) {
-	  for (t = 0; t < onSamples_; t++) {
-		out(o,t) = 0.0;
-	  }
-	}
-	// AL: why not replace this with out.setval for readability?
+    // sness - New Sum code
+    for (o = 0; o < onObservations_; o++) {
+      for (t = 0; t < onSamples_; t++) {
+        out(o,t) = 0.0;
+      }
+    }
+    // AL: why not replace this with out.setval for readability?
 
-	if (ctrl_mode_->to<mrs_string>() == "sum_observations") {
-	  for (o = 0; o < inObservations_; o++) {
-		for (t = 0; t < inSamples_; t++) {
-		  out(o,0) += in(o,t);
-		}
-	  }
-	} else if (ctrl_mode_->to<mrs_string>() == "sum_samples")
-	{
-	  for (o = 0; o < inObservations_; o++) {
-		for (t = 0; t < inSamples_; t++) {
-		  out(0,t) += in(o,t);
-		}
-	  }
-	} else if (ctrl_mode_->to<mrs_string>() == "sum_whole") {
-	  for (o = 0; o < inObservations_; o++) {
-		for (t = 0; t < inSamples_; t++) {
-		  out(0,0) += in(o,t);
-		}
-	  }
-	}
+    if (ctrl_mode_->to<mrs_string>() == "sum_observations") {
+      for (o = 0; o < inObservations_; o++) {
+        for (t = 0; t < inSamples_; t++) {
+          out(o,0) += in(o,t);
+        }
+      }
+    } else if (ctrl_mode_->to<mrs_string>() == "sum_samples")
+    {
+      for (o = 0; o < inObservations_; o++) {
+        for (t = 0; t < inSamples_; t++) {
+          out(0,t) += in(o,t);
+        }
+      }
+    } else if (ctrl_mode_->to<mrs_string>() == "sum_whole") {
+      for (o = 0; o < inObservations_; o++) {
+        for (t = 0; t < inSamples_; t++) {
+          out(0,0) += in(o,t);
+        }
+      }
+    }
   }
 }

@@ -33,40 +33,40 @@ AbsMax::~AbsMax()
 MarSystem*
 AbsMax::clone() const
 {
-	return new AbsMax(*this);
+  return new AbsMax(*this);
 }
 
 void
 AbsMax::myUpdate(MarControlPtr sender)
 {
-	// Start with the default MarSystem setup with equal input/output
-	// stream format ...
-	MarSystem::myUpdate(sender);
+  // Start with the default MarSystem setup with equal input/output
+  // stream format ...
+  MarSystem::myUpdate(sender);
 
-	// ... but change the number and rate of output samples.
-	setControl("mrs_natural/onSamples",  (mrs_natural)1);
-	setControl("mrs_real/osrate",
-			   getControl("mrs_real/israte")->to<mrs_real>() / getControl("mrs_natural/inSamples")->to<mrs_natural>()
-		);
+  // ... but change the number and rate of output samples.
+  setControl("mrs_natural/onSamples",  (mrs_natural)1);
+  setControl("mrs_real/osrate",
+             getControl("mrs_real/israte")->to<mrs_real>() / getControl("mrs_natural/inSamples")->to<mrs_natural>()
+            );
 
-	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
-	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "AbsMax_"), NOUPDATE);
+  mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+  ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "AbsMax_"), NOUPDATE);
 }
 
 void
 AbsMax::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o,t;
-	for (o=0; o < inObservations_; ++o)
-	{
-		max_ = 0.0;
-		for (t=0; t < inSamples_; ++t)
-		{
-			if (fabs(in(o,t)) > max_)
-			{
-				max_ = fabs(in(o,t));
-			}
-		}
-		out(o,0) = max_;
-	}
+  mrs_natural o,t;
+  for (o=0; o < inObservations_; ++o)
+  {
+    max_ = 0.0;
+    for (t=0; t < inSamples_; ++t)
+    {
+      if (fabs(in(o,t)) > max_)
+      {
+        max_ = fabs(in(o,t));
+      }
+    }
+    out(o,0) = max_;
+  }
 }

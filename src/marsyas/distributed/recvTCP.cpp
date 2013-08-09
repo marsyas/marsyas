@@ -19,7 +19,7 @@ float gain = 1.0f;
 
 
 
-void 
+void
 printUsage(string progName)
 {
   MRSDIAG("recvTCP.cpp - printUsage");
@@ -29,7 +29,7 @@ printUsage(string progName)
   exit(1);
 }
 
-void 
+void
 printHelp(string progName)
 {
   MRSDIAG("recvTCP.cpp - printHelp");
@@ -45,103 +45,103 @@ printHelp(string progName)
   cerr << "-h --help       : display this information " << endl;
   cerr << "-f --file       : output to file " << endl;
   cerr << "-g --gain       : linear volume gain " << endl;
-  cerr << "-p --port 	   : port number to bind for socket " << endl;  
+  cerr << "-p --port 	   : port number to bind for socket " << endl;
   exit(1);
 }
 
 
 
-// Play soundfile given by sfName, playbacknet contains the playback 
-// network of MarSystem objects 
+// Play soundfile given by sfName, playbacknet contains the playback
+// network of MarSystem objects
 void play(mrs_real gain, string outName)
 {
-	
+
   NetworkTCPSource* netSrc = new NetworkTCPSource("netSrc");
-  
+
   // update controls if they are passed on cmd line...
   if ( port != 0 ) {
-  	netSrc->updctrl("mrs_natural/dataPort", port);
-	netSrc->updctrl("mrs_natural/controlsPort", port+1);
+    netSrc->updctrl("mrs_natural/dataPort", port);
+    netSrc->updctrl("mrs_natural/controlsPort", port+1);
   }
-  
-  // Output destination is either audio or soundfile 
+
+  // Output destination is either audio or soundfile
   MarSystemManager mn;
   MarSystem* dest;
   if (fileName == EMPTYSTRING)	// audio output
     dest = mn.create("AudioSink", "dest");
   else 				// filename output
-    {
-      dest = mn.create("SoundFileSink", "dest");
-      dest->updctrl("mrs_string/filename", fileName);
-    }
+  {
+    dest = mn.create("SoundFileSink", "dest");
+    dest->updctrl("mrs_string/filename", fileName);
+  }
 
   cout << "Creating playback network..." << endl;
-  
+
 
   Series playbacknet("playbacknet");
   playbacknet.addMarSystem(netSrc);
   playbacknet.addMarSystem(mn.create("Gain", "gt"));
   playbacknet.addMarSystem(dest);
-  
-  // output network description to cout  
-  cout << playbacknet << endl;      
-  
+
+  // output network description to cout
+  cout << playbacknet << endl;
+
   // setup TCP Server and wait for connection...
   netSrc->refresh();
   cout << "Connection Established with: " << netSrc->getClientAddr() << endl;
-  
+
   // udpate controls
   playbacknet.updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
   playbacknet.updctrl("Gain/gt/mrs_real/gain", gain);
-  
+
   // may want to update this as control data from networksource...
-  //if (outName == EMPTYSTRING) 
+  //if (outName == EMPTYSTRING)
   //  playbacknet.updctrl("AudioSink/dest/mrs_natural/nChannels", 1);
-  //else 
+  //else
   //  playbacknet.updctrl("SoundFileSink/dest/mrs_natural/nChannels", 1);
-	
+
   mrs_natural wc=0;
   mrs_natural samplesPlayed = 0;
   mrs_natural onSamples = playbacknet.getctrl("mrs_natural/onSamples")->to<mrs_natural>();
   // mrs_natural repeatId = 1;
- 
+
   mrs_real* controls = 0;
-  
-  while (true) 
+
+  while (true)
   {
-	  try {
-		
-		controls = playbacknet.recvControls();	
-      		if ( controls != 0 ) {
-			
-			// get some reference controls, so if they have changed we update them
-			mrs_natural inSamples = playbacknet.getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-			mrs_natural inObservations = playbacknet.getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-			mrs_real israte = playbacknet.getctrl("mrs_real/israte")->to<mrs_real>();
-			
-			if ( (mrs_natural)controls[1] != inSamples || (mrs_natural)controls[2] != inObservations 
-					|| controls[3] != israte ) {
-			
-				playbacknet.updctrl("mrs_natural/inSamples", (mrs_natural)controls[1]);
-				playbacknet.updctrl("mrs_natural/inObservations", (mrs_natural)controls[2]);
-				playbacknet.updctrl("mrs_real/israte", controls[3]);
-			}
-      		}
-		  
-		
-		playbacknet.tick();
-	}
-  	catch( SocketException e ) {
-  	  cerr << "Played " << wc << " slices of " << onSamples << " samples" << endl;	
-  	  exit(1);
-  	} 
-  	wc ++;
+    try {
+
+      controls = playbacknet.recvControls();
+      if ( controls != 0 ) {
+
+        // get some reference controls, so if they have changed we update them
+        mrs_natural inSamples = playbacknet.getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+        mrs_natural inObservations = playbacknet.getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+        mrs_real israte = playbacknet.getctrl("mrs_real/israte")->to<mrs_real>();
+
+        if ( (mrs_natural)controls[1] != inSamples || (mrs_natural)controls[2] != inObservations
+             || controls[3] != israte ) {
+
+          playbacknet.updctrl("mrs_natural/inSamples", (mrs_natural)controls[1]);
+          playbacknet.updctrl("mrs_natural/inObservations", (mrs_natural)controls[2]);
+          playbacknet.updctrl("mrs_real/israte", controls[3]);
+        }
+      }
+
+
+      playbacknet.tick();
+    }
+    catch( SocketException e ) {
+      cerr << "Played " << wc << " slices of " << onSamples << " samples" << endl;
+      exit(1);
+    }
+    wc ++;
     samplesPlayed += onSamples;
   }
-  
+
 }
 
-void 
+void
 initOptions()
 {
   cmd_options.addBoolOption("help", "h", false);
@@ -152,7 +152,7 @@ initOptions()
 }
 
 
-void 
+void
 loadOptions()
 {
   helpopt = cmd_options.getBoolOption("help");
@@ -169,38 +169,38 @@ main(int argc, const char **argv)
 {
   MRSDIAG("recvTCP.cpp - main");
 
-  string progName = argv[0];  
+  string progName = argv[0];
   progName = progName.erase(0,3);
 
   initOptions();
   cmd_options.readOptions(argc, argv);
   loadOptions();
-  
-  
+
+
   vector<string> soundfiles = cmd_options.getRemaining();
   vector<string>::iterator sfi;
 
-  
-  if (helpopt) 
+
+  if (helpopt)
     printHelp(progName);
-  
+
   if (usageopt)
     printUsage(progName);
 
-  
+
 
   if (soundfiles.size() == 0) {
-	cout << "sfi size == 0" << endl;
-	  play(gain, EMPTYSTRING);
-  
-  }	  
-  else {
-  	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
-  	{
-      		play(gain, *sfi);
-   	}
+    cout << "sfi size == 0" << endl;
+    play(gain, EMPTYSTRING);
+
   }
-    
+  else {
+    for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi)
+    {
+      play(gain, *sfi);
+    }
+  }
+
   exit(1);
 }
 

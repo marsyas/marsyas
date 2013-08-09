@@ -3,7 +3,7 @@
 #include <cstdlib>
 
 #include "Collection.h"
-#include "MarSystemManager.h"  
+#include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 #include "common_source.h"
 
@@ -20,7 +20,7 @@ int usageopt;
 
 
 
-void 
+void
 printUsage(string progName)
 {
   MRSDIAG("sfinfo.cpp - printUsage");
@@ -30,7 +30,7 @@ printUsage(string progName)
   exit(1);
 }
 
-void 
+void
 printHelp(string progName)
 {
   MRSDIAG("sfinfo.cpp - printHelp");
@@ -56,43 +56,43 @@ void sfinfo(vector<string> soundfiles)
   MarSystemManager mng;
   MarSystem* src = mng.create("SoundFileSource", "src");
 
-  vector<string>::iterator sfi;  
-  for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
-    {
-      string sfName = *sfi;
-      src->updControl("mrs_string/filename", sfName);
-      
-      if (src == NULL) 
-	{
-	  string errmsg = "Skipping file: " + sfName + " (problem with reading)";
-	  MRSWARN(errmsg);
-	}
-      else 
-	{
-		mrs_natural size = src->getctrl("mrs_natural/size")->to<mrs_natural>();
-		mrs_real srate = src->getctrl("mrs_real/osrate")->to<mrs_real>();
-		cout << "Sampling rate: " << srate << endl;
-		cout << "Number of channels:  " << src->getctrl("mrs_natural/onObservations")->to<mrs_natural>() << endl;
-		cout << "Length (in samples): " << size << endl;
+  vector<string>::iterator sfi;
+  for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi)
+  {
+    string sfName = *sfi;
+    src->updControl("mrs_string/filename", sfName);
 
-		
-		cout << "Duration (in seconds): " << size / srate  << endl;
-		cout << "Fname: " << sfName << endl;
-	}
+    if (src == NULL)
+    {
+      string errmsg = "Skipping file: " + sfName + " (problem with reading)";
+      MRSWARN(errmsg);
     }
-  
+    else
+    {
+      mrs_natural size = src->getctrl("mrs_natural/size")->to<mrs_natural>();
+      mrs_real srate = src->getctrl("mrs_real/osrate")->to<mrs_real>();
+      cout << "Sampling rate: " << srate << endl;
+      cout << "Number of channels:  " << src->getctrl("mrs_natural/onObservations")->to<mrs_natural>() << endl;
+      cout << "Length (in samples): " << size << endl;
+
+
+      cout << "Duration (in seconds): " << size / srate  << endl;
+      cout << "Fname: " << sfName << endl;
+    }
+  }
+
   delete src;
 }
 
 
-void 
+void
 initOptions()
 {
   cmd_options.addBoolOption("help", "h", false);
   cmd_options.addBoolOption("usage", "u", false);
 }
 
-void 
+void
 loadOptions()
 {
   helpopt = cmd_options.getBoolOption("help");
@@ -106,24 +106,24 @@ main(int argc, const char **argv)
 {
   MRSDIAG("sfinfo.cpp - main");
 
-  string progName = argv[0];  
-  
+  string progName = argv[0];
+
   if (argc == 1)
     printUsage(progName);
-  
+
   initOptions();
   cmd_options.readOptions(argc,argv);
   loadOptions();
-  
+
   vector<string> soundfiles = cmd_options.getRemaining();
-  
-  if (helpopt) 
+
+  if (helpopt)
     printHelp(progName);
-  
+
   if (usageopt)
     printUsage(progName);
 
-  
+
   sfinfo(soundfiles);
 
   exit(0);

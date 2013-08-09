@@ -32,16 +32,16 @@ namespace Marsyas
 class Reverse: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	Reverse(std::string name);
-	Reverse(const Reverse& a);
-	~Reverse();
-	MarSystem* clone() const;
+  Reverse(std::string name);
+  Reverse(const Reverse& a);
+  ~Reverse();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

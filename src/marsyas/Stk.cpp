@@ -120,9 +120,9 @@ void Stk :: swap64(unsigned char *ptr)
 }
 
 #if (defined(MARSYAS_IRIX) || defined(MARSYAS_CYGWIN) || defined(MARSYAS_MACOSX))
-  #include <unistd.h>
+#include <unistd.h>
 #elif defined(MARSYAS_WIN32)
-  #include <windows.h>
+#include <windows.h>
 #endif
 
 void Stk :: sleep(unsigned long milliseconds)

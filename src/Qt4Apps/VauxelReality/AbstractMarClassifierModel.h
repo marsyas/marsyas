@@ -7,16 +7,16 @@
 
 class AbstractMarClassifierModel : public QObject
 {
-   Q_OBJECT
-   
-public:
-   AbstractMarClassifierModel(){}
-	virtual ~AbstractMarClassifierModel(){}
+  Q_OBJECT
 
-public slots:   
-	virtual void train(Marsyas::realvec& data) = 0;   
-	virtual void classify(Marsyas::realvec& data) = 0;
-   virtual void reset() = 0;
+public:
+  AbstractMarClassifierModel() {}
+  virtual ~AbstractMarClassifierModel() {}
+
+public slots:
+  virtual void train(Marsyas::realvec& data) = 0;
+  virtual void classify(Marsyas::realvec& data) = 0;
+  virtual void reset() = 0;
 };
 
 #endif /* ABSTRACTMARCLASSIFIERMODEL_H_ */

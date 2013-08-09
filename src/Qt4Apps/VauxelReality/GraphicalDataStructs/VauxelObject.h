@@ -7,10 +7,10 @@
 class VauxelObject : public QGLObject
 {
 public:
-   VauxelObject();
-   ~VauxelObject();
-   
-   void draw() const;
+  VauxelObject();
+  ~VauxelObject();
+
+  void draw() const;
 };
 
 #endif // VAUXELOBJECT_H_

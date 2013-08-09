@@ -16,27 +16,27 @@
 
 namespace Marsyas
 {
-	
-	class MarSystem;
-	class MarSystemWidget;
-	
-	class MarSystemWidgetManager
-	{
-	private: 
-		GraphicalEnvironment *env_;
-		MarSystemWidget* createWidget(MarSystem* msys);
-		MarSystemWidget* getWidget(MarSystem* msys);
-        void createControlWidgets(MarSystemWidget* msysw);
-        void createControlLinkWidgets(MarSystemWidget* msysw);
-        void createWidgetsMaps(MarSystemWidget* msysw);
-        
-	public:
-		MarSystemWidgetManager(GraphicalEnvironment* env);
-		~MarSystemWidgetManager();
-        
-		MarSystemWidget *setupWidgets(MarSystem* msys);
-		
-	};
+
+class MarSystem;
+class MarSystemWidget;
+
+class MarSystemWidgetManager
+{
+private:
+  GraphicalEnvironment *env_;
+  MarSystemWidget* createWidget(MarSystem* msys);
+  MarSystemWidget* getWidget(MarSystem* msys);
+  void createControlWidgets(MarSystemWidget* msysw);
+  void createControlLinkWidgets(MarSystemWidget* msysw);
+  void createWidgetsMaps(MarSystemWidget* msysw);
+
+public:
+  MarSystemWidgetManager(GraphicalEnvironment* env);
+  ~MarSystemWidgetManager();
+
+  MarSystemWidget *setupWidgets(MarSystem* msys);
+
+};
 }
 
 #endif

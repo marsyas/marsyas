@@ -39,17 +39,17 @@ namespace Marsyas
 class MaxMin: public MarSystem
 {
 private:
-	mrs_real max_;
-	mrs_real min_;
+  mrs_real max_;
+  mrs_real min_;
 
-	void myUpdate(MarControlPtr sender);
+  void myUpdate(MarControlPtr sender);
 
 public:
-	MaxMin(std::string name);
-	~MaxMin();
+  MaxMin(std::string name);
+  ~MaxMin();
 
-	MarSystem* clone() const;
-	void myProcess(realvec& in, realvec& out);
+  MarSystem* clone() const;
+  void myProcess(realvec& in, realvec& out);
 
 };
 

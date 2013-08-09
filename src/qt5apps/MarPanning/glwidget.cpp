@@ -41,7 +41,7 @@ GLWidget::GLWidget(QWidget *parent):
   test_x = 0;
   test_y = 0;
   test_z = 0;
-  
+
   insamples = 512;
   spectrum_bins = insamples / 2.0;
   stereo_spectrum_bins = insamples / 2.0;
@@ -50,7 +50,7 @@ GLWidget::GLWidget(QWidget *parent):
 
   // The number of vertices used to make the disk
   num_vertices = 10;
-  
+
   // Defaults
   y_scale = 350;
 
@@ -130,9 +130,9 @@ GLWidget::GLWidget(QWidget *parent):
   m_initAudioControl = m_system->control("AudioSink/dest/mrs_bool/initAudio");
 
   m_spectrumControl =
-      m_system->control("Fanout/fanout/Series/powerspectrum_series/PowerSpectrum/pspk/mrs_realvec/processedData");
+    m_system->control("Fanout/fanout/Series/powerspectrum_series/PowerSpectrum/pspk/mrs_realvec/processedData");
   m_panningControl =
-      m_system->control("Fanout/fanout/Series/stereobranches_series/StereoSpectrum/sspk/mrs_realvec/processedData");
+    m_system->control("Fanout/fanout/Series/stereobranches_series/StereoSpectrum/sspk/mrs_realvec/processedData");
 
   // Connect the animation timer that periodically redraws the screen.
   // It is activated in the 'play()' function.
@@ -170,7 +170,7 @@ void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *paren
   test_x = 0;
   test_y = 0;
   test_z = 0;
-  
+
   insamples = 512;
   spectrum_bins = insamples / 2.0;
   stereo_spectrum_bins = insamples / 2.0;
@@ -179,7 +179,7 @@ void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *paren
 
   // The number of vertices used to make the disk
   num_vertices = 10;
-  
+
   // Defaults
   y_scale = 350;
 
@@ -201,9 +201,9 @@ void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *paren
 
   net_ = mng.create("Series", "net");
 
-  
+
   // net_->addMarSystem(mng.create("SoundFileSource", "src"));
-  
+
   MarSystem* mixsrc = mng.create("Fanout/mixsrc");
   MarSystem* branch1 = mng.create("Series/branch1");
   MarSystem* branch2 = mng.create("Series/branch2");
@@ -221,7 +221,7 @@ void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *paren
   branch3->addMarSystem(mng.create("SoundFileSource/src"));
   branch3->addMarSystem(mng.create("Gain/gain"));
   branch3->addMarSystem(mng.create("Panorama/pan"));
-  
+
   branch1->updctrl("Panorama/pan/mrs_real/angle", 0.0);
   branch2->updctrl("Panorama/pan/mrs_real/angle", 0.0);
   branch3->updctrl("Panorama/pan/mrs_real/angle", 0.0);
@@ -229,12 +229,12 @@ void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *paren
   mixsrc->addMarSystem(branch1);
   mixsrc->addMarSystem(branch2);
   mixsrc->addMarSystem(branch3);
-  
+
   net_->addMarSystem(mixsrc);
   net_->addMarSystem(mng.create("Sum/sum"));
   net_->updctrl("Sum/sum/mrs_bool/stereo", true);
-  
-  
+
+
   net_->addMarSystem(mng.create("AudioSink", "dest"));
   //   net_->addMarSystem(mng.create("Gain", "gain"));
 
@@ -388,7 +388,7 @@ void GLWidget::initializeGL()
 
   // Set the shading model
   glShadeModel(GL_SMOOTH);
-  
+
   // Enable depth testing
   glEnable(GL_DEPTH_TEST);
 
@@ -444,7 +444,7 @@ void GLWidget::paintGL()
 {
   // Clear the color and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  
+
   // Load the identity matrix
   glLoadIdentity();
 
@@ -503,7 +503,7 @@ void GLWidget::addDataToRingBuffer()
   for (int i = 0; i < panning_rows; i++) {
     panning_spectrum_ring_buffer[ring_buffer_pos][i] = panning_data(i,0);
   }
-  
+
   ring_buffer_pos += 1;
   if (ring_buffer_pos >= MAX_Z) {
     ring_buffer_pos = 0;
@@ -776,7 +776,7 @@ void GLWidget::setNumVertices(int v) {
 
 void GLWidget::setDotSize(int v) {
   dot_size_multiplier = v / 50.0;
-  
+
   //   cout << "v=" << v << " dsm=" << dot_size_multiplier << endl;
 
   glDeleteLists(startList,5);

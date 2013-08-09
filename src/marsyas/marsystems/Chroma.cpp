@@ -28,13 +28,13 @@ Chroma::~Chroma()
 {
 }
 
-MarSystem* 
+MarSystem*
 Chroma::clone() const
 {
   return new Chroma(*this);
 }
 
-void 
+void
 Chroma::addControls()
 {
   addControl("mrs_real/samplingFreq", 44100.0, ctrl_samplingFreq_);
@@ -42,7 +42,7 @@ Chroma::addControls()
   addControl("mrs_natural/highOctNum", 8, ctrl_highOctNum_);
 }
 
-void 
+void
 Chroma::myUpdate(MarControlPtr sender)
 {
   (void) sender;  //suppress warning of unused parameter(s)
@@ -52,17 +52,17 @@ Chroma::myUpdate(MarControlPtr sender)
   ostringstream oss;
   mrs_natural i, j, k;
   mrs_real tmpreal;
-  for(mrs_natural o=0; o<ctrl_onObservations_->to<mrs_natural>(); o++){
+  for(mrs_natural o=0; o<ctrl_onObservations_->to<mrs_natural>(); o++) {
     oss << "Chroma_" << o << ",";
   }
   ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 
   lowNum_ = ctrl_lowOctNum_->to<mrs_natural>();
-  if(lowNum_ < 0){
+  if(lowNum_ < 0) {
     lowNum_ = 0;
   }
   highNum_ = ctrl_highOctNum_->to<mrs_natural>();
-  if(highNum_ > 8){
+  if(highNum_ > 8) {
     highNum_ = 8;
   }
 
@@ -85,60 +85,60 @@ Chroma::myUpdate(MarControlPtr sender)
   chord_(12) = 493.883301; // B4
   chord_(0) = 0.5 * chord_(12);
   chord_(13) = 2.0 * chord_(1);
-   
-  for(i=0; i<9; ++i){
+
+  for(i=0; i<9; ++i) {
     m_(i) = pow(2.0, (mrs_real)i-3.0);
   }
-  for(i=0; i<inObservations_; ++i){
+  for(i=0; i<inObservations_; ++i) {
     freq_(i) = ctrl_samplingFreq_->to<mrs_real>()*(mrs_real)i / (2.0*(mrs_real)(inObservations_-1));
   }
-  
+
   // create filter
-  for(i=1; i<13; ++i){
-    for(k=0; k<inObservations_-1; k++){
-      for(j=lowNum_; j<highNum_+1; j++){
-        if(freq_(k) < m_(j)*chord_(i) && freq_(k+1) >= m_(j)*chord_(i)){
+  for(i=1; i<13; ++i) {
+    for(k=0; k<inObservations_-1; k++) {
+      for(j=lowNum_; j<highNum_+1; j++) {
+        if(freq_(k) < m_(j)*chord_(i) && freq_(k+1) >= m_(j)*chord_(i)) {
           filter_(i,k) += (freq_(k+1)-m_(j)*chord_(i)) / (freq_(k+1)-freq_(k));
           filter_(i,k+1) += (m_(j)*chord_(i)-freq_(k)) / (freq_(k+1)-freq_(k));
         }
-        if((m_(j)*chord_(i)+m_(j)*chord_(i-1))/2.0 < freq_(k) && freq_(k) <= (m_(j)*chord_(i+1)+m_(j)*chord_(i))/2.0){
+        if((m_(j)*chord_(i)+m_(j)*chord_(i-1))/2.0 < freq_(k) && freq_(k) <= (m_(j)*chord_(i+1)+m_(j)*chord_(i))/2.0) {
           filter_(i,k) += 1.0;
         }
       }
     }
   }
-  for(k=0; k<inObservations_; k++){
+  for(k=0; k<inObservations_; k++) {
     tmpreal = 0.0;
-    for(i=1; i<13; ++i){
+    for(i=1; i<13; ++i) {
       tmpreal += filter_(i,k);
     }
-    if(tmpreal > 0){
-      for(i=1; i<13; ++i){
+    if(tmpreal > 0) {
+      for(i=1; i<13; ++i) {
         filter_(i,k) /= tmpreal;
       }
     }
   }
-  
+
 }
- 
-void 
+
+void
 Chroma::myProcess(realvec& in, realvec& out)
 {
   mrs_natural i, j, k;
 
-  if(inSamples_ > 0){
-    for(j=0; j<12; j++){
-      for(i=0; i<inSamples_; ++i){
+  if(inSamples_ > 0) {
+    for(j=0; j<12; j++) {
+      for(i=0; i<inSamples_; ++i) {
         out(j,i) = 0;
       }
     }
-    for(i=0; i<inSamples_; ++i){
-      for(j=1; j<13; j++){
-        for(k=0; k<inObservations_; k++){
+    for(i=0; i<inSamples_; ++i) {
+      for(j=1; j<13; j++) {
+        for(k=0; k<inObservations_; k++) {
           out(j-1, i) += filter_(j,k)*in(k,i);//12.0;
         }
       }
     }
   }
-  
+
 }

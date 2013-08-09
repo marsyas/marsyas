@@ -23,7 +23,7 @@ MarSystemNode::MarSystemNode(string type,QString name,QWidget * parent)
 
   // Default Location when a Widget is created... Not really that important
   setGeometry(((parent->width()/2)-(width()/2)),10,
-		size.width()+13,size.height()+12);
+              size.width()+13,size.height()+12);
 
   prev_=0;//Even if parent is null set the parent to it
   next_=0;//We don't know of any children yet
@@ -31,13 +31,13 @@ MarSystemNode::MarSystemNode(string type,QString name,QWidget * parent)
 
 /**
  *  Constructor
- *  
+ *
  */
 MarSystemNode::MarSystemNode(MarSystem* msys,QWidget* parent)
   :QWidget(parent)
 {
   name_ = QString(msys->getType().c_str()).append(QString("::")).
-    append(QString(msys->getName().c_str()));
+          append(QString(msys->getName().c_str()));
   type_ = QString(msys->getType().c_str());
 
   represents_ = msys;
@@ -47,7 +47,7 @@ MarSystemNode::MarSystemNode(MarSystem* msys,QWidget* parent)
 
   // Default Location when a Widget is created... Not really that important
   setGeometry(((parent->width()/2)-(width()/2)),10,
-		size.width()+13,size.height()+12);
+              size.width()+13,size.height()+12);
 
   prev_=0;//Even if parent is null set the parent to it
   next_=0;//We don't know of any children yet
@@ -74,7 +74,7 @@ MarSystemNode::~MarSystemNode()
  The drag assumes that you have set a pixmap for the drag item.  The
  background should bet set to a pixmap.
  ******************************/
-void 
+void
 MarSystemNode::mousePressEvent(QMouseEvent *event)
 {
   //All MarSystemNodes are draggable at the moment. SO this will be the
@@ -83,10 +83,10 @@ MarSystemNode::mousePressEvent(QMouseEvent *event)
   QDataStream dataStream(&widgetData,QIODevice::ReadWrite);
   dataStream<<name_;
   dataStream<<QPoint(event->pos() - rect().topLeft());
-  
+
   QMimeData *mime = new QMimeData;
   mime->setData("application/x-MarSystemNode",widgetData);
-  
+
   QDrag * drag = new QDrag(this);
   drag->setMimeData(mime);
   drag->setHotSpot(event->pos() - rect().topLeft());
@@ -146,7 +146,7 @@ MarSystemNode::getBottom()
 /******************************
   Shortcut function for getting bottom of Widget.
 ******************************/
-int 
+int
 MarSystemNode::getCenter() const
 {
   return x()+(width()/2);
@@ -166,7 +166,7 @@ MarSystemNode::isCollection()
    I am pretty sure most nodese will have to resize themselves but
    this will be the default
 */
-void 
+void
 MarSystemNode::setName(const QString& name)
 {
   name_ = QString(type_).append(QString("::")).append(name);

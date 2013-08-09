@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
   string audioFile = argv[1];
 
   TopPanelNew* panel = new TopPanelNew( audioFile );
-  
+
   panel->setGeometry(100, 100, 600, 196);
   panel->show();
 

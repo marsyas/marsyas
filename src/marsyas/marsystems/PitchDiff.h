@@ -44,34 +44,34 @@ class marsyas_EXPORT PitchDiff: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
 
-	MarControlPtr ctrl_expectedPitch_;
-	MarControlPtr ctrl_ignoreOctaves_;
-	MarControlPtr ctrl_absoluteValue_;
-	// for efficiency ?
-	mrs_real expectedMidiPitch_;
+  MarControlPtr ctrl_expectedPitch_;
+  MarControlPtr ctrl_ignoreOctaves_;
+  MarControlPtr ctrl_absoluteValue_;
+  // for efficiency ?
+  mrs_real expectedMidiPitch_;
 
 public:
-	/// PitchDiff constructor.
-	PitchDiff(std::string name);
+  /// PitchDiff constructor.
+  PitchDiff(std::string name);
 
-	/// PitchDiff copy constructor.
-	PitchDiff(const PitchDiff& a);
+  /// PitchDiff copy constructor.
+  PitchDiff(const PitchDiff& a);
 
-	/// PitchDiff destructor.
-	~PitchDiff();
+  /// PitchDiff destructor.
+  ~PitchDiff();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

@@ -12,7 +12,7 @@
 #include <cxxtest/ErrorPrinter.h>
 
 int main() {
- return CxxTest::ErrorPrinter().run();
+  return CxxTest::ErrorPrinter().run();
 }
 #include "TestWekaSource.h"
 
@@ -23,14 +23,14 @@ CxxTest::StaticSuiteDescription suiteDescription_WekaSource_runner( "TestWekaSou
 
 static class TestDescription_WekaSource_runner_test_pass : public CxxTest::RealTestDescription {
 public:
- TestDescription_WekaSource_runner_test_pass() : CxxTest::RealTestDescription( Tests_WekaSource_runner, suiteDescription_WekaSource_runner, 36, "test_pass" ) {}
- void runTest() { suite_WekaSource_runner.test_pass(); }
+  TestDescription_WekaSource_runner_test_pass() : CxxTest::RealTestDescription( Tests_WekaSource_runner, suiteDescription_WekaSource_runner, 36, "test_pass" ) {}
+  void runTest() { suite_WekaSource_runner.test_pass(); }
 } testDescription_WekaSource_runner_test_pass;
 
 static class TestDescription_WekaSource_runner_test_memory_fold : public CxxTest::RealTestDescription {
 public:
- TestDescription_WekaSource_runner_test_memory_fold() : CxxTest::RealTestDescription( Tests_WekaSource_runner, suiteDescription_WekaSource_runner, 56, "test_memory_fold" ) {}
- void runTest() { suite_WekaSource_runner.test_memory_fold(); }
+  TestDescription_WekaSource_runner_test_memory_fold() : CxxTest::RealTestDescription( Tests_WekaSource_runner, suiteDescription_WekaSource_runner, 56, "test_memory_fold" ) {}
+  void runTest() { suite_WekaSource_runner.test_memory_fold(); }
 } testDescription_WekaSource_runner_test_memory_fold;
 
 #include <cxxtest/Root.cpp>

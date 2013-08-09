@@ -39,23 +39,23 @@ namespace Marsyas
 class WaveletBands: public MarSystem
 {
 private:
-	realvec band_;
-	realvec tband_;
+  realvec band_;
+  realvec tband_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	/// Inverse wavelet transform object.
-	WaveletPyramid *iwvpt_;
+  /// Inverse wavelet transform object.
+  WaveletPyramid *iwvpt_;
 
 public:
-	WaveletBands(std::string name);
-	~WaveletBands();
-	WaveletBands(const WaveletBands& a);
+  WaveletBands(std::string name);
+  ~WaveletBands();
+  WaveletBands(const WaveletBands& a);
 
-	MarSystem* clone() const;
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 
 };
 

@@ -36,9 +36,9 @@ Control * System::createControl( const QString & path )
   m_controls.insert(path, control);
 
   QObject::connect(
-        control, SIGNAL(destroyed(QObject*)),
-        this, SLOT(removeControl(QObject*))
-        );
+    control, SIGNAL(destroyed(QObject*)),
+    this, SLOT(removeControl(QObject*))
+  );
 
   return control;
 }

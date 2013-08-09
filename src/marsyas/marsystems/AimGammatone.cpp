@@ -19,7 +19,7 @@
 #include "AimGammatone.h"
 #include "common_source.h"
 
- 
+
 using std::ostringstream;
 using std::complex;
 using std::abs;
@@ -43,7 +43,7 @@ AimGammatone::AimGammatone(mrs_string name):MarSystem("AimGammatone",name)
 }
 
 
-AimGammatone::AimGammatone(const AimGammatone& a): MarSystem(a) 
+AimGammatone::AimGammatone(const AimGammatone& a): MarSystem(a)
 {
   is_initialized = false;
   initialized_num_channels = 0;
@@ -53,7 +53,7 @@ AimGammatone::AimGammatone(const AimGammatone& a): MarSystem(a)
 
   is_reset = false;
   reset_num_channels = 0;
-	
+
   ctrl_num_channels_= getctrl("mrs_natural/num_channels");
   ctrl_min_frequency_ = getctrl("mrs_real/min_frequency");
   ctrl_max_frequency_ = getctrl("mrs_real/max_frequency");
@@ -70,7 +70,7 @@ AimGammatone::clone() const
   return new AimGammatone(*this);
 }
 
-void 
+void
 AimGammatone::addControls()
 {
   addControl("mrs_natural/num_channels", 200 , ctrl_num_channels_);
@@ -127,7 +127,7 @@ AimGammatone::myUpdate(MarControlPtr sender)
 
 }
 
-bool 
+bool
 AimGammatone::InitializeInternal() {
   mrs_natural num_channels = ctrl_num_channels_->to<mrs_natural>();
   double min_frequency = ctrl_min_frequency_->to<mrs_real>();
@@ -182,12 +182,12 @@ AimGammatone::InitializeInternal() {
     complex<double> b_dt(b * dt, 0.0);
 
     double gain = abs(
-      (p1 + p2 * (cos(two_cf_pi_t) - sqrt(3.0 - two_pow) * sin(two_cf_pi_t)))
-      * (p1 + p2 * (cos(two_cf_pi_t) + sqrt(3.0 - two_pow) * sin(two_cf_pi_t)))
-      * (p1 + p2 * (cos(two_cf_pi_t) - sqrt(3.0 + two_pow) * sin(two_cf_pi_t)))
-      * (p1 + p2 * (cos(two_cf_pi_t) + sqrt(3.0 + two_pow) * sin(two_cf_pi_t)))
-      / pow((-2.0 / exp(2.0 * b_dt) - 2.0 * ec + 2.0 * (1.0 + ec)
-            / exp(b_dt)), 4));
+                    (p1 + p2 * (cos(two_cf_pi_t) - sqrt(3.0 - two_pow) * sin(two_cf_pi_t)))
+                    * (p1 + p2 * (cos(two_cf_pi_t) + sqrt(3.0 - two_pow) * sin(two_cf_pi_t)))
+                    * (p1 + p2 * (cos(two_cf_pi_t) - sqrt(3.0 + two_pow) * sin(two_cf_pi_t)))
+                    * (p1 + p2 * (cos(two_cf_pi_t) + sqrt(3.0 + two_pow) * sin(two_cf_pi_t)))
+                    / pow((-2.0 / exp(2.0 * b_dt) - 2.0 * ec + 2.0 * (1.0 + ec)
+                           / exp(b_dt)), 4));
 
     // The filter coefficients themselves:
     const int coeff_count = 3;
@@ -206,16 +206,16 @@ AimGammatone::InitializeInternal() {
 
     double B11 = -(2.0 * dt * cos(2.0 * cf * PI * dt) / exp(b * dt)
                    + 2.0 * sqrt(3 + pow(2.0, 1.5)) * dt
-                       * sin(2.0 * cf * PI * dt) / exp(b * dt)) / 2.0;
+                   * sin(2.0 * cf * PI * dt) / exp(b * dt)) / 2.0;
     double B12 = -(2.0 * dt * cos(2.0 * cf * PI * dt) / exp(b * dt)
                    - 2.0 * sqrt(3 + pow(2.0, 1.5)) * dt
-                       * sin(2.0 * cf * PI * dt) / exp(b * dt)) / 2.0;
+                   * sin(2.0 * cf * PI * dt) / exp(b * dt)) / 2.0;
     double B13 = -(2.0 * dt * cos(2.0 * cf * PI * dt) / exp(b * dt)
                    + 2.0 * sqrt(3 - pow(2.0, 1.5)) * dt
-                       * sin(2.0 * cf * PI * dt) / exp(b * dt)) / 2.0;
+                   * sin(2.0 * cf * PI * dt) / exp(b * dt)) / 2.0;
     double B14 = -(2.0 * dt * cos(2.0 * cf * PI * dt) / exp(b * dt)
                    - 2.0 * sqrt(3 - pow(2.0, 1.5)) * dt
-                       * sin(2.0 * cf * PI * dt) / exp(b * dt)) / 2.0;
+                   * sin(2.0 * cf * PI * dt) / exp(b * dt)) / 2.0;
 
     a_[ch][0] = 1.0;
     a_[ch][1] = -2.0 * cos(2.0 * cf * PI * dt) / exp(b * dt);
@@ -236,7 +236,7 @@ AimGammatone::InitializeInternal() {
   return true;
 }
 
-void 
+void
 AimGammatone::ResetInternal() {
   mrs_natural num_channels = ctrl_num_channels_->to<mrs_natural>();
 
@@ -315,6 +315,6 @@ AimGammatone::myProcess(realvec& in, realvec& out)
       out(o + _channel_count, t) = centre_frequencies_[o];
     }
   }
-  */ 
+  */
 
 }

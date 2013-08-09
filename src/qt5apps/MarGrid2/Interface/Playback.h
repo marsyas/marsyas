@@ -6,7 +6,7 @@
 class Playback : public QWidget
 {
 public slot:
-	virtual void playTrack(MusicTrack track*);
+  virtual void playTrack(MusicTrack track*);
 };
 
 

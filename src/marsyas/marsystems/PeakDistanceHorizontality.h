@@ -23,67 +23,67 @@
 
 namespace Marsyas
 {
-	/**
-	\ingroup Analysis
-	\brief compute a weight depending on how "horizontal" the distance between two peak entries is
+/**
+\ingroup Analysis
+\brief compute a weight depending on how "horizontal" the distance between two peak entries is
 
-	Controls:
-	- \b mrs_realvec/inpIsHorizontal [w] : defines an input to be a horizontal or vertical distance measure
-	- \b mrs_realvec/weights [rw] : weight of combinations default [1 1 1 ... 1] with the length of the number of systems
-	- \b mrs_natural/numInputs [w] : number of parallels.
-	- \b mrs_bool/bypass [w] : set all weights to 1 if true
-	- \b mrs_real/rangeX [w] : upper - lower bound for abscissa
-	- \b mrs_real/rangeY [w] : upper - lower bound for ordinate
-	*/
+Controls:
+- \b mrs_realvec/inpIsHorizontal [w] : defines an input to be a horizontal or vertical distance measure
+- \b mrs_realvec/weights [rw] : weight of combinations default [1 1 1 ... 1] with the length of the number of systems
+- \b mrs_natural/numInputs [w] : number of parallels.
+- \b mrs_bool/bypass [w] : set all weights to 1 if true
+- \b mrs_real/rangeX [w] : upper - lower bound for abscissa
+- \b mrs_real/rangeY [w] : upper - lower bound for ordinate
+*/
 
-	class marsyas_EXPORT PeakDistanceHorizontality: public MarSystem
-	{
-	private:
+class marsyas_EXPORT PeakDistanceHorizontality: public MarSystem
+{
+private:
 
-		/// Add specific controls needed by this MarSystem.
-		void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-		/// Reads changed controls and sets up variables if necessary.
-		void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
-		mrs_real ComputeHorizontality(mrs_real diffX, mrs_real diffY);
-		//mrs_real ComputeHorizontality(mrs_real freq1, mrs_real freq2);
+  mrs_real ComputeHorizontality(mrs_real diffX, mrs_real diffY);
+  //mrs_real ComputeHorizontality(mrs_real freq1, mrs_real freq2);
 
-		inline mrs_real sigmoid (mrs_real val)
-		{
-			return (1. / (1. + exp(sigSteepness_ * (val - sigCutOff_))));
-		}
+  inline mrs_real sigmoid (mrs_real val)
+  {
+    return (1. / (1. + exp(sigSteepness_ * (val - sigCutOff_))));
+  }
 
-		inline mrs_real gaussian (mrs_real x)
-		{
-			return exp (-(x*x)/(2*(sigCutOff_*sigCutOff_)));// / sqrt (TWOPI*std);
-		}
+  inline mrs_real gaussian (mrs_real x)
+  {
+    return exp (-(x*x)/(2*(sigCutOff_*sigCutOff_)));// / sqrt (TWOPI*std);
+  }
 
-		/// MarControlPtr for the gain control
-		MarControlPtr	ctrl_horizvert_,
-						ctrl_rangeX_,
-						ctrl_rangeY_;
+  /// MarControlPtr for the gain control
+  MarControlPtr	ctrl_horizvert_,
+                ctrl_rangeX_,
+                ctrl_rangeY_;
 
-		mrs_realvec		weights_;
-		mrs_real		sigSteepness_,
-						sigCutOff_;
+  mrs_realvec		weights_;
+  mrs_real		sigSteepness_,
+              sigCutOff_;
 
-	public:
-		/// PeakDistanceHorizontality constructor.
-		PeakDistanceHorizontality(std::string name);
+public:
+  /// PeakDistanceHorizontality constructor.
+  PeakDistanceHorizontality(std::string name);
 
-		/// PeakDistanceHorizontality copy constructor.
-		PeakDistanceHorizontality(const PeakDistanceHorizontality& a);
+  /// PeakDistanceHorizontality copy constructor.
+  PeakDistanceHorizontality(const PeakDistanceHorizontality& a);
 
-		/// PeakDistanceHorizontality destructor.
-		~PeakDistanceHorizontality();
+  /// PeakDistanceHorizontality destructor.
+  ~PeakDistanceHorizontality();
 
-		/// Implementation of the MarSystem::clone() method.
-		MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-		/// Implementation of the MarSystem::myProcess method.
-		void myProcess(realvec& in, realvec& out);
-	};
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
+};
 
 }
 //namespace Marsyas

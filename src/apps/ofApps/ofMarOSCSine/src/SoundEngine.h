@@ -12,7 +12,7 @@ public:
   SoundEngine(string name = "SoundEngine");
 
   SineChanger* sineChanger;
-	
+
   void setup();
   void update();
   void draw();

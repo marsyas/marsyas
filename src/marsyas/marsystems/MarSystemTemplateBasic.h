@@ -40,35 +40,35 @@ class marsyas_EXPORT MarSystemTemplateBasic: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
-	// Pointers to controls allow efficient access to their
-	// values.  For clarity, we use the ctrl_ prefix so these
-	// pointers can be easily identified throughout the code...
-	// but this is not mandatory, just recommended)
+  // Pointers to controls allow efficient access to their
+  // values.  For clarity, we use the ctrl_ prefix so these
+  // pointers can be easily identified throughout the code...
+  // but this is not mandatory, just recommended)
 
-	/// MarControlPtr for the gain control
-	MarControlPtr ctrl_gain_EXAMPLE_;
+  /// MarControlPtr for the gain control
+  MarControlPtr ctrl_gain_EXAMPLE_;
 
 public:
-	/// MarSystemTemplateBasic constructor.
-	MarSystemTemplateBasic(std::string name);
+  /// MarSystemTemplateBasic constructor.
+  MarSystemTemplateBasic(std::string name);
 
-	/// MarSystemTemplateBasic copy constructor.
-	MarSystemTemplateBasic(const MarSystemTemplateBasic& a);
+  /// MarSystemTemplateBasic copy constructor.
+  MarSystemTemplateBasic(const MarSystemTemplateBasic& a);
 
-	/// MarSystemTemplateBasic destructor.
-	~MarSystemTemplateBasic();
+  /// MarSystemTemplateBasic destructor.
+  ~MarSystemTemplateBasic();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

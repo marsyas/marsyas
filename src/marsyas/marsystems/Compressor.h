@@ -33,18 +33,18 @@ namespace Marsyas
 class Compressor: public MarSystem
 {
 private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	MarControlPtr ctrl_gain_EXAMPLE_;
+  MarControlPtr ctrl_gain_EXAMPLE_;
 
 public:
-	Compressor(std::string name);
-	Compressor(const Compressor& a);
-	~Compressor();
-	MarSystem* clone() const;
+  Compressor(std::string name);
+  Compressor(const Compressor& a);
+  ~Compressor();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

@@ -109,7 +109,7 @@ AuFileSource::~AuFileSource()
   delete hdr_;
 
   if (sfp_ != NULL)
-	fclose(sfp_);
+    fclose(sfp_);
 }
 
 MarSystem*
@@ -191,7 +191,7 @@ unsigned long
 AuFileSource::ByteSwapLong(unsigned long nLongNumber)
 {
   return (((nLongNumber&0x000000FF)<<24)+((nLongNumber&0x0000FF00)<<8)+
-		  ((nLongNumber&0x00FF0000)>>8)+((nLongNumber&0xFF000000)>>24));
+          ((nLongNumber&0x00FF0000)>>8)+((nLongNumber&0xFF000000)>>24));
 }
 
 unsigned short
@@ -205,75 +205,75 @@ void
 AuFileSource::getHeader(mrs_string filename)
 {
   if (sfp_ != NULL)
-	fclose(sfp_);
+    fclose(sfp_);
   sfp_ = fopen(filename.c_str(), "rb");
   if (sfp_)
   {
-	mrs_natural n = fread(hdr_, sizeof(snd_header), 1, sfp_);
-	if ((n != 1) ||((hdr_->pref[0] != '.') &&(hdr_->pref[1] != 's')))
-	{
-	  MRSWARN("Filename " + filename + " is not correct .au file \n or has settings that are not supported in Marsyas");
-	  setctrl("mrs_natural/onObservations", (mrs_natural)1);
-	  setctrl("mrs_real/israte", (mrs_real)22050.0);
-	  setctrl("mrs_natural/size", (mrs_natural)0);
-	  hasData_ = false;
-	  lastTickWithData_ = true;
-	  setctrl("mrs_bool/hasData", false);
-	  setctrl("mrs_bool/lastTickWithData", true);
-	}
-	else
-	{
+    mrs_natural n = fread(hdr_, sizeof(snd_header), 1, sfp_);
+    if ((n != 1) ||((hdr_->pref[0] != '.') &&(hdr_->pref[1] != 's')))
+    {
+      MRSWARN("Filename " + filename + " is not correct .au file \n or has settings that are not supported in Marsyas");
+      setctrl("mrs_natural/onObservations", (mrs_natural)1);
+      setctrl("mrs_real/israte", (mrs_real)22050.0);
+      setctrl("mrs_natural/size", (mrs_natural)0);
+      hasData_ = false;
+      lastTickWithData_ = true;
+      setctrl("mrs_bool/hasData", false);
+      setctrl("mrs_bool/lastTickWithData", true);
+    }
+    else
+    {
 #if defined(MARSYAS_BIGENDIAN)
-	  hdr_->hdrLength = hdr_->hdrLength;
-	  hdr_->comment[hdr_->hdrLength-24] = '\0';
-	  hdr_->srate = hdr_->srate;
-	  hdr_->channels = hdr_->channels;
-	  hdr_->mode = hdr_->mode;
-	  hdr_->fileLength = hdr_->fileLength;
+      hdr_->hdrLength = hdr_->hdrLength;
+      hdr_->comment[hdr_->hdrLength-24] = '\0';
+      hdr_->srate = hdr_->srate;
+      hdr_->channels = hdr_->channels;
+      hdr_->mode = hdr_->mode;
+      hdr_->fileLength = hdr_->fileLength;
 #else
-	  hdr_->hdrLength = ByteSwapLong(hdr_->hdrLength);
-	  hdr_->comment[hdr_->hdrLength-24] = '\0';
-	  hdr_->srate = ByteSwapLong(hdr_->srate);
-	  hdr_->channels = ByteSwapLong(hdr_->channels);
-	  hdr_->mode = ByteSwapLong(hdr_->mode);
-	  hdr_->fileLength = ByteSwapLong(hdr_->fileLength);
+      hdr_->hdrLength = ByteSwapLong(hdr_->hdrLength);
+      hdr_->comment[hdr_->hdrLength-24] = '\0';
+      hdr_->srate = ByteSwapLong(hdr_->srate);
+      hdr_->channels = ByteSwapLong(hdr_->channels);
+      hdr_->mode = ByteSwapLong(hdr_->mode);
+      hdr_->fileLength = ByteSwapLong(hdr_->fileLength);
 #endif
 
-	  sampleSize_ = 2;
-	  size_ = (hdr_->fileLength) / sndFormatSizes_[hdr_->mode] / hdr_->channels;
-	  // csize_ = size_ * hdr_->channels;
-	  csize_ = size_;
+      sampleSize_ = 2;
+      size_ = (hdr_->fileLength) / sndFormatSizes_[hdr_->mode] / hdr_->channels;
+      // csize_ = size_ * hdr_->channels;
+      csize_ = size_;
 
-	  fseek(sfp_, hdr_->hdrLength, 0);
-	  sfp_begin_ = ftell(sfp_);
-	  setctrl("mrs_natural/onObservations", (mrs_natural)hdr_->channels);
+      fseek(sfp_, hdr_->hdrLength, 0);
+      sfp_begin_ = ftell(sfp_);
+      setctrl("mrs_natural/onObservations", (mrs_natural)hdr_->channels);
 
-	  setctrl("mrs_real/israte", (mrs_real)hdr_->srate);
-	  setctrl("mrs_natural/size", size_);
-	  ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
-	  ctrl_previouslyPlaying_->setValue(filename, NOUPDATE);
-	  ctrl_currentLabel_->setValue(0.0, NOUPDATE);
-	  ctrl_previousLabel_->setValue(0.0, NOUPDATE);
-	  ctrl_labelNames_->setValue(",", NOUPDATE);
-	  ctrl_nLabels_->setValue(0, NOUPDATE);
-	  setctrl("mrs_bool/hasData", true);
-	  hasData_ = true;
-	  lastTickWithData_ = false;
-	  samplesOut_ = 0;
-	  pos_ = 0;
-	  setctrl("mrs_natural/pos", 0);
-	}
+      setctrl("mrs_real/israte", (mrs_real)hdr_->srate);
+      setctrl("mrs_natural/size", size_);
+      ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
+      ctrl_previouslyPlaying_->setValue(filename, NOUPDATE);
+      ctrl_currentLabel_->setValue(0.0, NOUPDATE);
+      ctrl_previousLabel_->setValue(0.0, NOUPDATE);
+      ctrl_labelNames_->setValue(",", NOUPDATE);
+      ctrl_nLabels_->setValue(0, NOUPDATE);
+      setctrl("mrs_bool/hasData", true);
+      hasData_ = true;
+      lastTickWithData_ = false;
+      samplesOut_ = 0;
+      pos_ = 0;
+      setctrl("mrs_natural/pos", 0);
+    }
   }
   else
   {
-	setctrl("mrs_natural/onObservations", (mrs_natural)1);
-	setctrl("mrs_real/israte", (mrs_real)22050.0);
-	setctrl("mrs_natural/size", (mrs_natural)0);
-	hasData_ = false;
-	setctrl("mrs_bool/hasData", false);
-	lastTickWithData_ = true;
-	setctrl("mrs_bool/lastTickWithData", true);
-	pos_ = 0;
+    setctrl("mrs_natural/onObservations", (mrs_natural)1);
+    setctrl("mrs_real/israte", (mrs_real)22050.0);
+    setctrl("mrs_natural/size", (mrs_natural)0);
+    hasData_ = false;
+    setctrl("mrs_bool/hasData", false);
+    lastTickWithData_ = true;
+    setctrl("mrs_bool/lastTickWithData", true);
+    pos_ = 0;
   }
   nChannels_ = getctrl("mrs_natural/onObservations")->to<mrs_natural>();
   samplesRead_ = 0;
@@ -292,44 +292,44 @@ AuFileSource::getLinear16(realvec& slice)
   // pad with zeros if necessary
   if ((samplesRead_ != samplesToRead_)&&(samplesRead_ != 0))
   {
-	for (c=0; c < nChannels_; ++c)
-	  for (t=0; t < inSamples_; t++)
-		slice(c, t) = 0.0;
-	samplesToWrite_ = samplesRead_ / nChannels_;
+    for (c=0; c < nChannels_; ++c)
+      for (t=0; t < inSamples_; t++)
+        slice(c, t) = 0.0;
+    samplesToWrite_ = samplesRead_ / nChannels_;
   }
   else // default case - read enough samples or no samples in which case zero output
   {
-	samplesToWrite_ = inSamples_;
+    samplesToWrite_ = inSamples_;
 
-	// if there are no more samples output zeros
-	if (samplesRead_ == 0)
-	  for (t=0; t < inSamples_; t++)
-	  {
-		nt_ = nChannels_ * t;
-		for (c=0; c < nChannels_; ++c)
-		{
-		  sdata_[nt_ + c] = 0;
-		}
-	  }
+    // if there are no more samples output zeros
+    if (samplesRead_ == 0)
+      for (t=0; t < inSamples_; t++)
+      {
+        nt_ = nChannels_ * t;
+        for (c=0; c < nChannels_; ++c)
+        {
+          sdata_[nt_ + c] = 0;
+        }
+      }
   }
 
   // write the read samples to output slice once for each channel
   for (t=0; t < samplesToWrite_; t++)
   {
-	sval_ = 0;
-	nt_ = nChannels_ * t;
+    sval_ = 0;
+    nt_ = nChannels_ * t;
 
 #if defined(MARSYAS_BIGENDIAN)
-	for (c=0; c < nChannels_; ++c)
-	  slice(c, t) = ((mrs_real) sdata_[nt_ + c] / (PCM_FMAXSHRT));
+    for (c=0; c < nChannels_; ++c)
+      slice(c, t) = ((mrs_real) sdata_[nt_ + c] / (PCM_FMAXSHRT));
 #else
-	for (c=0; c < nChannels_; ++c)
-	{
-	  usval_ = sdata_[nt_ + c];
+    for (c=0; c < nChannels_; ++c)
+    {
+      usval_ = sdata_[nt_ + c];
       usval_ = ByteSwapShort (usval_);
-	  sval_ = usval_;
-	  slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT);
-	}
+      sval_ = usval_;
+      slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT);
+    }
 #endif
   }
   pos_ += samplesToWrite_;
@@ -368,7 +368,7 @@ AuFileSource::myUpdate(MarControlPtr sender)
 
   if (duration_ != -1.0)
   {
-	csize_ = (mrs_natural)(duration_ * israte_ );
+    csize_ = (mrs_natural)(duration_ * israte_ );
   }
 
   //defaultUpdate(); [!]
@@ -384,82 +384,82 @@ AuFileSource::myProcess(realvec& in, realvec &out)
   (void) in;
   if (ctrl_size_->to<mrs_natural>() != 0)
   {
-	//checkFlow(in,out);
+    //checkFlow(in,out);
 
-	switch (hdr_->mode)
-	{
-	  case SND_FORMAT_UNSPECIFIED:
-		{
-		  MRSWARN("AuFileSource::Unspecified format");
-		  updControl("mrs_natural/pos", pos_);
-		  updControl("mrs_bool/hasData", (pos_ < size_ * nChannels_));
-		  break;
-		}
-	  case SND_FORMAT_MULAW_8:
-		{
-		  MRSWARN("MU_LAW for now not supported");
-		  updControl("mrs_natural/pos", pos_);
-		  updControl("mrs_bool/hasData", (pos_ < size_ * nChannels_));
-		  break;
-		}
-	  case SND_FORMAT_LINEAR_8:
-		{
-		  // pos_ = getLinear8(c, out);
-		  setctrl("mrs_natural/pos", pos_);
-		  setctrl("mrs_bool/hasData", pos_ < size_ * nChannels_);
-		  break;
-		}
-	  case SND_FORMAT_LINEAR_16:
-		{
-		  getLinear16(out);
-		  ctrl_pos_->setValue(pos_, NOUPDATE);
+    switch (hdr_->mode)
+    {
+    case SND_FORMAT_UNSPECIFIED:
+    {
+      MRSWARN("AuFileSource::Unspecified format");
+      updControl("mrs_natural/pos", pos_);
+      updControl("mrs_bool/hasData", (pos_ < size_ * nChannels_));
+      break;
+    }
+    case SND_FORMAT_MULAW_8:
+    {
+      MRSWARN("MU_LAW for now not supported");
+      updControl("mrs_natural/pos", pos_);
+      updControl("mrs_bool/hasData", (pos_ < size_ * nChannels_));
+      break;
+    }
+    case SND_FORMAT_LINEAR_8:
+    {
+      // pos_ = getLinear8(c, out);
+      setctrl("mrs_natural/pos", pos_);
+      setctrl("mrs_bool/hasData", pos_ < size_ * nChannels_);
+      break;
+    }
+    case SND_FORMAT_LINEAR_16:
+    {
+      getLinear16(out);
+      ctrl_pos_->setValue(pos_, NOUPDATE);
 
-		  if (pos_ >= rewindpos_ + csize_)
-		  {
-			if (repetitions_ != 1)
-			{
-			  pos_ = rewindpos_;
-			}
+      if (pos_ >= rewindpos_ + csize_)
+      {
+        if (repetitions_ != 1)
+        {
+          pos_ = rewindpos_;
+        }
 
-		  }
+      }
 
-		  samplesOut_ += onSamples_;
+      samplesOut_ += onSamples_;
 
-		  if (repetitions_ != 1)
-		  {
-			hasData_ = (samplesOut_ < repetitions_ * csize_);
-			lastTickWithData_ = ((samplesOut_  + onSamples_>= repetitions_ * csize_) && hasData_);
-		  }
-		  else
-		  {
-			hasData_ = pos_ < rewindpos_ + csize_;
-			lastTickWithData_ = ((samplesOut_  + onSamples_>= repetitions_ * csize_) && hasData_);
-		  }
+      if (repetitions_ != 1)
+      {
+        hasData_ = (samplesOut_ < repetitions_ * csize_);
+        lastTickWithData_ = ((samplesOut_  + onSamples_>= repetitions_ * csize_) && hasData_);
+      }
+      else
+      {
+        hasData_ = pos_ < rewindpos_ + csize_;
+        lastTickWithData_ = ((samplesOut_  + onSamples_>= repetitions_ * csize_) && hasData_);
+      }
 
 
-		  if (repetitions_ == -1)
-		  {
-			hasData_ = true;
-			lastTickWithData_ = false;
-		  }
+      if (repetitions_ == -1)
+      {
+        hasData_ = true;
+        lastTickWithData_ = false;
+      }
 
-		  break;
-		}
-	  case SND_FORMAT_FLOAT:
-		{
-		  // getfloat(win);
-		  break;
-		}
-	  default:
-		{
-		  mrs_string warn = "File mode";
-		  warn += sndFormats_[hdr_->mode];
-		  warn += "(";
-		  warn += (char) hdr_->mode;
-		  warn += ") is not supported for now";
-		  MRSWARN(warn);
-		}
-	}
+      break;
+    }
+    case SND_FORMAT_FLOAT:
+    {
+      // getfloat(win);
+      break;
+    }
+    default:
+    {
+      mrs_string warn = "File mode";
+      warn += sndFormats_[hdr_->mode];
+      warn += "(";
+      warn += (char) hdr_->mode;
+      warn += ") is not supported for now";
+      MRSWARN(warn);
+    }
+    }
   }
   ctrl_currentHasData_->setValue(hasData_);
   ctrl_currentLastTickWithData_->setValue(lastTickWithData_);

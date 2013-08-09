@@ -65,10 +65,10 @@ private:
   void writeSettings();
   MdiChild *activeMdiChild();
   MdiChild *findMdiChild(const QString &fileName);
-  
+
   QWorkspace *workspace;
   QSignalMapper *windowMapper;
-  
+
   QMenu *fileMenu;
   QMenu *editMenu;
   QMenu *windowMenu;

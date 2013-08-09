@@ -26,7 +26,7 @@ namespace Marsyas
 /**
 	\class DPWOsc
 	\ingroup Synthesis
-	\brief 
+	\brief
 
 	Controls:
 	- \b mrs_real/frequency [w] : Sets the fundental frequency for the oscillator.
@@ -39,53 +39,53 @@ class DPWOsc: public MarSystem
 {
 private:
 
-	class Differentiator
-	{
-	private:
-		mrs_real x1;
-	public:
+  class Differentiator
+  {
+  private:
+    mrs_real x1;
+  public:
 
-		mrs_real operator()(mrs_real x)
-		{
-			mrs_real y = x - x1;
-			x1 = x;
-			return y;
-		}
-	};
+    mrs_real operator()(mrs_real x)
+    {
+      mrs_real y = x - x1;
+      x1 = x;
+      return y;
+    }
+  };
 
-	// Add specific controls needed by this MarSystem.
-	void addControls();
+  // Add specific controls needed by this MarSystem.
+  void addControls();
 
-	// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  // Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
-	mrs_real currentValue_;
-	mrs_real incr_;
-	mrs_real cyclicRate_;
-	mrs_bool cyclicIn_;
-	mrs_real israte_;
-	mrs_real frequency_;
-	mrs_natural type_;
+  mrs_real currentValue_;
+  mrs_real incr_;
+  mrs_real cyclicRate_;
+  mrs_bool cyclicIn_;
+  mrs_real israte_;
+  mrs_real frequency_;
+  mrs_natural type_;
 
-	mrs_real c_; // Amplitude scalar
+  mrs_real c_; // Amplitude scalar
 
-	Differentiator df;
+  Differentiator df;
 
 public:
-	// DPWOsc constructor.
-	DPWOsc(std::string name);
+  // DPWOsc constructor.
+  DPWOsc(std::string name);
 
-	// DPWOsc copy constructor.
-	DPWOsc(const DPWOsc& a);
+  // DPWOsc copy constructor.
+  DPWOsc(const DPWOsc& a);
 
-	// DPWOsc destructor.
-	~DPWOsc();
+  // DPWOsc destructor.
+  ~DPWOsc();
 
-	// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  // Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  // Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

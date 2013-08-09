@@ -44,24 +44,24 @@ namespace Marsyas
 class PowerSpectrum: public MarSystem
 {
 private:
-	std::string stype_;
+  std::string stype_;
 
-	mrs_natural ntype_;
-	mrs_natural N2_;
-	mrs_real re_, im_;
-	mrs_real dB_, pwr_;
-	MarControlPtr ctrl_spectrumType_;
+  mrs_natural ntype_;
+  mrs_natural N2_;
+  mrs_real re_, im_;
+  mrs_real dB_, pwr_;
+  MarControlPtr ctrl_spectrumType_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	PowerSpectrum(std::string name);
-	PowerSpectrum(const PowerSpectrum&);
-	~PowerSpectrum();
-	MarSystem* clone() const;
+  PowerSpectrum(std::string name);
+  PowerSpectrum(const PowerSpectrum&);
+  ~PowerSpectrum();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

@@ -9,18 +9,18 @@
 class iTunesXmlWriter
 {
 public:
-	iTunesXmlWriter(QFile &file);
-	~iTunesXmlWriter();
-	void operator<<(MusicCollection *library);
+  iTunesXmlWriter(QFile &file);
+  ~iTunesXmlWriter();
+  void operator<<(MusicCollection *library);
 
 protected:
-	//QTextStream& operator<<(QTextStream& out, MusicTrack *track);
-	//QTextStream& operator<<(QTextStream& out, MusicPlaylist *playlist);
-	void output(MusicTrack *track);
-	void output(MusicPlaylist *playlist);
+  //QTextStream& operator<<(QTextStream& out, MusicTrack *track);
+  //QTextStream& operator<<(QTextStream& out, MusicPlaylist *playlist);
+  void output(MusicTrack *track);
+  void output(MusicPlaylist *playlist);
 
 private:
-	QTextStream *_out;
+  QTextStream *_out;
 };
 
 #endif /* ITUNESXMLWRITER_XML */

@@ -37,15 +37,15 @@ namespace Marsyas
 class HalfWaveRectifier: public MarSystem
 {
 private:
-	void myUpdate(MarControlPtr sender);
+  void myUpdate(MarControlPtr sender);
 
 public:
-	HalfWaveRectifier(std::string name);
-	~HalfWaveRectifier();
+  HalfWaveRectifier(std::string name);
+  ~HalfWaveRectifier();
 
-	MarSystem* clone() const;
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 
 };
 

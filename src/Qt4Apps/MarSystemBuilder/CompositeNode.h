@@ -15,7 +15,7 @@ using namespace Marsyas;
 
 class CompositeNode:public MarSystemNode
 {
- public:
+public:
   CompositeNode(string type,QString name,QWidget* parent);
   CompositeNode(MarSystem* msys,QWidget* parent);
 
@@ -33,13 +33,13 @@ class CompositeNode:public MarSystemNode
   //TODO pretty sure we don't need to override this anymore
   //virtual void setChild(MarSystemNode* child);
 
-  public slots:
-    void handleChildResize(int x,int y,int w,int h);
+public slots:
+  void handleChildResize(int x,int y,int w,int h);
 
- signals:
+signals:
   void resized(int x,int y,int w,int h);
 
- protected:
+protected:
   vector<MarSystemNode*> nodes_;
 
   //MarSystemNode* next;

@@ -70,40 +70,40 @@ namespace Marsyas
 class ShiftInput: public MarSystem
 {
 private:
-	/// Internal cache for the window size value.
-	mrs_natural winSize_;
+  /// Internal cache for the window size value.
+  mrs_natural winSize_;
 
-	/// Internal cache for the hop size value.
-	mrs_natural hopSize_;
+  /// Internal cache for the hop size value.
+  mrs_natural hopSize_;
 
-	/// Internal sample buffer.
-	realvec outSavedData_;
+  /// Internal sample buffer.
+  realvec outSavedData_;
 
-	/// Internal pointer to the reset MarControl.
-	MarControlPtr ctrl_reset_;
+  /// Internal pointer to the reset MarControl.
+  MarControlPtr ctrl_reset_;
 
-	/// Internal pointer to the winSize MarControl.
-	MarControlPtr ctrl_winSize_;
-	
-	/// Internal pointer to the clean MarControl.
-	MarControlPtr ctrl_clean_;
-	
-	/// Internal pointer to the lowCleanLimit MarControl.
-	MarControlPtr ctrl_lowCleanLimit_;
-	
-	/// Internal pointer to the highCleanLimit MarControl.
-	MarControlPtr ctrl_highCleanLimit_;
+  /// Internal pointer to the winSize MarControl.
+  MarControlPtr ctrl_winSize_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  /// Internal pointer to the clean MarControl.
+  MarControlPtr ctrl_clean_;
+
+  /// Internal pointer to the lowCleanLimit MarControl.
+  MarControlPtr ctrl_lowCleanLimit_;
+
+  /// Internal pointer to the highCleanLimit MarControl.
+  MarControlPtr ctrl_highCleanLimit_;
+
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	ShiftInput(std::string name);
-	ShiftInput(const ShiftInput& a);
-	~ShiftInput();
-	MarSystem* clone() const;
+  ShiftInput(std::string name);
+  ShiftInput(const ShiftInput& a);
+  ~ShiftInput();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 
 };
 

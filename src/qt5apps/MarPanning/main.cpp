@@ -16,10 +16,10 @@
 using namespace std;
 
 #include "window.h"
-#include "OscMapper.h" 
+#include "OscMapper.h"
 using namespace MarsyasQt;
 
-void usage() 
+void usage()
 {
   cout << "MarPanning : Display the left/right panning of an audio source as a" << endl;
   cout << "graphical OpenGL display" << endl;
@@ -51,19 +51,19 @@ int main(int argc, char *argv[])
   QHostAddress outputOscHostAddress_ = QHostAddress::LocalHost;
   mrs_natural inputOscPort_ = 9000;
   mrs_natural outputOscPort_ = 9001;
-  
-  // 
+
+  //
   // Create an OscMapper that maps messages to the app through a
   // MarSystemQtWrapper.
   //
-  OscMapper* oscMapper = new OscMapper(inputOscHostAddress_, inputOscPort_, 
-				       outputOscHostAddress_, outputOscPort_, 
-				       app, window.getMarSystemQtWrapper ());
+  OscMapper* oscMapper = new OscMapper(inputOscHostAddress_, inputOscPort_,
+                                       outputOscHostAddress_, outputOscPort_,
+                                       app, window.getMarSystemQtWrapper ());
 
   /* oscMapper->registerInputQtSlot(window.xTransSlider, "/key1", QVariant::Int);
   oscMapper->registerInputQtSlot(window.xTransSlider, "/key2", QVariant::Int);
   oscMapper->registerInputQtSlot(window.xTransSlider, "/key3", QVariant::Int);
-  */ 
+  */
 
   oscMapper->registerInputQtSlot(window.magnitudeCutoffSlider, "/keym", QVariant::Int);
   oscMapper->registerInputQtSlot(window.numVerticesSlider, "/keys", QVariant::Int);

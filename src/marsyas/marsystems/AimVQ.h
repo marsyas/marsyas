@@ -50,7 +50,7 @@ namespace Marsyas
 
 class AimVQ: public MarSystem
 {
- private:
+private:
   void myUpdate(MarControlPtr sender);
 
   // Prepare the module
@@ -80,7 +80,7 @@ class AimVQ: public MarSystem
   int codeword_count_;
   int codeword_length_;
 
- public:
+public:
   AimVQ(std::string name);
   AimVQ(const AimVQ& a);
 

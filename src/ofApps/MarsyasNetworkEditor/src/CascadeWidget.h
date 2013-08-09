@@ -14,25 +14,25 @@
 
 namespace Marsyas
 {
-	
-	class CascadeWidget : public MarSystemWidget
-	{
-	private:
-		void addControls();
-		void updateControls();
-		
-		
-	public:
-		CascadeWidget(MarSystem *msys, GraphicalEnvironment* env);
-		~CascadeWidget();
-		
-		//void update();
-		
-		void drawConnections();
-		void updateSize();
-		void updateChildrenPos();
-		void updateChildrenWidgets();
-	};
+
+class CascadeWidget : public MarSystemWidget
+{
+private:
+  void addControls();
+  void updateControls();
+
+
+public:
+  CascadeWidget(MarSystem *msys, GraphicalEnvironment* env);
+  ~CascadeWidget();
+
+  //void update();
+
+  void drawConnections();
+  void updateSize();
+  void updateChildrenPos();
+  void updateChildrenWidgets();
+};
 }
 
 #endif

@@ -3,84 +3,84 @@
 Marsyas::MarSystemManager ofxMarsyasNetwork::mng;
 
 ofxMarsyasNetwork::ofxMarsyasNetwork(string name)
-: Marsyas::Series(name)
+  : Marsyas::Series(name)
 {
-	targetRate = rate = 0;
-	targetPriority = priority = 1;
+  targetRate = rate = 0;
+  targetPriority = priority = 1;
 }
 
 ofxMarsyasNetwork::~ofxMarsyasNetwork()
 {
-	stop();
+  stop();
 }
 
-void ofxMarsyasNetwork::threadedFunction() 
+void ofxMarsyasNetwork::threadedFunction()
 {
-	while( isThreadRunning() )
-	{
-		if (priority != targetPriority)
-		{
-			run();
-			priority = targetPriority;
-		}
+  while( isThreadRunning() )
+  {
+    if (priority != targetPriority)
+    {
+      run();
+      priority = targetPriority;
+    }
 
-		// cout << "ofxMarsyasNetwork trying to lock" << endl;
-		if (lock())
-		{
-		  // cout << "ofxMarsyasNetwork in lock" << endl;
-		
-			tick();
-			thisTick = ofGetSystemTime();
-			rate = ofLerp(rate, 1000.0/(thisTick-lastTick), 0.001);		
-			lastTick = thisTick;
+    // cout << "ofxMarsyasNetwork trying to lock" << endl;
+    if (lock())
+    {
+      // cout << "ofxMarsyasNetwork in lock" << endl;
 
-			update();
-			unlock();
-			// cout << "ofxMarsyasNetwork after unlock()" << endl;
+      tick();
+      thisTick = ofGetSystemTime();
+      rate = ofLerp(rate, 1000.0/(thisTick-lastTick), 0.001);
+      lastTick = thisTick;
 
-		}
-		else {
-		  // cout << "ofxMarsyasNetwork sleeping" << endl;
-			ofSleepMillis(20);
-		}
+      update();
+      unlock();
+      // cout << "ofxMarsyasNetwork after unlock()" << endl;
 
-		 if (targetRate>0)
-		 	ofSleepMillis(1000.0/targetRate);
-	}
+    }
+    else {
+      // cout << "ofxMarsyasNetwork sleeping" << endl;
+      ofSleepMillis(20);
+    }
+
+    if (targetRate>0)
+      ofSleepMillis(1000.0/targetRate);
+  }
 }
 
-void ofxMarsyasNetwork::run() 
+void ofxMarsyasNetwork::run()
 {
-	if (isThreadRunning())
-		stopThread();
+  if (isThreadRunning())
+    stopThread();
 
 #ifndef TARGET_WIN32
-	pthread_attr_t tattr;
-	int oldprio, policy;
-	sched_param param;
+  pthread_attr_t tattr;
+  int oldprio, policy;
+  sched_param param;
 
-	pthread_getschedparam(pthread_self(), &policy, &param);
-	oldprio = param.sched_priority;
+  pthread_getschedparam(pthread_self(), &policy, &param);
+  oldprio = param.sched_priority;
 
-	// set a new priority
-	param.sched_priority *= oldprio * targetPriority;
+  // set a new priority
+  param.sched_priority *= oldprio * targetPriority;
 
-	// set the new scheduling param
-	pthread_attr_setschedparam (&tattr, &param);  
+  // set the new scheduling param
+  pthread_attr_setschedparam (&tattr, &param);
 #endif
 
-	startThread(true, false); // blocking, non-verbose
+  startThread(true, false); // blocking, non-verbose
 
 #ifndef TARGET_WIN32
-	// restore the old priority to prevent scaling from escalating
-	param.sched_priority = oldprio;
-	// set the old scheduling param
-	pthread_attr_setschedparam(&tattr, &param);
+  // restore the old priority to prevent scaling from escalating
+  param.sched_priority = oldprio;
+  // set the old scheduling param
+  pthread_attr_setschedparam(&tattr, &param);
 #endif
 }
 
-void ofxMarsyasNetwork::stop() 
+void ofxMarsyasNetwork::stop()
 {
-	stopThread();	
+  stopThread();
 }
 

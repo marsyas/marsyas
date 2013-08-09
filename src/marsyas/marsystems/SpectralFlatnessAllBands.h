@@ -38,28 +38,28 @@ class marsyas_EXPORT SpectralFlatnessAllBands: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
 
 public:
-	/// SpectralFlatnessAllBands constructor.
-	SpectralFlatnessAllBands(std::string name);
+  /// SpectralFlatnessAllBands constructor.
+  SpectralFlatnessAllBands(std::string name);
 
-	/// SpectralFlatnessAllBands copy constructor.
-	SpectralFlatnessAllBands(const SpectralFlatnessAllBands& a);
+  /// SpectralFlatnessAllBands copy constructor.
+  SpectralFlatnessAllBands(const SpectralFlatnessAllBands& a);
 
-	/// SpectralFlatnessAllBands destructor.
-	~SpectralFlatnessAllBands();
+  /// SpectralFlatnessAllBands destructor.
+  ~SpectralFlatnessAllBands();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

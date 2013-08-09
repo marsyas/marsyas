@@ -35,8 +35,8 @@ MarGridWindow::MarGridWindow()
   setCentralWidget(w);
 
   createActions();
-  createMenus();  
-  
+  createMenus();
+
   QPushButton *extract  = new QPushButton(tr("Extract"));
   QPushButton *train = new QPushButton(tr("Train"));
   QPushButton *predict = new QPushButton(tr("Predict"));
@@ -85,7 +85,7 @@ MarGridWindow::MarGridWindow()
   gridLayout->addWidget(extract, 2, 0);
   gridLayout->addWidget(train, 2, 1);
   gridLayout->addWidget(predict, 2, 2);
-  
+
 
   // gridLayout->addWidget(gridHeightWidget,3,0, 1, 3);
   // gridLayout->addWidget(gridWidthWidget,4,0);
@@ -97,7 +97,7 @@ MarGridWindow::MarGridWindow()
   connect(predict, SIGNAL(clicked()), margrid, SLOT(predict()));
   connect(gridWidth, SIGNAL(textChanged(QString)), margrid, SLOT(setXGridSize(QString)));
   connect(gridHeight, SIGNAL(textChanged(QString)), margrid, SLOT(setYGridSize(QString)));
-  connect(margrid, SIGNAL(playingFile(QString)), this, SLOT(playingFile(QString))); 
+  connect(margrid, SIGNAL(playingFile(QString)), this, SLOT(playingFile(QString)));
 //   connect(margrid, SIGNAL(newGridSize(int, int)), this, SLOT(resizeGrid(int, int)));
 
   w->setLayout(gridLayout);
@@ -106,16 +106,16 @@ MarGridWindow::MarGridWindow()
 
 
 void
-MarGridWindow::playingFile(QString s) 
+MarGridWindow::playingFile(QString s)
 {
-	// playLabel->setText(s);
+  // playLabel->setText(s);
 }
 
 void
 MarGridWindow::createMenus()
 {
   fileMenu = menuBar()->addMenu(tr("&File"));
-  fileMenu->addAction(openPredictAct); 
+  fileMenu->addAction(openPredictAct);
   fileMenu->addAction(openTrainAct);
   fileMenu->addAction(playbackAct);
   fileMenu->addAction(blackwhiteAct);
@@ -123,16 +123,16 @@ MarGridWindow::createMenus()
   fileMenu->addAction(openPredictGridAct);
   fileMenu->addAction(savePerdictGridAct);
 
-  
+
   menuBar()->addSeparator();
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAct);
 
-  
+
 }
 
 
-void 
+void
 MarGridWindow::openTrainFile()
 {
   QString fileName = QFileDialog::getOpenFileName(this);
@@ -142,7 +142,7 @@ MarGridWindow::openTrainFile()
 }
 
 
-void 
+void
 MarGridWindow::openPredictFile()
 {
   QString fileName = QFileDialog::getOpenFileName(this);
@@ -161,30 +161,30 @@ MarGridWindow::openPredictionGrid()
 void
 MarGridWindow::savePredictionGrid()
 {
-	QString fileName = QFileDialog::getSaveFileName(this);
-	cout << "Save" << endl;
-	emit savePredictGridFile(fileName);
+  QString fileName = QFileDialog::getSaveFileName(this);
+  cout << "Save" << endl;
+  emit savePredictGridFile(fileName);
 }
 
-void 
+void
 MarGridWindow::resizeGrid(int height, int width)
 {
-	gridHeight->setText("" + height);
-	gridWidth->setText("" + width);
+  gridHeight->setText("" + height);
+  gridWidth->setText("" + width);
 }
-	
 
 
 
 
-void 
+
+void
 MarGridWindow::createActions()
 {
-  
+
   openTrainAct = new QAction(tr("&Open Collection File for Training"), this);
   openTrainAct->setStatusTip(tr("Open Collection File for Training"));
   connect(openTrainAct, SIGNAL(triggered()), this, SLOT(openTrainFile()));
-  
+
   openPredictAct = new QAction(tr("&Open Collection File for Predicting"), this);
   openPredictAct->setStatusTip(tr("Open Collection File for Prediciting"));
   connect(openPredictAct, SIGNAL(triggered()), this, SLOT(openPredictFile()));
@@ -214,9 +214,9 @@ MarGridWindow::createActions()
 }
 
 
-void 
+void
 MarGridWindow::about()
 {
   QMessageBox::about(this, tr("Marsyas MarGrid"),  tr("Marsyas MarGrid: Demonstrates continuous-feedback \n content-based music browsing using Self Organizing Maps"));
-  
+
 }

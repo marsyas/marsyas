@@ -33,45 +33,45 @@ StandardDeviation::~StandardDeviation()
 MarSystem*
 StandardDeviation::clone() const
 {
-	return new StandardDeviation(*this);
+  return new StandardDeviation(*this);
 }
 
 void
 StandardDeviation::myUpdate(MarControlPtr sender)
 {
-	(void) sender;  //suppress warning of unused parameter(s)
-	MRSDIAG("StandardDeviation.cpp - StandardDeviation:myUpdate");
+  (void) sender;  //suppress warning of unused parameter(s)
+  MRSDIAG("StandardDeviation.cpp - StandardDeviation:myUpdate");
 
-	ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
-	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
-	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+  ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
-	obsrow_.create(ctrl_inSamples_->to<mrs_natural>());
+  obsrow_.create(ctrl_inSamples_->to<mrs_natural>());
 
-	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
+  inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 
-	// Add prefix to the observation names.
-	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
-	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Std_"), NOUPDATE);
+  // Add prefix to the observation names.
+  mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+  ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Std_"), NOUPDATE);
 
 }
 
 void
 StandardDeviation::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
-	//checkFlow(in,out);
-	out.setval(0.0);
-	for (o=0; o < inObservations_; o++)
-	{
-		for (t = 0; t < inSamples_; t++)
-		{
-			// Calculate mean
-			obsrow_(t) = in(o,t);
-		}
-		out(o,0) = obsrow_.std();
-	}
+  mrs_natural t,o;
+  //checkFlow(in,out);
+  out.setval(0.0);
+  for (o=0; o < inObservations_; o++)
+  {
+    for (t = 0; t < inSamples_; t++)
+    {
+      // Calculate mean
+      obsrow_(t) = in(o,t);
+    }
+    out(o,0) = obsrow_.std();
+  }
 
-	// VERY INEFFICIENT - LOTS OF MEMORY ALLOCATION AND COPYING
-	// out = in.stdObs();
+  // VERY INEFFICIENT - LOTS OF MEMORY ALLOCATION AND COPYING
+  // out = in.stdObs();
 }

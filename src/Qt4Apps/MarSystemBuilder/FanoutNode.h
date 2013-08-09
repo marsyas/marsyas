@@ -13,7 +13,7 @@ class FanoutNode:public CompositeNode
 {
   Q_OBJECT
 
- public:
+public:
   FanoutNode(QString name,QWidget* parent);
   FanoutNode(MarSystem* msys,QWidget* parent);
 
@@ -22,14 +22,14 @@ class FanoutNode:public CompositeNode
   bool insert(MarSystemNode* before,MarSystemNode* newWidget);
   virtual QWidget* getChildrenCanvas();
   void placeAllWidgets();
- 
-  public slots:
-    void handleChildResize(int x,int y,int w,int h);
 
- signals:
+public slots:
+  void handleChildResize(int x,int y,int w,int h);
+
+signals:
   void resized(int x,int y,int w,int h);
 
- protected:
+protected:
   virtual void resizeEvent(QResizeEvent* event);
   virtual void paintEvent(QPaintEvent* event);
 };

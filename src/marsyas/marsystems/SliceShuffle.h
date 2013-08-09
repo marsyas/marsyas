@@ -39,40 +39,40 @@ class SliceShuffle: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
-	/// MarControlPtr for the buffer size (number of slices that fit in buffer).
-	MarControlPtr ctrl_bufferSize_;
+  /// MarControlPtr for the buffer size (number of slices that fit in buffer).
+  MarControlPtr ctrl_bufferSize_;
 
-	/// Caching variable for the buffer size
-	mrs_natural bufferSize_;
+  /// Caching variable for the buffer size
+  mrs_natural bufferSize_;
 
-	/// Caching variable for the number of samples per slice
-	mrs_natural nSamples_;
+  /// Caching variable for the number of samples per slice
+  mrs_natural nSamples_;
 
-	/// Internal memory for the previous observed slice.
-	realvec sliceBuffer_;
+  /// Internal memory for the previous observed slice.
+  realvec sliceBuffer_;
 
 
 public:
-	/// SliceShuffle constructor.
-	SliceShuffle(std::string name);
+  /// SliceShuffle constructor.
+  SliceShuffle(std::string name);
 
-	/// SliceShuffle copy constructor.
-	SliceShuffle(const SliceShuffle& a);
+  /// SliceShuffle copy constructor.
+  SliceShuffle(const SliceShuffle& a);
 
-	/// SliceShuffle destructor.
-	~SliceShuffle();
+  /// SliceShuffle destructor.
+  ~SliceShuffle();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

@@ -24,7 +24,7 @@ using namespace Marsyas;
 
 OnePole::OnePole(mrs_string name) : MarSystem("OnePole", name)
 {
-	addControls();
+  addControls();
 }
 
 
@@ -36,51 +36,51 @@ OnePole::~OnePole()
 MarSystem*
 OnePole::clone() const
 {
-	return new OnePole(*this);
+  return new OnePole(*this);
 }
 
 void
 OnePole::addControls()
 {
-	addControl("mrs_real/alpha", 0.9);
-	setControlState("mrs_real/alpha", true);
+  addControl("mrs_real/alpha", 0.9);
+  setControlState("mrs_real/alpha", true);
 }
 
 
 void
 OnePole::myUpdate(MarControlPtr sender)
 {
-	// Use the default MarSystem setup with equal input/output stream format.
-	MarSystem::myUpdate(sender);
+  // Use the default MarSystem setup with equal input/output stream format.
+  MarSystem::myUpdate(sender);
 
-	// Cache the alpha and gain value.
-	alpha_ = getControl("mrs_real/alpha")->to<mrs_real>();
-	gain_ = 1.0 - alpha_;
+  // Cache the alpha and gain value.
+  alpha_ = getControl("mrs_real/alpha")->to<mrs_real>();
+  gain_ = 1.0 - alpha_;
 
-	// Allocate and initialize the buffer for previous output samples.
-	mrs_natural rows = ctrl_inObservations_->to<mrs_natural>();
-	previousOutputSamples_.stretch(rows, 1);
-	previousOutputSamples_.setval(0.0);
+  // Allocate and initialize the buffer for previous output samples.
+  mrs_natural rows = ctrl_inObservations_->to<mrs_natural>();
+  previousOutputSamples_.stretch(rows, 1);
+  previousOutputSamples_.setval(0.0);
 }
 
 void
 OnePole::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
-	for (o = 0; o < inObservations_; o++)
-	{
-		// Use the last sample from the previous slice for the first sample of
-		// this slice.
-		t = 0;
-		out(o, t) = gain_ * in(o, t) + alpha_ * previousOutputSamples_(o, 0);
+  mrs_natural t,o;
+  for (o = 0; o < inObservations_; o++)
+  {
+    // Use the last sample from the previous slice for the first sample of
+    // this slice.
+    t = 0;
+    out(o, t) = gain_ * in(o, t) + alpha_ * previousOutputSamples_(o, 0);
 
-		// Do the remaining samples.
-		for (t = 1; t < inSamples_; t++)
-		{
-			out(o, t) = gain_ * in(o, t) + alpha_ * out(o, t - 1);
-		}
+    // Do the remaining samples.
+    for (t = 1; t < inSamples_; t++)
+    {
+      out(o, t) = gain_ * in(o, t) + alpha_ * out(o, t - 1);
+    }
 
-		// Store the last sample for usage in next process() call.
-		previousOutputSamples_(o, 0) = out(o, inSamples_ - 1);
-	}
+    // Store the last sample for usage in next process() call.
+    previousOutputSamples_(o, 0) = out(o, inSamples_ - 1);
+  }
 }

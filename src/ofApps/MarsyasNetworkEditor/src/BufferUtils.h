@@ -13,15 +13,15 @@
 #include "MarSystemManager.h"
 
 namespace Marsyas {
-  
-	struct realvecBufferObject{
-		
-		realvecBufferObject* prox;
-		realvec value;
-	};
-	
-	
-	
+
+struct realvecBufferObject {
+
+  realvecBufferObject* prox;
+  realvec value;
+};
+
+
+
 }
 
 

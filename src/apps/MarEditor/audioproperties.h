@@ -7,16 +7,16 @@
 
 class AudioProperties : public QFrame, private Ui::AudioPropertiesClass
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    AudioProperties(QWidget *parent = 0, Signal* const audio = 0);
-    ~AudioProperties();
+  AudioProperties(QWidget *parent = 0, Signal* const audio = 0);
+  ~AudioProperties();
 
 private:
-	Signal* const audio_;
+  Signal* const audio_;
 
-	void populate();
+  void populate();
 };
 
 #endif // AUDIOPROPERTIES_H

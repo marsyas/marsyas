@@ -38,12 +38,12 @@ class Negative: public MarSystem
 {
 
 public:
-	Negative(std::string name);
-	~Negative();
+  Negative(std::string name);
+  ~Negative();
 
-	MarSystem* clone() const;
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 
 };
 

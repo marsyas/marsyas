@@ -24,12 +24,12 @@ using namespace Marsyas;
 
 PeakMask::PeakMask(mrs_string name):MarSystem("PeakMask", name)
 {
-	addControls();
+  addControls();
 }
 
 PeakMask::PeakMask(const PeakMask& a) : MarSystem(a)
 {
-	ctrl_gain_EXAMPLE_ = getctrl("mrs_real/gain");
+  ctrl_gain_EXAMPLE_ = getctrl("mrs_real/gain");
 }
 
 
@@ -40,35 +40,35 @@ PeakMask::~PeakMask()
 MarSystem*
 PeakMask::clone() const
 {
-	return new PeakMask(*this);
+  return new PeakMask(*this);
 }
 
 void
 PeakMask::addControls()
 {
 
-	addctrl("mrs_bool/dummyEXAMPLE", false);
-	setctrlState("mrs_bool/dummyEXAMPLE", true);
+  addctrl("mrs_bool/dummyEXAMPLE", false);
+  setctrlState("mrs_bool/dummyEXAMPLE", true);
 
-	addctrl("mrs_real/gain", 1.0, ctrl_gain_EXAMPLE_);
+  addctrl("mrs_real/gain", 1.0, ctrl_gain_EXAMPLE_);
 
 }
 
 void
 PeakMask::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("PeakMask.cpp - PeakMask:myUpdate");
+  MRSDIAG("PeakMask.cpp - PeakMask:myUpdate");
 
-	MarSystem::myUpdate(sender);
+  MarSystem::myUpdate(sender);
 }
 
 void
 PeakMask::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
-	const mrs_real& gainValueEXAMPLE = ctrl_gain_EXAMPLE_->to<mrs_real>();
+  mrs_natural t,o;
+  const mrs_real& gainValueEXAMPLE = ctrl_gain_EXAMPLE_->to<mrs_real>();
 
-	for (o=0; o < inObservations_; o++)
-		for (t = 0; t < inSamples_; t++)
-			out(o,t) = gainValueEXAMPLE * in(o,t);
+  for (o=0; o < inObservations_; o++)
+    for (t = 0; t < inSamples_; t++)
+      out(o,t) = gainValueEXAMPLE * in(o,t);
 }

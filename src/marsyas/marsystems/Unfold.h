@@ -37,17 +37,17 @@ namespace Marsyas
 class Unfold: public MarSystem
 {
 private:
-	void myUpdate(MarControlPtr sender);
-	MarControlPtr ctrl_weight_;
-	MarControlPtr ctrl_stereo_;
-	void addControls();
+  void myUpdate(MarControlPtr sender);
+  MarControlPtr ctrl_weight_;
+  MarControlPtr ctrl_stereo_;
+  void addControls();
 public:
-	Unfold(std::string name);
-	Unfold(const Unfold& a);
-	~Unfold();
-	MarSystem* clone() const;
+  Unfold(std::string name);
+  Unfold(const Unfold& a);
+  ~Unfold();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

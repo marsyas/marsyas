@@ -76,11 +76,11 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
 
   oss.str("");
   l=0;
-  for(i=0; i< (mrs_natural)countsclc.size(); ++i){
+  for(i=0; i< (mrs_natural)countsclc.size(); ++i) {
     tmpcounts.read(countsclc.entry(i));
-    for(j=1; j<(mrs_natural)tmpcounts.getSize(); j++){
-      if(tmpcounts(j) > 0){
-	l++;
+    for(j=1; j<(mrs_natural)tmpcounts.getSize(); j++) {
+      if(tmpcounts(j) > 0) {
+        l++;
       }
     }
   }
@@ -96,41 +96,41 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
   //tmpvec4.create(outFeatures4.getRows()+1,1);
   tmpFeatures.create(1);
   l=0;
-  for(i=0; i<(mrs_natural)countsclc.size(); ++i){
+  for(i=0; i<(mrs_natural)countsclc.size(); ++i) {
     tmpcounts.read(countsclc.entry(i));
     tmpsizes.read(sizesclc.entry(i));
-    for(j=1; j<tmpcounts.getSize(); j++){
-      if(tmpcounts(j) > 0){
-	l++;
-	sizes(l) = tmpsizes(j);
+    for(j=1; j<tmpcounts.getSize(); j++) {
+      if(tmpcounts(j) > 0) {
+        l++;
+        sizes(l) = tmpsizes(j);
       }
     }
   }
   featuresTpl.create(sizes.getSize()*BIN,sizes.maxval());
-  for(i=0; i<(mrs_natural)templates.size(); ++i){
-    if(templates.labelName(i) != countsclc.labelName(i)){
+  for(i=0; i<(mrs_natural)templates.size(); ++i) {
+    if(templates.labelName(i) != countsclc.labelName(i)) {
       cerr << "Error: templates and counts don't match!" << endl;
       exit(-1);
     }
   }
   l=0;
-  for(i=0; i<(mrs_natural)templates.size(); ++i){
+  for(i=0; i<(mrs_natural)templates.size(); ++i) {
     strVec[i] = templates.labelName(i);
     tmpcounts.read(countsclc.entry(i));
     dataTpl.read(templates.entry(i));
     tmpsizes.read(sizesclc.entry(i));
-    for(j=1; j<tmpcounts.getSize(); j++){
-      if(tmpcounts(j) > 0){
-	genres(l) = i;
-	//sizes(l+1) = tmpsizes(j);
-	outsize += tmpsizes(j);
-	oss << templates.labelName(i) << j << ",";
-	for(k=0; k<BIN; k++){
-	  for(m=0; m<sizes(l+1); m++){
-	    featuresTpl(k+BIN*l,m) = dataTpl(k+BIN*(j-1),m);
-	  }
-	}
-	l++;
+    for(j=1; j<tmpcounts.getSize(); j++) {
+      if(tmpcounts(j) > 0) {
+        genres(l) = i;
+        //sizes(l+1) = tmpsizes(j);
+        outsize += tmpsizes(j);
+        oss << templates.labelName(i) << j << ",";
+        for(k=0; k<BIN; k++) {
+          for(m=0; m<sizes(l+1); m++) {
+            featuresTpl(k+BIN*l,m) = dataTpl(k+BIN*(j-1),m);
+          }
+        }
+        l++;
       }
     }
   }
@@ -155,7 +155,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
   accInp2->addMarSystem(netInp2);
   accInp2->updControl("mrs_natural/nTimes",ACC_INPUT);
   Inp2->addMarSystem(accInp2);
-  
+
   /*** set conttols to rhythm map ***/
 
   sim->updControl("mrs_natural/calcCovMatrix",2);
@@ -246,7 +246,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
   segments.create(1,1);
   tmpbegin.create(1,1);
   tmpend.create(1,1);
-  for(l=0; l<(mrs_natural)inputs.size(); l++){
+  for(l=0; l<(mrs_natural)inputs.size(); l++) {
     cout << "Now processing: " << inputs.entry(l) << endl;
 
     /*** calculate input spectrogram ***/
@@ -264,31 +264,31 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
     /*** calculate input feature vector of input ***/
 
     featuresInp.stretch(BIN,dataInp.getCols());
-    for(i=0; i<featuresInp.getRows(); ++i){
-      for(j=0; j<featuresInp.getCols(); j++){
-	featuresInp(i,j) = 0;
+    for(i=0; i<featuresInp.getRows(); ++i) {
+      for(j=0; j<featuresInp.getCols(); j++) {
+        featuresInp(i,j) = 0;
       }
     }
     sfrq = netInp->getctrl("SoundFileSource/inpsrc/mrs_real/osrate")->to<mrs_real>();
     obs = netInp->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-    for(i=0; i<BIN+2; ++i){
+    for(i=0; i<BIN+2; ++i) {
       b(i) = wsize*700/sfrq*(pow(10, (log10(1.0+sfrq/1400))*i/(BIN+1))-1);
     }
-    for(j=0; j<BIN; j++){
-      for(k=0; k<obs; k++){
-	if(b(j) < k && k < b(j+1)){
-	  for(i=0; i<dataInp.getCols(); ++i){
-	    featuresInp(j,i) += dataInp(k,i)*(k-b(j))/(b(j+1)-b(j));
-	  }
-	} else if(b(j+1) <= k && k <= b(j+2)){
-	  for(i=0; i<dataInp.getCols(); ++i){
-	    featuresInp(j,i) += dataInp(k,i)*(b(j+2)-k)/(b(j+2)-b(j+1));
-	  }
-	}
+    for(j=0; j<BIN; j++) {
+      for(k=0; k<obs; k++) {
+        if(b(j) < k && k < b(j+1)) {
+          for(i=0; i<dataInp.getCols(); ++i) {
+            featuresInp(j,i) += dataInp(k,i)*(k-b(j))/(b(j+1)-b(j));
+          }
+        } else if(b(j+1) <= k && k <= b(j+2)) {
+          for(i=0; i<dataInp.getCols(); ++i) {
+            featuresInp(j,i) += dataInp(k,i)*(b(j+2)-k)/(b(j+2)-b(j+1));
+          }
+        }
       }
-      for(i=0; i<featuresInp.getCols(); ++i){
-	featuresInp(j,i) /= (b(j+2)-b(j))/2;
-	featuresInp(j,i) = log(100000*featuresInp(j,i)+1);
+      for(i=0; i<featuresInp.getCols(); ++i) {
+        featuresInp(j,i) /= (b(j+2)-b(j))/2;
+        featuresInp(j,i) = log(100000*featuresInp(j,i)+1);
       }
     }
     dataInp.stretch(0,0);
@@ -310,14 +310,14 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
 
     /*** calculate input of SimilarityMatrix ***/
     simInput.stretch(featuresInp.getRows()+featuresTpl.getRows(),featuresInp.getCols());
-    for(i=0; i<featuresInp.getCols(); ++i){
-      for(j=0; j<featuresInp.getRows(); j++){
-	simInput(j,i) = featuresInp(j,i);
+    for(i=0; i<featuresInp.getCols(); ++i) {
+      for(j=0; j<featuresInp.getRows(); j++) {
+        simInput(j,i) = featuresInp(j,i);
       }
     }
-    for(i=0; i<featuresTpl.getCols(); ++i){
-      for(j=0; j<featuresTpl.getRows(); j++){
-	simInput(j+featuresInp.getRows(),i) = featuresTpl(j,i);
+    for(i=0; i<featuresTpl.getCols(); ++i) {
+      for(j=0; j<featuresTpl.getRows(); j++) {
+        simInput(j+featuresInp.getRows(),i) = featuresTpl(j,i);
       }
     }
 
@@ -348,7 +348,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
     counts = ap->getctrl("mrs_realvec/counts")->to<mrs_realvec>();
     //oss.str(""); oss << inputs.entry(l) << "_counts.dat";
     //counts.write(oss.str());
-    for(i=1; i<counts.getSize(); ++i){
+    for(i=1; i<counts.getSize(); ++i) {
       counts(i) = counts(i)/counts(0);
     }
     counts(0) = 0;
@@ -359,19 +359,19 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
       outFeatures(i,0) = counts(i);
     }
     */
-    for(i=0; i<outFeatures2.getRows(); ++i){
+    for(i=0; i<outFeatures2.getRows(); ++i) {
       outFeatures2(i,0) = 0;
     }
 
-    for(i=0; i<counts.getSize(); ++i){
+    for(i=0; i<counts.getSize(); ++i) {
       outFeatures2(genres(i),0) += counts(i);
     }
     /*for(i=0; i<outFeatures3.getRows(); ++i){
       for(j=0; j<outFeatures3.getCols(); j++){
-	outFeatures3(i,j) = 0.0;
+    outFeatures3(i,j) = 0.0;
       }
     }
-    
+
     b_begin = false;
     startX = algOutput(m,0);
     startY = algOutput(m,1);
@@ -379,79 +379,79 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
     prevNum = 1000;
     for(i=m; i<algOutput.getRows(); ++i){
       for(j=0; j<beginPos.getSize(); j++){
-	if(algOutput(i,1) == beginPos(j)){
-	  if(!b_begin){
-	    b_begin = true;
-	    m = i;
-	    startX = algOutput(i,0);
-	    startY = algOutput(i,1);
-	  }
-	  break;
-	} else if(algOutput(i,1) == endPos(j)-1){
-	  if(b_begin){
-	    endX = algOutput(i,0);
-	    endY = algOutput(i,1);
-	    if(prevNum != 1000){
-	      //tmpFeatures(k-1) = templatesDistance(map(j),prevNum);
-	      outFeatures3(prevNum*(sizes.getSize()-1)+map(j),0)++;
-	    }
-	    prevNum = map(j);
-	    k++;
-	    b_begin = false;
-	    break;
-	  }
-	}
+    if(algOutput(i,1) == beginPos(j)){
+    if(!b_begin){
+      b_begin = true;
+      m = i;
+      startX = algOutput(i,0);
+      startY = algOutput(i,1);
+    }
+    break;
+    } else if(algOutput(i,1) == endPos(j)-1){
+    if(b_begin){
+      endX = algOutput(i,0);
+      endY = algOutput(i,1);
+      if(prevNum != 1000){
+        //tmpFeatures(k-1) = templatesDistance(map(j),prevNum);
+        outFeatures3(prevNum*(sizes.getSize()-1)+map(j),0)++;
+      }
+      prevNum = map(j);
+      k++;
+      b_begin = false;
+      break;
+    }
+    }
       }
     }
     for(i=0; i<outFeatures3.getRows(); ++i){
       outFeatures3(i,0) /= tmpFeatures.getSize();
     }
-	 */
-	  
+    */
+
     // update control
     //total->updControl("Annotator/ann/mrs_natural/label",inputs.labelNum(inputs.labelEntry(l)));
     total2->updControl("Annotator/ann2/mrs_natural/label", 0);
     total2->process(outFeatures2,tmpvec2);
 
-    // out segment data 
-	
+    // out segment data
+
     tmpbegin.stretch(sizes.getSize()-1);
     tmpend.stretch(sizes.getSize()-1);
     tmpbegin(0) = 0;
-    for(i=1; i<sizes.getSize()-1; ++i){
+    for(i=1; i<sizes.getSize()-1; ++i) {
       tmpbegin(i) = sizes(i) + tmpbegin(i-1);
-    }      
-    for(i=0; i<sizes.getSize()-1; ++i){
+    }
+    for(i=0; i<sizes.getSize()-1; ++i) {
       tmpend(i) = tmpbegin(i) + sizes(i+1);
     }
     m=0; i=0;
-    while(m==0){
-      if(algOutput(i,0) >= 0 && algOutput(i,1) >= 0){
-	m = i;
+    while(m==0) {
+      if(algOutput(i,0) >= 0 && algOutput(i,1) >= 0) {
+        m = i;
       }
       ++i ;
     }
 
     totalCount = 1;
-    for(i=0; i<tmpbegin.getSize(); ++i){
-      if(tmpbegin(i) <= algOutput(m,1) && algOutput(m,1) < tmpend(i)){
-	k = i;
-	break;
+    for(i=0; i<tmpbegin.getSize(); ++i) {
+      if(tmpbegin(i) <= algOutput(m,1) && algOutput(m,1) < tmpend(i)) {
+        k = i;
+        break;
       }
     }
     b_begin = true;
-    for(i=m; i<algOutput.getRows(); ++i){
-      for(j=0; j<tmpbegin.getSize(); j++){
-	if(algOutput(i,1) == tmpbegin(j)){
-	  if(!b_begin){
-	    b_begin = true;
-	    totalCount++;
-	  }
-	  break;
-	} else if(algOutput(i,1) == tmpend(j)-1){
-	  b_begin = false;
-	  break;
-	}
+    for(i=m; i<algOutput.getRows(); ++i) {
+      for(j=0; j<tmpbegin.getSize(); j++) {
+        if(algOutput(i,1) == tmpbegin(j)) {
+          if(!b_begin) {
+            b_begin = true;
+            totalCount++;
+          }
+          break;
+        } else if(algOutput(i,1) == tmpend(j)-1) {
+          b_begin = false;
+          break;
+        }
       }
     }
 
@@ -460,23 +460,23 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
     segments(0,0) = 0.0; segments(0,2) = k+1;
     b_begin = true;
     k = 0;
-    for(i=m; i<algOutput.getRows(); ++i){
-      for(j=0; j<tmpbegin.getSize(); j++){
-	if(algOutput(i,1) == tmpbegin(j)){
-	  if(!b_begin){
-	    b_begin = true;
-	    segments(k,1) = (mrs_real)algOutput(i,0)*msecondsPerFrame;
-	    //segments(k,1) = algOutput(i,0);
-	    k++;
-	    segments(k,0) = (mrs_real)algOutput(i,0)*msecondsPerFrame;
-	    //segments(k,0) = algOutput(i,0);
-	    segments(k,2) = genres(j)+1;
-	  }
-	  break;
-	} else if(algOutput(i,1) == tmpend(j)-1){
-	  b_begin = false;
-	  break;
-	}
+    for(i=m; i<algOutput.getRows(); ++i) {
+      for(j=0; j<tmpbegin.getSize(); j++) {
+        if(algOutput(i,1) == tmpbegin(j)) {
+          if(!b_begin) {
+            b_begin = true;
+            segments(k,1) = (mrs_real)algOutput(i,0)*msecondsPerFrame;
+            //segments(k,1) = algOutput(i,0);
+            k++;
+            segments(k,0) = (mrs_real)algOutput(i,0)*msecondsPerFrame;
+            //segments(k,0) = algOutput(i,0);
+            segments(k,2) = genres(j)+1;
+          }
+          break;
+        } else if(algOutput(i,1) == tmpend(j)-1) {
+          b_begin = false;
+          break;
+        }
       }
     }
     segments(k,1) = (mrs_real)algOutput(algOutput.getRows()-1,0)*msecondsPerFrame;
@@ -490,49 +490,49 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
     }
     for(i=0; i<segments.getRows(); ++i){
       for(k=0; k<genres.getSize(); k++){
-	tmpsizes(0) = segments(i,1) - segments(i,0);
-	tmpsizes(1) = sizes(k+1);
-	tmpsimin.stretch(BIN*2,tmpsizes.maxval());
-	sim2->updControl("mrs_realvec/sizes",tmpsizes);
-	sim2->update();
-	sim2->updControl("mrs_natural/inSamples",tmpsimin.getCols());
-	sim2->updControl("mrs_natural/inObservations",tmpsimin.getRows());
-	tmpsimout.stretch(tmpsizes(1),tmpsizes(0));
-	dtw2->updControl("mrs_realvec/sizes",tmpsizes);
-	dtw2->update();
-	dtw2->updControl("mrs_natural/inSamples",tmpsimout.getCols());
-	dtw2->updControl("mrs_natural/inObservations",tmpsimout.getRows());
-	tmpalgout.stretch(tmpsizes(0)+tmpsizes(1),2);
-	for(j=0; j<tmpsizes(0); j++){
-	  for(m=0; m<BIN; m++){
-	    tmpsimin(m,j) = featuresInp(m,j+segments(i,0));
-	  }
-	}
-	for(j=tmpsizes(0); j<tmpsizes.maxval(); j++){
-	  for(m=0; m<BIN; m++){
-	    tmpsimin(m,j) = 0.0;
-	  }
-	}
-	for(j=0; j<tmpsizes(1); j++){
-	  for(m=0; m<BIN; m++){
-	    tmpsimin(m+BIN,j) = featuresTpl(m+k*BIN,j);
-	  }
-	}
-	for(j=tmpsizes(1); j<tmpsizes.maxval(); j++){
-	  for(m=0; m<BIN; m++){
-	    tmpsimin(m+BIN,j) = 0.0;
-	  }
-	}
-	sim2->process(tmpsimin,tmpsimout);
-	dtw2->process(tmpsimout,tmpalgout);
-	if(tmpsizes(0) > 0 && dtw2->getctrl("mrs_real/totalDistance")->to<mrs_real>()> 0){
-	  outFeatures4(k,0) += dtw2->getctrl("mrs_real/totalDistance")->to<mrs_real>()/tmpsizes(0);
-	}
+    tmpsizes(0) = segments(i,1) - segments(i,0);
+    tmpsizes(1) = sizes(k+1);
+    tmpsimin.stretch(BIN*2,tmpsizes.maxval());
+    sim2->updControl("mrs_realvec/sizes",tmpsizes);
+    sim2->update();
+    sim2->updControl("mrs_natural/inSamples",tmpsimin.getCols());
+    sim2->updControl("mrs_natural/inObservations",tmpsimin.getRows());
+    tmpsimout.stretch(tmpsizes(1),tmpsizes(0));
+    dtw2->updControl("mrs_realvec/sizes",tmpsizes);
+    dtw2->update();
+    dtw2->updControl("mrs_natural/inSamples",tmpsimout.getCols());
+    dtw2->updControl("mrs_natural/inObservations",tmpsimout.getRows());
+    tmpalgout.stretch(tmpsizes(0)+tmpsizes(1),2);
+    for(j=0; j<tmpsizes(0); j++){
+    for(m=0; m<BIN; m++){
+      tmpsimin(m,j) = featuresInp(m,j+segments(i,0));
+    }
+    }
+    for(j=tmpsizes(0); j<tmpsizes.maxval(); j++){
+    for(m=0; m<BIN; m++){
+      tmpsimin(m,j) = 0.0;
+    }
+    }
+    for(j=0; j<tmpsizes(1); j++){
+    for(m=0; m<BIN; m++){
+      tmpsimin(m+BIN,j) = featuresTpl(m+k*BIN,j);
+    }
+    }
+    for(j=tmpsizes(1); j<tmpsizes.maxval(); j++){
+    for(m=0; m<BIN; m++){
+      tmpsimin(m+BIN,j) = 0.0;
+    }
+    }
+    sim2->process(tmpsimin,tmpsimout);
+    dtw2->process(tmpsimout,tmpalgout);
+    if(tmpsizes(0) > 0 && dtw2->getctrl("mrs_real/totalDistance")->to<mrs_real>()> 0){
+    outFeatures4(k,0) += dtw2->getctrl("mrs_real/totalDistance")->to<mrs_real>()/tmpsizes(0);
+    }
       }
     }
     if(segments.getRows() > 0){
       for(j=0; j<outFeatures4.getRows(); j++){
-	outFeatures4(j,0) /= segments.getRows();
+    outFeatures4(j,0) /= segments.getRows();
       }
     }
     total4->updControl("Annotator/ann4/mrs_natural/label", inputs.labelNum(inputs.labelEntry(l)));
@@ -540,7 +540,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
   }
 
   /*** delete memory ***/
-  
+
   delete sim;
   delete sim2;
   delete dtw;
@@ -557,28 +557,28 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
 
 int main(int argc, const char **argv)
 {
-	string fileName;
-	string hName;
-	string templates;
-	string cnName;
-	string szName;
-	string outName;
-	if (argc<2)
-	{
-		cout<<"Please enter filename."<<endl;
-		exit(1);
-	}
-	else
-	{
-		fileName = argv[1];
-		hName = argv[2];
-		templates = argv[3];
-		cnName = argv[4];
-		szName = argv[5];
-		outName = argv[6];
-	}
-	cout << "Processing file " << fileName << endl;
-	
-	recognize(fileName, hName, templates, cnName, szName, outName);
-	exit(0);
+  string fileName;
+  string hName;
+  string templates;
+  string cnName;
+  string szName;
+  string outName;
+  if (argc<2)
+  {
+    cout<<"Please enter filename."<<endl;
+    exit(1);
+  }
+  else
+  {
+    fileName = argv[1];
+    hName = argv[2];
+    templates = argv[3];
+    cnName = argv[4];
+    szName = argv[5];
+    outName = argv[6];
+  }
+  cout << "Processing file " << fileName << endl;
+
+  recognize(fileName, hName, templates, cnName, szName, outName);
+  exit(0);
 }

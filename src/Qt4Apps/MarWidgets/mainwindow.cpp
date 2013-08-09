@@ -2,7 +2,7 @@
 **
 ** Copyright (C) 2005 George Tzanetakis. All rights reserved.
 **
-*/ 
+*/
 
 #include <QtGui>
 
@@ -14,17 +14,17 @@ MainWindow::MainWindow()
   workspace = new QWorkspace;
   setCentralWidget(workspace);
   connect(workspace, SIGNAL(windowActivated(QWidget *)),
-	  this, SLOT(updateMenus()));
+          this, SLOT(updateMenus()));
   windowMapper = new QSignalMapper(this);
   connect(windowMapper, SIGNAL(mapped(QWidget *)),
-	  workspace, SLOT(setActiveWindow(QWidget *)));
-  
+          workspace, SLOT(setActiveWindow(QWidget *)));
+
   createActions();
   createMenus();
   createToolBars();
   createStatusBar();
   updateMenus();
-  
+
   readSettings();
   setWindowTitle(tr("Musescape"));
 }
@@ -97,8 +97,8 @@ void MainWindow::paste()
 void MainWindow::about()
 {
   QMessageBox::about(this, tr("About MDI"),
-		     tr("The <b>MDI</b> example demonstrates how to write multiple "
-			"document interface applications using Qt."));
+                     tr("The <b>MDI</b> example demonstrates how to write multiple "
+                        "document interface applications using Qt."));
 }
 
 void MainWindow::updateMenus()
@@ -116,8 +116,8 @@ void MainWindow::updateMenus()
   separatorAct->setVisible(hasMdiChild);
 
   /* bool hasSelection = (activeMdiChild() &&
-		       activeMdiChild()->textCursor().hasSelection());
-  */ 
+  	       activeMdiChild()->textCursor().hasSelection());
+  */
   // cutAct->setEnabled(hasSelection);
   // copyAct->setEnabled(hasSelection);
 }
@@ -144,10 +144,10 @@ void MainWindow::updateWindowMenu()
     QString text;
     if (i < 9) {
       text = tr("&%1. %2").arg(i + 1)
-	.arg(child->userFriendlyCurrentFile());
+             .arg(child->userFriendlyCurrentFile());
     } else {
       text = tr("%1. %2").arg(i + 1)
-	.arg(child->userFriendlyCurrentFile());
+             .arg(child->userFriendlyCurrentFile());
     }
     QAction *action  = windowMenu->addAction(text);
     action->setCheckable(true);
@@ -163,10 +163,10 @@ MdiChild *MainWindow::createMdiChild()
   workspace->addWindow(child);
 
   /* connect(child, SIGNAL(copyAvailable(bool)),
-	  cutAct, SLOT(setEnabled(bool)));
+    cutAct, SLOT(setEnabled(bool)));
   connect(child, SIGNAL(copyAvailable(bool)),
-	  copyAct, SLOT(setEnabled(bool)));
-  */ 
+    copyAct, SLOT(setEnabled(bool)));
+  */
 
   return child;
 }
@@ -200,31 +200,31 @@ void MainWindow::createActions()
   cutAct = new QAction(QIcon(":/images/cut.png"), tr("Cu&t"), this);
   cutAct->setShortcut(tr("Ctrl+X"));
   cutAct->setStatusTip(tr("Cut the current selection's contents to the "
-			  "clipboard"));
+                          "clipboard"));
   connect(cutAct, SIGNAL(triggered()), this, SLOT(cut()));
 
   copyAct = new QAction(QIcon(":/images/copy.png"), tr("&Copy"), this);
   copyAct->setShortcut(tr("Ctrl+C"));
   copyAct->setStatusTip(tr("Copy the current selection's contents to the "
-			   "clipboard"));
+                           "clipboard"));
   connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
 
   pasteAct = new QAction(QIcon(":/images/paste.png"), tr("&Paste"), this);
   pasteAct->setShortcut(tr("Ctrl+V"));
   pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
-			    "selection"));
+                            "selection"));
   connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
 
   closeAct = new QAction(tr("Cl&ose"), this);
   closeAct->setShortcut(tr("Ctrl+F4"));
   closeAct->setStatusTip(tr("Close the active window"));
   connect(closeAct, SIGNAL(triggered()),
-	  workspace, SLOT(closeActiveWindow()));
+          workspace, SLOT(closeActiveWindow()));
 
   closeAllAct = new QAction(tr("Close &All"), this);
   closeAllAct->setStatusTip(tr("Close all the windows"));
   connect(closeAllAct, SIGNAL(triggered()),
-	  workspace, SLOT(closeAllWindows()));
+          workspace, SLOT(closeAllWindows()));
 
   tileAct = new QAction(tr("&Tile"), this);
   tileAct->setStatusTip(tr("Tile the windows"));
@@ -238,14 +238,14 @@ void MainWindow::createActions()
   nextAct->setShortcut(tr("Ctrl+F6"));
   nextAct->setStatusTip(tr("Move the focus to the next window"));
   connect(nextAct, SIGNAL(triggered()),
-	  workspace, SLOT(activateNextWindow()));
+          workspace, SLOT(activateNextWindow()));
 
   previousAct = new QAction(tr("Pre&vious"), this);
   previousAct->setShortcut(tr("Ctrl+Shift+F6"));
   previousAct->setStatusTip(tr("Move the focus to the previous "
-			       "window"));
+                               "window"));
   connect(previousAct, SIGNAL(triggered()),
-	  workspace, SLOT(activatePreviousWindow()));
+          workspace, SLOT(activatePreviousWindow()));
 
   separatorAct = new QAction(this);
   separatorAct->setSeparator(true);

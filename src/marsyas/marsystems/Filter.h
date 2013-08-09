@@ -39,29 +39,29 @@ namespace Marsyas
 class Filter: public MarSystem
 {
 private:
-	/// Numerator order
-	mrs_natural norder_;
+  /// Numerator order
+  mrs_natural norder_;
 
-	/// Denominator order
-	mrs_natural dorder_;
-	mrs_natural channels_;
-	mrs_natural order_;
-	realvec state_;
-	mrs_real fgain_;
-	realvec ncoeffs_;
-	realvec dcoeffs_;
+  /// Denominator order
+  mrs_natural dorder_;
+  mrs_natural channels_;
+  mrs_natural order_;
+  realvec state_;
+  mrs_real fgain_;
+  realvec ncoeffs_;
+  realvec dcoeffs_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	Filter(std::string name);
-	~Filter();
+  Filter(std::string name);
+  ~Filter();
 
-	MarSystem* clone() const;
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
-	void write(std::string filename);
+  void myProcess(realvec& in, realvec& out);
+  void write(std::string filename);
 };
 
 }//namespace Marsyas

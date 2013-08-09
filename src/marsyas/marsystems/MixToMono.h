@@ -44,30 +44,30 @@ class MixToMono: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
-	/// The weight factor to use during averaging.
-	mrs_real weight_;
+  /// The weight factor to use during averaging.
+  mrs_real weight_;
 
 public:
-	/// MixToMono constructor.
-	MixToMono(std::string name);
+  /// MixToMono constructor.
+  MixToMono(std::string name);
 
-	/// MixToMono copy constructor.
-	MixToMono(const MixToMono& a);
+  /// MixToMono copy constructor.
+  MixToMono(const MixToMono& a);
 
-	/// MixToMono destructor.
-	~MixToMono();
+  /// MixToMono destructor.
+  ~MixToMono();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

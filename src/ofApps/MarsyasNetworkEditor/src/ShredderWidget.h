@@ -13,25 +13,25 @@
 
 namespace Marsyas
 {
-	
-	
-	class ShredderWidget : public MarSystemWidget
-	{
-	private:
-		void addControls();
-		void updateControls();
-		
-		
-	public:
-		ShredderWidget(MarSystem *msys, GraphicalEnvironment* env);
-		~ShredderWidget();
-		
-		//void update();
-		
-		void drawConnections();
-		void updateChildrenPos();
-		void updateChildrenWidgets();
-	};
+
+
+class ShredderWidget : public MarSystemWidget
+{
+private:
+  void addControls();
+  void updateControls();
+
+
+public:
+  ShredderWidget(MarSystem *msys, GraphicalEnvironment* env);
+  ~ShredderWidget();
+
+  //void update();
+
+  void drawConnections();
+  void updateChildrenPos();
+  void updateChildrenWidgets();
+};
 }
 
 #endif

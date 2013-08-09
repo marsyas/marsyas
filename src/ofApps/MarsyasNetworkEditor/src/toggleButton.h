@@ -14,22 +14,22 @@
 
 namespace Marsyas
 {
-	
-	
-	class ToggleButton : public Widget
-	{
-	public:
-		
-		ToggleButton(int x0, int y0, int w, int h, GraphicalEnvironment* env);
-		
-		void update();
-		void draw();
-		
-		
-		
-		
-	};
-	
+
+
+class ToggleButton : public Widget
+{
+public:
+
+  ToggleButton(int x0, int y0, int w, int h, GraphicalEnvironment* env);
+
+  void update();
+  void draw();
+
+
+
+
+};
+
 }
 
 #endif

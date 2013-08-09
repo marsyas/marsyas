@@ -456,28 +456,28 @@ void display(void)
 
   if (freeze_) {
 
-  // Nap data
-  glColor3f(0.8,0.9,0.8);
-  glBegin(GL_LINE_STRIP);
-  for (int col = 0; col < nap_data_cols; col++) {
-    double x = ((col / 100.) * 0.3) - 0.955;
-    double y = (((nap_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.95;
-    glVertex3f(x,y,0);
-  }
-  glEnd();
+    // Nap data
+    glColor3f(0.8,0.9,0.8);
+    glBegin(GL_LINE_STRIP);
+    for (int col = 0; col < nap_data_cols; col++) {
+      double x = ((col / 100.) * 0.3) - 0.955;
+      double y = (((nap_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.95;
+      glVertex3f(x,y,0);
+    }
+    glEnd();
 
-  // Threshold data
-  double threshold_data_rows = threshold_data_.getRows();
-  double threshold_data_cols = threshold_data_.getCols();
+    // Threshold data
+    double threshold_data_rows = threshold_data_.getRows();
+    double threshold_data_cols = threshold_data_.getCols();
 
-  glColor3f(0.95,0.35,0.35);
-  glBegin(GL_LINE_STRIP);
-  for (int col = 0; col < threshold_data_cols; col++) {
-    double x = ((col / 100.) * 0.3) - 0.955;
-    double y = (((threshold_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.95;
-    glVertex3f(x,y,0);
-  }
-  glEnd();
+    glColor3f(0.95,0.35,0.35);
+    glBegin(GL_LINE_STRIP);
+    for (int col = 0; col < threshold_data_cols; col++) {
+      double x = ((col / 100.) * 0.3) - 0.955;
+      double y = (((threshold_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.95;
+      glVertex3f(x,y,0);
+    }
+    glEnd();
 
 
     // Strobes data

@@ -97,7 +97,7 @@ void
 Mapper::setPos(int position_percents)
 {
   int position_samples =
-      (int) m_sizeControl->value().toDouble() * (position_percents / 100.0);
+    (int) m_sizeControl->value().toDouble() * (position_percents / 100.0);
 
   m_positionControl->setValue(position_samples);
 }

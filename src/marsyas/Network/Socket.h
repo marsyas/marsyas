@@ -23,14 +23,14 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "common_source.h" 
+#include "common_source.h"
 
 namespace Marsyas
 {
 
-class Socket 
+class Socket
 {
- public:
+public:
   //! Default constructor which creates a local socket server on port 2006 (or the specified port number).
   /*!
     An StkError will be thrown if a socket error occurs during instantiation.
@@ -96,7 +96,7 @@ class Socket
   //! Read a buffer via the specified socket.  Returns the number of bytes read or -1 if an error occurs.
   static int readBuffer(int socket, void *buffer, long bufferSize, int flags );
 
- protected:
+protected:
 
   char msg[256];
   int soket;

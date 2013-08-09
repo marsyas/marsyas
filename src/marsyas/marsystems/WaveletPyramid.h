@@ -37,18 +37,18 @@ namespace Marsyas
 class WaveletPyramid: public MarSystem
 {
 private:
-	Daub4* waveletStep_;
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  Daub4* waveletStep_;
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	WaveletPyramid(std::string name);
-	~WaveletPyramid();
-	WaveletPyramid(const WaveletPyramid& a);
+  WaveletPyramid(std::string name);
+  ~WaveletPyramid();
+  WaveletPyramid(const WaveletPyramid& a);
 
-	MarSystem* clone() const;
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 
 };
 

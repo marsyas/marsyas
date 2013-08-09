@@ -9,7 +9,7 @@ class SonificationEngine
 {
 public:
   SonificationEngine(string name = "SonificationEngine");
-	
+
   void setup();
   void update();
   void draw();

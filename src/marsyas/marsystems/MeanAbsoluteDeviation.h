@@ -34,28 +34,28 @@ class marsyas_EXPORT MeanAbsoluteDeviation: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
 
 public:
-	/// MeanAbsoluteDeviation constructor.
-	MeanAbsoluteDeviation(std::string name);
+  /// MeanAbsoluteDeviation constructor.
+  MeanAbsoluteDeviation(std::string name);
 
-	/// MeanAbsoluteDeviation copy constructor.
-	MeanAbsoluteDeviation(const MeanAbsoluteDeviation& a);
+  /// MeanAbsoluteDeviation copy constructor.
+  MeanAbsoluteDeviation(const MeanAbsoluteDeviation& a);
 
-	/// MeanAbsoluteDeviation destructor.
-	~MeanAbsoluteDeviation();
+  /// MeanAbsoluteDeviation destructor.
+  ~MeanAbsoluteDeviation();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

@@ -12,7 +12,7 @@
 #include <cxxtest/ErrorPrinter.h>
 
 int main() {
- return CxxTest::ErrorPrinter().run();
+  return CxxTest::ErrorPrinter().run();
 }
 #include "TestChromaFilter.h"
 
@@ -23,8 +23,8 @@ CxxTest::StaticSuiteDescription suiteDescription_Sum_runner( "TestChromaFilter.h
 
 static class TestDescription_Sum_runner_test_chroma : public CxxTest::RealTestDescription {
 public:
- TestDescription_Sum_runner_test_chroma() : CxxTest::RealTestDescription( Tests_Sum_runner, suiteDescription_Sum_runner, 27, "test_chroma" ) {}
- void runTest() { suite_Sum_runner.test_chroma(); }
+  TestDescription_Sum_runner_test_chroma() : CxxTest::RealTestDescription( Tests_Sum_runner, suiteDescription_Sum_runner, 27, "test_chroma" ) {}
+  void runTest() { suite_Sum_runner.test_chroma(); }
 } testDescription_Sum_runner_test_chroma;
 
 #include <cxxtest/Root.cpp>

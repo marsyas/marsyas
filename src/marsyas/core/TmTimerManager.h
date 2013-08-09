@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -53,22 +53,22 @@ namespace Marsyas
 */
 
 struct MakeTimer {
-	MakeTimer() {}
-	virtual ~MakeTimer(){}
-	virtual TmTimer* make(std::string)=0;
+  MakeTimer() {}
+  virtual ~MakeTimer() {}
+  virtual TmTimer* make(std::string)=0;
 };
 
 class TmTimerManager {
-	std::map<std::string, MakeTimer*> registry_;
-	static TmTimerManager* instance_;
-	TmTimerManager();
-	void addTimers();
+  std::map<std::string, MakeTimer*> registry_;
+  static TmTimerManager* instance_;
+  TmTimerManager();
+  void addTimers();
 
 public:
-	static TmTimerManager* getInstance();
-	virtual ~TmTimerManager();
-	TmTimer* make(std::string class_name, std::string identifier);
-	TmTimer* make(std::string class_name, std::string identifier, std::vector<TmParam> params);
+  static TmTimerManager* getInstance();
+  virtual ~TmTimerManager();
+  TmTimer* make(std::string class_name, std::string identifier);
+  TmTimer* make(std::string class_name, std::string identifier, std::vector<TmParam> params);
 };
 // make sure the TmTimerManager instance is NULL so the singleton can be created
 }

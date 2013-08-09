@@ -38,27 +38,27 @@ Square::~Square()
 MarSystem*
 Square::clone() const
 {
-	return new Square(*this);
+  return new Square(*this);
 }
 
 void
 Square::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("Square.cpp - Square:myUpdate");
+  MRSDIAG("Square.cpp - Square:myUpdate");
 
-	// Use the default matching of the output slice format with the input slice format.
-	MarSystem::myUpdate(sender);
+  // Use the default matching of the output slice format with the input slice format.
+  MarSystem::myUpdate(sender);
 }
 
 void
 Square::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
-	for (o=0; o < inObservations_; o++)
-	{
-		for (t = 0; t < inSamples_; t++)
-		{
-			out(o, t) = in(o, t) * in(o, t);
-		}
-	}
+  mrs_natural t,o;
+  for (o=0; o < inObservations_; o++)
+  {
+    for (t = 0; t < inSamples_; t++)
+    {
+      out(o, t) = in(o, t) * in(o, t);
+    }
+  }
 }

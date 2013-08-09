@@ -32,37 +32,37 @@ Norm::~Norm()
 MarSystem*
 Norm::clone() const
 {
-	return new Norm(*this);
+  return new Norm(*this);
 }
 
 void
 Norm::myProcess(realvec& in, realvec& out)
 {
-	realvec row(inSamples_);
-	mrs_real mean;
-	mrs_real std;
-	mrs_natural t,o;
+  realvec row(inSamples_);
+  mrs_real mean;
+  mrs_real std;
+  mrs_natural t,o;
 
-	for (o=0; o < inObservations_; o++)
-	{
-		// Calculate the mean and standard deviation of each row aka observation.
-		for (t = 0; t < inSamples_; t++)
-		{
-			row(t) = in(o,t);
-		}
-		mean = row.mean();
-		std =  row.std();
-		// If standard deviation is zero, the input is constant, so
-		// subtracting the mean will give zero output and we can just
-		// set the standard deviation to 1.0 to avoid zero division woes.
-		if (std == 0.0)
-		{
-			std = 1.0;
-		}
+  for (o=0; o < inObservations_; o++)
+  {
+    // Calculate the mean and standard deviation of each row aka observation.
+    for (t = 0; t < inSamples_; t++)
+    {
+      row(t) = in(o,t);
+    }
+    mean = row.mean();
+    std =  row.std();
+    // If standard deviation is zero, the input is constant, so
+    // subtracting the mean will give zero output and we can just
+    // set the standard deviation to 1.0 to avoid zero division woes.
+    if (std == 0.0)
+    {
+      std = 1.0;
+    }
 
-		for (t = 0; t < inSamples_; t++)
-		{
-			out(o, t) = (in(o, t) - mean) / std;
-		}
-	}
+    for (t = 0; t < inSamples_; t++)
+    {
+      out(o, t) = (in(o, t) - mean) / std;
+    }
+  }
 }

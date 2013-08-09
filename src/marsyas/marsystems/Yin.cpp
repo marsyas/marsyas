@@ -53,7 +53,7 @@ Yin::clone() const
 void
 Yin::addControls()
 {
-  
+
   // The value of 0.15 was the default in Aubio
   addctrl("mrs_real/tolerance", 0.15, ctrl_tolerance_);
   addctrl("mrs_real/frequency_min", 0.0, ctrl_frequency_min_);
@@ -76,9 +76,9 @@ Yin::myUpdate(MarControlPtr sender)
     yin_buffer_realvec_.allocate(inSamples_ / 2);
   }
 
-	// Add prefix to the observation names.
-	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
-	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Yin_"), NOUPDATE);
+  // Add prefix to the observation names.
+  mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+  ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Yin_"), NOUPDATE);
 }
 
 double Yin::aubio_quadfrac(double s0, double s1, double s2, double pf) {
@@ -102,7 +102,7 @@ double Yin::vec_quadint_min(realvec *x,unsigned int pos, unsigned int span) {
       res = Yin::aubio_quadfrac(s0, s1, s2, frac);
       if (res < resold) {
         resold = res;
-      } else {				
+      } else {
         exactpos += (frac-step)*span - span/2.;
         break;
       }
@@ -111,15 +111,15 @@ double Yin::vec_quadint_min(realvec *x,unsigned int pos, unsigned int span) {
   return exactpos;
 }
 
-unsigned int Yin::vec_min_elem(realvec *s) 
+unsigned int Yin::vec_min_elem(realvec *s)
 {
   size_t i = 0;
   int pos=0;
   double tmp = (*s)(0,0);
 //   for (i=0; i < s->channels; ++i)
   for (mrs_natural j=0; j < s->getSize(); j++) {
-	pos = (tmp < (*s)(+6))? pos : j;
-	tmp = (tmp < (*s)(i,j))? tmp : (*s)(i,j);
+    pos = (tmp < (*s)(+6))? pos : j;
+    tmp = (tmp < (*s)(i,j))? tmp : (*s)(i,j);
   }
 //     }
   return pos;
@@ -167,34 +167,34 @@ Yin::myProcess(realvec& in, realvec& out)
 
   //for (mrs_natural tau=1; tau < yin_size_; tau++)
   for (mrs_natural tau=1; tau < high_sample; tau++)
-	{
-      // d_t( tau )
-	  for (mrs_natural j=0; j < yin_buffer_size;j++)
-		{
-		  const mrs_real delta = input[j] - input[j+tau];
-		  yin_buffer[tau] += delta * delta;
-		}
-	  cmndf += yin_buffer[tau];
-	  yin_buffer[tau] *= tau / cmndf;
-      if (tau > low_sample) {
-	    const mrs_natural period = tau-3;
-	    //if(tau > 4 && (yin_buffer_(c,period) < tol) && 
-	    // (yin_buffer_(c,period) < yin_buffer_(c,period+1)))
-	    if((yin_buffer[period] < tol) && 
-		   (yin_buffer[period] < yin_buffer[period+1])) {
-		    pitch = vec_quadint_min(&yin_buffer_realvec_,period,1);
-		    break;
-          }
-	    }
-        }
-  if (pitch < 0) {
-	  pitch = vec_quadint_min(&yin_buffer_realvec_,
-        vec_min_elem(&yin_buffer_realvec_),1);
+  {
+    // d_t( tau )
+    for (mrs_natural j=0; j < yin_buffer_size; j++)
+    {
+      const mrs_real delta = input[j] - input[j+tau];
+      yin_buffer[tau] += delta * delta;
+    }
+    cmndf += yin_buffer[tau];
+    yin_buffer[tau] *= tau / cmndf;
+    if (tau > low_sample) {
+      const mrs_natural period = tau-3;
+      //if(tau > 4 && (yin_buffer_(c,period) < tol) &&
+      // (yin_buffer_(c,period) < yin_buffer_(c,period+1)))
+      if((yin_buffer[period] < tol) &&
+          (yin_buffer[period] < yin_buffer[period+1])) {
+        pitch = vec_quadint_min(&yin_buffer_realvec_,period,1);
+        break;
+      }
+    }
   }
-  
+  if (pitch < 0) {
+    pitch = vec_quadint_min(&yin_buffer_realvec_,
+                            vec_min_elem(&yin_buffer_realvec_),1);
+  }
+
   if (pitch !=0)
-	  out(0,0) = ctrl_osrate_/pitch; 
-  else 
-	  out(0,0) = 0.0;
+    out(0,0) = ctrl_osrate_/pitch;
+  else
+    out(0,0) = 0.0;
 
 }

@@ -36,26 +36,26 @@ using namespace MarsyasQml;
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+  QApplication app(argc, argv);
 
-    QStringList arguments = app.arguments();
-    if (arguments.size() < 2) {
-      qWarning("Missing argument: marsyas plugin file.");
-      return 1;
-    }
+  QStringList arguments = app.arguments();
+  if (arguments.size() < 2) {
+    qWarning("Missing argument: marsyas plugin file.");
+    return 1;
+  }
 
-    QString plugin_filename = arguments[1];
-    ifstream plugin_stream( plugin_filename.toStdString().c_str() );
-    MarSystemManager mng;
-    MarSystem *system = mng.getMarSystem(plugin_stream);
-    if (!system) {
-      qCritical("Could not load plugin file!");
-      return 1;
-    }
+  QString plugin_filename = arguments[1];
+  ifstream plugin_stream( plugin_filename.toStdString().c_str() );
+  MarSystemManager mng;
+  MarSystem *system = mng.getMarSystem(plugin_stream);
+  if (!system) {
+    qCritical("Could not load plugin file!");
+    return 1;
+  }
 
-    Main::create(system);
+  Main::create(system);
 
-    return app.exec();
+  return app.exec();
 }
 
 
@@ -214,8 +214,8 @@ void Main::bugClicked( const QString & path )
   }
 
   ok = root_item->metaObject()->invokeMethod
-      ( root_item, "navigateToItem",
-        Q_ARG(QVariant, QVariant::fromValue(item)) );
+       ( root_item, "navigateToItem",
+         Q_ARG(QVariant, QVariant::fromValue(item)) );
   if (!ok) {
     qCritical() << "navigateToItem failed!";
     return;

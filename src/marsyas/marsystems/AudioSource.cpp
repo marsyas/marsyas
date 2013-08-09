@@ -1,22 +1,22 @@
 /*
 ** Copyright (C) 1998-2013 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "common_source.h" 
+#include "common_source.h"
 #include "AudioSource.h"
 
 #include <algorithm>
@@ -42,13 +42,13 @@ AudioSource::~AudioSource()
 }
 
 
-MarSystem* 
+MarSystem*
 AudioSource::clone() const
 {
   return new AudioSource(*this);
 }
 
-void 
+void
 AudioSource::addControls()
 {
   addctrl("mrs_natural/nChannels", 1);
@@ -71,7 +71,7 @@ AudioSource::addControls()
   setControlState("mrs_bool/realtime", true);
 }
 
-void 
+void
 AudioSource::myUpdate(MarControlPtr sender)
 {
   (void) sender;  //suppress warning of unused parameter(s)
@@ -134,13 +134,13 @@ AudioSource::myUpdate(MarControlPtr sender)
 }
 
 
-void 
+void
 AudioSource::initRtAudio(
-    unsigned int sample_rate,
-    unsigned int *block_size,
-    unsigned int channel_count,
-    bool realtime
-    )
+  unsigned int sample_rate,
+  unsigned int *block_size,
+  unsigned int channel_count,
+  bool realtime
+)
 {
   //marsyas represents audio data as float numbers
   if (audio_ == NULL)
@@ -186,7 +186,7 @@ AudioSource::initRtAudio(
   audio_->showWarnings(true);
 }
 
-void 
+void
 AudioSource::start()
 {
   if ( stopped_ && isInitialized_ )
@@ -197,7 +197,7 @@ AudioSource::start()
   }
 }
 
-void 
+void
 AudioSource::stop()
 {
   if ( !stopped_ )
@@ -325,7 +325,7 @@ AudioSource::recordCallback(void *outputBuffer, void *inputBuffer,
   return 0;
 }
 
-void 
+void
 AudioSource::myProcess(realvec& in, realvec& out)
 {
   (void) in;
@@ -357,8 +357,8 @@ AudioSource::myProcess(realvec& in, realvec& out)
     std::unique_lock<std::mutex> locker(shared.mutex);
 
     shared.condition.wait (
-          locker,
-          [&consumer, this]()
+      locker,
+      [&consumer, this]()
     {
       bool ok = consumer.reserve(onSamples_);
       if (shared.watermark > 0)

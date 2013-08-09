@@ -1,6 +1,6 @@
 #ifndef MARX3DSLIDER_H
 #define MARX3DSLIDER_H
-                                                                                      
+
 #include <QWidget>
 #include <QPainter>
 #include <QColor>
@@ -11,7 +11,7 @@
 
 class Marx3dSlider : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
   Marx3dSlider( QWidget *parent=0 );

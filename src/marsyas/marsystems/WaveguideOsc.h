@@ -26,7 +26,7 @@ namespace Marsyas
 /**
 	\ingroup Synthesis
 	\brief Generates a sine wave.
-	
+
 	Creates a sine wave of a chosen frequency using a wave
 	guide.
 
@@ -47,25 +47,25 @@ class WaveguideOsc: public MarSystem
 {
 private:
 
-	mrs_real x1n1_;  // Last x1
-	mrs_real x2n1_;  // Last x2
+  mrs_real x1n1_;  // Last x1
+  mrs_real x2n1_;  // Last x2
 
-	mrs_real israte_; // Sampling rate of the system
+  mrs_real israte_; // Sampling rate of the system
 
-	mrs_real k_;      // filter coefficient
+  mrs_real k_;      // filter coefficient
 
-	mrs_real frequency_;
-	//Add specific controls needed by this MarSystem.
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  mrs_real frequency_;
+  //Add specific controls needed by this MarSystem.
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	WaveguideOsc(std::string name);
-	WaveguideOsc(const WaveguideOsc& a);
-	~WaveguideOsc();
-	MarSystem* clone() const;
+  WaveguideOsc(std::string name);
+  WaveguideOsc(const WaveguideOsc& a);
+  ~WaveguideOsc();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

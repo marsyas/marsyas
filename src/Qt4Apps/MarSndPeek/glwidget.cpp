@@ -32,7 +32,7 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   test_x = 0;
   test_y = 0;
   test_z = 0;
-  
+
   // sness - Just creating this as 256 elements wide for simplicity,
   // but it should dynamically readjust to be the size of the window
   // from Marsyas.
@@ -45,16 +45,16 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   // Allocate space for the ring buffer used to draw the spectrum
   spectrum_ring_buffer = new double*[MAX_SPECTRUM_LINES];
   for (int i = 0; i < MAX_SPECTRUM_LINES; i++) {
-	spectrum_ring_buffer[i] = new double[SPECTRUM_SIZE];
-	for (int j = 0; j < SPECTRUM_SIZE; j++) {
-	  spectrum_ring_buffer[i][j] = 0.0;
-	}
+    spectrum_ring_buffer[i] = new double[SPECTRUM_SIZE];
+    for (int j = 0; j < SPECTRUM_SIZE; j++) {
+      spectrum_ring_buffer[i][j] = 0.0;
+    }
   }
   ring_buffer_pos = 0;
-  
+
   //
   // Create the MarSystem to play and analyze the data
-  // 
+  //
   MarSystemManager mng;
 
   // A series to contain everything
@@ -71,20 +71,20 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   net->addMarSystem(mng.create("Selector", "inputselector"));
 
   if (inAudioFileName == "") {
- 	net->updctrl("Selector/inputselector/mrs_natural/enable", 0);
- 	net->updctrl("Selector/inputselector/mrs_natural/enable", 1);
- 	cout << "input from AudioSource" << endl;
+    net->updctrl("Selector/inputselector/mrs_natural/enable", 0);
+    net->updctrl("Selector/inputselector/mrs_natural/enable", 1);
+    cout << "input from AudioSource" << endl;
   } else {
- 	net->updctrl("Selector/inputselector/mrs_natural/enable", 1);
- 	net->updctrl("Selector/inputselector/mrs_natural/enable", 0);
- 	cout << "input from SoundFileSource" << endl;
+    net->updctrl("Selector/inputselector/mrs_natural/enable", 1);
+    net->updctrl("Selector/inputselector/mrs_natural/enable", 0);
+    cout << "input from SoundFileSource" << endl;
   }
 
   // Add the AudioSink right after we've selected the input and
   // before we've calculated any features.  Nice trick.
   net->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
   net->addMarSystem(mng.create("AudioSink", "dest"));
-	
+
   net->addMarSystem(mng.create("Windowing", "ham"));
   net->addMarSystem(mng.create("Spectrum", "spk"));
   net->addMarSystem(mng.create("PowerSpectrum", "pspk"));
@@ -92,21 +92,21 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
 
   MarSystem* spectrumFeatures = mng.create("Fanout", "spectrumFeatures");
   spectrumFeatures->addMarSystem(mng.create("Centroid", "cntrd"));
-  spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));      
+  spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));
   spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
   spectrumFeatures->addMarSystem(mng.create("Rms", "rms"));
   net->addMarSystem(spectrumFeatures);
 
   // Set the controls of this MarSystem
-  
+
   net->updctrl("Fanout/inputfanout/SoundFileSource/src/mrs_real/repetitions",-1.0);
 
   if (inAudioFileName == "") {
-	net->updctrl("mrs_real/israte", 44100.0);
-	inputfanout->updctrl("AudioSource/src/mrs_bool/initAudio", true);
+    net->updctrl("mrs_real/israte", 44100.0);
+    inputfanout->updctrl("AudioSource/src/mrs_bool/initAudio", true);
   } else {
- 	net->updctrl("Fanout/inputfanout/SoundFileSource/src/mrs_string/filename",inAudioFileName);
- 	net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+    net->updctrl("Fanout/inputfanout/SoundFileSource/src/mrs_string/filename",inAudioFileName);
+    net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
   }
 
   // Create and start playing the MarSystemQtWrapper that wraps
@@ -115,12 +115,12 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   mwr_->start();
 
   if (inAudioFileName == "") {
-	mwr_->play();
-	play_state = true;
+    mwr_->play();
+    play_state = true;
   } else {
-	play_state = false;
+    play_state = false;
   }
-		    
+
   // Create some handy pointers to access the MarSystem
   posPtr_ = mwr_->getctrl("Fanout/inputfanout/SoundFileSource/src/mrs_natural/pos");
   initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
@@ -129,10 +129,10 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   //
   // Create the animation timer that periodically redraws the screen
   //
-  QTimer *timer = new QTimer( this ); 
-  connect( timer, SIGNAL(timeout()), this, SLOT(animate()) ); 
+  QTimer *timer = new QTimer( this );
+  connect( timer, SIGNAL(timeout()), this, SLOT(animate()) );
   timer->start(10); // Redraw the screen every 10ms
-  
+
 }
 
 GLWidget::~GLWidget()
@@ -160,7 +160,7 @@ void GLWidget::initializeGL()
 
   // Set the shading model
   glShadeModel(GL_SMOOTH);
-  
+
   // Enable depth testing
   glEnable(GL_DEPTH_TEST);
 
@@ -185,7 +185,7 @@ void GLWidget::paintGL()
 {
   // Clear the color and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  
+
   // Load the identity matrix
   glLoadIdentity();
 
@@ -201,7 +201,7 @@ void GLWidget::paintGL()
 
   // Draw the object
   redrawScene();
-  
+
   //    cout << "redrawing" << endl;
   //   mwr_->play();
   //   cout << mwr_->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;
@@ -213,9 +213,9 @@ void GLWidget::animate() {
   //    cout << "animate" << endl;
   emit updateGL();
   if (play_state) {
-	addDataToRingBuffer();
-	setWaveformData();
-	setAudioStats();
+    addDataToRingBuffer();
+    setWaveformData();
+    setAudioStats();
   }
 }
 
@@ -238,21 +238,21 @@ void GLWidget::addDataToRingBuffer() {
   mrs_realvec data = mwr_->getctrl("PowerSpectrum/pspk/mrs_realvec/processedData")->to<mrs_realvec>();
 
   for (int i = 0; i < SPECTRUM_SIZE; i++) {
-	spectrum_ring_buffer[ring_buffer_pos][i] = data(i,0);
+    spectrum_ring_buffer[ring_buffer_pos][i] = data(i,0);
   }
-  
+
   //   cout << "ring_buffer_pos=" << ring_buffer_pos << endl;
 
   ring_buffer_pos += 1;
   if (ring_buffer_pos >= MAX_SPECTRUM_LINES) {
-	ring_buffer_pos = 0;
+    ring_buffer_pos = 0;
   }
 
 
 }
 
 void GLWidget::redrawScene() {
-  
+
 
   //
   // Draw the text for the various audio statistics
@@ -281,10 +281,10 @@ void GLWidget::redrawScene() {
   glColor3f(1,1,1);
   glBegin(GL_LINE_STRIP);
   for (int i = 0; i < 512; i++) {
-	float x = ((i - 256 / 2.0) / 200.0) - 0.7;
-  	float y = (waveform_data(0,i)) + 2.5;
- 	float z = 49;
- 	glVertex3f(x,y,z);
+    float x = ((i - 256 / 2.0) / 200.0) - 0.7;
+    float y = (waveform_data(0,i)) + 2.5;
+    float z = 49;
+    glVertex3f(x,y,z);
   }
   glEnd();
 
@@ -292,15 +292,15 @@ void GLWidget::redrawScene() {
   // Draw the waterfall spectrum
   //
   for (int i = 0; i < MAX_SPECTRUM_LINES; i++) {
-	glColor3f((i / (float)MAX_SPECTRUM_LINES),1,0); // A color ramp from yellow to green
-	glBegin(GL_LINE_STRIP);
-	for (int j = 0; j < SPECTRUM_SIZE; j++) {
-	  float x = (j - SPECTRUM_SIZE / 2.0) / 40.0;
-	  float y = y_scale * spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_SPECTRUM_LINES][j];
- 	  float z = i;
-	  glVertex3f(x,y,z);
-	}
-	glEnd();
+    glColor3f((i / (float)MAX_SPECTRUM_LINES),1,0); // A color ramp from yellow to green
+    glBegin(GL_LINE_STRIP);
+    for (int j = 0; j < SPECTRUM_SIZE; j++) {
+      float x = (j - SPECTRUM_SIZE / 2.0) / 40.0;
+      float y = y_scale * spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_SPECTRUM_LINES][j];
+      float z = i;
+      glVertex3f(x,y,z);
+    }
+    glEnd();
   }
 
 }
@@ -331,9 +331,9 @@ void GLWidget::resizeGL(int width, int height)
 void GLWidget::normalizeAngle(int *angle)
 {
   while (*angle < 0)
-	*angle += 360 * 16;
+    *angle += 360 * 16;
   while (*angle > 360 * 16)
-	*angle -= 360 * 16;
+    *angle -= 360 * 16;
 }
 
 // Set the test z rotation value
@@ -347,9 +347,9 @@ void GLWidget::setXRotation(int angle)
 {
   normalizeAngle(&angle);
   if (angle != xRot) {
-	xRot = angle;
-	emit xRotationChanged(angle);
-	updateGL();
+    xRot = angle;
+    emit xRotationChanged(angle);
+    updateGL();
   }
 }
 
@@ -358,9 +358,9 @@ void GLWidget::setYRotation(int angle)
 {
   normalizeAngle(&angle);
   if (angle != yRot) {
-	yRot = angle;
-	emit yRotationChanged(angle);
-	updateGL();
+    yRot = angle;
+    emit yRotationChanged(angle);
+    updateGL();
   }
 }
 
@@ -369,25 +369,25 @@ void GLWidget::setZRotation(int angle)
 {
   normalizeAngle(&angle);
   if (angle != zRot) {
-	zRot = angle;
-	emit zRotationChanged(angle);
-	updateGL();
+    zRot = angle;
+    emit zRotationChanged(angle);
+    updateGL();
   }
 }
 
-void GLWidget::powerSpectrumModeChanged(int val) 
+void GLWidget::powerSpectrumModeChanged(int val)
 {
   string sval;
   if (val == 0) {
-	sval = "power";
+    sval = "power";
   } else if (val == 1) {
-	sval = "magnitude";
+    sval = "magnitude";
   } else if (val == 2) {
-	sval = "decibels";
+    sval = "decibels";
   } else if (val == 3) {
-	sval = "powerdensity";
+    sval = "powerdensity";
   }
-  
+
   mwr_->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType",sval);
 
 }
@@ -397,19 +397,19 @@ void GLWidget::setWaterfallVisible(bool val)
   cout << "GLWidget::setWaterfallVisible val=" << val << endl;
 }
 
-void GLWidget::playPause() 
+void GLWidget::playPause()
 {
   play_state = !play_state;
 
   if (play_state == true) {
-	mwr_->play();
+    mwr_->play();
   } else {
-	mwr_->pause();
+    mwr_->pause();
   }
 }
 
 
-void GLWidget::open() 
+void GLWidget::open()
 {
   QString fileName = QFileDialog::getOpenFileName(this);
 

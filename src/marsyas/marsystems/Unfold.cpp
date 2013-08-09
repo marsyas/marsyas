@@ -23,7 +23,7 @@ using namespace Marsyas;
 
 Unfold::Unfold(mrs_string name):MarSystem("Unfold",name)
 {
-	addControls();
+  addControls();
 }
 
 Unfold::Unfold(const Unfold& a): MarSystem(a)
@@ -44,7 +44,7 @@ Unfold::addControls()
 MarSystem*
 Unfold::clone() const
 {
-	return new Unfold(*this);
+  return new Unfold(*this);
 }
 
 void

@@ -35,10 +35,10 @@ namespace Marsyas
 	IEEE Transactions on Acoustics, Speech, and Signal Processing vol. 34, pp. 744-754, August 1986.
 
 	Each peak is then associated to a "partial track", whose number ID is stored in the peakView::pkTrack.
-	The peak tracking can start from the last frame from the previous texture window received by the Marsystem 
-	(when useMemory control is set to true) or perform peak tracking only in the current input peakView. 
-	It is also possible to perform peak tracking independently for each cluster (i.e. group) of peaks 
-	(for that, set useGroups control to true), in casethey have already been clustered and their 
+	The peak tracking can start from the last frame from the previous texture window received by the Marsystem
+	(when useMemory control is set to true) or perform peak tracking only in the current input peakView.
+	It is also possible to perform peak tracking independently for each cluster (i.e. group) of peaks
+	(for that, set useGroups control to true), in casethey have already been clustered and their
 	peakView::pkGroup field filled correspondingly.
 
 	Controls:
@@ -50,28 +50,28 @@ namespace Marsyas
 class McAulayQuatieri: public MarSystem
 {
 private:
-	MarControlPtr ctrl_useMemory_;
-	MarControlPtr ctrl_reset_;
-	MarControlPtr ctrl_useGroups_;
-	MarControlPtr ctrl_delta_;
-	MarControlPtr ctrl_matchThres_;
+  MarControlPtr ctrl_useMemory_;
+  MarControlPtr ctrl_reset_;
+  MarControlPtr ctrl_useGroups_;
+  MarControlPtr ctrl_delta_;
+  MarControlPtr ctrl_matchThres_;
 
-	mrs_natural nextGroup_;
-	realvec memory_;
-	realvec tmp_;
+  mrs_natural nextGroup_;
+  realvec memory_;
+  realvec tmp_;
 
-	mrs_real peakTrack(realvec& vec, mrs_natural frame, mrs_natural grpOne, mrs_natural grpTwo);
+  mrs_real peakTrack(realvec& vec, mrs_natural frame, mrs_natural grpOne, mrs_natural grpTwo);
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
 public:
-	McAulayQuatieri(std::string name);
-	McAulayQuatieri(const McAulayQuatieri& a);
-	~McAulayQuatieri();
-	MarSystem* clone() const;
+  McAulayQuatieri(std::string name);
+  McAulayQuatieri(const McAulayQuatieri& a);
+  ~McAulayQuatieri();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

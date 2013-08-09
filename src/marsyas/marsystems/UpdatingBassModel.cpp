@@ -34,7 +34,7 @@ UpdatingBassModel::clone() const
   return new UpdatingBassModel(*this);
 }
 
-void 
+void
 UpdatingBassModel::addControls()
 {
   addControl("mrs_natural/nTemplates", 3, ctrl_nTemplates_);
@@ -84,46 +84,46 @@ void UpdatingBassModel::myUpdate(MarControlPtr sender)
 
   // calculate log frequency
   logFreq_.create(freq_.getSize());
-  for(i=0; i<logFreq_.getSize(); ++i){
+  for(i=0; i<logFreq_.getSize(); ++i) {
     logFreq_(i) = log(lowFreq_)+(log(highFreq_)-log(lowFreq_))/(double)(logFreq_.getSize()-1)*(double)i;
   }
   // calculate start vector
   start_.create(seg_.getSize());
   i=0;
   j=0;
-  while(i<inSamples_ && j<seg_.getSize()){
-    if(seg_(j) <= time_(i)){
+  while(i<inSamples_ && j<seg_.getSize()) {
+    if(seg_(j) <= time_(i)) {
       start_(j) = i;
       j++;
     } else {
       ++i;
     }
   }
-  if(j<seg_.getSize()){
+  if(j<seg_.getSize()) {
     start_.stretch(j+1);
     start_(j) = i;
   }
-  i=0; 
-  while(freq_(i) < rootFreq_ && i<inObservations_){
+  i=0;
+  while(freq_(i) < rootFreq_ && i<inObservations_) {
     ++i;
   }
   rootBin_ = i;
   i=0;
-  while(freq_(i) < lowFreq_ && i<inObservations_){
+  while(freq_(i) < lowFreq_ && i<inObservations_) {
     ++i;
   }
   rootMin_ = i;// - rootBin_;
   i=0;
-  while(freq_(i) < highFreq_ && i<inObservations_){
+  while(freq_(i) < highFreq_ && i<inObservations_) {
     ++i;
   }
   rootMax_ = i;// - rootBin_;
 
   // memory allocation
-  if(templates_.getSize() <= 0){
+  if(templates_.getSize() <= 0) {
     templates_.create((rootMax_-rootMin_)*2,K_*I_);
   }
-  if(counts_.getSize() <= 0){
+  if(counts_.getSize() <= 0) {
     counts_.create((rootMax_-rootMin_)*2,K_);
   }
 
@@ -135,52 +135,52 @@ UpdatingBassModel::myProcess(realvec& in, realvec& out)
   mrs_natural i, j, k, l, m, tmpnatural;
   mrs_real tmpreal;
   realvec covMatrix, tmpvec;
-  if(inSamples_ > 0){
+  if(inSamples_ > 0) {
     // copy input realvec to output realvec
-    for(i=0; i<inSamples_; ++i){
-      for(j=0; j<inObservations_; j++){
-	out(j,i) = in(j,i);
+    for(i=0; i<inSamples_; ++i) {
+      for(j=0; j<inObservations_; j++) {
+        out(j,i) = in(j,i);
       }
     }
     tmpvec = templates_;
-    
-    for(k=0; k<K_; k++){
-      for(l=0; l<counts_.getRows(); l++){
-	for(i=0; i<I_; ++i){
-	  templates_(l, k*I_+i) *= counts_(l,k);
-	}
+
+    for(k=0; k<K_; k++) {
+      for(l=0; l<counts_.getRows(); l++) {
+        for(i=0; i<I_; ++i) {
+          templates_(l, k*I_+i) *= counts_(l,k);
+        }
       }
     }
-    
-    // update templates realvec 
-    for(j=0; j< (int)start_.getSize()-1; j++){
-      for(l=0; l<rootMax_-rootMin_; l++){
-	for(i=0; i<I_; ++i){
-	  tmpreal = 0.0;
-	  tmpnatural = 0;
-	  for(m=(int)(((double)i/I_*(start_(j+1)-start_(j)))+start_(j)); m<(int)((double)(i+1)/I_*(start_(j+1)-start_(j)))+start_(j); m++){
-	    tmpreal += in(rootMin_+l,m);
-	    tmpnatural ++;
-	  }
-	  if(tmpnatural > 0){
-	    tmpreal /= (mrs_real)tmpnatural;
-	  }
-	  templates_((mrs_natural)(l+(rootMax_-rootMin_)-d_(j)),(mrs_natural)((k_(j)*I_+i))) += tmpreal;
-	}
-	counts_((mrs_natural)(l+(rootMax_-rootMin_)-d_(j)),(mrs_natural)k_(j))++;
+
+    // update templates realvec
+    for(j=0; j< (int)start_.getSize()-1; j++) {
+      for(l=0; l<rootMax_-rootMin_; l++) {
+        for(i=0; i<I_; ++i) {
+          tmpreal = 0.0;
+          tmpnatural = 0;
+          for(m=(int)(((double)i/I_*(start_(j+1)-start_(j)))+start_(j)); m<(int)((double)(i+1)/I_*(start_(j+1)-start_(j)))+start_(j); m++) {
+            tmpreal += in(rootMin_+l,m);
+            tmpnatural ++;
+          }
+          if(tmpnatural > 0) {
+            tmpreal /= (mrs_real)tmpnatural;
+          }
+          templates_((mrs_natural)(l+(rootMax_-rootMin_)-d_(j)),(mrs_natural)((k_(j)*I_+i))) += tmpreal;
+        }
+        counts_((mrs_natural)(l+(rootMax_-rootMin_)-d_(j)),(mrs_natural)k_(j))++;
       }
     }
-    for(l=0; l<(rootMax_-rootMin_)*2; l++){
-      for(k=0; k<K_; k++){
-	if(counts_(l,k) > 0){
-	  for(i=0; i<I_; ++i){
-	    templates_(l,k*I_+i) /= counts_(l,k);
-	  }
-	} else {
-	  for(i=0; i<I_; ++i){
-	    templates_(l,k*I_+i) = tmpvec(l,k*I_+i);
-	  }
-	}
+    for(l=0; l<(rootMax_-rootMin_)*2; l++) {
+      for(k=0; k<K_; k++) {
+        if(counts_(l,k) > 0) {
+          for(i=0; i<I_; ++i) {
+            templates_(l,k*I_+i) /= counts_(l,k);
+          }
+        } else {
+          for(i=0; i<I_; ++i) {
+            templates_(l,k*I_+i) = tmpvec(l,k*I_+i);
+          }
+        }
       }
     }
     ctrl_templates_->setValue(templates_);

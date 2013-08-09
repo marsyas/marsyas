@@ -77,7 +77,7 @@ AimVQ::myUpdate(MarControlPtr sender)
 
   ostringstream oss;
   for (int i =0; i < ctrl_onObservations_->to<mrs_natural>(); ++i)
-	oss << "attribute,";
+    oss << "attribute,";
   //ctrl_onObsNames_->setValue("AimVQ_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
   ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 

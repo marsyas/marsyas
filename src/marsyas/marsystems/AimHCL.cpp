@@ -47,7 +47,7 @@ AimHCL::clone() const
   return new AimHCL(*this);
 }
 
-void 
+void
 AimHCL::addControls()
 {
   addControl("mrs_bool/do_lowpass", true , ctrl_do_lowpass_);
@@ -82,7 +82,7 @@ AimHCL::myUpdate(MarControlPtr sender)
   //
   // Does the MarSystem need a reset?
   //
-  if (reseted_inobservations != ctrl_inObservations_->to<mrs_natural>() || 
+  if (reseted_inobservations != ctrl_inObservations_->to<mrs_natural>() ||
       reseted_lowpass_order != ctrl_lowpass_order_->to<mrs_natural>()) {
     is_reset = false;
   }
@@ -97,13 +97,13 @@ AimHCL::myUpdate(MarControlPtr sender)
 }
 
 
-bool 
+bool
 AimHCL::InitializeInternal() {
   time_constant_ = 1.0 / (2.0 * PI * ctrl_lowpass_cutoff_->to<mrs_real>());
   return true;
 }
 
-void 
+void
 AimHCL::ResetInternal() {
   xn_ = 0.0;
   yn_ = 0.0;
@@ -170,7 +170,7 @@ AimHCL::myProcess(realvec& in, realvec& out)
       }
     }
   }
-  
+
   // Copy over the centre frequencies
   for (o = _num_channels; o < _num_channels * 2; ++o) {
     for (t = 0; t < _inSamples; ++t) {

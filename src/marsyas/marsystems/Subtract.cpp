@@ -25,7 +25,7 @@ using namespace Marsyas;
 
 Subtract::Subtract(mrs_string name):MarSystem("Subtract", name)
 {
-	addControls();
+  addControls();
 }
 
 Subtract::Subtract(const Subtract& a) : MarSystem(a)
@@ -41,7 +41,7 @@ Subtract::~Subtract()
 MarSystem*
 Subtract::clone() const
 {
-	return new Subtract(*this);
+  return new Subtract(*this);
 }
 
 void
@@ -53,18 +53,18 @@ Subtract::addControls()
 void
 Subtract::myUpdate(MarControlPtr sender)
 {
-    (void) sender;  //suppress warning of unused parameter(s)
-	MRSDIAG("Subtract.cpp - Subtract:myUpdate");
+  (void) sender;  //suppress warning of unused parameter(s)
+  MRSDIAG("Subtract.cpp - Subtract:myUpdate");
 
-	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-	ctrl_onObservations_->setValue(1, NOUPDATE);
-	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
+  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+  ctrl_onObservations_->setValue(1, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+  ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
 }
 
 void
 Subtract::myProcess(realvec& in, realvec& out)
 {
-	for (mrs_natural t = 0; t < inSamples_; t++)
-		out(0,t) = in(0,t) - in(1,t);
+  for (mrs_natural t = 0; t < inSamples_; t++)
+    out(0,t) = in(0,t) - in(1,t);
 }

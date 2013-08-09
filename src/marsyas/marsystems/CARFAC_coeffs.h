@@ -46,7 +46,7 @@ namespace Marsyas
 class CF_class;
 
 class filter_state_class {
- public:
+public:
   std::vector<double> z1_memory;
   std::vector<double> z2_memory;
   std::vector<double> zA_memory;
@@ -66,7 +66,7 @@ class filter_state_class {
 
   bool init;
 
- public:
+public:
   filter_state_class();
   ~filter_state_class();
 
@@ -78,12 +78,12 @@ class filter_state_class {
 };
 
 class AGC_state_class {
- public:
+public:
   std::vector<std::vector<double> > AGC_memory;
   std::vector<double> sum_AGC;
 
 
- public:
+public:
   AGC_state_class();
   ~AGC_state_class();
 
@@ -92,14 +92,14 @@ class AGC_state_class {
 };
 
 class strobe_state_class {
- public:
+public:
   std::vector<double> lastdata;
   std::vector<double> thresholds;
 
   std::vector<int> trigger_index;
   std::vector<int> sai_index;
 
- public:
+public:
   strobe_state_class();
   ~strobe_state_class();
 
@@ -108,7 +108,7 @@ class strobe_state_class {
 };
 
 class filter_coeffs_class {
- public:
+public:
   double velocity_scale;
 
   std::vector<double> r_coeffs;
@@ -117,7 +117,7 @@ class filter_coeffs_class {
   std::vector<double> h_coeffs;
   std::vector<double> g_coeffs;
 
- public:
+public:
   filter_coeffs_class();
   ~filter_coeffs_class();
 
@@ -127,7 +127,7 @@ class filter_coeffs_class {
 };
 
 class CF_AGC_params_class {
- public:
+public:
   int n_stages;                       // The number of AGC stages
   std::vector<double> time_constants;
   int AGC_stage_gain;                 // Gain from each stage to next slower stage
@@ -137,7 +137,7 @@ class CF_AGC_params_class {
   double detect_scale;                // Max nap will be 10 to 100 typically
   double AGC_mix_coeff;
 
- public:
+public:
   CF_AGC_params_class();
   CF_AGC_params_class(const CF_AGC_params_class& a);
   ~CF_AGC_params_class();
@@ -146,7 +146,7 @@ class CF_AGC_params_class {
 };
 
 class AGC_coeffs_class {
- public:
+public:
   double detect_scale;
   double AGC_stage_gain;
   double AGC_mix_coeff;
@@ -154,14 +154,14 @@ class AGC_coeffs_class {
   std::vector<double> AGC1_polez;
   std::vector<double> AGC2_polez;
 
- public:
+public:
   AGC_coeffs_class();
   ~AGC_coeffs_class();
 };
 
 
 class CF_filter_params_class {
- public:
+public:
   double velocity_scale;
   double min_zeta;
   double first_pole_theta;
@@ -169,7 +169,7 @@ class CF_filter_params_class {
   double ERB_per_step;
   double min_pole_Hz;
 
- public:
+public:
   CF_filter_params_class();
   ~CF_filter_params_class();
 
@@ -177,7 +177,7 @@ class CF_filter_params_class {
 };
 
 class CF_class {
- public:
+public:
   int fs;                                                // Sampling frequency
   CF_filter_params_class CF_filter_params;               // The CARFAC filter parameters
   CF_AGC_params_class CF_AGC_params;                     // The Automatic Gain Control parameters
@@ -194,7 +194,7 @@ class CF_class {
 
   double strobe_threshold_start;
 
- public:
+public:
   CF_class();
   CF_class(const CF_class& a);
   ~CF_class();

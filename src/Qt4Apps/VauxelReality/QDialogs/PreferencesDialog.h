@@ -7,21 +7,21 @@
 
 class PreferencesDialog : public QDialog
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	PreferencesDialog(QWidget *parent=0);
-	void addPage(QWidget *page);
-	void removePage(QWidget *page);
+  PreferencesDialog(QWidget *parent=0);
+  void addPage(QWidget *page);
+  void removePage(QWidget *page);
 
 public slots:
-	void changePage(QListWidgetItem *current, QListWidgetItem *previous);
+  void changePage(QListWidgetItem *current, QListWidgetItem *previous);
 
 private:
-	void createIcons();
+  void createIcons();
 
-	QListWidget *_contentsWidget;
-	QStackedWidget *_pagesWidget;
+  QListWidget *_contentsWidget;
+  QStackedWidget *_pagesWidget;
 };
 
 #endif /* PREFERENCESDIALOG_H */

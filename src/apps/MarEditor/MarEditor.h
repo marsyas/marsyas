@@ -23,43 +23,43 @@ class MarEditor : public QMainWindow, private Ui::MarEditorClass
   Q_OBJECT
 
 private:
-	enum GUIState {
-		ERROR_AUDIO_DEVICE,
-		READY_TO_LOAD,
-		PLAYING,
-		PAUSED,
-		STOPPED
-	} guiState_;
+  enum GUIState {
+    ERROR_AUDIO_DEVICE,
+    READY_TO_LOAD,
+    PLAYING,
+    PAUSED,
+    STOPPED
+  } guiState_;
 
-	//DockWindow* audioDock_;
-	//AudioPlot* audioPlot_;
+  //DockWindow* audioDock_;
+  //AudioPlot* audioPlot_;
 
-	Marsyas::MarSystemThread* msysThread_;		 
-	Marsyas::MarSystem* msysNet_;
+  Marsyas::MarSystemThread* msysThread_;
+  Marsyas::MarSystem* msysNet_;
 
-	DockWindow* mainNetworkDockWin_;
+  DockWindow* mainNetworkDockWin_;
 
-	void setGUIstate(GUIState guiState);
-	GUIState GUIstate() const {return guiState_;};
+  void setGUIstate(GUIState guiState);
+  GUIState GUIstate() const {return guiState_;};
 
-	void createActions();
+  void createActions();
 
 public:
-	MarEditor(QWidget *parent = 0, Qt::WFlags flags = 0);
-	~MarEditor();
+  MarEditor(QWidget *parent = 0, Qt::WFlags flags = 0);
+  ~MarEditor();
 
 private slots:
-	void openMarSystem();
-	void saveMarSystem();
-	
-	void run();
-	void pause();
-	void stop();
-	void rewind();
+  void openMarSystem();
+  void saveMarSystem();
 
-	void showDockWin(QMainWindow* win);
+  void run();
+  void pause();
+  void stop();
+  void rewind();
 
-	//void audioDeviceConfigDialog();
+  void showDockWin(QMainWindow* win);
+
+  //void audioDeviceConfigDialog();
 };
 
 #endif // MAREDITOR_H

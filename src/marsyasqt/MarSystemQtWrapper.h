@@ -14,7 +14,7 @@
 #include <QMutex>
 #include <QSemaphore>
 #include <QWaitCondition>
-#include <QTimer> 
+#include <QTimer>
 #include <QMetaType>
 #include "common_source.h"
 #include "MarSystemManager.h"
@@ -34,60 +34,60 @@ inside a multithreaded Qt app.
 
 class MarSystemQtWrapper: public QThread
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	MarSystemQtWrapper(MarSystem* msys, bool withTimer = false);
-	~MarSystemQtWrapper();
-	void tickForever();
-	void trackctrl(MarControlPtr control);
+  MarSystemQtWrapper(MarSystem* msys, bool withTimer = false);
+  ~MarSystemQtWrapper();
+  void tickForever();
+  void trackctrl(MarControlPtr control);
 
-	QVector<MarControlPtr> getTrackedControls();
+  QVector<MarControlPtr> getTrackedControls();
 
-	public slots:
-		void updctrl(MarControlPtr control, MarControlPtr cval);
-		void updctrl(std::string cname, MarControlPtr newcontrol) 
-		{
-			MarControlPtr control = main_pnet_->getControl(cname);
-			return updctrl(control, newcontrol);
-		}
-		void updctrl(const char *cname, MarControlPtr newcontrol)
-		{
-			MarControlPtr control = main_pnet_->getControl(cname);
-			return updctrl(control, newcontrol);
-		}
-		void emitTrackedControls();
+public slots:
+  void updctrl(MarControlPtr control, MarControlPtr cval);
+  void updctrl(std::string cname, MarControlPtr newcontrol)
+  {
+    MarControlPtr control = main_pnet_->getControl(cname);
+    return updctrl(control, newcontrol);
+  }
+  void updctrl(const char *cname, MarControlPtr newcontrol)
+  {
+    MarControlPtr control = main_pnet_->getControl(cname);
+    return updctrl(control, newcontrol);
+  }
+  void emitTrackedControls();
 
-		MarControlPtr getctrl(string cname);
+  MarControlPtr getctrl(string cname);
 
-		void play();
-		void pause();
-		void stop();
+  void play();
+  void pause();
+  void stop();
 
 signals:
-		void ctrlChanged(MarControlPtr cname);
+  void ctrlChanged(MarControlPtr cname);
 
 protected:
-	void run();
+  void run();
 private:
-	void do_queued_updates();
+  void do_queued_updates();
 
-	QMutex mutex_;
-	bool abort_;
-	bool withTimer_;
+  QMutex mutex_;
+  bool abort_;
+  bool withTimer_;
 
-	QWaitCondition condition_; 
-	int counter_;
+  QWaitCondition condition_;
+  int counter_;
 
-	// the underlying MarSystem
-	MarSystem* main_pnet_;
+  // the underlying MarSystem
+  MarSystem* main_pnet_;
 
-	QMap<MarControlPtr, MarControlPtr> queued_updates_;
+  QMap<MarControlPtr, MarControlPtr> queued_updates_;
 
-	QVector<MarControlPtr> tracked_controls_;
-	bool pause_;
+  QVector<MarControlPtr> tracked_controls_;
+  bool pause_;
 
-	bool running_;
+  bool running_;
 };
 } // namespace
 #endif // MARSYSTEMWRAPPER_H

@@ -44,37 +44,37 @@ class marsyas_EXPORT DelaySamples: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
 
-	/// MarControlPtr for the gain control
-	MarControlPtr ctrl_delay_;
+  /// MarControlPtr for the gain control
+  MarControlPtr ctrl_delay_;
 
-	/// Cache of the delay.
-	mrs_natural delay_;
+  /// Cache of the delay.
+  mrs_natural delay_;
 
-	/// Buffers of previous samples.
-	realvec memory_;
+  /// Buffers of previous samples.
+  realvec memory_;
 
 public:
-	/// DelaySamples constructor.
-	DelaySamples(std::string name);
+  /// DelaySamples constructor.
+  DelaySamples(std::string name);
 
-	/// DelaySamples copy constructor.
-	DelaySamples(const DelaySamples& a);
+  /// DelaySamples copy constructor.
+  DelaySamples(const DelaySamples& a);
 
-	/// DelaySamples destructor.
-	~DelaySamples();
+  /// DelaySamples destructor.
+  ~DelaySamples();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }

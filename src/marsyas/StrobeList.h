@@ -47,7 +47,7 @@ struct StrobePoint {
 };
 
 class StrobeList {
- public:
+public:
   /*! \brief Create a new strobe list
    */
   inline StrobeList() {
@@ -106,12 +106,12 @@ class StrobeList {
 
   void printStrobes() {
     for (unsigned int i = 0; i < strobes_.size(); ++i) {
-		std::cout << strobes_[i].time << " " << strobes_[i].weight << strobes_[i].working_weight << std::endl;
+      std::cout << strobes_[i].time << " " << strobes_[i].weight << strobes_[i].working_weight << std::endl;
     }
 
   }
 
- private:
+private:
   deque<StrobePoint> strobes_;
 };
 }  // namespace aimc

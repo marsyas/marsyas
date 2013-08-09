@@ -32,7 +32,7 @@ namespace Marsyas
 class CARFAC: public MarSystem
 {
 
- private:
+private:
   //Add specific controls needed by this MarSystem.
   void addControls();
   void myUpdate(MarControlPtr sender);
@@ -63,7 +63,7 @@ class CARFAC: public MarSystem
   void DoubleExponentialSmoothing(std::vector<double> &data, double polez1, double polez2, int n_ch);
   void CARFAC_AGCStep(const std::vector<std::vector<double> > &avg_detects);
 
- public:
+public:
   CARFAC(std::string name);
   CARFAC(const CARFAC& a);
   ~CARFAC();

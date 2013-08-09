@@ -3,13 +3,13 @@
 
 //--------------------------------------------------------------
 SoundEngine::SoundEngine(string name)
-: ofxMarsyasNetwork(name)
+  : ofxMarsyasNetwork(name)
 {
-	priority	= 2;
+  priority	= 2;
 
-	disableAllEvents();
-	ofAddListener(ofEvents.setup, (ofxMSAInteractiveObject*)this, &ofxMSAInteractiveObject::_setup);
-	ofAddListener(ofEvents.draw, (ofxMSAInteractiveObject*)this, &ofxMSAInteractiveObject::_draw);	
+  disableAllEvents();
+  ofAddListener(ofEvents.setup, (ofxMSAInteractiveObject*)this, &ofxMSAInteractiveObject::_setup);
+  ofAddListener(ofEvents.draw, (ofxMSAInteractiveObject*)this, &ofxMSAInteractiveObject::_draw);
 
 }
 
@@ -18,7 +18,7 @@ void
 SoundEngine::setup()
 {
   cout << "setup" << endl;
-  
+
   addMarSystem(mng.create("SineSource", "src"));
   addMarSystem(mng.create("AudioSink", "dest"));
 
@@ -34,7 +34,7 @@ void
 SoundEngine::update()
 {
   if (sineChanger->lock()) {
-	updctrl("SineSource/src/mrs_real/frequency", sineChanger->getCount());
+    updctrl("SineSource/src/mrs_real/frequency", sineChanger->getCount());
     sineChanger->unlock();
   }
 }

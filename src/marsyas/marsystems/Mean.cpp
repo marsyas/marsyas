@@ -35,45 +35,45 @@ Mean::~Mean()
 MarSystem*
 Mean::clone() const
 {
-	return new Mean(*this);
+  return new Mean(*this);
 }
 
 void
 Mean::myUpdate(MarControlPtr sender)
 {
-	(void) sender;  //suppress warning of unused parameter(s)
-	MRSDIAG("Mean.cpp - Mean:myUpdate");
+  (void) sender;  //suppress warning of unused parameter(s)
+  MRSDIAG("Mean.cpp - Mean:myUpdate");
 
-	ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
-	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
-	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+  ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
-	// Allocate memory for the row buffer.
-	obsrow_.create(ctrl_inSamples_->to<mrs_natural>());
+  // Allocate memory for the row buffer.
+  obsrow_.create(ctrl_inSamples_->to<mrs_natural>());
 
-	//defaultUpdate(); [!]
-	// \todo what is this doing here?
-	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
+  //defaultUpdate(); [!]
+  // \todo what is this doing here?
+  inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 
-	// Add prefix to the observation names.
-	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
-	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Mean_"), NOUPDATE);
+  // Add prefix to the observation names.
+  mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+  ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Mean_"), NOUPDATE);
 }
 
 void
 Mean::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
-	out.setval(0.0);
-	for (o=0; o < inObservations_; o++)
-	{
-		for (t = 0; t < inSamples_; t++)
-		{
-			// Calculate mean
-			obsrow_(t) = in(o,t);
-		}
-		out(o,0) = obsrow_.mean();
-	}
-	// INEFFICIENT A LOT OF MEMORY COPYING AT EVERY TICK
-	// out = in.meanObs();
+  mrs_natural t,o;
+  out.setval(0.0);
+  for (o=0; o < inObservations_; o++)
+  {
+    for (t = 0; t < inSamples_; t++)
+    {
+      // Calculate mean
+      obsrow_(t) = in(o,t);
+    }
+    out(o,0) = obsrow_.mean();
+  }
+  // INEFFICIENT A LOT OF MEMORY COPYING AT EVERY TICK
+  // out = in.meanObs();
 }

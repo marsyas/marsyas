@@ -35,14 +35,14 @@ namespace Marsyas
 class FullWaveRectifier: public MarSystem
 {
 private:
-	void myUpdate(MarControlPtr sender);
+  void myUpdate(MarControlPtr sender);
 
 public:
-	FullWaveRectifier(std::string name);
-	~FullWaveRectifier();
-	MarSystem* clone() const;
+  FullWaveRectifier(std::string name);
+  ~FullWaveRectifier();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

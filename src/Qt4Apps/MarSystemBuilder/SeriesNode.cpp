@@ -10,9 +10,9 @@ SeriesNode::SeriesNode(QString name,QWidget* parent)
 
   QFontMetrics fm(font());
   QSize size = fm.size(Qt::TextSingleLine,name_);
-  
+
   setGeometry((parent->width()-width())/2,10,
-			     size.width()+12,size.height()+12);
+              size.width()+12,size.height()+12);
 
   QPixmap pix(width(),height());
 
@@ -42,9 +42,9 @@ SeriesNode::SeriesNode(MarSystem* msys, QWidget* parent)
 {
   QFontMetrics fm(font());
   QSize size = fm.size(Qt::TextSingleLine,name_);
-  
+
   setGeometry((parent->width()-width())/2,10,
-			     size.width()+12,size.height()+12);
+              size.width()+12,size.height()+12);
 
   QPixmap pix(width(),height());
 
@@ -78,12 +78,12 @@ SeriesNode::append(MarSystemNode* newWidget)
 {
   QFontMetrics fm(font());
   QSize size = fm.size(Qt::TextSingleLine,name_);
-  if(CompositeNode::append(newWidget)){
-    if(nodes_.size()==1){
+  if(CompositeNode::append(newWidget)) {
+    if(nodes_.size()==1) {
       newWidget->setPrev(0);
       newWidget->move(newWidget->x(),size.height()+10);
-    }else{
-      //TODO catch exception if there was no node there 
+    } else {
+      //TODO catch exception if there was no node there
       MarSystemNode* oldLast = nodes_.at(nodes_.size()-2);
       oldLast->setNext(newWidget);;
       newWidget->setPrev(oldLast);
@@ -93,13 +93,13 @@ SeriesNode::append(MarSystemNode* newWidget)
     drawAllWidgets();
     //Show the newly added widget
     newWidget->show();
-    if(newWidget->isCollection()){
+    if(newWidget->isCollection()) {
       connect(newWidget,SIGNAL(resized(int,int,int,int)),
-	      this,SLOT(handleChildResize(int,int,int,int)));
+              this,SLOT(handleChildResize(int,int,int,int)));
     };
     return true;
   }
-  return false; 
+  return false;
 }
 
 /**
@@ -109,23 +109,23 @@ SeriesNode::append(MarSystemNode* newWidget)
 bool
 SeriesNode::insert(int index,MarSystemNode* newWidget)
 {
-  if(CompositeNode::insert(index,newWidget)){
-    if(index==0){//Added to the first slot
-      if(nodes_.size()>1){
-	MarSystemNode* oldFirst = nodes_.at(1);
-	oldFirst->setPrev(newWidget);
-	newWidget->setNext(oldFirst);
-	newWidget->setPrev(0);
+  if(CompositeNode::insert(index,newWidget)) {
+    if(index==0) { //Added to the first slot
+      if(nodes_.size()>1) {
+        MarSystemNode* oldFirst = nodes_.at(1);
+        oldFirst->setPrev(newWidget);
+        newWidget->setNext(oldFirst);
+        newWidget->setPrev(0);
       }
-    }else{//Not the first
-      if(nodes_.size()>(index+1)){
-	//UPdate Connections
-	MarSystemNode* newParent = nodes_.at(index-1);
-	MarSystemNode* newChild = nodes_.at(index+1);
-	newParent->setNext(newWidget);
-	newWidget->setPrev(newParent);
-	newWidget->setNext(newChild);
-	newChild->setPrev(newWidget);
+    } else { //Not the first
+      if(nodes_.size()>(index+1)) {
+        //UPdate Connections
+        MarSystemNode* newParent = nodes_.at(index-1);
+        MarSystemNode* newChild = nodes_.at(index+1);
+        newParent->setNext(newWidget);
+        newWidget->setPrev(newParent);
+        newWidget->setNext(newChild);
+        newChild->setPrev(newWidget);
       }
     }
     drawAllWidgets();
@@ -141,17 +141,17 @@ SeriesNode::insert(int index,MarSystemNode* newWidget)
 bool
 SeriesNode::insert(MarSystemNode* before,MarSystemNode* newWidget)
 {
-  if(CompositeNode::insert(before,newWidget)){
+  if(CompositeNode::insert(before,newWidget)) {
     vector<MarSystemNode*>::iterator itr = nodes_.begin();
     int i=0;
-    for(;itr!=nodes_.end();itr++){
+    for(; itr!=nodes_.end(); itr++) {
       if(*itr==before)break;
       i++;
     }
     //TODO handle the case if we just added the first
-    if(i>1){
+    if(i>1) {
       newWidget->setPrev(before->getPrev());
-    }else{
+    } else {
       newWidget->setPrev(0);
     }
     before->setPrev(newWidget);//TODO this may not be possible
@@ -163,7 +163,7 @@ SeriesNode::insert(MarSystemNode* before,MarSystemNode* newWidget)
 }
 
 /**
- * UPdates the size of the 
+ * UPdates the size of the
  */
 void
 SeriesNode::drawAllWidgets()
@@ -175,23 +175,23 @@ SeriesNode::drawAllWidgets()
   vector<MarSystemNode*>::iterator itr = nodes_.begin();
   //Begin can't use the bottom of his parent because that number is
   //greatly overestimated
-  for(;itr!=nodes_.end();itr++){
+  for(; itr!=nodes_.end(); itr++) {
     //adjust x()
-    if((*itr)->x()<5){
+    if((*itr)->x()<5) {
       (*itr)->move(5,(*itr)->y());
     }
-    if((*itr)->width()+(*itr)->x()+5 > maxX){
+    if((*itr)->width()+(*itr)->x()+5 > maxX) {
       maxX = (*itr)->width()+(*itr)->x()+5;
     }
     //adjust y()
     MarSystemNode* parent = (*itr)->getPrev();
-    if(parent != NULL){
+    if(parent != NULL) {
       int minY= parent->getBottom()+10;
-      if((*itr)->y()<minY){
-	(*itr)->move((*itr)->x(),minY);
+      if((*itr)->y()<minY) {
+        (*itr)->move((*itr)->x(),minY);
       }
     }
-    if((*itr)->getBottom()+10>maxY){
+    if((*itr)->getBottom()+10>maxY) {
       maxY =(*itr)->getBottom()+10;
     }
   }
@@ -202,36 +202,36 @@ SeriesNode::drawAllWidgets()
 /**
  * Tries to draw all the attachments if there is no paint widget
  */
-void 
+void
 SeriesNode::paintEvent(QPaintEvent*)
 {
-    MarSystemNode* last=NULL;
-    QPainter painter(this);
-    painter.setPen(Qt::red);
+  MarSystemNode* last=NULL;
+  QPainter painter(this);
+  painter.setPen(Qt::red);
 
-    if(nodes_.size()>0){
-      vector<MarSystemNode*>::iterator itr = nodes_.begin();
-      painter.drawLine(width()/2,0,
-		       (*itr)->getCenter(),(*itr)->y());
-      last=(*itr);
-      itr++;
-    
-      painter.setPen(Qt::black);
-      for(;itr!=nodes_.end();itr++){
-	MarSystemNode* parent = (*itr)->getPrev();
-	if(parent!=NULL){
-	  painter.drawLine(parent->getCenter(),parent->getBottom(),
-			   (*itr)->getCenter(),(*itr)->y());
-	}
-	last=(*itr);
+  if(nodes_.size()>0) {
+    vector<MarSystemNode*>::iterator itr = nodes_.begin();
+    painter.drawLine(width()/2,0,
+                     (*itr)->getCenter(),(*itr)->y());
+    last=(*itr);
+    itr++;
+
+    painter.setPen(Qt::black);
+    for(; itr!=nodes_.end(); itr++) {
+      MarSystemNode* parent = (*itr)->getPrev();
+      if(parent!=NULL) {
+        painter.drawLine(parent->getCenter(),parent->getBottom(),
+                         (*itr)->getCenter(),(*itr)->y());
       }
-    
-      painter.setPen(Qt::red);
-      painter.drawLine(last->getCenter(),last->getBottom(),
-		       width()/2,height());
-    }else{
-      painter.drawLine(width()/2,0,width()/2,height());
+      last=(*itr);
     }
+
+    painter.setPen(Qt::red);
+    painter.drawLine(last->getCenter(),last->getBottom(),
+                     width()/2,height());
+  } else {
+    painter.drawLine(width()/2,0,width()/2,height());
+  }
 }
 
 
@@ -243,7 +243,7 @@ SeriesNode::resizeEvent(QResizeEvent*)
 {
   QFontMetrics fm(font());
   QSize size = fm.size(Qt::TextSingleLine,name_);
-  
+
   QPixmap pix(width(),height());
 
   QPainter paint;
@@ -280,14 +280,14 @@ SeriesNode::getChildrenCanvas()
 void
 SeriesNode::dragEnterEvent(QDragEnterEvent *event)
 {
-  if(event->mimeData()->hasFormat("application/x-MarSystemNode")){
-    if(children().contains(event->source())){
+  if(event->mimeData()->hasFormat("application/x-MarSystemNode")) {
+    if(children().contains(event->source())) {
       event->setDropAction(Qt::MoveAction);
       event->accept();
-    }else{
+    } else {
       event->ignore();
     }
-  }else{
+  } else {
     event->ignore();
   }
 }
@@ -296,43 +296,43 @@ SeriesNode::dragEnterEvent(QDragEnterEvent *event)
  * Default SeriesNode for handling dragging of MarSystemNodes
  * Need to make this Node resize if the Cell is trying to out draw the box
  */
-void 
+void
 SeriesNode::dragMoveEvent(QDragMoveEvent *event)
 {
-  if(event->mimeData()->hasFormat("application/x-MarSystemNode")){
-    if(children().contains(event->source())){
+  if(event->mimeData()->hasFormat("application/x-MarSystemNode")) {
+    if(children().contains(event->source())) {
       //set the widget to draw the lines to.
       MarSystemNode* paintWidget=(MarSystemNode*)event->source();
 
-      if(true){
-	event->setDropAction(Qt::MoveAction);
-	event->accept();
+      if(true) {
+        event->setDropAction(Qt::MoveAction);
+        event->accept();
 
-	QByteArray itemData = 
-	  event->mimeData()->data("application/x-MarSystemNode");
-	QDataStream dataStream(&itemData, QIODevice::ReadOnly);
+        QByteArray itemData =
+          event->mimeData()->data("application/x-MarSystemNode");
+        QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
-	QString widgetName;
-	QPoint offset;
+        QString widgetName;
+        QPoint offset;
 
-	dataStream >> widgetName >> offset;
-	
-	paintWidget->move(event->pos()-offset);
-	if(paintWidget->getPrev() !=0 && paintWidget->getNext()!=0){
-	  update(QRect(0,paintWidget->getPrev()->getBottom(),
-		       width(),
-		       paintWidget->getNext()->y()
-		        -paintWidget->getPrev()->getBottom()));
-	}else if(paintWidget->getPrev() !=0){
-	  update(QRect(0,paintWidget->getPrev()->getBottom(),
-		width(),height()-paintWidget->getPrev()->getBottom()));
-	}else if(paintWidget->getNext() !=0){
-	  //This is first
-	  update(QRect(0,0,
-	        width(),paintWidget->getNext()->y()));
-	}
-	//do not carry out final statement
-	return;
+        dataStream >> widgetName >> offset;
+
+        paintWidget->move(event->pos()-offset);
+        if(paintWidget->getPrev() !=0 && paintWidget->getNext()!=0) {
+          update(QRect(0,paintWidget->getPrev()->getBottom(),
+                       width(),
+                       paintWidget->getNext()->y()
+                       -paintWidget->getPrev()->getBottom()));
+        } else if(paintWidget->getPrev() !=0) {
+          update(QRect(0,paintWidget->getPrev()->getBottom(),
+                       width(),height()-paintWidget->getPrev()->getBottom()));
+        } else if(paintWidget->getNext() !=0) {
+          //This is first
+          update(QRect(0,0,
+                       width(),paintWidget->getNext()->y()));
+        }
+        //do not carry out final statement
+        return;
       }
     }
   }
@@ -343,14 +343,14 @@ SeriesNode::dragMoveEvent(QDragMoveEvent *event)
 /**
  * Default code for handling dropped MarSystemNodes
  */
-void 
+void
 SeriesNode::dropEvent(QDropEvent *event)
 {
   //Only accept MarSystemNodes that started in this box
-  if(event->mimeData()->hasFormat("application/x-MarSystemNode") 
-     && children().contains(event->source())){
+  if(event->mimeData()->hasFormat("application/x-MarSystemNode")
+      && children().contains(event->source())) {
 
-    QByteArray itemData = 
+    QByteArray itemData =
       event->mimeData()->data("application/x-MarSystemNode");
 
     QDataStream dataStream(&itemData, QIODevice::ReadOnly);
@@ -365,7 +365,7 @@ SeriesNode::dropEvent(QDropEvent *event)
 
     //Move the eidget to it's new location
     newMarSystemNode->move(event->pos()-offset);
-    
+
     //Drop the object here and show it.
     event->setDropAction(Qt::TargetMoveAction);
     event->accept();
@@ -373,26 +373,26 @@ SeriesNode::dropEvent(QDropEvent *event)
 
     //set the widget to draw the lines to.
     MarSystemNode* paintWidget=newMarSystemNode;
-    
-    if(paintWidget->getPrev() !=0 && paintWidget->getNext()!=0){
+
+    if(paintWidget->getPrev() !=0 && paintWidget->getNext()!=0) {
       update(QRect(0,paintWidget->getPrev()->getBottom(),
-		   width(),
-	    paintWidget->getNext()->y()-paintWidget->getPrev()->getBottom()));
-    }else if(paintWidget->getPrev()!=0){
+                   width(),
+                   paintWidget->getNext()->y()-paintWidget->getPrev()->getBottom()));
+    } else if(paintWidget->getPrev()!=0) {
       //assumes that this is the last one
       update(QRect(0,paintWidget->getPrev()->getBottom(),
-	    width(),height()-paintWidget->getPrev()->getBottom()));
-    }else if(paintWidget->getNext()!=0){
+                   width(),height()-paintWidget->getPrev()->getBottom()));
+    } else if(paintWidget->getNext()!=0) {
       //assumes this is the first one
       update(QRect(0,0,
-	    width(),paintWidget->getNext()->y()));
+                   width(),paintWidget->getNext()->y()));
     }
     return;
   }
   event->ignore();
 }
 
-void 
+void
 SeriesNode::handleChildResize(int x,int y,int w,int h)
 {
   drawAllWidgets();

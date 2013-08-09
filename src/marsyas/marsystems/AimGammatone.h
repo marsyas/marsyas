@@ -33,17 +33,17 @@ namespace Marsyas
    \class AimGammatone
    \ingroup Analysis
    \brief Slaney's gammatone filterbank
-    
+
    Author : Thomas Walters <tom@acousticscale.org>
 
    Ported to Marsyas by Steven Ness <sness@sness.net>
- 
+
    This is the version of the IIR gammatone used in Slaney's Auditory toolbox.
    The original verison as described in Apple Tech. Report #35 has a problem
    with the high-order coefficients at low centre frequencies and high sample
    rates. Since it is important that AIM-C can deal with these cases (for
    example for the Gaussian features), I've reiplemeted Slaney's alternative
-   version which uses a cascade of four second-order filters in place of the 
+   version which uses a cascade of four second-order filters in place of the
    eighth-order filter.
 
 	The original source code for these functions in AIM-C can be found at:
@@ -54,7 +54,7 @@ namespace Marsyas
 
 class marsyas_EXPORT AimGammatone: public MarSystem
 {
- private:
+private:
   void myUpdate(MarControlPtr sender);
 
   // Parameters
@@ -97,10 +97,10 @@ class marsyas_EXPORT AimGammatone: public MarSystem
   // What changes cause it to need a reset?
   mrs_natural reset_num_channels;
 
- public:
+public:
   AimGammatone(std::string name);
   AimGammatone(const AimGammatone& a);
-	
+
   ~AimGammatone();
   MarSystem* clone() const;
   void addControls();

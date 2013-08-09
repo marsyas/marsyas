@@ -6,16 +6,16 @@
 
 class MarExtractor : public AbstractMarExtractor
 {
-   Q_OBJECT   
-   
+  Q_OBJECT
+
 public:
-   MarExtractor();
-   ~MarExtractor();
-   
-   void setup();
-   
+  MarExtractor();
+  ~MarExtractor();
+
+  void setup();
+
 public slots:
-   void extract(Marsyas::realvec& dest);
+  void extract(Marsyas::realvec& dest);
 };
 
 #endif /* MAREXTRACTOR_H_ */

@@ -26,7 +26,7 @@ namespace Marsyas
 /**
 	\class Inject
 	\ingroup Processing
-	\brief Inject a vector specified by the mrs_realvec/inject control 
+	\brief Inject a vector specified by the mrs_realvec/inject control
 	into the datastream
 
 	Controls:
@@ -41,36 +41,36 @@ class marsyas_EXPORT Inject: public MarSystem
 {
 private:
 
-	/// Add specific controls needed by this MarSystem.
-	void addControls();
+  /// Add specific controls needed by this MarSystem.
+  void addControls();
 
-	/// Reads changed controls and sets up variables if necessary.
-	void myUpdate(MarControlPtr sender);
+  /// Reads changed controls and sets up variables if necessary.
+  void myUpdate(MarControlPtr sender);
 
 
-	/// MarControlPtr for the gain control
-	MarControlPtr ctrl_inject_;
-	MarControlPtr ctrl_injectSize_;
-	MarControlPtr ctrl_injectNames_;
-	
-	mrs_natural prev_injectSize_;
-	
+  /// MarControlPtr for the gain control
+  MarControlPtr ctrl_inject_;
+  MarControlPtr ctrl_injectSize_;
+  MarControlPtr ctrl_injectNames_;
+
+  mrs_natural prev_injectSize_;
+
 
 public:
-	/// Inject constructor.
-	Inject(std::string name);
+  /// Inject constructor.
+  Inject(std::string name);
 
-	/// Inject copy constructor.
-	Inject(const Inject& a);
+  /// Inject copy constructor.
+  Inject(const Inject& a);
 
-	/// Inject destructor.
-	~Inject();
+  /// Inject destructor.
+  ~Inject();
 
-	/// Implementation of the MarSystem::clone() method.
-	MarSystem* clone() const;
+  /// Implementation of the MarSystem::clone() method.
+  MarSystem* clone() const;
 
-	/// Implementation of the MarSystem::myProcess method.
-	void myProcess(realvec& in, realvec& out);
+  /// Implementation of the MarSystem::myProcess method.
+  void myProcess(realvec& in, realvec& out);
 };
 
 }
