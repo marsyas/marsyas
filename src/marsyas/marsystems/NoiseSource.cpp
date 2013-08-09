@@ -54,8 +54,9 @@ void
 NoiseSource::myProcess(realvec &in, realvec &out)
 {
   (void) in;
-  for (mrs_natural t=0; t < inSamples_; t++)
-    out(t) = (mrs_real)(2.0 * rand() / (RAND_MAX + 1.0) )-1;
+  for (mrs_natural t=0; t < onSamples_; ++t)
+      for (mrs_natural o=0; o < onObservations_; ++o)
+        out(o,t) = (mrs_real)(2.0 * rand() / (RAND_MAX + 1.0) )-1;
 }
 
 
