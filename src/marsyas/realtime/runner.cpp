@@ -41,9 +41,10 @@ namespace RealTime {
 class RunnerThread
 {
 public:
-  RunnerThread( MarSystem * system, Runner::Shared * shared, bool realtime_priority ):
+  RunnerThread( MarSystem * system, Runner::Shared * shared, bool realtime_priority, unsigned int ticks ):
     m_system(system),
     m_shared(shared),
+    m_ticks(ticks > 0 ? ticks : -1),
     m_stop(false),
     m_thread(&Marsyas::RealTime::RunnerThread::run, this)
   {
@@ -92,6 +93,7 @@ private:
 
   Runner::Shared * m_shared;
 
+  int m_ticks;
   std::atomic<bool> m_stop;
   std::thread m_thread;
 };
@@ -162,11 +164,11 @@ Runner::Runner(Marsyas::MarSystem * system):
   m_shared(new Shared)
 {}
 
-void Runner::start()
+void Runner::start(unsigned int ticks)
 {
   if (!m_thread) {
     refit_realvec_controls();
-    m_thread = new RunnerThread(m_system, m_shared, m_realtime_priority);
+    m_thread = new RunnerThread(m_system, m_shared, m_realtime_priority, ticks);
   }
 }
 
@@ -313,15 +315,18 @@ void RunnerThread::run()
 
   m_system->updControl("mrs_bool/active", true);
 
-  while(!m_stop)
+  while(!m_stop && m_ticks)
   {
     //cout << "tick" << endl;
     process_requests();
 
     m_system->tick();
 
-for (const auto & mapping : m_shared->controls)
+    for (const auto & mapping : m_shared->controls)
       mapping.second->push();
+
+    if (m_ticks > 0)
+      --m_ticks;
   }
 
   m_system->updControl("mrs_bool/active", false);

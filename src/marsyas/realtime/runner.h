@@ -51,7 +51,7 @@ public:
 
   void setRtPriorityEnabled( bool on ) { m_realtime_priority = on; }
 
-  void start();
+  void start(unsigned int ticks = 0);
   void stop();
   void wait();
   bool isRunning() const
