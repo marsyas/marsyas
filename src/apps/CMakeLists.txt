@@ -1,3 +1,4 @@
+include_directories(${CMAKE_SOURCE_DIR}/src/)
 include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/core/)
 include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/marsystems/)
 include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/optional/)
@@ -64,6 +65,7 @@ if (WITH_CPP11)
 endif()
 
 if(MARSYAS_REALTIME)
+  add_subdirectory(runner)
   add_subdirectory(latency)
 endif()
 
