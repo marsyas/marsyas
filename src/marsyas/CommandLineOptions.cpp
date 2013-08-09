@@ -18,14 +18,7 @@
 
 #include "CommandLineOptions.h"
 
-
-using std::ostringstream;
-using std::cout;
-using std::endl;
-using std::istream;
-using std::ostream;
-using std::vector;
-
+using namespace std;
 using namespace Marsyas;
 
 CommandLineOptions::CommandLineOptions()
@@ -164,32 +157,42 @@ CommandLineOptions::readOptions(int argc, const char **argv)
   }
 }
 
-bool
-CommandLineOptions::getBoolOption(mrs_string lname)
+template<typename Type>
+Type getOption( const string & name, const map<string,Type> & container )
 {
-  return boolOptions_["--" + lname];
+  typename map<string,Type>::const_iterator it = container.find(name);
+  if (it != container.end())
+    return it->second;
+  else
+    return Type();
+}
+
+bool
+CommandLineOptions::getBoolOption(const std::string & lname) const
+{
+  return getOption("--" + lname, boolOptions_);
 }
 
 mrs_natural
-CommandLineOptions::getNaturalOption(mrs_string lname)
+CommandLineOptions::getNaturalOption(const std::string & lname) const
 {
-  return naturalOptions_["--" + lname];
+  return getOption("--" + lname, naturalOptions_);
 }
 
 mrs_real
-CommandLineOptions::getRealOption(mrs_string lname)
+CommandLineOptions::getRealOption(const std::string & lname) const
 {
-  return realOptions_["--" + lname];
+  return getOption("--" + lname, realOptions_);
 }
 
-mrs_string
-CommandLineOptions::getStringOption(mrs_string lname)
+string
+CommandLineOptions::getStringOption(const std::string & lname) const
 {
-  return stringOptions_["--" + lname];
+  return getOption("--" + lname, stringOptions_);
 }
 
-vector<mrs_string>
-CommandLineOptions::getRemaining()
+const std::vector<std::string> &
+CommandLineOptions::getRemaining() const
 {
   return remaining_;
 }

@@ -31,13 +31,9 @@
 namespace Marsyas
 {
 /**
-\class CommandLineOptions
-	\ingroup Notmar
-\brief CommandLineOptions
-
-Class for handling command-line options
+\ingroup Notmar
+\brief Utility for handling program options
 */
-
 
 class marsyas_EXPORT CommandLineOptions
 {
@@ -66,11 +62,11 @@ public:
   void addBoolOption(std::string lname, std::string sname, bool value);
 
   void readOptions(int argc, const char** argv);
-  bool getBoolOption(std::string lname);
-  mrs_natural getNaturalOption(std::string lname);
-  mrs_real getRealOption(std::string lname);
-  std::string getStringOption(std::string lname);
-  std::vector<std::string> getRemaining();
+  bool getBoolOption(const std::string & lname) const;
+  mrs_natural getNaturalOption(const std::string & lname) const;
+  mrs_real getRealOption(const std::string & lname) const;
+  std::string getStringOption(const std::string & lname) const;
+  const std::vector<std::string> & getRemaining() const;
 };
 
 }//namespace Marsyas
