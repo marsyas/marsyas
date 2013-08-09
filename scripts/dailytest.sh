@@ -4,25 +4,25 @@ gitDir=$1
 testDir=$2
 
 print_usage() {
-	echo "-- Usage: dailytest <git dir> <test dir>"
+  echo "-- Usage: dailytest <git dir> <test dir>"
 }
 
 if [[ (-z $gitDir) ]]; then
-	print_usage
-	echo "!! Git directory not given!"
-	exit
+  print_usage
+  echo "!! Git directory not given!"
+  exit
 fi
 
 if [[ (-z $testDir) ]]; then
-	print_usage
-	echo "!! Test directory not given!"
-	exit
+  print_usage
+  echo "!! Test directory not given!"
+  exit
 fi
 
 if [[ !($gitDir =~ ^/) || !($testDir =~ ^/) ]]; then
-	print_usage
-	echo "!! Directories must be given as absolute paths!"
-	exit
+  print_usage
+  echo "!! Directories must be given as absolute paths!"
+  exit
 fi
 
 #coffeeDir=~/marsyas-coffee
@@ -49,22 +49,22 @@ report=$logBase-report.txt
 lastGoodVersion=$testDir/lastworking.txt
 
 report() {
-	echo $1 | tee -a $report
+  echo $1 | tee -a $report
 }
 
 #  $1 is the "pass/fail" on the subject line
 sendreport() {
-	subject="$subjectBase $1"
-#	echo "$subject"
-#	cat $report
-	if [ `which mail` ]
-	then
-		mail -s "$subject" gtzan@cs.uvic.ca < $report
-		mail -s "$subject" graham@percival-music.ca < $report
-		mail -s "$subject" sness@sness.net < $report
-		mail -s "$subject" lgmartins@users.sourceforge.net < $report
-		mail -s "$subject" jakob.leben@gmail.com < $report
-	fi
+  subject="$subjectBase $1"
+# echo "$subject"
+# cat $report
+  if [ `which mail` ]
+  then
+    mail -s "$subject" gtzan@cs.uvic.ca < $report
+    mail -s "$subject" graham@percival-music.ca < $report
+    mail -s "$subject" sness@sness.net < $report
+    mail -s "$subject" lgmartins@users.sourceforge.net < $report
+    mail -s "$subject" jakob.leben@gmail.com < $report
+  fi
 }
 
 #  $1 is the command
@@ -72,32 +72,31 @@ sendreport() {
 #  $3 is the step name (ie Build, Sanity, Coffee, Dist)
 
 testthing() {
-# post command
-echo ">> $1"
+  # post command
+  echo ">> $1"
 
-# report command
-echo >> $2
-echo ">> $1" >> $2
-echo >> $2
+  # report command
+  echo >> $2
+  echo ">> $1" >> $2
+  echo >> $2
 
-# execute command
-$1 >> $2 2>&1
-PASS=$?
+  # execute command
+  $1 >> $2 2>&1
+  PASS=$?
 
-if [ "$PASS" = "0" ]
-then
-	report "-- $3: OK"
-else
-	report "!! $3: FAILED!"
-	last=`cat $lastGoodVersion 2>/dev/null`
-	report "!! Last good build: $last"
-	echo >> $report
-	echo >> $report
-	tail -n 50 $2 >> $report
-	sendreport "FAILED"
-	exit
-fi
-
+  if [ "$PASS" = "0" ]
+  then
+    report "-- $3: OK"
+  else
+    report "!! $3: FAILED!"
+    last=`cat $lastGoodVersion 2>/dev/null`
+    report "!! Last good build: $last"
+    echo >> $report
+    echo >> $report
+    tail -n 50 $2 >> $report
+    sendreport "FAILED"
+    exit
+  fi
 }
 
 
