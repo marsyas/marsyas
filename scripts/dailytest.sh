@@ -2,6 +2,7 @@
 ######### update as necessary
 gitDir=$1
 testDir=$2
+scriptDir=$PWD
 
 print_usage() {
   echo "-- Usage: dailytest <git dir> <test dir>"
@@ -10,19 +11,19 @@ print_usage() {
 if [[ (-z $gitDir) ]]; then
   print_usage
   echo "!! Git directory not given!"
-  exit
+  exit 1
 fi
 
 if [[ (-z $testDir) ]]; then
   print_usage
   echo "!! Test directory not given!"
-  exit
+  exit 1
 fi
 
 if [[ !($gitDir =~ ^/) || !($testDir =~ ^/) ]]; then
   print_usage
   echo "!! Directories must be given as absolute paths!"
-  exit
+  exit 1
 fi
 
 #coffeeDir=~/marsyas-coffee
@@ -30,41 +31,14 @@ fi
 ######### non-changing definitions
 buildDir=$testDir/build
 logDir=$testDir/logs
-logBase=$logDir/`date +%y%m%d`
-
-gitLog=$logBase-git.log
-configLog=$logBase-config.log
-buildLog=$logBase-build.log
-testingLog=$logBase-testing.log
-sanityLog=$logBase-sanity.log
-continuousLog=$logBase-continuous.log
-#coffeeLog=$logBase-coffee.log
-distLog=$logBase-dist.log
-distcheckLog=$logBase-distcheck.log
-
-manualsLog=$logBase-manuals.log
-doxyLog=$logBase-doxy.log
-
-report=$logBase-report.txt
+report=$logDir/`date +%y%m%d`-report.txt
 lastGoodVersion=$testDir/lastworking.txt
+
+logBase=$logDir/`date +%y%m%d`
+gitLog=$logBase-git.log
 
 report() {
   echo $1 | tee -a $report
-}
-
-#  $1 is the "pass/fail" on the subject line
-sendreport() {
-  subject="$subjectBase $1"
-# echo "$subject"
-# cat $report
-  if [ `which mail` ]
-  then
-    mail -s "$subject" gtzan@cs.uvic.ca < $report
-    mail -s "$subject" graham@percival-music.ca < $report
-    mail -s "$subject" sness@sness.net < $report
-    mail -s "$subject" lgmartins@users.sourceforge.net < $report
-    mail -s "$subject" jakob.leben@gmail.com < $report
-  fi
 }
 
 #  $1 is the command
@@ -72,10 +46,10 @@ sendreport() {
 #  $3 is the step name (ie Build, Sanity, Coffee, Dist)
 
 testthing() {
-  # post command
+  # print command
   echo ">> $1"
 
-  # report command
+  # log command
   echo >> $2
   echo ">> $1" >> $2
   echo >> $2
@@ -83,23 +57,22 @@ testthing() {
   # execute command
   $1 >> $2 2>&1
   PASS=$?
-
-  if [ "$PASS" = "0" ]
+  if [ $PASS = 0 ]
   then
     report "-- $3: OK"
   else
     report "!! $3: FAILED!"
-    last=`cat $lastGoodVersion 2>/dev/null`
-    report "!! Last good build: $last"
-    echo >> $report
-    echo >> $report
+    report "!! Last up-to-50 lines of output from failing command:"
+    report ""
+    tail -n 50 $2
     tail -n 50 $2 >> $report
-    sendreport "FAILED"
-    exit
+    exit 1
   fi
 }
 
-
+test_configuration() {
+  bash "$scriptDir/dailytest_configuration.sh" "$1" "$2" "$3" "$4"
+}
 
 ######## actual script
 
@@ -107,15 +80,12 @@ testthing() {
 ### setup clean dir
 mkdir -p $testDir
 
-rm -rf $buildDir
-mkdir -p $buildDir
-
 ### setup report
 rm -rf $logDir
 mkdir -p $logDir
 
 report "== Marsyas Automatic Test =="
-echo >> $report
+report "" # empty line
 
 ### get latest Git
 cd $gitDir
@@ -127,27 +97,49 @@ version=`git rev-parse HEAD`
 report "-- Git revision: $version"
 subjectBase="Marsyas Auto-Tester ("`date +%y%m%d`", rev $version):"
 
-### Do tests
-cd $buildDir
+report ""
 
-testthing "cmake $gitDir -DMARSYAS_TESTS=ON" $configLog "CMake"
+PASS=1
 
-testthing make $buildLog "Build"
+test_configuration "Default" "$gitDir" "$testDir" \
+|| PASS=0
 
-## re-use the name "sanity"
-testthing "make test" $testingLog "Testing"
-#testthing "scripts/regtest_sanity.py" $sanityLog Sanity
-#testthing "scripts/regtest_coffee.py $coffeeDir" $coffeeLog Coffee
-#testthing "make Continuous" $continuousLog Continuous
+report ""
 
-## comment out doc building for now, as doxygen is not installed:
-#testthing "make doxy" $doxyLog "Doxygen docs"
-#testthing "make docs" $manualsLog "Manuals"
+test_configuration "Minimal" "$gitDir" "$testDir" \
+"-DWITH_CPP11=OFF -DMARSYAS_AUDIOIO=OFF -DMARSYAS_MIDIIO=OFF" \
+|| PASS=0
 
-#testthing "make dist" $distLog "Make dist"
+report ""
 
-#testthing "make distcheck" $distcheckLog "Make distcheck"
+test_configuration "Complete" "$gitDir" "$testDir" \
+"-DWITH_CPP11=ON -DWITH_QT=ON -DWITH_OPENGL=ON -DWITH_SWIG=ON -DWITH_SWIG_PYTHON=ON \
+ -DMARSYAS_AUDIOIO=ON -DMARSYAS_MIDIIO=ON" \
+|| PASS=0
 
-sendreport "Pass"
-echo $version > $lastGoodVersion
+report ""
+
+if [ $PASS = 1 ]
+then
+  echo $version > $lastGoodVersion
+  report "-- All configurations have passed."
+  emailSubject="$subjectBase PASS"
+else
+  report "!! Some configurations have failed."
+  report "!! Last good version: `cat $lastGoodVersion`"
+  emailSubject="$subjectBase FAIL"
+fi
+
+emailRecipients="\
+gtzan@cs.uvic.ca \
+graham@percival-music.ca \
+sness@sness.net \
+lgmartins@users.sourceforge.net \
+jakob.leben@gmail.com"
+
+if [ `which mail` ]
+then
+  #echo "Would send email report to: $emailRecipients"
+  mail -s "$emailSubject" $emailRecipients < $report
+fi
 
