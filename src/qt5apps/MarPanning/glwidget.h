@@ -4,7 +4,11 @@
 #include <QGLWidget>
 #include <QTimer> 
 
-#include <GL/glu.h>
+#ifdef MARSYAS_MACOSX
+#  include <OpenGL/glu.h>
+#else
+#  include <GL/glu.h>
+#endif
 
 // Marsyas
 #include <marsyasqt/marsystem_wrapper.h>
