@@ -160,6 +160,5 @@ void DebugWidget::recreateDebugger()
 void DebugWidget::onItemClicked( QListWidgetItem * item )
 {
   QString path = item->data(PathRole).toString();
-  qDebug() << "path clicked:" << path;
   emit pathClicked(path);
 }

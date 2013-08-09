@@ -24,6 +24,7 @@ Item {
                     anchors.fill: parent
                     id: child
                     property var system: modelData
+                    onParentShouldExpand: parent_system_item.setExpanded(true)
                 }
             }
         }

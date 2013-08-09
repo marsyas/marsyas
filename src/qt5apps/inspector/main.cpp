@@ -24,6 +24,7 @@
 
 #include <QQmlContext>
 #include <QQmlEngine>
+#include <QQmlProperty>
 #include <QQuickItem>
 #include <QQuickView>
 
@@ -108,8 +109,10 @@ Main::Main(Marsyas::MarSystem * system):
 
   m_main_window->setCentralWidget( graph_widget );
 
-  QObject::connect( m_controls_widget, SIGNAL(controlClicked(QString)),
-                    m_realvec_widget, SLOT(displayControl(QString)) );
+  connect( m_controls_widget, SIGNAL(controlClicked(QString)),
+           m_realvec_widget, SLOT(displayControl(QString)) );
+  connect( m_debug_widget, SIGNAL(pathClicked(QString)),
+           this, SLOT(bugClicked(QString)) );
 
   QObject *system_item = m_graph->rootObject();
   if (system_item) {
@@ -182,6 +185,41 @@ void Main::systemOutputClicked( const QString & path )
   m_controls_widget->setSystem(system);
   m_realvec_widget->setSystem(system);
   m_realvec_widget->displayControl("mrs_realvec/processedData");
+}
+
+void Main::bugClicked( const QString & path )
+{
+  QObject *root_item = m_graph->rootObject();
+  if (!root_item)
+    return;
+
+  QQmlProperty property(root_item, "systemViews");
+  QVariant prop_var = property.read();
+  QVariantMap prop_map = prop_var.value<QVariantMap>();
+
+  QVariant item_var = prop_map[path];
+  QObject *item = item_var.value<QObject*>();
+  if (!item)
+  {
+    qCritical() << "no item for path";
+    return;
+  }
+
+  bool ok;
+
+  ok = item->metaObject()->invokeMethod(item, "setExpanded", Q_ARG(QVariant, true));
+  if (!ok) {
+    qCritical() << "setExpanded failed!";
+    return;
+  }
+
+  ok = root_item->metaObject()->invokeMethod
+      ( root_item, "navigateToItem",
+        Q_ARG(QVariant, QVariant::fromValue(item)) );
+  if (!ok) {
+    qCritical() << "navigateToItem failed!";
+    return;
+  }
 }
 
 MarSystem *Main::systemForPath( const QString & path )

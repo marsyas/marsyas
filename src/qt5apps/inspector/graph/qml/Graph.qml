@@ -13,6 +13,7 @@ Flickable {
     signal outputClicked(string path)
 
     property var layoutComponents: MarSystemLayoutFactory {}
+    property var systemViews: {"/": the_root}
 
     MarSystemItem {
         id: top_system
@@ -20,6 +21,20 @@ Flickable {
             left: parent.left
             right: parent.right
         }
-        expanded: true
+    }
+
+    Behavior on contentY {
+        animation: NumberAnimation {
+            easing.type: Easing.OutCubic
+        }
+    }
+
+    function navigateToItem( item ) {
+        var item_pos = item.mapToItem(contentItem, 0, 0);
+        the_root.contentY = item_pos.y;
+    }
+
+    Component.onCompleted: {
+        top_system.setExpanded(true);
     }
 }

@@ -5,18 +5,38 @@ ColumnLayout {
     id: root
     spacing: 0
     property color color_code: Qt.rgba(Math.random(), Math.random(), Math.random())
-    property bool expanded: false
+    Component.onCompleted: {
+        the_root.systemViews[system.path] = root;
+    }
+
+    signal parentShouldExpand();
+
+    QtObject
+    {
+        id: privateData
+        property var expanded: false
+    }
+
+    function setExpanded( expanded )
+    {
+        if (system.hasChildren)
+        {
+            privateData.expanded = expanded;
+        }
+        if (expanded)
+            parentShouldExpand();
+    }
 
     states: [
         State {
-            when: expanded
+            when: privateData.expanded
             PropertyChanges {
                 target: children
                 Layout.preferredHeight: children_layout.implicitHeight
             }
         },
         State {
-            when: !expanded
+            when: !privateData.expanded
             PropertyChanges {
                 target: children
                 Layout.preferredHeight: 16
@@ -75,8 +95,7 @@ ColumnLayout {
                     hoverEnabled: true
                     anchors.fill: parent
                     onDoubleClicked: {
-                        if (system.hasChildren)
-                            expanded = !expanded;
+                        setExpanded(!privateData.expanded)
                     }
                     onClicked: {
                         the_root.clicked(system.path);
@@ -89,17 +108,18 @@ ColumnLayout {
                 Layout.fillWidth: true
                 Loader {
                     id: children_layout
-                    visible: expanded
+                    visible: privateData.expanded
                     anchors {
                         left: parent.left
                         right: parent.right
                     }
                     sourceComponent: layoutComponents.get(system.type);
                     property var parent_system: system
+                    property var parent_system_item: root
                 }
                 Row {
                     id: dotdotdot
-                    visible: !expanded && system.hasChildren
+                    visible: !privateData.expanded && system.hasChildren
                     anchors.centerIn: parent
                     spacing: 5
                     Repeater {
@@ -108,8 +128,6 @@ ColumnLayout {
                     }
                 }
             }
-
-            //Component.onCompleted: console.log(system.name)
         }
     }
     FlowIndicator {
