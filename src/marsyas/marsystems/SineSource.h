@@ -42,12 +42,14 @@ private:
   realvec wavetable_;
   mrs_real wavetableSize_;
   mrs_real index_;
+  MarControlPtr freqControl_;
 
   void addControls();
   void myUpdate(MarControlPtr sender);
 
 public:
   SineSource(std::string name);
+  SineSource( const SineSource & copy );
   ~SineSource();
   MarSystem* clone() const;
 
