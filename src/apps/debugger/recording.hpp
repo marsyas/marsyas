@@ -7,6 +7,7 @@
 
 #include <list>
 #include <vector>
+#include <cassert>
 
 using namespace Marsyas;
 
@@ -23,14 +24,15 @@ struct recording
   std::vector<std::string> paths;
   std::list<record*> records;
 
-  int record_count() const { return records.size(); }
-  int path_count() const { return paths.size(); }
+  unsigned int record_count() const { return records.size(); }
+  unsigned int path_count() const { return paths.size(); }
 };
 
-class recorder
+class recorder : public MarSystemObserver
 {
   MarSystem *m_system;
   recording *m_recording;
+  std::map<std::string, realvec> m_current_values;
 
 public:
 
@@ -41,26 +43,47 @@ public:
     recursive_add_paths(system);
   }
 
+  ~recorder()
+  {
+    delete m_recording;
+  }
+
+  const std::vector<std::string> & paths() { return m_recording->paths; }
+
   const recording * product() { return m_recording; }
 
-  void store()
+  record *current_record()
   {
     record *rec = new record;
-    for (const std::string & path : m_recording->paths)
+    for (const auto & path : m_recording->paths)
     {
-      std::string output_path = path;
-      output_path += "mrs_realvec/processedData";
-      MarControlPtr output_control = m_system->getControl(output_path);
-      assert(!output_control.isInvalid());
-      const realvec & data = output_control->to<mrs_realvec>();
-      rec->entries.push_back(data);
+      assert(m_current_values.find(path) != m_current_values.end());
+      rec->entries.push_back(m_current_values[path]);
     }
-    m_recording->records.push_back(rec);
+    return rec;
+  }
+
+  void push_record()
+  {
+    m_recording->records.push_back(current_record());
+    clear_record();
+  }
+
+  void clear_record()
+  {
+    m_current_values.clear();
   }
 
 private:
+  void processed( MarSystem * system, const realvec &in, const realvec &out)
+  {
+    (void) in;
+    m_current_values[system->getAbsPath()] = out;
+  }
+
   void recursive_add_paths(MarSystem *system)
   {
+    system->addObserver(this);
     m_recording->paths.push_back( system->getAbsPath() );
     std::vector<MarSystem*> children = system->getChildren();
     for (MarSystem *child : children)

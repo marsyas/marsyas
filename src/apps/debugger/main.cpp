@@ -78,7 +78,7 @@ int perform_record( MarSystem * system, const std::string & filename, int tick_c
   while(tick_count--)
   {
     system->tick();
-    rec.store();
+    rec.push_record();
   }
 
   const recording *written_recording = rec.product();
