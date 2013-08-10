@@ -85,7 +85,9 @@ Controls:  (these are inherited by all MarSystems)
 class marsyas_EXPORT MarSystemObserver
 {
 public:
-  virtual void processed( const mrs_realvec & input, const mrs_realvec & output ) = 0;
+  virtual void processed( MarSystem *,
+                          const realvec & input,
+                          const realvec & output ) = 0;
 };
 
 class marsyas_EXPORT MarSystem
@@ -432,7 +434,7 @@ public:
 
   void addObserver( MarSystemObserver * observer );
   void removeObserver( MarSystemObserver * observer );
-  bool isObserver( MarSystemObserver * observer ) const;
+  bool hasObserver( MarSystemObserver * observer ) const;
 
   //////////////////////////////////////////////////////////////////////////
 

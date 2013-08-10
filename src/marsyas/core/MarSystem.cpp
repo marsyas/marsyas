@@ -614,7 +614,7 @@ MarSystem::process(realvec& in, realvec& out)
   {
     for (unsigned int idx = 0; idx < observer_count; ++idx)
     {
-      observers_[idx]->processed(in, out);
+      observers_[idx]->processed(this, in, out);
     }
   }
 #endif
@@ -1968,7 +1968,7 @@ MarSystem::put(istream& is)
   return is;
 }
 
-bool MarSystem::isObserver( MarSystemObserver * observer ) const
+bool MarSystem::hasObserver( MarSystemObserver * observer ) const
 {
   std::vector<MarSystemObserver*>::const_iterator it =
       std::find( observers_.begin(), observers_.end(), observer );
@@ -1978,10 +1978,7 @@ bool MarSystem::isObserver( MarSystemObserver * observer ) const
 
 void MarSystem::addObserver( MarSystemObserver * observer )
 {
-  std::vector<MarSystemObserver*>::iterator it =
-      std::find( observers_.begin(), observers_.end(), observer );
-
-  if (it == observers_.end())
+  if (hasObserver(observer))
     return;
 
   observers_.push_back(observer);
