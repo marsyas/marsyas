@@ -585,7 +585,7 @@ MP3FileSource::getLinear16(realvec& slice)
 
 
     // fill the reservoir...
-    for (t=0; t < bufferSize_; t++) {
+    for (mrs_natural t=0; t < bufferSize_; t++) {
 
       left_ch = synth.pcm.samples[0][t];
       sample = (mrs_real) scale(left_ch);
@@ -612,7 +612,7 @@ MP3FileSource::getLinear16(realvec& slice)
 
 
   // spit out the first inSamples_ in our reservoir
-  for (t=0; t < inSamples_; t++) {
+  for (mrs_natural t=0; t < inSamples_; t++) {
     slice(0,t) = reservoir_(0,t);
     if (MAD_NCHANNELS(&frame.header)==2)
     {
@@ -630,7 +630,7 @@ MP3FileSource::getLinear16(realvec& slice)
 
 
   // move the data we ticked to the front of the reservoir
-  for (t=inSamples_; t < ri_; t++) {
+  for (mrs_natural t=inSamples_; t < ri_; t++) {
     reservoir_(0,t-inSamples_) = reservoir_(0,t);
     if (MAD_NCHANNELS(&frame.header)==2)
       reservoir_(1,t-inSamples_) = reservoir_(1,t);

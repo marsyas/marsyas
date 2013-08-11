@@ -240,9 +240,9 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
     //   getLinear16(out);  for (o=0; o < inObservations_; o++) {
     const double peak = 1.0/32768; // normalize 24-bit sample
     short int* src = (short int*)buf;
-    for (o=0; o < observations; o++)
+    for (mrs_natural o=0; o < observations; o++)
     {
-      for (t=0; t < samples; t++)
+      for (mrs_natural t=0; t < samples; t++)
       {
         const unsigned int i=vi->channels*t;
         switch(vi->channels)
