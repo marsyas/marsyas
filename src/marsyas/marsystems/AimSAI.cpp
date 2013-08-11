@@ -380,7 +380,7 @@ AimSAI::myProcess(realvec& in, realvec& out)
 
           // Update the temporary SAI buffer
           // cout << "output1(" << o << "," << delay << ")=" << out(o, delay) + sig << endl;
-          out(o, delay) = out(o, delay) + sig;
+          sai_temp_(o, delay) = sai_temp_(o, delay) + sig;
         }
       }
 
