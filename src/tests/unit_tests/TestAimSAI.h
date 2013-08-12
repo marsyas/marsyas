@@ -57,20 +57,19 @@ public:
     out = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
     // Check to see if the generated data is correct.
-    //
-    // This data was generated with the AIM-C version of SAI.  I
-    // chose three points from the beginning, middle and end of the
-    // range, and compare the Marsyas SAI implementation with these
-    // results
-    TS_ASSERT_DELTA(out(0,0),0.000493759,0.001);
-    TS_ASSERT_DELTA(out(0,1),0.000492902,0.001);
-    TS_ASSERT_DELTA(out(0,2),0.000490549,0.001);
-    TS_ASSERT_DELTA(out(0,254),0.0,0.001);
-    TS_ASSERT_DELTA(out(0,255),0.0,0.001);
-    TS_ASSERT_DELTA(out(0,256),0.0,0.001);
-    TS_ASSERT_DELTA(out(0,509),0.0,0.001);
-    TS_ASSERT_DELTA(out(0,510),0.0,0.001);
-    TS_ASSERT_DELTA(out(0,511),0.0,0.001);
+
+    // This data was generated with Marsyas,
+    // at commit [0f334a9ad5b74c1cf8b4e7ddffc2f94aba0e0daf].
+
+    TS_ASSERT_DELTA(out(0,0),   0.000646012726689387, 0.001);
+    TS_ASSERT_DELTA(out(0,1),   0.000644890636603683, 0.001);
+    TS_ASSERT_DELTA(out(0,2),   0.000641813084076837, 0.001);
+    TS_ASSERT_DELTA(out(0,254), 0.0, 0.001);
+    TS_ASSERT_DELTA(out(0,255), 0.0, 0.001);
+    TS_ASSERT_DELTA(out(0,256), 0.0, 0.001);
+    TS_ASSERT_DELTA(out(0,509), 0.0, 0.001);
+    TS_ASSERT_DELTA(out(0,510), 0.0, 0.001);
+    TS_ASSERT_DELTA(out(0,511), 0.0, 0.001);
 
     //
     // Tick the network 3 more times to see if the values still line up
@@ -82,19 +81,18 @@ public:
 
     // Check to see if the generated data is correct.
 
-    // This data was generated with the AIM-C version of SAI.  I
-    // chose three points from the beginning, middle and end of the
-    // range, and compare the Marsyas SAI implementation with these
-    // results
-    TS_ASSERT_DELTA(out(0,0),0.0467726,0.001);
-    TS_ASSERT_DELTA(out(0,1),0.0467948,0.001);
-    TS_ASSERT_DELTA(out(0,2),0.0468055,0.001);
-    TS_ASSERT_DELTA(out(0,254),1.22491e-13,0.001);
-    TS_ASSERT_DELTA(out(0,255),1.03889e-13,0.001);
-    TS_ASSERT_DELTA(out(0,256),8.81089e-14,0.001);
-    TS_ASSERT_DELTA(out(0,509),0.264658,0.001);
-    TS_ASSERT_DELTA(out(0,510),0.263065,0.001);
-    TS_ASSERT_DELTA(out(0,511),0.261408,0.001);
+    // This data was generated with Marsyas,
+    // at commit [0f334a9ad5b74c1cf8b4e7ddffc2f94aba0e0daf].
+
+    TS_ASSERT_DELTA(out(0,0),   0.0611952130309612, 0.001);
+    TS_ASSERT_DELTA(out(0,1),   0.0612242248033321, 0.001);
+    TS_ASSERT_DELTA(out(0,2),   0.0612381911658602, 0.001);
+    TS_ASSERT_DELTA(out(0,254), 1.60261859212331e-13, 0.001);
+    TS_ASSERT_DELTA(out(0,255), 1.35923667274146e-13, 0.001);
+    TS_ASSERT_DELTA(out(0,256), 1.15277833266879e-13, 0.001);
+    TS_ASSERT_DELTA(out(0,509), 0.346267347088163, 0.001);
+    TS_ASSERT_DELTA(out(0,510), 0.344182102483322, 0.001);
+    TS_ASSERT_DELTA(out(0,511), 0.342014540153856, 0.001);
 
 
     delete net;
