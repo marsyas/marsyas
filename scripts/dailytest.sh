@@ -2,7 +2,7 @@
 ######### update as necessary
 gitDir=$1
 testDir=$2
-scriptDir=$PWD
+scriptDir=`dirname $0`
 
 print_usage() {
   echo "-- Usage: dailytest <git dir> <test dir>"
