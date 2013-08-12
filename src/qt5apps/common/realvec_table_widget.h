@@ -39,6 +39,7 @@ protected:
     QTableView::commitData(editor);
     emit cellEditingFinished();
   }
+  void keyPressEvent(QKeyEvent *event);
 
 private:
   RealvecModel *m_model;

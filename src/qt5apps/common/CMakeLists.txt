@@ -1,5 +1,6 @@
 set(src
   realvec_item_model.cpp
+  realvec_table_widget.cpp
 )
 
 set(moc_hdr
