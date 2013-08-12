@@ -81,4 +81,16 @@ bool RealvecModel::setData(const QModelIndex & index, const QVariant & value, in
   return true;
 }
 
+QVariant RealvecModel::headerData ( int section, Qt::Orientation orientation, int role ) const
+{
+    switch(role)
+    {
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+        return QString::number(section);
+    default:
+        return QAbstractTableModel::headerData(section, orientation, role);
+    }
+}
+
 } // namespace MarsyasQt
