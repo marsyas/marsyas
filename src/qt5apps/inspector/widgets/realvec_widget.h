@@ -46,6 +46,7 @@ public:
 
   RealvecWidget( QWidget * parent = 0 );
   void setSystem( Marsyas::MarSystem * system );
+  QSize sizeHint() const { return QSize(500,400); }
 
 public slots:
   void displayControl( const QString & path );

@@ -15,6 +15,8 @@ RealvecWidget::RealvecWidget( QWidget * parent ):
   m_system(0),
   m_graph(0)
 {
+  setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
   m_label = new QLabel;
   {
     QFont f = m_label->font();
