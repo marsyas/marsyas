@@ -43,7 +43,7 @@ public:
     recursive_add_paths(system);
   }
 
-  ~recorder()
+  virtual ~recorder()
   {
     delete m_recording;
   }
@@ -51,6 +51,15 @@ public:
   const std::vector<std::string> & paths() { return m_recording->paths; }
 
   const recording * product() { return m_recording; }
+
+  const realvec * current_value( const std::string & path ) const
+  {
+    const auto & it = m_current_values.find(path);
+    if (it != m_current_values.end())
+      return &it->second;
+    else
+      return 0;
+  }
 
   record *current_record()
   {

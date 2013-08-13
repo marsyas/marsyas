@@ -96,12 +96,19 @@ int perform_compare( MarSystem * system, const std::string & filename )
   if (!rec)
     return 1;
 
+  recorder online_recorder(system);
+  if (online_recorder.paths() != rec->paths)
+  {
+    cerr << "System and recording paths do not match!" << endl;
+    return 1;
+  }
+
   debugger debug(system, rec);
 
   cout << "Comparing " << rec->records.size() << " records..." << endl;
   cout << "Comparing paths:" << endl;
 
-for ( const auto & path : rec->paths )
+  for ( const auto & path : rec->paths )
   {
     cout << path << endl;
   }
@@ -112,8 +119,11 @@ for ( const auto & path : rec->paths )
   while (!debug.at_end())
   {
     ++tick_count;
+    online_recorder.clear_record();
     system->tick();
-    debugger::report *bug_report = debug.evaluate();
+    record *current_state = online_recorder.current_record();
+    debugger::report *bug_report = debug.evaluate(current_state);
+
     debugger::report::iterator bug_report_iter;
     for( bug_report_iter = bug_report->begin();
          bug_report_iter != bug_report->end();
@@ -147,6 +157,7 @@ for ( const auto & path : rec->paths )
       }
     }
     delete bug_report;
+    delete current_state;
     debug.advance();
   }
 

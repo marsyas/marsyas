@@ -12,7 +12,6 @@ using namespace Marsyas;
 class debugger
 {
   MarSystem * m_system;
-  recorder m_recorder;
   const recording * m_reference;
   recording::const_iterator m_reference_iter;
 
@@ -35,7 +34,6 @@ public:
 
   debugger( MarSystem * system, const recording *reference ):
     m_system(system),
-    m_recorder(system),
     m_reference(reference),
     m_reference_iter(reference->records.begin())
   {}
@@ -44,7 +42,6 @@ public:
   {
     if (!at_end()) {
       ++m_reference_iter;
-      m_recorder.clear_record();
     }
     return !at_end();
   }
@@ -57,10 +54,9 @@ public:
   void rewind()
   {
     m_reference_iter = m_reference->records.begin();
-    m_recorder.clear_record();
   }
 
-  report * evaluate()
+  report * evaluate( record * actual_rec )
   {
     if (at_end())
       return 0;
@@ -68,14 +64,13 @@ public:
     report * bug_report = new report;
 
     record * reference_rec = *m_reference_iter;
-    record * actual_rec = m_recorder.current_record();
 
     for (unsigned int p = 0; p < m_reference->path_count(); ++p)
     {
       bug bug_info;
 
       const std::string & path = m_reference->paths[p];
-
+#if 0
       if (p >= m_recorder.paths().size()
           || m_recorder.paths()[p] != path)
       {
@@ -83,7 +78,7 @@ public:
         bug_report->insert(pair<string, bug>(path, bug_info));
         continue;
       }
-
+#endif
       const mrs_realvec & ref_data = reference_rec->entries[p];
       const mrs_realvec & act_data = actual_rec->entries[p];
 
@@ -119,8 +114,6 @@ public:
         continue;
       }
     }
-
-    delete actual_rec;
 
     return bug_report;
   }
