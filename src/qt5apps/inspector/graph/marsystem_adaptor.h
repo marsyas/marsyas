@@ -16,13 +16,13 @@ using namespace Marsyas;
 class MarSystemAdaptor : public QObject
 {
   Q_OBJECT
-  Q_PROPERTY( Marsyas::MarSystem * system READ system WRITE setSystem NOTIFY systemChanged )
+  Q_PROPERTY( Marsyas::MarSystem * system READ system CONSTANT )
+  Q_PROPERTY( QString name READ name CONSTANT )
+  Q_PROPERTY( QString type READ type CONSTANT )
+  Q_PROPERTY( QString path READ path CONSTANT )
+  Q_PROPERTY( bool hasChildren READ hasChildren NOTIFY childrenChanged )
   Q_PROPERTY( QVariantList children READ children NOTIFY childrenChanged )
-  Q_PROPERTY( QString name READ name NOTIFY systemChanged )
-  Q_PROPERTY( QString type READ type NOTIFY systemChanged )
-  Q_PROPERTY( QString path READ path NOTIFY systemChanged )
-  Q_PROPERTY( QObject * defaultControls READ defaultControls NOTIFY systemChanged )
-  Q_PROPERTY( bool hasChildren READ hasChildren NOTIFY systemChanged )
+  Q_PROPERTY( QObject * defaultControls READ defaultControls NOTIFY controlsChanged )
 
 public:
   MarSystemAdaptor( Marsyas::MarSystem *system, QObject * parent = 0 );
@@ -43,7 +43,6 @@ public:
   }
 
   MarSystem * system() const { return m_system; }
-  void setSystem( MarSystem * system );
 
   bool hasChildren() const
   {
@@ -55,8 +54,8 @@ public:
   QObject *defaultControls();
 
 signals:
-  void systemChanged();
   void childrenChanged();
+  void controlsChanged();
 
 private:
   MarSystem *m_system;

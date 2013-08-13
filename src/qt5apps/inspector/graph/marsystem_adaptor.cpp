@@ -19,13 +19,6 @@ MarSystemAdaptor::MarSystemAdaptor( Marsyas::MarSystem *system, QObject * parent
   }
 }
 
-void MarSystemAdaptor::setSystem( MarSystem * system )
-{
-  m_system = system;
-  emit systemChanged();
-  emit childrenChanged();
-}
-
 QVariantList MarSystemAdaptor::children() const
 {
   QVariantList children_varlist;
