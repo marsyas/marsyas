@@ -1,4 +1,5 @@
 #include "main.h"
+#include "debug_controller.h"
 #include "graph/marsystem_adaptor.h"
 #include "widgets/controls_widget.h"
 #include "widgets/realvec_widget.h"
@@ -62,6 +63,11 @@ int main(int argc, char *argv[])
 Main::Main(Marsyas::MarSystem * system):
   m_root_system(system)
 {
+  m_debugger = new DebugController(this);
+  m_debugger->setSystem(system);
+
+  // Qml stuff
+
   MarSystemAdaptor *system_adaptor = new MarSystemAdaptor(system, this);
 
   QQmlEngine *engine = new QQmlEngine(this);
@@ -76,7 +82,7 @@ Main::Main(Marsyas::MarSystem * system):
   m_toolbar = new QToolBar();
 
   QAction *tick_action = m_toolbar->addAction("Tick");
-  connect( tick_action, SIGNAL(triggered()), this, SLOT(tickSystem()) );
+  connect( tick_action, SIGNAL(triggered()), m_debugger, SLOT(tick()) );
 
   m_main_window->addToolBar(Qt::TopToolBarArea, m_toolbar);
 
@@ -100,8 +106,7 @@ Main::Main(Marsyas::MarSystem * system):
 
   addRealvecWidget();
 
-  m_debug_widget = new DebugWidget;
-  m_debug_widget->setSystem(system);
+  m_debug_widget = new DebugWidget(m_debugger);
   QDockWidget *dock_debug_widget = new QDockWidget;
   dock_debug_widget->setWidget(m_debug_widget);
   dock_debug_widget->setWindowTitle("Debug");
@@ -109,8 +114,12 @@ Main::Main(Marsyas::MarSystem * system):
 
   m_main_window->setCentralWidget( graph_widget );
 
+  connect( m_debugger, SIGNAL(ticked()),
+           m_controls_widget, SLOT(refresh()) );
+  connect( m_debugger, SIGNAL(ticked()),
+           m_realvec_widget, SLOT(refresh()) );
   connect( m_controls_widget, SIGNAL(controlClicked(QString)),
-           m_realvec_widget, SLOT(displayControl(QString)) );
+           this, SLOT(controlClicked(QString)) );
   connect( m_debug_widget, SIGNAL(pathClicked(QString)),
            this, SLOT(bugClicked(QString)) );
 
@@ -136,8 +145,7 @@ Main::Main(Marsyas::MarSystem * system):
 
 void Main::addRealvecWidget()
 {
-  RealvecWidget * realvec_widget = new RealvecWidget;
-  realvec_widget->setSystem(m_root_system);
+  RealvecWidget * realvec_widget = new RealvecWidget(m_debugger);
 
   QDockWidget * dock_widget = new QDockWidget;
   dock_widget->setWidget(realvec_widget);
@@ -145,15 +153,6 @@ void Main::addRealvecWidget()
   m_main_window->addDockWidget(Qt::RightDockWidgetArea, dock_widget);
 
   m_realvec_widget = realvec_widget;
-}
-
-void Main::tickSystem()
-{
-  m_root_system->tick();
-  m_controls_widget->refresh();
-  m_realvec_widget->refresh();
-  m_debug_widget->evaluate();
-  m_debug_widget->advance();
 }
 
 void Main::systemClicked( const QString & path )
@@ -167,7 +166,7 @@ void Main::systemClicked( const QString & path )
   }
 
   m_controls_widget->setSystem(system);
-  m_realvec_widget->setSystem(system);
+  m_realvec_widget->clear();
 }
 
 void Main::systemInputClicked( const QString & path )
@@ -183,8 +182,13 @@ void Main::systemOutputClicked( const QString & path )
     return;
   }
   m_controls_widget->setSystem(system);
-  m_realvec_widget->setSystem(system);
-  m_realvec_widget->displayControl("mrs_realvec/processedData");
+  m_realvec_widget->displayDebugValue(QString::fromStdString(system->getAbsPath()));
+}
+
+void Main::controlClicked( const QString & path )
+{
+  MarSystem *system = m_controls_widget->system();
+  m_realvec_widget->displayControl(system, path);
 }
 
 void Main::bugClicked( const QString & path )

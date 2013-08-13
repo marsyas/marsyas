@@ -25,15 +25,14 @@
 #include <QListWidget>
 #include <QLabel>
 
-class debugger;
-class recording;
+class DebugController;
 
 class DebugWidget : public QWidget
 {
   Q_OBJECT
 
 public:
-  DebugWidget( QWidget * parent = 0 );
+  DebugWidget( DebugController * debugger, QWidget * parent = 0 );
   void setSystem( Marsyas::MarSystem * system );
 
 signals:
@@ -41,9 +40,7 @@ signals:
 
 public slots:
   void openRecording();
-  void evaluate();
-  void advance();
-  void rewind();
+  void updateReport();
   void clear();
 
 private slots:
@@ -54,12 +51,7 @@ private:
     PathRole = Qt::UserRole
   };
 
-  void recreateDebugger();
-
-  Marsyas::MarSystem * m_system;
-  recording * m_recording;
-  debugger * m_debugger;
-
+  DebugController *m_debugger;
   QLabel *m_rec_label;
   QListWidget *m_bug_list;
 };

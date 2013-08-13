@@ -30,6 +30,7 @@ class ControlsWidget : public QWidget
 public:
   ControlsWidget( QWidget * parent = 0 );
   void setSystem( Marsyas::MarSystem * system );
+  Marsyas::MarSystem * system() const { return m_system; }
 
 public slots:
   void rebuild();

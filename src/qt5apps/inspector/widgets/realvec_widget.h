@@ -24,13 +24,15 @@
 #include <QWidget>
 #include <QTableView>
 #include <QAbstractTableModel>
-#include <QLabel>
+#include <QLineEdit>
 #include <QStackedLayout>
 #include <QComboBox>
 
 namespace MarsyasQt {
 class RealvecTableWidget;
 }
+
+class DebugController;
 
 class RealvecWidget : public QWidget
 {
@@ -44,30 +46,32 @@ public:
     PolynomialInterpolation
   };
 
-  RealvecWidget( QWidget * parent = 0 );
-  void setSystem( Marsyas::MarSystem * system );
+  RealvecWidget( DebugController *debugger, QWidget * parent = 0 );
   QSize sizeHint() const { return QSize(500,400); }
 
 public slots:
-  void displayControl( const QString & path );
   void setDisplayType( int type );
+  void displayControl( Marsyas::MarSystem *system, const QString & path );
+  void displayDebugValue( const QString & path );
   void refresh();
+  void clear();
 
 private:
-  void clear();
-  void refreshTable( const Marsyas::realvec & );
-  void refreshGraph( const Marsyas::realvec & );
+  void refreshFromControl();
+  void refreshFromDebugger();
+  void clearData();
 
+  DebugController *m_debugger;
+
+  bool m_display_debugger;
+  QString m_path;
   Marsyas::MarSystem * m_system;
-  QString m_control_path;
 
   QStackedLayout * m_stack;
   QComboBox * m_display_type_selector;
 
-  QLabel *m_label;
-
+  QLineEdit *m_label;
   MarsyasQt::RealvecTableWidget *m_table;
-
   MarsyasQt::Marx2DGraph *m_graph;
 
   QImage m_image;

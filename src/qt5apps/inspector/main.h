@@ -14,6 +14,7 @@ using namespace Marsyas;
 class RealvecWidget;
 class ControlsWidget;
 class DebugWidget;
+class DebugController;
 
 class Main : public QObject
 {
@@ -34,16 +35,18 @@ private:
 
 private slots:
   void addRealvecWidget();
-  void tickSystem();
   void systemClicked( const QString & path );
   void systemInputClicked( const QString & path );
   void systemOutputClicked( const QString & path );
+  void controlClicked( const QString & path );
   void bugClicked( const QString & path );
 
 private:
   MarSystem *systemForPath( const QString & path );
 
   MarSystem *m_root_system;
+
+  DebugController *m_debugger;
 
   QMainWindow *m_main_window;
   QToolBar *m_toolbar;
