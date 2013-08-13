@@ -20,12 +20,15 @@ class MarSystemAdaptor : public QObject
   Q_PROPERTY( QString name READ name CONSTANT )
   Q_PROPERTY( QString type READ type CONSTANT )
   Q_PROPERTY( QString path READ path CONSTANT )
+  Q_PROPERTY( int level READ level CONSTANT )
   Q_PROPERTY( bool hasChildren READ hasChildren NOTIFY childrenChanged )
   Q_PROPERTY( QVariantList children READ children NOTIFY childrenChanged )
   Q_PROPERTY( QObject * defaultControls READ defaultControls NOTIFY controlsChanged )
 
 public:
   MarSystemAdaptor( Marsyas::MarSystem *system, QObject * parent = 0 );
+
+  MarSystem * system() const { return m_system; }
 
   QString name() const
   {
@@ -42,7 +45,17 @@ public:
     return QString::fromStdString( m_system->getAbsPath() );
   }
 
-  MarSystem * system() const { return m_system; }
+  int level() const
+  {
+    MarSystem *system = m_system;
+    int level = 0;
+    while(system->getParent())
+    {
+      system = system->getParent();
+      ++level;
+    }
+    return level;
+  }
 
   bool hasChildren() const
   {
