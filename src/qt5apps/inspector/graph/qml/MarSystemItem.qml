@@ -4,7 +4,9 @@ import QtQuick.Layouts 1.0
 ColumnLayout {
     id: root
     spacing: 0
-    property color color_code: Qt.rgba(Math.random(), Math.random(), Math.random())
+    property color color_code:
+        Qt.hsla( (system.level + 1) * 2 % 15 / 14, 0.45, 0.7 )
+
     Component.onCompleted: {
         the_root.systemViews[system.path] = root;
     }
@@ -58,7 +60,7 @@ ColumnLayout {
     }
     Rectangle {
         id: frame
-        color: Qt.rgba( color_code.r, color_code.g, color_code.b, 0.4 )
+        color: Qt.darker(color_code, 1.3)//Qt.rgba( color_code.r, color_code.g, color_code.b, 0.6 )
         border {
             color: titleArea.containsMouse ? "red" : color_code
             width: 1
