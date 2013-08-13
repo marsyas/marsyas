@@ -45,7 +45,7 @@ ColumnLayout {
     ]
 
     FlowIndicator {
-        Layout.alignment: Qt.AlignHCenter
+        anchors.horizontalCenter: parent.horizontalCenter
         controls: system.defaultControls;
         output: false;
         color: input_area.containsMouse ? Qt.lighter(color_code, 1.2) : color_code
@@ -131,7 +131,7 @@ ColumnLayout {
         }
     }
     FlowIndicator {
-        Layout.alignment: Qt.AlignHCenter
+        anchors.horizontalCenter: parent.horizontalCenter
         controls: system.defaultControls;
         output: true;
         color: output_area.containsMouse ? Qt.lighter(color_code, 1.2) : color_code
