@@ -31,7 +31,8 @@ SineSource::SineSource(mrs_string name):MarSystem("SineSource",name)
 }
 
 SineSource::SineSource( const SineSource & copy ):
-  MarSystem(copy)
+  MarSystem(copy),
+  index_(0)
 {
   freqControl_ = getControl("mrs_real/frequency");
 }
