@@ -22,6 +22,7 @@ public slots:
 
 signals:
   void ticked();
+  void recordingChanged(const QString & filename);
 
 private:
   Marsyas::MarSystem * m_system;

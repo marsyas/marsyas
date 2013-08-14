@@ -1,47 +1,50 @@
 #include "debug_widget.h"
 #include "../debug_controller.h"
+#include "../main.h"
 
 #include <QDebug>
-#include <QFileDialog>
 #include <QVBoxLayout>
-#include <QAction>
+#include <QToolBar>
 
-DebugWidget::DebugWidget( DebugController * debugger, QWidget * parent ):
+DebugWidget::DebugWidget( ActionManager *action_mng,
+                          DebugController * debugger, QWidget * parent ):
   QWidget(parent),
   m_debugger(debugger)
 {
-  m_rec_label = new QLabel("<No recording. Right-click to open...>");
-  QAction * open_recording_action = new QAction("Open Recording...", this);
-  m_rec_label->addAction( open_recording_action );
-  m_rec_label->setContextMenuPolicy( Qt::ActionsContextMenu );
+  QToolBar *tool_bar = new QToolBar;
+  tool_bar->addAction( action_mng->action(ActionManager::OpenRecording) );
+  tool_bar->addSeparator();
+  tool_bar->addAction( action_mng->action(ActionManager::Tick) );
+
+  m_rec_label = new QLabel("<No Recording>");
+  {
+    QPalette palette;
+    palette.setColor(QPalette::Window, Qt::black);
+    palette.setColor(QPalette::WindowText, Qt::white);
+    m_rec_label->setPalette(palette);
+    m_rec_label->setAutoFillBackground(true);
+  }
 
   m_bug_list = new QListWidget();
 
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins(0,0,0,0);
-  layout->setSpacing(2);
+  layout->setSpacing(0);
+  layout->addWidget(tool_bar);
   layout->addWidget(m_rec_label);
   layout->addWidget(m_bug_list);
   setLayout(layout);
 
-  connect(m_debugger, SIGNAL(ticked()), this, SLOT(updateReport()));
-  connect(open_recording_action, SIGNAL(triggered()),
-          this, SLOT(openRecording()));
+  connect(m_debugger, SIGNAL(recordingChanged(QString)),
+          this, SLOT(onRecordingChanged(QString)));
+  connect(m_debugger, SIGNAL(ticked()),
+          this, SLOT(updateReport()));
   connect(m_bug_list, SIGNAL(itemClicked(QListWidgetItem*)),
           this, SLOT(onItemClicked(QListWidgetItem*)));
 }
 
-void DebugWidget::openRecording()
+void DebugWidget::onRecordingChanged(const QString & filename)
 {
-  QString filename =
-    QFileDialog::getOpenFileName(this,
-                                 "Open MarSystem Recording");
-  if (filename.isEmpty())
-    return;
-
-  if (!m_debugger->setRecording(filename))
-    return;
-
   m_rec_label->setText(filename);
 }
 

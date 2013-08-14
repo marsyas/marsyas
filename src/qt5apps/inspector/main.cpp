@@ -12,16 +12,20 @@
 #include <QApplication>
 #include <QGuiApplication>
 
-#include <QStringList>
-#include <QShortcut>
+#include <QMenuBar>
+#include <QMenu>
 #include <QAction>
+
+#include <QStringList>
 #include <QPalette>
+#include <QKeySequence>
 
 #include <QWidget>
 #include <QSplitter>
 #include <QLabel>
 #include <QToolBar>
 #include <QVBoxLayout>
+#include <QFileDialog>
 
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -54,7 +58,7 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  Main::create(system);
+  Main::instance(system);
 
   return app.exec();
 }
@@ -79,12 +83,8 @@ Main::Main(Marsyas::MarSystem * system):
   m_main_window->setWindowTitle("MarSystem Inspector");
   m_main_window->setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
-  m_toolbar = new QToolBar();
-
-  QAction *tick_action = m_toolbar->addAction("Tick");
-  connect( tick_action, SIGNAL(triggered()), m_debugger, SLOT(tick()) );
-
-  m_main_window->addToolBar(Qt::TopToolBarArea, m_toolbar);
+  createActions();
+  createMenu();
 
   ///////////////////
 
@@ -106,7 +106,7 @@ Main::Main(Marsyas::MarSystem * system):
 
   addRealvecWidget();
 
-  m_debug_widget = new DebugWidget(m_debugger);
+  m_debug_widget = new DebugWidget(&m_action_manager, m_debugger);
   QDockWidget *dock_debug_widget = new QDockWidget;
   dock_debug_widget->setWidget(m_debug_widget);
   dock_debug_widget->setWindowTitle("Debug");
@@ -138,11 +138,67 @@ Main::Main(Marsyas::MarSystem * system):
     qWarning("Could not find top system item!");
   }
 
-  QShortcut *quit_shortcut = new QShortcut(QString("Ctrl+Q"), m_main_window);
-  QObject::connect( quit_shortcut, SIGNAL(activated()), qApp, SLOT(quit()) );
-
   m_main_window->resize(1000, 600);
   m_main_window->showMaximized();
+}
+
+void Main::createActions()
+{
+  QAction *a;
+
+  a = action(ActionManager::OpenSystem) = new QAction(tr("Open System..."), this);
+  a->setShortcut(QKeySequence::Open);
+  connect(a, SIGNAL(triggered()), this, SLOT(openSystem()));
+
+  a = action(ActionManager::OpenRecording) = new QAction(tr("Open Recording..."), this);
+  connect(a, SIGNAL(triggered()), this, SLOT(openRecording()));
+
+  a = action(ActionManager::Tick) = new QAction(tr("Tick"), this);
+  connect(a, SIGNAL(triggered()), m_debugger, SLOT(tick()));
+
+  a = action(ActionManager::Quit) = new QAction(tr("Quit"), this);
+  a->setShortcut(QKeySequence::Quit);
+  connect(a, SIGNAL(triggered()), qApp, SLOT(quit()));
+}
+
+void Main::createMenu()
+{
+  QMenuBar *menuBar;
+  QMenu *menu;
+
+  // On Mac, create a parent-less menu bar to be shared by all windows:
+#ifdef Q_OS_MAC
+  menuBar = new QMenuBar(0);
+#else
+  menuBar = m_main_window->menuBar();
+#endif
+
+  menu = menuBar->addMenu(tr("&File"));
+  menu->addAction(action(ActionManager::OpenSystem));
+  menu->addAction(action(ActionManager::OpenRecording));
+  menu->addSeparator();
+  menu->addAction(action(ActionManager::Quit));
+  menuBar->addMenu(menu);
+
+  menu = menuBar->addMenu(tr("&Debug"));
+  menu->addAction(action(ActionManager::Tick));
+  menuBar->addMenu(menu);
+}
+
+void Main::openSystem()
+{
+  qDebug("Opening another system not yet implemented.");
+}
+
+void Main::openRecording()
+{
+  QString filename =
+    QFileDialog::getOpenFileName(m_main_window,
+                                 "Open MarSystem Recording");
+  if (filename.isEmpty())
+    return;
+
+  m_debugger->setRecording(filename);
 }
 
 void Main::addRealvecWidget()

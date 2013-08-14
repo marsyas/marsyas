@@ -26,19 +26,21 @@
 #include <QLabel>
 
 class DebugController;
+class ActionManager;
 
 class DebugWidget : public QWidget
 {
   Q_OBJECT
 
 public:
-  DebugWidget( DebugController * debugger, QWidget * parent = 0 );
+  DebugWidget( ActionManager *, DebugController * debugger,
+               QWidget * parent = 0 );
 
 signals:
   void pathClicked( const QString & path );
 
 public slots:
-  void openRecording();
+  void onRecordingChanged(const QString &filename);
   void updateReport();
   void clear();
 

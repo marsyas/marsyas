@@ -62,6 +62,8 @@ bool DebugController::setRecording(const QString &fileName)
   if (m_system)
     m_debugger = new debugger(m_system, m_recording);
 
+  emit recordingChanged(fileName);
+
   return true;
 }
 
