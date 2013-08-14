@@ -6,7 +6,7 @@ Flickable {
     width: 500
     height: 500
     contentWidth: width;
-    contentHeight: top_system.height
+    contentHeight: top_system_item.height
 
     signal clicked(string path)
     signal inputClicked(string path)
@@ -17,7 +17,7 @@ Flickable {
     property var bugs: []
 
     MarSystemItem {
-        id: top_system
+        id: top_system_item
         anchors {
             left: parent.left
             right: parent.right
@@ -36,6 +36,6 @@ Flickable {
     }
 
     Component.onCompleted: {
-        top_system.setExpanded(true);
+        top_system_item.setExpanded(true);
     }
 }
