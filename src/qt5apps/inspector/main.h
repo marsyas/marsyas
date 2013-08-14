@@ -2,12 +2,15 @@
 #define INSPECTOR_MAIN_CONTROLLER_INCLUDED
 
 #include <MarSystem.h>
+#include <MarSystemManager.h>
 
 #include <QObject>
 #include <QToolBar>
 #include <QQuickView>
 #include <QMainWindow>
 #include <QDockWidget>
+
+#include <QQmlEngine>
 
 using namespace Marsyas;
 
@@ -50,20 +53,21 @@ public:
     ActionCount
   };
 
-  static Main * instance(Marsyas::MarSystem * system)
+  static Main * instance()
   {
     static Main *instance = 0;
     if (!instance)
-      instance = new Main(system);
+      instance = new Main;
     return instance;
   }
 
 public slots:
   void openSystem();
+  void openSystem(const QString & fileName);
   void openRecording();
 
 private:
-  Main(Marsyas::MarSystem * system);
+  Main();
   void createActions();
   void createMenu();
 
@@ -85,7 +89,10 @@ private:
     return m_action_manager.m_actions[type];
   }
 
+  Marsyas::MarSystemManager m_system_manager;
   MarSystem *m_root_system;
+
+  QQmlEngine *m_qml_engine;
 
   DebugController *m_debugger;
 

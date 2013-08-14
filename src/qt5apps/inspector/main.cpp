@@ -44,38 +44,29 @@ int main(int argc, char *argv[])
   QApplication app(argc, argv);
 
   QStringList arguments = app.arguments();
-  if (arguments.size() < 2) {
-    qWarning("Missing argument: marsyas plugin file.");
-    return 1;
-  }
 
-  QString plugin_filename = arguments[1];
-  ifstream plugin_stream( plugin_filename.toStdString().c_str() );
-  MarSystemManager mng;
-  MarSystem *system = mng.getMarSystem(plugin_stream);
-  if (!system) {
-    qCritical("Could not load plugin file!");
-    return 1;
-  }
+  QString filename;
+  if (arguments.size() > 1)
+    filename = arguments[1];
 
-  Main::instance(system);
+  Main *main = Main::instance();
 
-  return app.exec();
+  if (!filename.isEmpty())
+    main->openSystem(filename);
+
+  int result = app.exec();
+
+  delete main;
+
+  return result;
 }
 
-
-Main::Main(Marsyas::MarSystem * system):
-  m_root_system(system)
+Main::Main():
+  m_root_system(0)
 {
+  m_qml_engine = new QQmlEngine(this);
+
   m_debugger = new DebugController(this);
-  m_debugger->setSystem(system);
-
-  // Qml stuff
-
-  MarSystemAdaptor *system_adaptor = new MarSystemAdaptor(system, this);
-
-  QQmlEngine *engine = new QQmlEngine(this);
-  engine->rootContext()->setContextProperty("system", QVariant::fromValue<QObject*>(system_adaptor));
 
   // Main window
 
@@ -88,16 +79,14 @@ Main::Main(Marsyas::MarSystem * system):
 
   ///////////////////
 
-  m_graph = new QQuickView(engine, 0);
+  m_graph = new QQuickView(m_qml_engine, 0);
   m_graph->setColor( QApplication::palette().color(QPalette::Window) );
-  m_graph->setSource(QUrl("qrc:///graph/Graph.qml"));
   m_graph->setResizeMode(QQuickView::SizeRootObjectToView);
 
   QWidget *graph_widget = QWidget::createWindowContainer(m_graph);
   graph_widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
   m_controls_widget = new ControlsWidget;
-  m_controls_widget->setSystem(system);
 
   QDockWidget *dock_controls_widget = new QDockWidget;
   dock_controls_widget->setWidget(m_controls_widget);
@@ -124,19 +113,6 @@ Main::Main(Marsyas::MarSystem * system):
            this, SLOT(controlClicked(QString)) );
   connect( m_debug_widget, SIGNAL(pathClicked(QString)),
            this, SLOT(bugClicked(QString)) );
-
-  QObject *root_item = m_graph->rootObject();
-  if (root_item) {
-    QObject::connect( root_item, SIGNAL(clicked(QString)),
-                      this, SLOT(systemClicked(QString)) );
-    QObject::connect( root_item, SIGNAL(inputClicked(QString)),
-                      this, SLOT(systemInputClicked(QString)) );
-    QObject::connect( root_item, SIGNAL(outputClicked(QString)),
-                      this, SLOT(systemOutputClicked(QString)) );
-  }
-  else {
-    qWarning("Could not find top system item!");
-  }
 
   m_main_window->resize(1000, 600);
   m_main_window->showMaximized();
@@ -187,7 +163,59 @@ void Main::createMenu()
 
 void Main::openSystem()
 {
-  qDebug("Opening another system not yet implemented.");
+  QString filename =
+    QFileDialog::getOpenFileName(m_main_window,
+                                 "Open MarSystem");
+  if (filename.isEmpty())
+    return;
+
+  openSystem(filename);
+}
+
+void Main::openSystem(const QString & filename)
+{
+  ifstream plugin_stream( filename.toStdString().c_str() );
+  MarSystem *system = m_system_manager.getMarSystem(plugin_stream);
+  if (!system) {
+    qCritical("Could not open MarSystem file!");
+    return;
+  }
+
+  // Handle old state
+
+  QObject *old_system_adaptor =
+      m_graph->rootContext()->contextProperty("system").value<QObject*>();
+  MarSystem *old_system = m_root_system;
+
+  m_graph->setSource(QUrl());
+
+  // Apply new state
+
+  m_root_system = system;
+
+  MarSystemAdaptor *system_adaptor = new MarSystemAdaptor(system, this);
+  m_graph->rootContext()->setContextProperty("system", QVariant::fromValue<QObject*>(system_adaptor));
+  m_graph->setSource(QUrl("qrc:///graph/Graph.qml"));
+
+  QObject *root_item = m_graph->rootObject();
+  if (root_item) {
+    QObject::connect( root_item, SIGNAL(clicked(QString)),
+                      this, SLOT(systemClicked(QString)) );
+    QObject::connect( root_item, SIGNAL(inputClicked(QString)),
+                      this, SLOT(systemInputClicked(QString)) );
+    QObject::connect( root_item, SIGNAL(outputClicked(QString)),
+                      this, SLOT(systemOutputClicked(QString)) );
+  }
+  else {
+    qWarning("Could not find top system item!");
+  }
+
+  m_debugger->setSystem(system);
+  m_controls_widget->setSystem(system);
+  m_realvec_widget->clear();
+
+  delete old_system_adaptor;
+  delete old_system;
 }
 
 void Main::openRecording()
@@ -305,6 +333,9 @@ void Main::bugClicked( const QString & path )
 
 MarSystem *Main::systemForPath( const QString & path )
 {
+  if (!m_root_system)
+    return 0;
+
   QString relative_path;
 
   int separator_index;
