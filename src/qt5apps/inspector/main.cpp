@@ -125,13 +125,13 @@ Main::Main(Marsyas::MarSystem * system):
   connect( m_debug_widget, SIGNAL(pathClicked(QString)),
            this, SLOT(bugClicked(QString)) );
 
-  QObject *system_item = m_graph->rootObject();
-  if (system_item) {
-    QObject::connect( system_item, SIGNAL(clicked(QString)),
+  QObject *root_item = m_graph->rootObject();
+  if (root_item) {
+    QObject::connect( root_item, SIGNAL(clicked(QString)),
                       this, SLOT(systemClicked(QString)) );
-    QObject::connect( system_item, SIGNAL(inputClicked(QString)),
+    QObject::connect( root_item, SIGNAL(inputClicked(QString)),
                       this, SLOT(systemInputClicked(QString)) );
-    QObject::connect( system_item, SIGNAL(outputClicked(QString)),
+    QObject::connect( root_item, SIGNAL(outputClicked(QString)),
                       this, SLOT(systemOutputClicked(QString)) );
   }
   else {
