@@ -15,6 +15,7 @@ DebugWidget::DebugWidget( ActionManager *action_mng,
   tool_bar->addAction( action_mng->action(ActionManager::OpenRecording) );
   tool_bar->addSeparator();
   tool_bar->addAction( action_mng->action(ActionManager::Tick) );
+  tool_bar->addAction( action_mng->action(ActionManager::Rewind) );
 
   m_rec_label = new QLabel("<No Recording>");
   {

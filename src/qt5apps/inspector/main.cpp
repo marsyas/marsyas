@@ -132,6 +132,9 @@ void Main::createActions()
   a = action(ActionManager::Tick) = new QAction(tr("Tick"), this);
   connect(a, SIGNAL(triggered()), m_debugger, SLOT(tick()));
 
+  a = action(ActionManager::Rewind) = new QAction(tr("Rewind"), this);
+  connect(a, SIGNAL(triggered()), this, SLOT(rewind()));
+
   a = action(ActionManager::Quit) = new QAction(tr("Quit"), this);
   a->setShortcut(QKeySequence::Quit);
   connect(a, SIGNAL(triggered()), qApp, SLOT(quit()));
@@ -158,6 +161,7 @@ void Main::createMenu()
 
   menu = menuBar->addMenu(tr("&Debug"));
   menu->addAction(action(ActionManager::Tick));
+  menu->addAction(action(ActionManager::Rewind));
   menuBar->addMenu(menu);
 }
 
@@ -174,6 +178,9 @@ void Main::openSystem()
 
 void Main::openSystem(const QString & filename)
 {
+  if (filename.isEmpty())
+    return;
+
   ifstream plugin_stream( filename.toStdString().c_str() );
   MarSystem *system = m_system_manager.getMarSystem(plugin_stream);
   if (!system) {
@@ -213,6 +220,7 @@ void Main::openSystem(const QString & filename)
   m_debugger->setSystem(system);
   m_controls_widget->setSystem(system);
   m_realvec_widget->clear();
+  m_system_filename = filename;
 
   delete old_system_adaptor;
   delete old_system;
@@ -227,6 +235,17 @@ void Main::openRecording()
     return;
 
   m_debugger->setRecording(filename);
+}
+
+void Main::tick()
+{
+  m_debugger->tick();
+}
+
+void Main::rewind()
+{
+  m_debugger->rewind();
+  openSystem( m_system_filename );
 }
 
 void Main::addRealvecWidget()

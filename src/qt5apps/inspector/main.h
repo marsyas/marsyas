@@ -27,6 +27,7 @@ public:
     OpenSystem,
     OpenRecording,
     Tick,
+    Rewind,
     Quit,
 
     ActionCount
@@ -65,6 +66,8 @@ public slots:
   void openSystem();
   void openSystem(const QString & fileName);
   void openRecording();
+  void tick();
+  void rewind();
 
 private:
   Main();
@@ -89,6 +92,7 @@ private:
     return m_action_manager.m_actions[type];
   }
 
+  QString m_system_filename;
   Marsyas::MarSystemManager m_system_manager;
   MarSystem *m_root_system;
 
