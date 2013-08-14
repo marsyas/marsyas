@@ -33,7 +33,6 @@ class DebugWidget : public QWidget
 
 public:
   DebugWidget( DebugController * debugger, QWidget * parent = 0 );
-  void setSystem( Marsyas::MarSystem * system );
 
 signals:
   void pathClicked( const QString & path );
