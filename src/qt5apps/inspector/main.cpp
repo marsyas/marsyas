@@ -239,7 +239,7 @@ void Main::bugClicked( const QString & path )
   }
 
   ok = root_item->metaObject()->invokeMethod
-       ( root_item, "navigateToItem",
+       ( root_item, "navigateToItem", Qt::QueuedConnection,
          Q_ARG(QVariant, QVariant::fromValue(item)) );
   if (!ok) {
     qCritical() << "navigateToItem failed!";
