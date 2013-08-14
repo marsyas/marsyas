@@ -40,6 +40,7 @@ private slots:
   void systemOutputClicked( const QString & path );
   void controlClicked( const QString & path );
   void bugClicked( const QString & path );
+  void updateGraphBugs();
 
 private:
   MarSystem *systemForPath( const QString & path );

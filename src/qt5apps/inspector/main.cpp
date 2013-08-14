@@ -118,6 +118,8 @@ Main::Main(Marsyas::MarSystem * system):
            m_controls_widget, SLOT(refresh()) );
   connect( m_debugger, SIGNAL(ticked()),
            m_realvec_widget, SLOT(refresh()) );
+  connect( m_debugger, SIGNAL(ticked()),
+           this, SLOT(updateGraphBugs()) );
   connect( m_controls_widget, SIGNAL(controlClicked(QString)),
            this, SLOT(controlClicked(QString)) );
   connect( m_debug_widget, SIGNAL(pathClicked(QString)),
@@ -189,6 +191,25 @@ void Main::controlClicked( const QString & path )
 {
   MarSystem *system = m_controls_widget->system();
   m_realvec_widget->displayControl(system, path);
+}
+
+void Main::updateGraphBugs()
+{
+  QObject *root_item = m_graph->rootObject();
+  if (!root_item)
+    return;
+
+  QStringList bug_paths;
+  const debugger::report * bugs = m_debugger->bugReport();
+  if (bugs)
+  {
+    for (const auto & bug_mapping : *bugs)
+    {
+      bug_paths << QString::fromStdString(bug_mapping.first);
+    }
+  }
+
+  root_item->setProperty("bugs", QVariant::fromValue(bug_paths));
 }
 
 void Main::bugClicked( const QString & path )

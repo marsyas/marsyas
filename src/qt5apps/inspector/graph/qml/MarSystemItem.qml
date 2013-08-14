@@ -17,6 +17,7 @@ ColumnLayout {
     {
         id: privateData
         property var expanded: false
+        property bool hasError: bugs.indexOf(system.path) != -1
     }
 
     function setExpanded( expanded )
@@ -62,7 +63,7 @@ ColumnLayout {
         id: frame
         color: Qt.darker(color_code, 1.3)//Qt.rgba( color_code.r, color_code.g, color_code.b, 0.6 )
         border {
-            color: titleArea.containsMouse ? "red" : color_code
+            color: color_code
             width: 1
         }
         anchors {
@@ -81,11 +82,7 @@ ColumnLayout {
             Rectangle {
                 Layout.fillWidth: true
                 implicitHeight: label.implicitHeight
-                color: color_code
-                border {
-                    width: 1
-                    color: titleArea.containsMouse ? "red" : color_code
-                }
+                color: titleArea.containsMouse ? Qt.lighter(color_code, 1.2) : color_code
 
                 Text {
                     anchors.centerIn: parent
@@ -136,7 +133,12 @@ ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
         controls: system.defaultControls;
         output: true;
-        color: output_area.containsMouse ? Qt.lighter(color_code, 1.2) : color_code
+        color: {
+            var c = privateData.hasError ? Qt.hsla(0, 0.85, 0.55) : color_code;
+            if (output_area.containsMouse)
+                c = Qt.lighter(c, 1.2);
+            c;
+        }
         MouseArea {
             id: output_area
             anchors.fill: parent
