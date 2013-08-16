@@ -15,8 +15,6 @@ set( inspector_src
   widgets/controls_widget.cpp
   widgets/realvec_widget.cpp
   widgets/debug_widget.cpp
-
-  ${CMAKE_SOURCE_DIR}/src/apps/debugger/file_io.cpp
 )
 
 qt5_wrap_cpp( inspector_moc_src ${inspector_moc_hdr} )
