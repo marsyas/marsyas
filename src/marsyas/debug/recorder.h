@@ -22,25 +22,25 @@
 #include "record.h"
 #include <MarSystem.h>
 
-#include <map>
+#include <vector>
 
 namespace Marsyas { namespace Debug {
 
 class Recorder : protected MarSystemObserver
 {
-  MarSystem *m_system;
-  Record m_record;
-
 public:
   Recorder(MarSystem *system):
     m_system(system)
   {
-    recursive_set_observer(system);
+    recursive_add_observer(system);
   }
 
   ~Recorder()
   {
-    recursive_remove_observer(m_system);
+    for (Observer *observer : m_observers)
+    {
+      delete observer;
+    }
   }
 
   const Record & record() { return m_record; }
@@ -48,6 +48,37 @@ public:
   void clear() { m_record.clear(); }
 
 private:
+  struct Observer : public MarSystemObserver
+  {
+    MarSystem *system;
+    std::string path;
+    Recorder *recorder;
+
+    Observer( MarSystem *system, Recorder *recorder ):
+      system(system),
+      path(system->getAbsPath()),
+      recorder(recorder)
+    {
+      system->addObserver(this);
+    }
+
+    ~Observer()
+    {
+      system->removeObserver(this);
+    }
+
+    void processed( MarSystem * system, const realvec &in, const realvec &out)
+    {
+      (void) system;
+      Record::Entry entry;
+      entry.input = in;
+      entry.output = out;
+      recorder->m_record.insert(path, entry);
+    }
+  };
+
+  friend struct Observer;
+
   void processed( MarSystem * system, const realvec &in, const realvec &out)
   {
     (void) in;
@@ -57,23 +88,20 @@ private:
     m_record.insert(system->getAbsPath(), entry);
   }
 
-  void recursive_set_observer(MarSystem *system)
+  void recursive_add_observer(MarSystem *system)
   {
-    system->addObserver(this);
+    Observer *observer = new Observer(system, this);
+    m_observers.push_back(observer);
 
     std::vector<MarSystem*> children = system->getChildren();
     for (MarSystem *child : children)
-      recursive_set_observer(child);
+      recursive_add_observer(child);
   }
 
-  void recursive_remove_observer(MarSystem *system)
-  {
-    system->removeObserver(this);
-
-    std::vector<MarSystem*> children = system->getChildren();
-    for (MarSystem *child : children)
-      recursive_remove_observer(child);
-  }
+private:
+  MarSystem *m_system;
+  Record m_record;
+  std::vector<Observer*> m_observers;
 };
 
 }} // namespace Marsyas::Debug
