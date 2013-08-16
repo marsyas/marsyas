@@ -1,4 +1,4 @@
-#include "debug_widget.h"
+#include "stats_widget.h"
 #include "../debug_controller.h"
 #include "../main.h"
 
@@ -7,7 +7,7 @@
 
 using namespace Marsyas;
 
-DebugWidget::DebugWidget( ActionManager *,
+StatisticsWidget::StatisticsWidget( ActionManager *,
                           DebugController * debugger, QWidget * parent ):
   QWidget(parent),
   m_debugger(debugger)
@@ -30,14 +30,14 @@ DebugWidget::DebugWidget( ActionManager *,
           this, SLOT(onItemClicked(QTreeWidgetItem*, int)));
 }
 
-void DebugWidget::setSystem( Marsyas::MarSystem * system )
+void StatisticsWidget::setSystem( Marsyas::MarSystem * system )
 {
   m_report_view->clear();
   recursiveAddSystem(system, m_report_view->invisibleRootItem());
   m_report_view->expandAll();
 }
 
-void DebugWidget::recursiveAddSystem( MarSystem *system,
+void StatisticsWidget::recursiveAddSystem( MarSystem *system,
                                       QTreeWidgetItem * parent )
 {
   QString abs_path = QString::fromStdString(system->getAbsPath());
@@ -60,7 +60,7 @@ void DebugWidget::recursiveAddSystem( MarSystem *system,
     recursiveAddSystem(child, item);
 }
 
-void DebugWidget::updateReport()
+void StatisticsWidget::updateReport()
 {
   if (!m_debugger)
     return;
@@ -71,7 +71,7 @@ void DebugWidget::updateReport()
   recursiveUpdateChildItems( m_report_view->invisibleRootItem(), record );
 }
 
-void DebugWidget::recursiveUpdateChildItems
+void StatisticsWidget::recursiveUpdateChildItems
 (QTreeWidgetItem *parent, const Marsyas::Debug::Record * record )
 {
   int child_count = parent->childCount();
@@ -102,7 +102,7 @@ void DebugWidget::recursiveUpdateChildItems
   }
 }
 
-void DebugWidget::onItemClicked( QTreeWidgetItem * item, int column )
+void StatisticsWidget::onItemClicked( QTreeWidgetItem * item, int column )
 {
   (void) column;
   QString path = item->data(0, AbsolutePathRole).toString();

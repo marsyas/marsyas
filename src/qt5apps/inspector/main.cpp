@@ -3,7 +3,7 @@
 #include "graph/marsystem_adaptor.h"
 #include "widgets/controls_widget.h"
 #include "widgets/realvec_widget.h"
-#include "widgets/debug_widget.h"
+#include "widgets/stats_widget.h"
 
 #include <MarSystemManager.h>
 
@@ -130,10 +130,10 @@ Main::Main():
 
   addRealvecWidget();
 
-  m_debug_widget = new DebugWidget(&m_action_manager, m_debugger);
+  m_stats_widget = new StatisticsWidget(&m_action_manager, m_debugger);
   QDockWidget *dock_debug_widget = new QDockWidget;
-  dock_debug_widget->setWidget(m_debug_widget);
-  dock_debug_widget->setWindowTitle("Debug");
+  dock_debug_widget->setWidget(m_stats_widget);
+  dock_debug_widget->setWindowTitle("Statistics");
   m_main_window->addDockWidget(Qt::BottomDockWidgetArea, dock_debug_widget);
 
   connect( m_debugger, SIGNAL(ticked()),
@@ -148,7 +148,7 @@ Main::Main():
            this, SLOT(onTickCountChanged(int)) );
   connect( m_controls_widget, SIGNAL(controlClicked(QString)),
            this, SLOT(controlClicked(QString)) );
-  connect( m_debug_widget, SIGNAL(pathClicked(QString)),
+  connect( m_stats_widget, SIGNAL(pathClicked(QString)),
            this, SLOT(bugClicked(QString)) );
 
   m_main_window->resize(1000, 600);
@@ -265,7 +265,7 @@ void Main::openSystem(const QString & filename)
   }
 
   m_debugger->setSystem(system);
-  m_debug_widget->setSystem(system);
+  m_stats_widget->setSystem(system);
   m_controls_widget->setSystem(system);
   m_realvec_widget->clear();
   m_system_filename = filename;

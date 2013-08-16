@@ -29,12 +29,12 @@
 class DebugController;
 class ActionManager;
 
-class DebugWidget : public QWidget
+class StatisticsWidget : public QWidget
 {
   Q_OBJECT
 
 public:
-  DebugWidget( ActionManager *, DebugController * debugger,
+  StatisticsWidget( ActionManager *, DebugController * debugger,
                QWidget * parent = 0 );
 
   void setSystem( Marsyas::MarSystem * );
