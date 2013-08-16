@@ -31,8 +31,19 @@ class Record
 public:
   struct Entry
   {
+    Entry() {}
+    Entry( const realvec & input, const realvec & output,
+           double cpu_time, double real_time ):
+      input(input),
+      output(output),
+      cpu_time(cpu_time),
+      real_time(real_time)
+    {}
+
     realvec input;
     realvec output;
+    double cpu_time;
+    double real_time;
   };
 
   typedef std::map<std::string, Entry> EntryMap;

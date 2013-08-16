@@ -146,6 +146,7 @@ endif()
 
 if(WITH_CPP11)
   set(MARSYAS_DEBUG_SOURCES
+    debug/recorder.cpp
     debug/debugger.cpp
     debug/file_io.cpp
   )

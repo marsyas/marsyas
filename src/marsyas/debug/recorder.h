@@ -20,6 +20,7 @@
 #define MARSYAS_DEBUG_RECORDER_INCLUDED
 
 #include "record.h"
+
 #include <MarSystem.h>
 
 #include <vector>
@@ -29,68 +30,27 @@ namespace Marsyas { namespace Debug {
 class Recorder
 {
 public:
-  Recorder(MarSystem *system):
-    m_system(system)
+  Recorder(MarSystem *system);
+  ~Recorder();
+
+  const Record & record()
   {
-    recursive_add_observer(system);
+    return m_record;
   }
 
-  ~Recorder()
+  void commit()
   {
     for (Observer *observer : m_observers)
-    {
-      delete observer;
-    }
+      commit_observer(observer);
   }
-
-  const Record & record() { return m_record; }
 
   void clear() { m_record.clear(); }
 
 private:
-  struct Observer : public MarSystemObserver
-  {
-    MarSystem *system;
-    std::string path;
-    Recorder *recorder;
-    Record::Entry entry;
+  struct Observer;
 
-    Observer( MarSystem *system, Recorder *recorder ):
-      system(system),
-      path(system->getAbsPath()),
-      recorder(recorder)
-    {
-      system->addObserver(this);
-    }
-
-    ~Observer()
-    {
-      system->removeObserver(this);
-    }
-
-    void preProcess( const realvec &in )
-    {
-      entry.input = in;
-    }
-
-    void postProcess( const realvec &out )
-    {
-      entry.output = out;
-      recorder->m_record.insert(path, entry);
-    }
-  };
-
-  friend struct Observer;
-
-  void recursive_add_observer(MarSystem *system)
-  {
-    Observer *observer = new Observer(system, this);
-    m_observers.push_back(observer);
-
-    std::vector<MarSystem*> children = system->getChildren();
-    for (MarSystem *child : children)
-      recursive_add_observer(child);
-  }
+  void recursive_add_observer(MarSystem *system);
+  void commit_observer(Observer *observer);
 
 private:
   MarSystem *m_system;

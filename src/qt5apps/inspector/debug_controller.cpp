@@ -52,9 +52,10 @@ void DebugController::tick()
   if (m_system)
   {
     Q_ASSERT(m_recorder);
-    m_recorder->clear();
 
+    m_recorder->clear();
     m_system->tick();
+    m_recorder->commit();
 
     if (m_reader && !m_reader->eof())
     {
@@ -62,6 +63,13 @@ void DebugController::tick()
       bool ok = m_reader->read( file_record );
       if (ok)
         Debug::compare(m_recorder->record(), file_record, m_report);
+    }
+
+    for (const auto & entry : m_recorder->record().entries())
+    {
+      qDebug() << entry.first.c_str() << ":"
+               << entry.second.cpu_time
+               << entry.second.real_time;
     }
   }
   emit ticked();

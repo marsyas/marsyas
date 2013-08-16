@@ -96,9 +96,10 @@ int perform_record( MarSystem * system, const std::string & filename, int tick_c
 
   while(tick_count--)
   {
-    system->tick();
-    writer.write( recorder.record() );
     recorder.clear();
+    system->tick();
+    recorder.commit();
+    writer.write( recorder.record() );
   }
 
   cout << "Done recording." << endl;
@@ -142,6 +143,7 @@ int perform_compare( MarSystem * system, const std::string & filename )
     system->tick();
     ++tick_count;
 
+    recorder.commit();
     const Debug::Record & actual_record = recorder.record();
 
     Debug::BugReport report;
