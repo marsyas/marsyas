@@ -14,7 +14,8 @@ using namespace MarsyasQt;
 RealvecWidget::RealvecWidget( DebugController *debugger, QWidget * parent ):
   QWidget(parent),
   m_debugger(debugger),
-  m_display_debugger(false),
+  m_display_port(false),
+  m_port_type(UndefinedFlowDirection),
   m_system(0),
   m_plot(0)
 {
@@ -96,10 +97,10 @@ void RealvecWidget::setDisplayType( int type )
 
 void RealvecWidget::displayControl( MarSystem * system, const QString & path )
 {
-  if (!m_display_debugger && m_system == system && m_path == path)
+  if (!m_display_port && m_system == system && m_path == path)
     return;
 
-  m_display_debugger = false;
+  m_display_port = false;
   m_path = path;
   m_system = system;
 
@@ -109,12 +110,14 @@ void RealvecWidget::displayControl( MarSystem * system, const QString & path )
   refresh();
 }
 
-void RealvecWidget::displayDebugValue(const QString & path )
+void RealvecWidget::displayPort(const QString & path,
+                                           FlowDirection port)
 {
-  if (m_display_debugger && m_path == path)
+  if (m_display_port && m_path == path && m_port_type == port)
     return;
 
-  m_display_debugger = true;
+  m_display_port = true;
+  m_port_type = port;
   m_system = 0;
   m_path = path;
 
@@ -128,8 +131,8 @@ void RealvecWidget::refresh()
   if (m_path.isEmpty())
     return;
 
-  if (m_display_debugger)
-    refreshFromDebugger();
+  if (m_display_port)
+    refreshFromPort();
   else
     refreshFromControl();
 }
@@ -169,7 +172,7 @@ void RealvecWidget::refreshFromControl()
   m_plotter->replot();
 }
 
-void RealvecWidget::refreshFromDebugger()
+void RealvecWidget::refreshFromPort()
 {
   Q_ASSERT(!m_path.isEmpty());
 
@@ -180,12 +183,21 @@ void RealvecWidget::refreshFromDebugger()
   {
     const Debug::Record::Entry *entry = record->entry(m_path.toStdString());
     if (entry)
-      data = &entry->output;
+    {
+      switch(m_port_type)
+      {
+      case Input:
+        data = &entry->input; break;
+      case Output:
+        data = &entry->output; break;
+      default:
+        break;
+      }
+    }
   }
 
   if (!data)
   {
-    qWarning() << "RealvecWidget: invalid debugger path:" << m_path;
     clearData();
     return;
   }

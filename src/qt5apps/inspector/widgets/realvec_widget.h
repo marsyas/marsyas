@@ -41,6 +41,12 @@ class RealvecTableWidget;
 class DebugController;
 class RealvecPlot;
 
+enum FlowDirection {
+  UndefinedFlowDirection,
+  Input,
+  Output
+};
+
 class RealvecWidget : public QWidget
 {
   Q_OBJECT
@@ -61,13 +67,13 @@ public:
 public slots:
   void setDisplayType( int type );
   void displayControl( Marsyas::MarSystem *system, const QString & path );
-  void displayDebugValue( const QString & path );
+  void displayPort( const QString & path, FlowDirection port );
   void refresh();
   void clear();
 
 private:
   void refreshFromControl();
-  void refreshFromDebugger();
+  void refreshFromPort();
   void clearData();
 
   void refreshPlotData();
@@ -75,7 +81,8 @@ private:
 
   DebugController *m_debugger;
 
-  bool m_display_debugger;
+  bool m_display_port;
+  FlowDirection m_port_type;
   QString m_path;
   Marsyas::MarSystem * m_system;
 

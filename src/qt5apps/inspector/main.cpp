@@ -340,7 +340,14 @@ void Main::systemClicked( const QString & path )
 
 void Main::systemInputClicked( const QString & path )
 {
-  (void) path;
+  MarSystem *system = systemForPath(path);
+  if (!system) {
+    qWarning() << "Main: System not found for path:" << path;
+    return;
+  }
+  m_controls_widget->setSystem(system);
+  m_realvec_widget->displayPort
+      (QString::fromStdString(system->getAbsPath()), Input);
 }
 
 void Main::systemOutputClicked( const QString & path )
@@ -351,7 +358,8 @@ void Main::systemOutputClicked( const QString & path )
     return;
   }
   m_controls_widget->setSystem(system);
-  m_realvec_widget->displayDebugValue(QString::fromStdString(system->getAbsPath()));
+  m_realvec_widget->displayPort
+      (QString::fromStdString(system->getAbsPath()), Output);
 }
 
 void Main::controlClicked( const QString & path )
