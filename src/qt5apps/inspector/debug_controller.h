@@ -20,8 +20,14 @@ public:
   {
     return m_reader ? m_reader->eof() : true;
   }
-  const Marsyas::Debug::BugReport & report() const { return m_report; }
-  const Marsyas::realvec *currentValue( const QString & path ) const;
+  const Marsyas::Debug::Record * currentState()
+  {
+    return m_recorder ? &m_recorder->record() : 0;
+  }
+  const Marsyas::Debug::BugReport & report() const
+  {
+    return m_report;
+  }
 
 public slots:
   void tick();

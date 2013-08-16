@@ -83,15 +83,3 @@ void DebugController::rewind()
     m_recorder->clear();
   m_report.clear();
 }
-
-const realvec *DebugController::currentValue( const QString & path ) const
-{
-  if (!m_recorder)
-    return 0;
-
-  const auto & entry = m_recorder->record().entries().find(path.toStdString());
-  if (entry == m_recorder->record().entries().end())
-    return 0;
-
-  return &entry->second.output;
-}

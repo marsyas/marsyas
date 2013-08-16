@@ -161,7 +161,16 @@ void RealvecWidget::refreshFromDebugger()
 {
   Q_ASSERT(!m_path.isEmpty());
 
-  const realvec * data = m_debugger->currentValue(m_path);
+  const realvec * data = 0;
+
+  const Debug::Record *record =  m_debugger->currentState();
+  if (record)
+  {
+    const Debug::Record::Entry *entry = record->entry(m_path.toStdString());
+    if (entry)
+      data = &entry->output;
+  }
+
   if (!data)
   {
     qWarning() << "RealvecWidget: invalid debugger path:" << m_path;
