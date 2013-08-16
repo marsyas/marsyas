@@ -163,6 +163,9 @@ void FileReader::rewind()
   if (m_start_pos == -1)
     return;
 
+  // Before C++11, and always in GCC,
+  // seekg() will not clear error flags (e.g. eof) on success.
+  m_file.clear();
   m_file.seekg(m_start_pos);
 
   if (m_file.fail())
