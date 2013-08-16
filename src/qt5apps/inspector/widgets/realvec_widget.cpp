@@ -20,12 +20,16 @@ RealvecWidget::RealvecWidget( DebugController *debugger, QWidget * parent ):
 {
   setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-  m_label = new QLineEdit;
-  m_label->setReadOnly(true);
+
   {
-    QFont f = m_label->font();
-    f.setPointSize( f.pointSize() + 1 );
-    m_label->setFont(f);
+    QPalette palette;
+    palette.setColor(QPalette::Base, Qt::black);
+    palette.setColor(QPalette::Text, Qt::white);
+
+    m_label = new QLineEdit;
+    m_label->setReadOnly(true);
+    m_label->setFrame(false);
+    m_label->setPalette(palette);
   }
 
   m_display_type_selector = new QComboBox;
@@ -37,15 +41,23 @@ RealvecWidget::RealvecWidget( DebugController *debugger, QWidget * parent ):
   m_table->setEditable(false);
 
   m_plotter = new QwtPlot;
-  m_plotter->setCanvasBackground( QColor(15,15,15) );
+  m_plotter->setCanvasBackground( Qt::black );
   m_plotter->setAxisFont(QwtPlot::yLeft, font());
   m_plotter->setAxisFont(QwtPlot::xBottom, font());
+  {
+    QFrame *frame = qobject_cast<QFrame*>(m_plotter->canvas());
+    if (frame)
+      frame->setFrameShape(QFrame::NoFrame);
+  }
+  m_plotter->setContentsMargins(2,2,2,2);
 
   m_stack = new QStackedLayout();
   m_stack->addWidget(m_table);
   m_stack->addWidget(m_plotter);
 
   QVBoxLayout *column = new QVBoxLayout();
+  column->setContentsMargins(0,0,0,0);
+  column->setSpacing(0);
   column->addWidget(m_label);
   column->addWidget(m_display_type_selector);
   column->addLayout(m_stack);

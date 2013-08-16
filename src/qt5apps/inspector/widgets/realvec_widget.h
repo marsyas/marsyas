@@ -55,7 +55,8 @@ public:
   };
 
   RealvecWidget( DebugController *debugger, QWidget * parent = 0 );
-  QSize sizeHint() const { return QSize(500,400); }
+  QSize sizeHint() const { return QSize(500,300); }
+  QSize minimumSizeHint() const { return QSize(50,50); }
 
 public slots:
   void setDisplayType( int type );

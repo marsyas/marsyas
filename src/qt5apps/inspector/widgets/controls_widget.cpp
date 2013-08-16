@@ -38,16 +38,20 @@ ControlsWidget::ControlsWidget( QWidget * parent):
   m_tree->setHeaderLabels( QStringList()  << "Name" << "Value" << "Type" );
   m_tree->setRootIsDecorated(false);
 
-  m_label = new QLineEdit;
-  //m_label->setFrameStyle( Qt::NoFrame );
-  m_label->setReadOnly(true);
   {
-    QFont f = m_label->font();
-    f.setPointSize( f.pointSize() + 1 );
-    m_label->setFont(f);
+    QPalette palette;
+    palette.setColor(QPalette::Base, Qt::black);
+    palette.setColor(QPalette::Text, Qt::white);
+
+    m_label = new QLineEdit;
+    m_label->setReadOnly(true);
+    m_label->setFrame(false);
+    m_label->setPalette(palette);
   }
 
   QVBoxLayout *column = new QVBoxLayout;
+  column->setContentsMargins(0,0,0,0);
+  column->setSpacing(0);
   column->addWidget(m_label);
   column->addWidget(m_tree);
 
