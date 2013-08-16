@@ -20,9 +20,11 @@
 #ifndef MARSYAS_INSPECTOR_DEBUG_WIDGET_INCLUDED
 #define MARSYAS_INSPECTOR_DEBUG_WIDGET_INCLUDED
 
+#include <marsyas/debug/record.h>
+
 #include <MarSystem.h>
 #include <QWidget>
-#include <QListWidget>
+#include <QTreeWidget>
 #include <QLabel>
 
 class DebugController;
@@ -36,25 +38,31 @@ public:
   DebugWidget( ActionManager *, DebugController * debugger,
                QWidget * parent = 0 );
 
+  void setSystem( Marsyas::MarSystem * );
+
 signals:
   void pathClicked( const QString & path );
 
 public slots:
   void onRecordingChanged(const QString &filename);
   void updateReport();
-  void clear();
 
 private slots:
-  void onItemClicked( QListWidgetItem * );
+  void onItemClicked( QTreeWidgetItem *, int );
 
 private:
   enum DataRole {
-    PathRole = Qt::UserRole
+    AbsolutePathRole = Qt::UserRole,
+    RelativePathRole
   };
+
+  void recursiveAddSystem( Marsyas::MarSystem *, QTreeWidgetItem * parent );
+  void recursiveUpdateChildItems( QTreeWidgetItem *parent,
+                                  const Marsyas::Debug::Record * );
 
   DebugController *m_debugger;
   QLabel *m_rec_label;
-  QListWidget *m_bug_list;
+  QTreeWidget *m_report_view;
 };
 
 #endif // MARSYAS_INSPECTOR_DEBUG_WIDGET_INCLUDED

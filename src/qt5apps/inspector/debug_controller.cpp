@@ -64,13 +64,6 @@ void DebugController::tick()
       if (ok)
         Debug::compare(m_recorder->record(), file_record, m_report);
     }
-
-    for (const auto & entry : m_recorder->record().entries())
-    {
-      qDebug() << entry.first.c_str() << ":"
-               << entry.second.cpu_time
-               << entry.second.real_time;
-    }
   }
   emit ticked();
 }

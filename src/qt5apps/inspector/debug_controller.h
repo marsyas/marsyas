@@ -14,6 +14,7 @@ class DebugController : public QObject
   Q_OBJECT
 public:
   DebugController( QObject * parent = 0 );
+  Marsyas::MarSystem *system() const { return m_system; }
   void setSystem( Marsyas::MarSystem * system );
   bool setRecording( const QString & fileName );
   bool endOfRecording()

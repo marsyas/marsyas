@@ -218,6 +218,7 @@ void Main::openSystem(const QString & filename)
   }
 
   m_debugger->setSystem(system);
+  m_debug_widget->setSystem(system);
   m_controls_widget->setSystem(system);
   m_realvec_widget->clear();
   m_system_filename = filename;
