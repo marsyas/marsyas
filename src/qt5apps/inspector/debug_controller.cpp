@@ -1,7 +1,5 @@
 #include "debug_controller.h"
 
-#include <apps/debugger/file_io.hpp>
-
 #include <QDebug>
 
 using namespace Marsyas;
@@ -9,10 +7,8 @@ using namespace Marsyas;
 DebugController::DebugController( QObject * parent ):
   QObject(parent),
   m_system(0),
-  m_recorder(0),
-  m_debugger(0),
-  m_recording(0),
-  m_bug_report(0)
+  m_reader(0),
+  m_recorder(0)
 {}
 
 void DebugController::setSystem( Marsyas::MarSystem * system )
@@ -20,68 +16,52 @@ void DebugController::setSystem( Marsyas::MarSystem * system )
   if (m_system == system)
     return;
 
-  if (m_system)
-  {
-    delete m_recorder;
-    delete m_debugger;
-    m_recorder = 0;
-    m_debugger = 0;
-  }
+  delete m_recorder;
+  m_recorder = 0;
 
   m_system = system;
 
   if (m_system)
-  {
-    m_recorder = new recorder(m_system);
-    if (m_recording)
-      m_debugger = new debugger(m_system, m_recording);
-  }
+    m_recorder = new Debug::Recorder(m_system);
 }
 
-bool DebugController::setRecording(const QString &fileName)
+bool DebugController::setRecording(const QString &filename)
 {
-  if (fileName.isEmpty())
+  if (filename.isEmpty())
     return false;
 
-  recording_reader reader;
-  recording *new_recording = reader.read(fileName.toStdString());
-
-  if (!new_recording) {
-    qWarning() << "*** Recording file could not be opened:" << fileName;
+  Debug::FileReader *reader = new Debug::FileReader(filename.toStdString());
+  if (!reader->isOpen()) {
+    qWarning() << "*** Recording file could not be opened:" << filename;
+    delete reader;
     return false;
   }
 
-  if (m_debugger) {
-    delete m_debugger;
-    m_debugger = 0;
-  }
+  delete m_reader;
+  m_reader = reader;
 
-  delete m_recording;
-  m_recording = new_recording;
-
-  if (m_system)
-    m_debugger = new debugger(m_system, m_recording);
-
-  emit recordingChanged(fileName);
+  emit recordingChanged(filename);
 
   return true;
 }
 
 void DebugController::tick()
 {
-  delete m_bug_report;
-  m_bug_report = 0;
+  m_report.clear();
+
   if (m_system)
   {
     Q_ASSERT(m_recorder);
-    m_recorder->clear_record();
+    m_recorder->clear();
+
     m_system->tick();
-    if (m_debugger)
+
+    if (m_reader && !m_reader->eof())
     {
-      record *state = m_recorder->current_record();
-      m_bug_report = m_debugger->evaluate(state);
-      delete state;
-      m_debugger->advance();
+      Marsyas::Debug::Record file_record;
+      bool ok = m_reader->read( file_record );
+      if (ok)
+        Debug::compare(m_recorder->record(), file_record, m_report);
     }
   }
   emit ticked();
@@ -89,11 +69,21 @@ void DebugController::tick()
 
 void DebugController::rewind()
 {
-  if (m_debugger)
-    m_debugger->rewind();
+  if (m_reader)
+    m_reader->rewind();
+  if (m_recorder)
+    m_recorder->clear();
+  m_report.clear();
 }
 
 const realvec *DebugController::currentValue( const QString & path ) const
 {
-  return m_recorder ? m_recorder->current_value(path.toStdString()) : 0;
+  if (!m_recorder)
+    return 0;
+
+  const auto & entry = m_recorder->record().entries().find(path.toStdString());
+  if (entry == m_recorder->record().entries().end())
+    return 0;
+
+  return &entry->second.output;
 }

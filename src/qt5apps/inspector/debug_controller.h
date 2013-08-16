@@ -3,8 +3,11 @@
 
 #include <QObject>
 
-#include <apps/debugger/debugger.hpp>
-#include <apps/debugger/recording.hpp>
+#include <marsyas/core/MarSystem.h>
+#include <marsyas/core/realvec.h>
+#include <marsyas/debug/file_io.h>
+#include <marsyas/debug/recorder.h>
+#include <marsyas/debug/debugger.h>
 
 class DebugController : public QObject
 {
@@ -13,8 +16,12 @@ public:
   DebugController( QObject * parent = 0 );
   void setSystem( Marsyas::MarSystem * system );
   bool setRecording( const QString & fileName );
-  const debugger::report *bugReport() const { return m_bug_report; }
-  const realvec *currentValue( const QString & path ) const;
+  bool endOfRecording()
+  {
+    return m_reader ? m_reader->eof() : true;
+  }
+  const Marsyas::Debug::BugReport & report() const { return m_report; }
+  const Marsyas::realvec *currentValue( const QString & path ) const;
 
 public slots:
   void tick();
@@ -26,10 +33,9 @@ signals:
 
 private:
   Marsyas::MarSystem * m_system;
-  recorder * m_recorder;
-  debugger * m_debugger;
-  recording * m_recording;
-  debugger::report *m_bug_report;
+  Marsyas::Debug::FileReader *m_reader;
+  Marsyas::Debug::Recorder *m_recorder;
+  Marsyas::Debug::BugReport m_report;
 };
 
 #endif // MARSYASQT_INSPECTOR_DEBUG_CONTROLLER_INCLUDED

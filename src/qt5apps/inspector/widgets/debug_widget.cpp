@@ -6,6 +6,8 @@
 #include <QVBoxLayout>
 #include <QToolBar>
 
+using namespace Marsyas;
+
 DebugWidget::DebugWidget( ActionManager *action_mng,
                           DebugController * debugger, QWidget * parent ):
   QWidget(parent),
@@ -56,8 +58,7 @@ void DebugWidget::updateReport()
 
   m_bug_list->clear();
 
-  const debugger::report *bugs = m_debugger->bugReport();
-  if (!bugs)
+  if (m_debugger->endOfRecording())
   {
     QListWidgetItem *item = new QListWidgetItem;
     item->setText("No record to compare.");
@@ -65,30 +66,32 @@ void DebugWidget::updateReport()
     return;
   }
 
-  for (const auto & bug_mapping : *bugs)
+  const Debug::BugReport & bugs = m_debugger->report();
+
+  for (const auto & bug_mapping : bugs)
   {
     QString report_path = QString::fromStdString(bug_mapping.first);
-    QString report_text;
+    const Debug::Bug & bug = bug_mapping.second;
 
-    const debugger::bug & state = bug_mapping.second;
-    switch (state.flags)
+    QString report_text;
+    switch (bug.flags)
     {
-    case debugger::path_missing:
+    case Debug::path_missing:
       report_text =
         report_path
         + " FAILURE: invalid path.";
       break;
-    case debugger::format_mismatch:
+    case Debug::format_mismatch:
       report_text =
         report_path
         + " FAILURE: format mismatch: ";
       break;
-    case debugger::value_mismatch:
+    case Debug::value_mismatch:
       report_text =
         report_path
         + " MISMATCH:"
-        + " average deviation = " + QString::number(state.average_deviation)
-        + ", maximum deviation = " + QString::number(state.max_deviation);
+        + " average deviation = " + QString::number(bug.average_deviation)
+        + ", maximum deviation = " + QString::number(bug.max_deviation);
       break;
     default:
       report_text =
@@ -103,7 +106,7 @@ void DebugWidget::updateReport()
     m_bug_list->addItem(item);
   }
 
-  if (bugs->empty())
+  if (bugs.empty())
   {
     QListWidgetItem *item = new QListWidgetItem;
     item->setText("OK.");

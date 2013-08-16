@@ -303,13 +303,10 @@ void Main::updateGraphBugs()
     return;
 
   QStringList bug_paths;
-  const debugger::report * bugs = m_debugger->bugReport();
-  if (bugs)
+  const Debug::BugReport & bugs = m_debugger->report();
+  for (const auto & bug_mapping : bugs)
   {
-    for (const auto & bug_mapping : *bugs)
-    {
-      bug_paths << QString::fromStdString(bug_mapping.first);
-    }
+    bug_paths << QString::fromStdString(bug_mapping.first);
   }
 
   root_item->setProperty("bugs", QVariant::fromValue(bug_paths));
