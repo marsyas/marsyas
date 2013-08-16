@@ -144,6 +144,19 @@ if(MARSYAS_REALTIME)
   )
 endif()
 
+if(WITH_CPP11)
+  set(MARSYAS_DEBUG_SOURCES
+    debug/debugger.cpp
+    debug/file_io.cpp
+  )
+  set(MARSYAS_DEBUG_HEADERS
+    debug/debugger.h
+    debug/record.h
+    debug/recorder.h
+    debug/file_io.h
+  )
+endif()
+
 file(STRINGS marsystems/CMake-compile-cpp.txt
   MARSYAS_MARSYSTEMS_SOURCES)
 file(STRINGS marsystems/CMake-compile-h.txt
@@ -331,6 +344,7 @@ if (MARSYAS_STATIC)
     ${Marsyas_SOURCES}
     ${Marsyas_HEADERS}
     ${MARSYAS_REALTIME_SOURCES}
+    ${MARSYAS_DEBUG_SOURCES}
   )
 	SET_TARGET_PROPERTIES(marsyas_static PROPERTIES OUTPUT_NAME "marsyas")
 	SET_TARGET_PROPERTIES(marsyas_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
@@ -372,6 +386,7 @@ else (MARSYAS_STATIC)
     ${Marsyas_SOURCES}
     ${Marsyas_HEADERS}
     ${MARSYAS_REALTIME_SOURCES}
+    ${MARSYAS_DEBUG_SOURCES}
   )
 	TARGET_LINK_LIBRARIES(marsyas ${OS_LIBS})
 
@@ -421,6 +436,7 @@ endif (MARSYAS_STATIC)
 
 install(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)
 install(FILES ${MARSYAS_REALTIME_HEADERS} DESTINATION include/marsyas/realtime)
+install(FILES ${MARSYAS_DEBUG_HEADERS} DESTINATION include/marsyas/debug)
 
 if (MARSYAS_STATIC)
   install(TARGETS marsyas_static LIBRARY DESTINATION lib
