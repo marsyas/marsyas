@@ -26,7 +26,7 @@
 
 namespace Marsyas { namespace Debug {
 
-class Recorder : protected MarSystemObserver
+class Recorder
 {
 public:
   Recorder(MarSystem *system):
@@ -53,6 +53,7 @@ private:
     MarSystem *system;
     std::string path;
     Recorder *recorder;
+    Record::Entry entry;
 
     Observer( MarSystem *system, Recorder *recorder ):
       system(system),
@@ -67,26 +68,19 @@ private:
       system->removeObserver(this);
     }
 
-    void processed( MarSystem * system, const realvec &in, const realvec &out)
+    void preProcess( const realvec &in )
     {
-      (void) system;
-      Record::Entry entry;
       entry.input = in;
+    }
+
+    void postProcess( const realvec &out )
+    {
       entry.output = out;
       recorder->m_record.insert(path, entry);
     }
   };
 
   friend struct Observer;
-
-  void processed( MarSystem * system, const realvec &in, const realvec &out)
-  {
-    (void) in;
-    Record::Entry entry;
-    entry.input = in;
-    entry.output = out;
-    m_record.insert(system->getAbsPath(), entry);
-  }
 
   void recursive_add_observer(MarSystem *system)
   {

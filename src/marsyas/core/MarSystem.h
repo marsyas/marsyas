@@ -86,9 +86,8 @@ class marsyas_EXPORT MarSystemObserver
 {
 public:
   virtual ~MarSystemObserver() {}
-  virtual void processed( MarSystem *,
-                          const realvec & input,
-                          const realvec & output ) = 0;
+  virtual void preProcess( const realvec & input ) = 0;
+  virtual void postProcess( const realvec & output ) = 0;
 };
 
 class marsyas_EXPORT MarSystem

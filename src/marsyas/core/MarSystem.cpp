@@ -606,18 +606,27 @@ MarSystem::process(realvec& in, realvec& out)
   checkFlow(in, out);
 #endif
 
-  myProcess(in, out);
-
 #ifndef MARSYAS_NO_MARSYSTEM_OBSERVERS
   unsigned int observer_count = observers_.size();
   if (observer_count)
   {
     for (unsigned int idx = 0; idx < observer_count; ++idx)
     {
-      observers_[idx]->processed(this, in, out);
+      observers_[idx]->preProcess(in);
+    }
+
+    myProcess(in, out);
+
+    for (unsigned int idx = 0; idx < observer_count; ++idx)
+    {
+      observers_[idx]->postProcess(out);
     }
   }
+  else
 #endif
+  {
+    myProcess(in, out);
+  }
 
 #ifdef MARSYAS_MATLAB
   if (!MATLABscript_.empty())
