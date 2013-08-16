@@ -55,6 +55,15 @@ public:
     m_entries[path] = entry;
   }
 
+  const Entry * entry( const std::string & path ) const
+  {
+    const auto & entry = m_entries.find(path);
+    if (entry != m_entries.end())
+      return &entry->second;
+    else
+      return 0;
+  }
+
   void clear() { m_entries.clear(); }
 
 private:
