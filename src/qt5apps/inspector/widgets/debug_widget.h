@@ -25,7 +25,6 @@
 #include <MarSystem.h>
 #include <QWidget>
 #include <QTreeWidget>
-#include <QLabel>
 
 class DebugController;
 class ActionManager;
@@ -44,7 +43,6 @@ signals:
   void pathClicked( const QString & path );
 
 public slots:
-  void onRecordingChanged(const QString &filename);
   void updateReport();
 
 private slots:
@@ -61,7 +59,6 @@ private:
                                   const Marsyas::Debug::Record * );
 
   DebugController *m_debugger;
-  QLabel *m_rec_label;
   QTreeWidget *m_report_view;
 };
 

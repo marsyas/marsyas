@@ -8,7 +8,8 @@ DebugController::DebugController( QObject * parent ):
   QObject(parent),
   m_system(0),
   m_reader(0),
-  m_recorder(0)
+  m_recorder(0),
+  m_tick_count(0)
 {}
 
 void DebugController::setSystem( Marsyas::MarSystem * system )
@@ -23,6 +24,9 @@ void DebugController::setSystem( Marsyas::MarSystem * system )
 
   if (m_system)
     m_recorder = new Debug::Recorder(m_system);
+
+  m_tick_count = 0;
+  emit tickCountChanged(m_tick_count);
 }
 
 bool DebugController::setRecording(const QString &filename)
@@ -65,7 +69,9 @@ void DebugController::tick()
         Debug::compare(m_recorder->record(), file_record, m_report);
     }
   }
+  ++m_tick_count;
   emit ticked();
+  emit tickCountChanged(m_tick_count);
 }
 
 void DebugController::rewind()
@@ -75,4 +81,6 @@ void DebugController::rewind()
   if (m_recorder)
     m_recorder->clear();
   m_report.clear();
+  m_tick_count = 0;
+  emit tickCountChanged(m_tick_count);
 }

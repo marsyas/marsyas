@@ -9,6 +9,7 @@
 #include <QQuickView>
 #include <QMainWindow>
 #include <QDockWidget>
+#include <QLabel>
 
 #include <QQmlEngine>
 
@@ -73,9 +74,12 @@ private:
   Main();
   void createActions();
   void createMenu();
+  void createToolbar();
 
 private slots:
   void addRealvecWidget();
+  void onReferenceChanged(const QString &filename);
+  void onTickCountChanged(int count);
   void updateGraphBugs();
 
   void systemClicked( const QString & path );
@@ -103,7 +107,8 @@ private:
   ActionManager m_action_manager;
 
   QMainWindow *m_main_window;
-  QToolBar *m_toolbar;
+  QLabel *m_reference_label;
+  QLabel *m_step_label;
   QQuickView *m_graph;
   RealvecWidget *m_realvec_widget;
   ControlsWidget *m_controls_widget;

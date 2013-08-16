@@ -4,30 +4,14 @@
 
 #include <QDebug>
 #include <QVBoxLayout>
-#include <QToolBar>
 
 using namespace Marsyas;
 
-DebugWidget::DebugWidget( ActionManager *action_mng,
+DebugWidget::DebugWidget( ActionManager *,
                           DebugController * debugger, QWidget * parent ):
   QWidget(parent),
   m_debugger(debugger)
 {
-  QToolBar *tool_bar = new QToolBar;
-  tool_bar->addAction( action_mng->action(ActionManager::OpenRecording) );
-  tool_bar->addSeparator();
-  tool_bar->addAction( action_mng->action(ActionManager::Tick) );
-  tool_bar->addAction( action_mng->action(ActionManager::Rewind) );
-
-  m_rec_label = new QLabel("<No Recording>");
-  {
-    QPalette palette;
-    palette.setColor(QPalette::Window, Qt::black);
-    palette.setColor(QPalette::WindowText, Qt::white);
-    m_rec_label->setPalette(palette);
-    m_rec_label->setAutoFillBackground(true);
-  }
-
   m_report_view = new QTreeWidget();
   m_report_view->setHeaderLabels( QStringList()
                                   << "Name" << "Type" << "CPU Time"
@@ -37,13 +21,9 @@ DebugWidget::DebugWidget( ActionManager *action_mng,
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins(0,0,0,0);
   layout->setSpacing(0);
-  layout->addWidget(tool_bar);
-  layout->addWidget(m_rec_label);
   layout->addWidget(m_report_view);
   setLayout(layout);
 
-  connect(m_debugger, SIGNAL(recordingChanged(QString)),
-          this, SLOT(onRecordingChanged(QString)));
   connect(m_debugger, SIGNAL(ticked()),
           this, SLOT(updateReport()));
   connect(m_report_view, SIGNAL(itemClicked(QTreeWidgetItem*, int)),
@@ -78,11 +58,6 @@ void DebugWidget::recursiveAddSystem( MarSystem *system,
   std::vector<MarSystem*> children = system->getChildren();
   for (MarSystem *child : children)
     recursiveAddSystem(child, item);
-}
-
-void DebugWidget::onRecordingChanged(const QString & filename)
-{
-  m_rec_label->setText(filename);
 }
 
 void DebugWidget::updateReport()

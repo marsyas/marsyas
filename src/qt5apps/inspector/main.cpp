@@ -14,6 +14,7 @@
 
 #include <QMenuBar>
 #include <QMenu>
+#include <QToolBar>
 #include <QAction>
 
 #include <QStringList>
@@ -25,6 +26,7 @@
 #include <QLabel>
 #include <QToolBar>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QFileDialog>
 
 #include <QQmlContext>
@@ -76,15 +78,48 @@ Main::Main():
 
   createActions();
   createMenu();
+  createToolbar();
 
   ///////////////////
+
+  QPalette status_label_palette;
+  status_label_palette.setColor(QPalette::Window, Qt::black);
+  status_label_palette.setColor(QPalette::WindowText, Qt::white);
+
+  m_reference_label = new QLabel(tr("Reference: -"));
+  m_reference_label->setPalette(status_label_palette);
+  m_reference_label->setAutoFillBackground(true);
+
+  m_step_label = new QLabel(tr("Step: -"));
+  m_step_label->setPalette(status_label_palette);
+  m_step_label->setAutoFillBackground(true);
 
   m_graph = new QQuickView(m_qml_engine, 0);
   m_graph->setColor( QApplication::palette().color(QPalette::Window) );
   m_graph->setResizeMode(QQuickView::SizeRootObjectToView);
 
+  // Central widget
+
   QWidget *graph_widget = QWidget::createWindowContainer(m_graph);
   graph_widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+  QHBoxLayout *status_layout = new QHBoxLayout;
+  status_layout->setSpacing(2);
+  status_layout->addWidget(m_step_label, 1);
+  status_layout->addWidget(m_reference_label, 4);
+
+  QVBoxLayout *central_layout = new QVBoxLayout;
+  central_layout->setContentsMargins(0,0,0,0);
+  central_layout->setSpacing(2);
+  central_layout->addLayout(status_layout);
+  central_layout->addWidget(graph_widget);
+
+  QWidget *central_widget = new QWidget;
+  central_widget->setLayout(central_layout);
+
+  m_main_window->setCentralWidget( central_widget );
+
+  // Dock widgets
 
   m_controls_widget = new ControlsWidget;
 
@@ -101,14 +136,16 @@ Main::Main():
   dock_debug_widget->setWindowTitle("Debug");
   m_main_window->addDockWidget(Qt::BottomDockWidgetArea, dock_debug_widget);
 
-  m_main_window->setCentralWidget( graph_widget );
-
   connect( m_debugger, SIGNAL(ticked()),
            m_controls_widget, SLOT(refresh()) );
   connect( m_debugger, SIGNAL(ticked()),
            m_realvec_widget, SLOT(refresh()) );
   connect( m_debugger, SIGNAL(ticked()),
            this, SLOT(updateGraphBugs()) );
+  connect( m_debugger, SIGNAL(recordingChanged(QString)),
+           this, SLOT(onReferenceChanged(QString)) );
+  connect( m_debugger, SIGNAL(tickCountChanged(int)),
+           this, SLOT(onTickCountChanged(int)) );
   connect( m_controls_widget, SIGNAL(controlClicked(QString)),
            this, SLOT(controlClicked(QString)) );
   connect( m_debug_widget, SIGNAL(pathClicked(QString)),
@@ -126,7 +163,7 @@ void Main::createActions()
   a->setShortcut(QKeySequence::Open);
   connect(a, SIGNAL(triggered()), this, SLOT(openSystem()));
 
-  a = action(ActionManager::OpenRecording) = new QAction(tr("Open Recording..."), this);
+  a = action(ActionManager::OpenRecording) = new QAction(tr("Open Reference..."), this);
   connect(a, SIGNAL(triggered()), this, SLOT(openRecording()));
 
   a = action(ActionManager::Tick) = new QAction(tr("Tick"), this);
@@ -163,6 +200,16 @@ void Main::createMenu()
   menu->addAction(action(ActionManager::Tick));
   menu->addAction(action(ActionManager::Rewind));
   menuBar->addMenu(menu);
+}
+
+void Main::createToolbar()
+{
+  QToolBar *toolbar = m_main_window->addToolBar("Actions");
+  toolbar->addAction(action(ActionManager::OpenSystem));
+  toolbar->addAction(action(ActionManager::OpenRecording));
+  toolbar->addSeparator();
+  toolbar->addAction(action(ActionManager::Tick));
+  toolbar->addAction(action(ActionManager::Rewind));
 }
 
 void Main::openSystem()
@@ -231,7 +278,7 @@ void Main::openRecording()
 {
   QString filename =
     QFileDialog::getOpenFileName(m_main_window,
-                                 "Open MarSystem Recording");
+                                 tr("Choose Reference Recording"));
   if (filename.isEmpty())
     return;
 
@@ -259,6 +306,22 @@ void Main::addRealvecWidget()
   m_main_window->addDockWidget(Qt::RightDockWidgetArea, dock_widget);
 
   m_realvec_widget = realvec_widget;
+}
+
+void Main::onReferenceChanged(const QString &filename)
+{
+  if (!filename.isEmpty())
+    m_reference_label->setText(tr("Reference: %1").arg(filename));
+  else
+    m_reference_label->setText(tr("Reference: -"));
+}
+
+void Main::onTickCountChanged(int count)
+{
+  if (count)
+    m_step_label->setText(tr("Step: %1").arg(count));
+  else
+    m_step_label->setText(tr("Step: -"));
 }
 
 void Main::systemClicked( const QString & path )

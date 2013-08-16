@@ -36,6 +36,7 @@ public slots:
 
 signals:
   void ticked();
+  void tickCountChanged(int count);
   void recordingChanged(const QString & filename);
 
 private:
@@ -43,6 +44,7 @@ private:
   Marsyas::Debug::FileReader *m_reader;
   Marsyas::Debug::Recorder *m_recorder;
   Marsyas::Debug::BugReport m_report;
+  int m_tick_count;
 };
 
 #endif // MARSYASQT_INSPECTOR_DEBUG_CONTROLLER_INCLUDED
