@@ -1,2 +1,2 @@
-set(debugger_src main.cpp file_io.cpp)
+set(debugger_src debugger.cpp)
 marsyas_app(marsyas-debug ${debugger_src})
