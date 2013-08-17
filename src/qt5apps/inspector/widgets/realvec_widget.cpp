@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QStackedLayout>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 
 using namespace Marsyas;
 using namespace MarsyasQt;
@@ -38,6 +39,9 @@ RealvecWidget::RealvecWidget( DebugController *debugger, QWidget * parent ):
                                      << "Table" << "Points" << "Sticks"
                                      << "Line" << "Curve" << "Spectrogram" );
 
+  m_auto_scale_btn = new QToolButton;
+  m_auto_scale_btn->setText(tr("AutoScale"));
+
   m_table = new MarsyasQt::RealvecTableWidget;
   m_table->setEditable(false);
 
@@ -56,16 +60,21 @@ RealvecWidget::RealvecWidget( DebugController *debugger, QWidget * parent ):
   m_stack->addWidget(m_table);
   m_stack->addWidget(m_plotter);
 
+  QHBoxLayout *tool_row = new QHBoxLayout();
+  tool_row->addWidget(m_display_type_selector);
+  tool_row->addWidget(m_auto_scale_btn);
+
   QVBoxLayout *column = new QVBoxLayout();
   column->setContentsMargins(0,0,0,0);
   column->setSpacing(0);
   column->addWidget(m_label);
-  column->addWidget(m_display_type_selector);
+  column->addLayout(tool_row);
   column->addLayout(m_stack);
 
   setLayout(column);
 
   connect( m_display_type_selector, SIGNAL(activated(int)), this, SLOT(setDisplayType(int)) );
+  connect( m_auto_scale_btn, SIGNAL(clicked()), this, SLOT(autoScale()) );
 
   m_display_type_selector->setCurrentIndex(Line);
   setDisplayType(Line);

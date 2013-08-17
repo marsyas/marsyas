@@ -33,6 +33,7 @@
 #include <QLineEdit>
 #include <QStackedLayout>
 #include <QComboBox>
+#include <QToolButton>
 
 namespace MarsyasQt {
 class RealvecTableWidget;
@@ -86,6 +87,7 @@ private:
 
   QStackedLayout * m_stack;
   QComboBox * m_display_type_selector;
+  QToolButton * m_auto_scale_btn;
 
   QLineEdit *m_label;
   MarsyasQt::RealvecTableWidget *m_table;
