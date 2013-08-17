@@ -68,15 +68,13 @@ public slots:
   void setDisplayType( int type );
   void displayControl( Marsyas::MarSystem *system, const QString & path );
   void displayPort( const QString & path, FlowDirection port );
-  void refresh();
+  void refresh(bool autoScale = false);
   void clear();
+  void autoScale();
 
 private:
   void refreshFromControl();
   void refreshFromPort();
-  void clearData();
-
-  void refreshPlotData();
   void clearPlot();
 
   DebugController *m_debugger;
@@ -198,6 +196,7 @@ public:
   virtual ~RealvecPlot() {}
   virtual void setData( const Marsyas::realvec * data ) = 0;
   virtual void clear() = 0;
+  virtual void fitRange() = 0;
 protected:
   QwtPlot *m_plotter;
 };
@@ -211,11 +210,13 @@ public:
   void setType( int );
   void setData( const Marsyas::realvec * data );
   void clear();
+  void fitRange();
 private:
   void applyType();
   QList<QwtPlotCurve*> m_curves;
   QwtPlotCurve::CurveStyle m_style;
   bool m_fitted;
+  const Marsyas::realvec *m_data;
 };
 
 class RealvecPlotImage : public RealvecPlot
@@ -226,8 +227,11 @@ public:
   ~RealvecPlotImage();
   void setData( const Marsyas::realvec * data );
   void clear();
+  void fitRange();
 private:
   QwtPlotSpectrogram m_image;
+  const Marsyas::realvec *m_data;
+  QwtInterval m_range;
 };
 
 #endif // MARSYAS_INSPECTOR_REALVEC_WIDGET_INCLUDED

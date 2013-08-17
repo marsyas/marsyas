@@ -90,7 +90,7 @@ void RealvecWidget::setDisplayType( int type )
       plot->setType(type);
       m_plot = plot;
     }
-    refresh();
+    refresh(true);
     m_stack->setCurrentWidget(m_plotter);
   }
 }
@@ -107,7 +107,7 @@ void RealvecWidget::displayControl( MarSystem * system, const QString & path )
   QString abs_path = QString::fromStdString(system->getAbsPath()) + path;
   m_label->setText(abs_path);
 
-  refresh();
+  refresh(true);
 }
 
 void RealvecWidget::displayPort(const QString & path,
@@ -123,10 +123,10 @@ void RealvecWidget::displayPort(const QString & path,
 
   m_label->setText(path);
 
-  refresh();
+  refresh(true);
 }
 
-void RealvecWidget::refresh()
+void RealvecWidget::refresh(bool doAutoScale)
 {
   if (m_path.isEmpty())
     return;
@@ -135,13 +135,27 @@ void RealvecWidget::refresh()
     refreshFromPort();
   else
     refreshFromControl();
+
+  if (m_plot && doAutoScale)
+    m_plot->fitRange();
+
+  m_plotter->replot();
+}
+
+void RealvecWidget::autoScale()
+{
+  if (m_plot) {
+    m_plot->fitRange();
+    m_plotter->replot();
+  }
 }
 
 void RealvecWidget::clear()
 {
   m_path.clear();
   m_system = 0;
-  clearData();
+  clearPlot();
+  m_plotter->replot();
   m_label->clear();
 }
 
@@ -153,13 +167,13 @@ void RealvecWidget::refreshFromControl()
   MarControlPtr control = m_system->getControl( m_path.toStdString() );
   if (control.isInvalid()) {
     qWarning() << "RealvecWidget: invalid control path:" << m_path;
-    clearData();
+    clearPlot();
     return;
   }
 
   if (control->getType() != "mrs_realvec") {
     //qWarning() << "RealvecWidget: control type not 'mrs_realvec':" << m_control_path;
-    clearData();
+    clearPlot();
     return;
   }
 
@@ -169,7 +183,6 @@ void RealvecWidget::refreshFromControl()
   m_data = data;
   if (m_plot)
     m_plot->setData(&m_data);
-  m_plotter->replot();
 }
 
 void RealvecWidget::refreshFromPort()
@@ -198,7 +211,7 @@ void RealvecWidget::refreshFromPort()
 
   if (!data)
   {
-    clearData();
+    clearPlot();
     return;
   }
 
@@ -207,23 +220,23 @@ void RealvecWidget::refreshFromPort()
   m_data = *data;
   if (m_plot)
     m_plot->setData(&m_data);
-  m_plotter->replot();
 }
 
-void RealvecWidget::clearData()
+void RealvecWidget::clearPlot()
 {
   m_data = realvec();
   m_table->setData( realvec() );
   if (m_plot)
     m_plot->clear();
-  m_plotter->replot();
 }
 
 //////////////////////////////////////
+
 RealvecPlotCurve::RealvecPlotCurve( QwtPlot *plotter ):
   RealvecPlot(plotter),
   m_style(QwtPlotCurve::Lines),
-  m_fitted(false)
+  m_fitted(false),
+  m_data(0)
 {}
 
 RealvecPlotCurve::~RealvecPlotCurve()
@@ -291,7 +304,8 @@ void RealvecPlotCurve::setData( const realvec * data )
   }
 
   m_plotter->setAxisScale(QwtPlot::xBottom, 0.0, column_count);
-  m_plotter->setAxisScale(QwtPlot::yLeft, -1, 1);
+
+  m_data = data;
 }
 
 void RealvecPlotCurve::clear()
@@ -302,12 +316,27 @@ void RealvecPlotCurve::clear()
     delete curve;
   }
   m_curves.clear();
+  m_data = 0;
+}
+
+void RealvecPlotCurve::fitRange()
+{
+  if (m_data)
+  {
+    double min = m_data->minval();
+    double max = m_data->maxval();
+    if (min == max) { min -= 1; max += 1; }
+
+    m_plotter->setAxisScale(QwtPlot::yLeft, min, max);
+  }
 }
 
 //////////////////////////////////
 
 RealvecPlotImage::RealvecPlotImage( QwtPlot *plotter ):
-  RealvecPlot(plotter)
+  RealvecPlot(plotter),
+  m_data(0),
+  m_range(-1, 1)
 {
   m_image.setDisplayMode(QwtPlotSpectrogram::ImageMode, true);
 }
@@ -322,16 +351,34 @@ void RealvecPlotImage::setData( const Marsyas::realvec * data )
   RealvecRaster *raster = new RealvecRaster(data);
   raster->setInterval(Qt::YAxis, QwtInterval(0, data->getRows(), QwtInterval::ExcludeMaximum));
   raster->setInterval(Qt::XAxis, QwtInterval(0, data->getCols(), QwtInterval::ExcludeMaximum));
-  raster->setInterval(Qt::ZAxis, QwtInterval(-1, 1));
+  raster->setInterval(Qt::ZAxis, m_range);
 
   m_image.setData( raster );
   m_image.attach(m_plotter);
 
   m_plotter->setAxisScale(QwtPlot::yLeft, 0, data->getRows());
   m_plotter->setAxisScale(QwtPlot::xBottom, 0, data->getCols());
+
+  m_data = data;
 }
 
 void RealvecPlotImage::clear()
 {
   m_image.detach();
+  m_data = 0;
+}
+
+void RealvecPlotImage::fitRange()
+{
+  if (!m_data)
+    return;
+
+  double min = m_data->minval();
+  double max = m_data->maxval();
+  if (min == max) { min -= 1; max += 1; }
+
+  m_range = QwtInterval(min, max);
+  QwtRasterData *raster = m_image.data();
+  if (raster)
+      raster->setInterval(Qt::ZAxis, m_range);
 }
