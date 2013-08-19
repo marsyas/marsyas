@@ -41,9 +41,36 @@ void print_header(int tick_count);
 void print_entry
 (const std::string & path, const Debug::Record::Entry & record, const Debug::Bug & bug);
 
-void printUsage()
+void print_usage()
 {
   cout << "Usage: marsyas-debug <system-file> [-r <recording-file>] [-c <reference-file>] [-t <tick-count>] [-b]" << endl;
+}
+
+void print_help()
+{
+  static const unsigned int opt_width = 20;
+
+  cout << endl;
+  cout << "'marsyas-debug' loads a marsystem from file, runs it and prints debugging information." << endl;
+  cout << endl;
+
+  print_usage();
+  cout << endl;
+
+  cout << "Options:" << endl;
+  cout << left
+       << setw(opt_width) << "-u  --usage"
+       << " : display short usage info" << endl
+       << setw(opt_width) << "-h  --help"
+       << " : display this information" << endl
+       << setw(opt_width) << "-r --record <file>"
+       << " : record to <file>" << endl
+       << setw(opt_width) << "-c --compare <file>"
+       << " : compare to recording in <file>" << endl
+       << setw(opt_width) << "-t --ticks <number>"
+       << " : perform <number> ticks" << endl
+       << setw(opt_width) << "-b --bugs-only"
+       << " : only report bugs" << endl;
 }
 
 int main (int argc, const char *argv[])
@@ -53,13 +80,27 @@ int main (int argc, const char *argv[])
   opt.addStringOption("compare", "c", "");
   opt.addNaturalOption("ticks", "t", -1);
   opt.addBoolOption("bugs-only", "b", false);
+  opt.addBoolOption("help", "h", false);
+  opt.addBoolOption("usage", "u", false);
   opt.readOptions(argc, argv);
+
+  if (opt.getBoolOption("help"))
+  {
+    print_help();
+    return 0;
+  }
+
+  if (opt.getBoolOption("usage"))
+  {
+    print_usage();
+    return 0;
+  }
 
   const std::vector<std::string> & arguments = opt.getRemaining();
   if (!arguments.size())
   {
     cout << "Missing system file." << endl;
-    printUsage();
+    print_usage();
     return 1;
   }
 
