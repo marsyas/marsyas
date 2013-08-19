@@ -67,8 +67,8 @@ void print_help()
        << " : record to <file>" << endl
        << setw(opt_width) << "-c --compare <file>"
        << " : compare to recording in <file>" << endl
-       << setw(opt_width) << "-t --ticks <number>"
-       << " : perform <number> ticks" << endl
+       << setw(opt_width) << "-N --count <number>"
+       << " : perform <number> amount of ticks" << endl
        << setw(opt_width) << "-b --bugs-only"
        << " : only report bugs" << endl;
 }
@@ -78,7 +78,7 @@ int main (int argc, const char *argv[])
   CommandLineOptions opt;
   opt.addStringOption("record", "r", "");
   opt.addStringOption("compare", "c", "");
-  opt.addNaturalOption("ticks", "t", -1);
+  opt.addNaturalOption("count", "N", -1);
   opt.addBoolOption("bugs-only", "b", false);
   opt.addBoolOption("help", "h", false);
   opt.addBoolOption("usage", "u", false);
@@ -131,7 +131,7 @@ int main (int argc, const char *argv[])
   if (!record_filename.empty())
     writer = new Debug::FileWriter(record_filename, system);
 
-  int ticks_remaining = (int) opt.getNaturalOption("ticks");
+  int ticks_remaining = (int) opt.getNaturalOption("count");
   if (ticks_remaining < 1)
   {
     if (reader)

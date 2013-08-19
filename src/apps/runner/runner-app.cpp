@@ -22,7 +22,7 @@ int main( int argc, const char *argv[] )
     CommandLineOptions opt;
     opt.addBoolOption("realtime", "r", false);
     opt.addBoolOption("finite", "f", false);
-    opt.addNaturalOption("ticks", "t", 0);
+    opt.addNaturalOption("count", "N", 0);
     opt.addRealOption("samplerate", "s", 0);
     opt.addNaturalOption("block", "b", 0);
     opt.readOptions(argc, argv);
@@ -47,7 +47,7 @@ int run( const string system_filename, const CommandLineOptions & opt )
     }
 
     bool realtime = opt.getBoolOption("realtime");
-    unsigned int ticks = std::max((mrs_natural)0, opt.getNaturalOption("ticks"));
+    unsigned int ticks = std::max((mrs_natural)0, opt.getNaturalOption("count"));
     //bool finite = opt.getBoolOption("finite");
     mrs_real sr = opt.getRealOption("samplerate");
     mrs_natural block = opt.getNaturalOption("block");
