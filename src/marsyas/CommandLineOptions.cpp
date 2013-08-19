@@ -139,8 +139,7 @@ bool getValueArgument( const std::vector<std::string> & args,
   return true;
 }
 
-void
-CommandLineOptions::readOptions(int argc, const char **argv)
+bool CommandLineOptions::readOptions(int argc, const char **argv)
 {
   for (int i=0; i < argc; ++i)
   {
@@ -170,7 +169,7 @@ CommandLineOptions::readOptions(int argc, const char **argv)
         else
         {
           cerr << "Invalid option: " << argument << endl;
-          continue;
+          return false;
         }
       }
     }
@@ -194,8 +193,10 @@ CommandLineOptions::readOptions(int argc, const char **argv)
       it = m_natural_options.find(option_name);
       if (it != m_natural_options.end())
       {
-        if (getValueArgument(m_arguments, i, it->second.value, "natural number"))
-          it->second.is_set = true;
+        if (!getValueArgument(m_arguments, i, it->second.value, "natural number"))
+          return false;
+
+        it->second.is_set = true;
         continue;
       }
     }
@@ -205,8 +206,10 @@ CommandLineOptions::readOptions(int argc, const char **argv)
       it = m_real_options.find(option_name);
       if (it != m_real_options.end())
       {
-        if (getValueArgument(m_arguments, i, it->second.value, "real number"))
-          it->second.is_set = true;
+        if (!getValueArgument(m_arguments, i, it->second.value, "real number"))
+          return false;
+
+        it->second.is_set = true;
         continue;
       }
     }
@@ -216,15 +219,19 @@ CommandLineOptions::readOptions(int argc, const char **argv)
       it = m_string_options.find(option_name);
       if (it != m_string_options.end())
       {
-        if (getValueArgument(m_arguments, i, it->second.value, "string number"))
-          it->second.is_set = true;
-        continue;
+        if (!getValueArgument(m_arguments, i, it->second.value, "string number"))
+          return false;
+
+        it->second.is_set = true;
         continue;
       }
     }
 
     cerr << "Invalid option: " << argument << endl;
+    return false;
   }
+
+  return true;
 }
 
 } // namespace Marsyas

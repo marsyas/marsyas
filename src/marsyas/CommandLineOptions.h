@@ -78,7 +78,7 @@ private:
 public:
   CommandLineOptions();
 
-  void readOptions(int argc, const char** argv);
+  bool readOptions(int argc, const char** argv);
 
   void addBoolOption(const std::string & lname, const std::string & sname,
                      bool value = false);
