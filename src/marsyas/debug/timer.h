@@ -23,7 +23,7 @@
 
 #include <common_source.h>
 
-#if defined(MARSYAS_LINUX) || defined(MARSYAS_MACOSX)
+#if defined(MARSYAS_LINUX)
 
 #include <time.h>
 
@@ -76,21 +76,39 @@ private:
 
 #else
 
-// TODO: Implement Timer for Windows.
+#include <chrono>
 
 namespace Marsyas { namespace Debug {
 
+using namespace std::chrono;
+
 class Timer
 {
+    high_resolution_clock::time_point m_real_time_start;
+    high_resolution_clock::time_point m_real_time_measure;
 public:
-  void start() {}
-  void measure() {}
-  double cpuTime() { return 0.0; }
-  double realTime() { return 0.0; }
+  void start()
+  {
+      m_real_time_start = high_resolution_clock::now();
+  }
+  void measure()
+  {
+      m_real_time_measure = high_resolution_clock::now();
+  }
+  double cpuTime()
+  {
+      return 0.0;
+  }
+  double realTime()
+  {
+      duration<double> m_real_time_dur =
+              m_real_time_measure - m_real_time_start;
+      return m_real_time_dur.count();
+  }
 };
 
-}}
+}} // namespace Marsyas::Debug
 
-#endif // namespace Marsyas::Debug
+#endif
 
 #endif // MARSYAS_DEBUG_TIMER_INCLUDED
