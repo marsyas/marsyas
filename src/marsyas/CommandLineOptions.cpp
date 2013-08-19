@@ -19,74 +19,124 @@
 #include "CommandLineOptions.h"
 
 using namespace std;
-using namespace Marsyas;
+
+namespace Marsyas {
 
 CommandLineOptions::CommandLineOptions()
 {
 }
 
 void
-CommandLineOptions::addBoolOption(mrs_string lname, mrs_string sname, bool value)
+CommandLineOptions::addBoolOption(const std::string & long_name,
+                                  const std::string & short_name,
+                                  bool value)
 {
-  mrs_string dlname;
-  dlname += "--";
-  dlname += lname;
-
-  mrs_string dsname;
-  dsname += "-";
-  dsname += sname;
-
-  boolOptions_[dsname] = value;
-  boolOptions_[dlname] = value;
-  longNames_[dsname] = dlname;
+  // FIXME:
+  // It should not be possible to add a bool option already set,
+  // because it can not be un-set via command-line.
+  m_bool_options[long_name].is_set = value;
+  m_long_names[short_name] = long_name;
 }
 
 void
-CommandLineOptions::addNaturalOption(mrs_string lname, mrs_string sname, mrs_natural value)
+CommandLineOptions::addNaturalOption(const std::string & long_name,
+                                     const std::string & short_name,
+                                     mrs_natural value)
 {
-  mrs_string dlname;
-  dlname += "--";
-  dlname += lname;
-
-  mrs_string dsname;
-  dsname += "-";
-  dsname += sname;
-
-  naturalOptions_[dsname] = value;
-  naturalOptions_[dlname] = value;
-  longNames_[dsname] = dlname;
+  addOption(long_name, short_name, value, m_natural_options);
 }
 
 void
-CommandLineOptions::addRealOption(mrs_string lname,mrs_string sname,mrs_real value)
+CommandLineOptions::addRealOption(const std::string & long_name,
+                                  const std::string & short_name,
+                                  mrs_real value)
 {
-  mrs_string dlname;
-  dlname += "--";
-  dlname += lname;
-
-  mrs_string dsname;
-  dsname += "-";
-  dsname += sname;
-
-  realOptions_[dsname] = value;
-  realOptions_[dlname] = value;
-  longNames_[dsname] = dlname;
+  addOption(long_name, short_name, value, m_real_options);
 }
 
 void
-CommandLineOptions::addStringOption(mrs_string lname,mrs_string sname,mrs_string value)
+CommandLineOptions::addStringOption(const std::string & long_name,
+                                    const std::string & short_name,
+                                    const std::string & value)
 {
-  mrs_string dlname;
-  dlname += "--";
-  dlname += lname;
+  addOption(long_name, short_name, value, m_string_options);
+}
 
-  mrs_string dsname;
-  dsname += "-";
-  dsname += sname;
 
-  stringOptions_[dsname] = value;
-  stringOptions_[dlname] = value;
-  longNames_[dsname] = dlname;
+bool CommandLineOptions::isBoolOptionSet(const std::string & long_name) const
+{
+  return isOptionSet(long_name, m_bool_options);
+}
+
+bool CommandLineOptions::isRealOptionSet(const std::string & long_name) const
+{
+  return isOptionSet(long_name, m_real_options);
+}
+
+bool CommandLineOptions::isNaturalOptionSet(const std::string & long_name) const
+{
+  return isOptionSet(long_name, m_natural_options);
+}
+
+bool CommandLineOptions::isStringOptionSet(const std::string & long_name) const
+{
+  return isOptionSet(long_name, m_string_options);
+}
+
+
+bool
+CommandLineOptions::getBoolOption(const std::string & long_name) const
+{
+  return isBoolOptionSet(long_name);
+}
+
+mrs_natural
+CommandLineOptions::getNaturalOption(const std::string & long_name) const
+{
+  return getOption(long_name, m_natural_options);
+}
+
+mrs_real
+CommandLineOptions::getRealOption(const std::string & long_name) const
+{
+  return getOption(long_name, m_real_options);
+}
+
+string
+CommandLineOptions::getStringOption(const std::string & long_name) const
+{
+  return getOption(long_name, m_string_options);
+}
+
+const std::vector<std::string> &
+CommandLineOptions::getRemaining() const
+{
+  return m_remaining;
+}
+
+
+template<typename T>
+bool getValueArgument( const std::vector<std::string> & args,
+                       int & arg_index,
+                       T & value, const char * required_type_name )
+{
+  const std::string option_arg = args[arg_index];
+  if (arg_index >= (int) args.size()-1)
+  {
+    std::cerr << "Missing value to option: " << args[arg_index] << std::endl;
+    return false;
+  }
+  ++arg_index;
+  const std::string value_arg = args[arg_index];
+  istringstream value_stream( value_arg );
+  value_stream >> value;
+  if (value_stream.fail())
+  {
+    std::cerr << "Invalid option value (" << required_type_name << " required): "
+              << option_arg << ' ' << value_arg << std::endl;
+    return false;
+  }
+  return true;
 }
 
 void
@@ -94,105 +144,87 @@ CommandLineOptions::readOptions(int argc, const char **argv)
 {
   for (int i=0; i < argc; ++i)
   {
-    arguments_.push_back(argv[i]);
+    m_arguments.push_back(argv[i]);
   }
-
-  mrs_string key;
-  mrs_string argument;
-  bool notFound = true;
 
   for (int i=1; i < argc; ++i)
   {
-    argument = arguments_[i];
-    if (argument.substr(0,1) == "-")
+    const string & argument = m_arguments[i];
+    string option_name;
+
+    if (argument.size() > 1 && argument[0] == '-')
     {
-      notFound = true;
-
-      nameIter_ = longNames_.find(arguments_[i]);
-      if (nameIter_ != longNames_.end())
-        key = nameIter_->second;
+      if (argument.size() > 2 && argument[1] == '-')
+      {
+        option_name = argument.substr(2);
+      }
       else
-        key = arguments_[i];
-
-      // look for option in boolOptions_
-      biter_ = boolOptions_.find(key);
-      if (biter_ != boolOptions_.end())
       {
-        boolOptions_[key] = true;
-        notFound = false;
+        string short_name = argument.substr(1);
+        std::map<std::string, std::string>::iterator it;
+        it = m_long_names.find(short_name);
+        if (it != m_long_names.end())
+        {
+          option_name = it->second;
+        }
+        else
+        {
+          cerr << "Invalid option: " << argument << endl;
+          continue;
+        }
       }
-
-      niter_ = naturalOptions_.find(key);
-      if (niter_ != naturalOptions_.end())
-      {
-        if (i < argc -1)
-          naturalOptions_[key] = atoi((arguments_[i+1]).c_str());
-        ++i;
-        notFound = false;
-      }
-
-      riter_ = realOptions_.find(key);
-      if (riter_ != realOptions_.end())
-      {
-        if (i < argc -1)
-          realOptions_[key] = (mrs_real)atof((arguments_[i+1]).c_str());
-        ++i;
-        notFound = false;
-      }
-
-      siter_ = stringOptions_.find(key);
-      if (siter_ != stringOptions_.end())
-      {
-        if (i < argc -1)
-          stringOptions_[key] = (arguments_[i+1]).c_str();
-        ++i;
-        notFound = false;
-      }
-
-      if (notFound)
-        cout << "Option " << key << " was not found. It is ignored " << endl;
     }
-    else
-      remaining_.push_back(argument);
+
+    if (option_name.empty())
+    {
+      m_remaining.push_back(argument);
+      continue;
+    }
+
+    std::map<std::string, Option<bool> >::iterator bool_it;
+    bool_it = m_bool_options.find(option_name);
+    if (bool_it != m_bool_options.end())
+    {
+      bool_it->second.is_set = true;
+      continue;
+    }
+
+    {
+      std::map<std::string, Option<mrs_natural> >::iterator it;
+      it = m_natural_options.find(option_name);
+      if (it != m_natural_options.end())
+      {
+        if (getValueArgument(m_arguments, i, it->second.value, "natural number"))
+          it->second.is_set = true;
+        continue;
+      }
+    }
+
+    {
+      std::map<std::string, Option<mrs_real> >::iterator it;
+      it = m_real_options.find(option_name);
+      if (it != m_real_options.end())
+      {
+        if (getValueArgument(m_arguments, i, it->second.value, "real number"))
+          it->second.is_set = true;
+        continue;
+      }
+    }
+
+    {
+      std::map<std::string, Option<string> >::iterator it;
+      it = m_string_options.find(option_name);
+      if (it != m_string_options.end())
+      {
+        if (getValueArgument(m_arguments, i, it->second.value, "string number"))
+          it->second.is_set = true;
+        continue;
+        continue;
+      }
+    }
+
+    cerr << "Invalid option: " << argument << endl;
   }
 }
 
-template<typename Type>
-Type getOption( const string & name, const map<string,Type> & container )
-{
-  typename map<string,Type>::const_iterator it = container.find(name);
-  if (it != container.end())
-    return it->second;
-  else
-    return Type();
-}
-
-bool
-CommandLineOptions::getBoolOption(const std::string & lname) const
-{
-  return getOption("--" + lname, boolOptions_);
-}
-
-mrs_natural
-CommandLineOptions::getNaturalOption(const std::string & lname) const
-{
-  return getOption("--" + lname, naturalOptions_);
-}
-
-mrs_real
-CommandLineOptions::getRealOption(const std::string & lname) const
-{
-  return getOption("--" + lname, realOptions_);
-}
-
-string
-CommandLineOptions::getStringOption(const std::string & lname) const
-{
-  return getOption("--" + lname, stringOptions_);
-}
-
-const std::vector<std::string> &
-CommandLineOptions::getRemaining() const
-{
-  return remaining_;
-}
+} // namespace Marsyas

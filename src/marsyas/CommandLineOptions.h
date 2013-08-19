@@ -30,6 +30,7 @@
 
 namespace Marsyas
 {
+
 /**
 \ingroup Notmar
 \brief Utility for handling program options
@@ -37,37 +38,109 @@ namespace Marsyas
 
 class marsyas_EXPORT CommandLineOptions
 {
-protected:
-  std::vector<std::string> arguments_;
-  std::vector<std::string> remaining_;
+private:
 
+  template <typename T>
+  struct Option
+  {
+    T default_value;
+    T value;
+    bool is_set;
+  };
 
-  std::map<std::string, mrs_real> realOptions_;
-  std::map<std::string, mrs_natural> naturalOptions_;
-  std::map<std::string, std::string> stringOptions_;
-  std::map<std::string, bool> boolOptions_;
-  std::map<std::string, std::string> longNames_;
+  std::vector<std::string> m_arguments;
+  std::vector<std::string> m_remaining;
 
-  std::map<std::string, std::string>::iterator nameIter_;
-  std::map<std::string, mrs_real>::iterator riter_;
-  std::map<std::string, mrs_natural>::iterator niter_;
-  std::map<std::string, std::string>::iterator siter_;
-  std::map<std::string, bool>::iterator biter_;
+  std::map<std::string, std::string> m_long_names;
+  std::map<std::string, Option<bool> > m_bool_options;
+  std::map<std::string, Option<mrs_real> > m_real_options;
+  std::map<std::string, Option<mrs_natural> > m_natural_options;
+  std::map<std::string, Option<std::string> > m_string_options;
+
+  template <typename T>
+  void addOption(const std::string & long_name,
+                 const std::string & short_name,
+                 const T & value,
+                 std::map<std::string, Option<T> > & option_map );
+
+  template <typename T>
+  bool isOptionSet( const std::string & long_name,
+                    const std::map<std::string, Option<T> > & option_map ) const;
+
+  template<typename T>
+  T getOption( const std::string & long_name,
+               const std::map<std::string, Option<T> > & option_map ) const;
+
+  template<typename T>
+  bool getOptionValue( std::vector<std::string>::const_iterator arg,
+                       T & value );
 
 public:
   CommandLineOptions();
-  void addRealOption(std::string lname, std::string sname, mrs_real value);
-  void addNaturalOption(std::string lname, std::string sname, mrs_natural value);
-  void addStringOption(std::string lname, std::string sname, std::string value);
-  void addBoolOption(std::string lname, std::string sname, bool value);
 
   void readOptions(int argc, const char** argv);
+
+  void addBoolOption(const std::string & lname, const std::string & sname,
+                     bool value = false);
+  void addRealOption(const std::string & lname, const std::string & sname,
+                     mrs_real value);
+  void addNaturalOption(const std::string & lname, const std::string & sname,
+                        mrs_natural value);
+  void addStringOption(const std::string & lname, const std::string & sname,
+                       const std::string & value);
+
+  bool isBoolOptionSet(const std::string & long_name) const;
+  bool isRealOptionSet(const std::string & long_name) const;
+  bool isNaturalOptionSet(const std::string & long_name) const;
+  bool isStringOptionSet(const std::string & long_name) const;
+
   bool getBoolOption(const std::string & lname) const;
   mrs_natural getNaturalOption(const std::string & lname) const;
   mrs_real getRealOption(const std::string & lname) const;
   std::string getStringOption(const std::string & lname) const;
   const std::vector<std::string> & getRemaining() const;
 };
+
+template <>
+struct CommandLineOptions::Option<bool>
+{
+  bool is_set;
+};
+
+template <typename T>
+void CommandLineOptions::addOption
+(const std::string & long_name, const std::string & short_name,
+ const T & value, std::map<std::string, Option<T> > & option_map )
+{
+  option_map[long_name].value = value;
+  m_long_names[short_name] = long_name;
+}
+
+template <typename T>
+bool CommandLineOptions::isOptionSet
+( const std::string & long_name, const std::map<std::string, Option<T> > & option_map ) const
+{
+  typename std::map<std::string, Option<T> >::const_iterator it;
+  it = option_map.find(long_name);
+  return (it != option_map.end() && it->second.is_set);
+}
+
+template<typename T>
+T CommandLineOptions::getOption
+( const std::string & long_name, const std::map<std::string, Option<T> > & option_map ) const
+{
+  typename std::map<std::string, Option<T> >::const_iterator it;
+  it = option_map.find(long_name);
+  if (it != option_map.end())
+  {
+    const Option<T> & option = it->second;
+    return option.is_set ? option.value : option.default_value;
+  }
+  else
+  {
+    return T();
+  }
+}
 
 }//namespace Marsyas
 
