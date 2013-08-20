@@ -46,7 +46,7 @@ void print_usage()
   cout << "Usage: marsyas-debug <system-file> [-r <recording-file>] [-c <reference-file>] [-t <tick-count>] [-b]" << endl;
 }
 
-void print_help()
+void print_help(const CommandLineOptions & opt)
 {
   static const unsigned int opt_width = 20;
 
@@ -58,44 +58,32 @@ void print_help()
   cout << endl;
 
   cout << "Options:" << endl;
-  cout << left
-       << setw(opt_width) << "-u  --usage"
-       << " : Display short usage info." << endl
-       << setw(opt_width) << "-h  --help"
-       << " : Display this information." << endl
-       << setw(opt_width) << "-r --record <file>"
-       << " : Record to <file>." << endl
-       << setw(opt_width) << "-c --compare <file>"
-       << " : Compare to recording in <file>." << endl
-       << setw(opt_width) << "-N --count <number>"
-       << " : Perform <number> amount of ticks."
-          " If --compare is not set, defaults to 1. Otherwise defaults to"
-          " as many ticks as recorded in the comparison file." << endl
-       << setw(opt_width) << "-b --bugs-only"
-       << " : only report bugs" << endl;
+  opt.print();
 }
 
 int main (int argc, const char *argv[])
 {
   CommandLineOptions opt;
-  opt.addStringOption("record", "r", "");
-  opt.addStringOption("compare", "c", "");
-  opt.addNaturalOption("count", "N", -1);
-  opt.addBoolOption("bugs-only", "b", false);
-  opt.addBoolOption("help", "h", false);
-  opt.addBoolOption("usage", "u", false);
-
+  opt.define<std::string>("record", 'r', "<file>", "Record to <file>." );
+  opt.define<std::string>("compare", 'c', "<file>", "Compare to recording in <file>." );
+  opt.define<int>("count", 'N', "<number>",
+                  "Perform <number> amount of ticks."
+                  " If --compare is not set, defaults to 1. Otherwise defaults to"
+                  " as many ticks as recorded in the comparison file.");
+  opt.define<bool>("bugs-only", 'b', "", "Only report bugs.");
+  opt.define<bool>("help", 'h', "", "Display this information." );
+  opt.define<bool>("usage", 'u', "",  "Display short usage instruction." );
 
   if (!opt.readOptions(argc, argv))
     return 1;
 
-  if (opt.getBoolOption("help"))
+  if (opt.value<bool>("help"))
   {
-    print_help();
+    print_help(opt);
     return 0;
   }
 
-  if (opt.getBoolOption("usage"))
+  if (opt.value<bool>("usage"))
   {
     print_usage();
     return 0;
@@ -110,13 +98,13 @@ int main (int argc, const char *argv[])
   }
 
   std::string system_filename = arguments[0];
-  std::string record_filename = opt.getStringOption("record");
-  std::string compare_filename = opt.getStringOption("compare");
+  std::string record_filename = opt.value<string>("record");
+  std::string compare_filename = opt.value<string>("compare");
 
   int ticks_remaining;
-  if (opt.isNaturalOptionSet("count"))
+  if (opt.has("count"))
   {
-    ticks_remaining = (int) opt.getNaturalOption("count");
+    ticks_remaining = opt.value<int>("count");
     if (ticks_remaining < 1)
     {
       cerr << "Invalid value for 'count' option (must be >= 1): "
@@ -129,7 +117,7 @@ int main (int argc, const char *argv[])
     ticks_remaining = compare_filename.empty() ? 1 : -1;
   }
 
-  bool bugs_only = opt.getBoolOption("bugs-only");
+  bool bugs_only = opt.value<bool>("bugs-only");
 
   cout << "Using system file: " << system_filename << endl;
   if (!record_filename.empty())
