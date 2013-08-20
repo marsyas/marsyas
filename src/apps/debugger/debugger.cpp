@@ -149,14 +149,32 @@ int main (int argc, const char *argv[])
     return 1;
   }
 
-  Debug::Recorder recorder(system);
   Debug::FileReader *reader = 0;
   Debug::FileWriter *writer = 0;
 
   if (!compare_filename.empty())
+  {
     reader = new Debug::FileReader(compare_filename);
+    if (!reader->isOpen())
+    {
+      cerr << "Failed to open comparsion file for reading: "
+           << compare_filename << endl;
+      return 1;
+    }
+  }
+
   if (!record_filename.empty())
+  {
     writer = new Debug::FileWriter(record_filename, system);
+    if (!writer->isOpen())
+    {
+      cerr << "Failed to open recording file for writing: "
+           << record_filename << endl;
+      return 1;
+    }
+  }
+
+  Debug::Recorder recorder(system);
 
   int result = 0;
   int tick_count = 0;
