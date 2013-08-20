@@ -9,10 +9,16 @@
 using namespace Marsyas;
 using namespace std;
 
-int printUsage()
+static void print_usage()
 {
     cout << "Usage: marsyas-run <plugin-file> [options]" << endl;
-    return 0;
+}
+
+static void print_help( const CommandLineOptions & opt )
+{
+  print_usage();
+  cout << "Options:" << endl;
+  opt.print();
 }
 
 int run( const string system_filename, const CommandLineOptions & opt );
@@ -20,16 +26,34 @@ int run( const string system_filename, const CommandLineOptions & opt );
 int main( int argc, const char *argv[] )
 {
     CommandLineOptions opt;
-    opt.addBoolOption("realtime", "r", false);
-    opt.addBoolOption("finite", "f", false);
-    opt.addNaturalOption("count", "N", 0);
-    opt.addRealOption("samplerate", "s", 0);
-    opt.addNaturalOption("block", "b", 0);
-    opt.readOptions(argc, argv);
+    opt.define<bool>("usage", 'u', "", "Print usage.");
+    opt.define<bool>("help", 'h', "", "Print usage and options.");
+    opt.define<bool>("realtime", 'r', "", "Use real-time thread priority.");
+    opt.define<int>("count", 'N', "<number>", "Perform <number> amount of ticks.");
+    opt.define<mrs_real>("samplerate", 's', "<number>", "Override sampling rate.");
+    opt.define<mrs_natural>("block", 'b', "<samples>", "Block size in samples.");
+
+    if (!opt.readOptions(argc, argv))
+      return 1;
+
+    if (opt.value<bool>("usage"))
+    {
+      print_usage();
+      return 0;
+    }
+
+    if (opt.value<bool>("help"))
+    {
+      print_help(opt);
+      return 0;
+    }
 
     const vector<string> & arguments = opt.getRemaining();
     if (arguments.size() < 1)
-        return printUsage();
+    {
+        print_usage();
+        return 0;
+    }
 
     string system_filename = arguments[0];
 
@@ -38,6 +62,17 @@ int main( int argc, const char *argv[] )
 
 int run( const string system_filename, const CommandLineOptions & opt )
 {
+    int ticks = 0;
+    if (opt.has("count"))
+    {
+      ticks = opt.value<int>("count");
+      if (ticks < 1)
+      {
+        cerr << "Invalid value for option 'count' (must be > 0)." << endl;
+        return 1;
+      }
+    }
+
     ifstream system_istream(system_filename);
     MarSystemManager mng;
     MarSystem* system = mng.getMarSystem(system_istream);
@@ -46,11 +81,9 @@ int run( const string system_filename, const CommandLineOptions & opt )
         return 1;
     }
 
-    bool realtime = opt.getBoolOption("realtime");
-    unsigned int ticks = std::max((mrs_natural)0, opt.getNaturalOption("count"));
-    //bool finite = opt.getBoolOption("finite");
-    mrs_real sr = opt.getRealOption("samplerate");
-    mrs_natural block = opt.getNaturalOption("block");
+    bool realtime = opt.value<bool>("realtime");
+    mrs_real sr = opt.value<mrs_real>("samplerate");
+    mrs_natural block = opt.value<mrs_natural>("block");
 
     if (sr > 0)
       system->setControl("mrs_real/israte", sr);
@@ -61,7 +94,7 @@ int run( const string system_filename, const CommandLineOptions & opt )
     RealTime::Runner runner(system);
     runner.setRtPriorityEnabled(realtime);
 
-    runner.start(ticks);
+    runner.start((unsigned int)ticks);
     runner.wait();
 
     return 0;
