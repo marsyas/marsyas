@@ -26,7 +26,7 @@
 #include <string>
 #include <map>
 #include <iostream>
-#include <cstdlib>
+#include <typeinfo>
 
 namespace Marsyas
 {
@@ -40,111 +40,186 @@ class marsyas_EXPORT CommandLineOptions
 {
 private:
 
-  template <typename T>
   struct Option
   {
+    Option(): is_set(false) {}
+    virtual ~Option() {}
+    virtual bool parse_value( std::istringstream & argument ) = 0;
+    bool is_set;
+    std::string short_name;
+    std::string value_name;
+    std::string description;
+  };
+
+  template <typename T>
+  struct OptionT : public Option
+  {
+    OptionT( const T & default_value ):
+      default_value(default_value),
+      value()
+    {}
+    bool parse_value( std::istringstream & argument )
+    {
+      argument >> value;
+      bool ok = !argument.fail();
+      if (ok)
+        is_set = true;
+      return ok;
+    }
     T default_value;
     T value;
-    bool is_set;
   };
+
+  template <typename T> OptionT<T> * option_cast(Option *option) const
+  {
+    if (typeid(*option) == typeid(OptionT<T>))
+      return static_cast<OptionT<T>*>(option);
+    else
+      return 0;
+  }
 
   std::vector<std::string> m_arguments;
   std::vector<std::string> m_remaining;
 
   std::map<std::string, std::string> m_long_names;
-  std::map<std::string, Option<bool> > m_bool_options;
-  std::map<std::string, Option<mrs_real> > m_real_options;
-  std::map<std::string, Option<mrs_natural> > m_natural_options;
-  std::map<std::string, Option<std::string> > m_string_options;
+  std::map<std::string, Option *> m_options;
 
   template <typename T>
-  void addOption(const std::string & long_name,
-                 const std::string & short_name,
-                 const T & value,
-                 std::map<std::string, Option<T> > & option_map );
-
-  template <typename T>
-  bool isOptionSet( const std::string & long_name,
-                    const std::map<std::string, Option<T> > & option_map ) const;
-
-  template<typename T>
-  T getOption( const std::string & long_name,
-               const std::map<std::string, Option<T> > & option_map ) const;
-
-  template<typename T>
-  bool getOptionValue( std::vector<std::string>::const_iterator arg,
-                       T & value );
+  void define_private(const std::string & long_name,
+                      const std::string & short_name,
+                      const std::string & value_name,
+                      const std::string & description,
+                      const T & default_value = T())
+  {
+    Option *option = new OptionT<T>(default_value);
+    option->short_name = short_name;
+    option->value_name = value_name;
+    option->description = description;
+    m_options[long_name] = option;
+    if (!short_name.empty())
+      m_long_names[short_name] = long_name;
+  }
 
 public:
   CommandLineOptions();
+  virtual ~CommandLineOptions();
+
+  void print() const;
 
   bool readOptions(int argc, const char** argv);
 
-  void addBoolOption(const std::string & lname, const std::string & sname,
-                     bool value = false);
-  void addRealOption(const std::string & lname, const std::string & sname,
-                     mrs_real value);
-  void addNaturalOption(const std::string & lname, const std::string & sname,
-                        mrs_natural value);
-  void addStringOption(const std::string & lname, const std::string & sname,
-                       const std::string & value);
+  template <typename T>
+  void define(const std::string & long_name,
+              char short_name,
+              const std::string & value_name,
+              const std::string & description,
+              const T & default_value = T())
+  {
+    define_private(long_name,
+                   std::string(1, short_name),
+                   value_name,
+                   description,
+                   default_value);
+  }
 
-  bool isBoolOptionSet(const std::string & long_name) const;
-  bool isRealOptionSet(const std::string & long_name) const;
-  bool isNaturalOptionSet(const std::string & long_name) const;
-  bool isStringOptionSet(const std::string & long_name) const;
+  template <typename T>
+  void define(const std::string & long_name,
+              const std::string & value_name,
+              const std::string & description,
+              const T & default_value = T())
+  {
+    define_private(long_name,
+                   std::string(),
+                   value_name,
+                   description,
+                   default_value);
+  }
 
-  bool getBoolOption(const std::string & lname) const;
-  mrs_natural getNaturalOption(const std::string & lname) const;
-  mrs_real getRealOption(const std::string & lname) const;
-  std::string getStringOption(const std::string & lname) const;
-  const std::vector<std::string> & getRemaining() const;
+  bool has( const std::string & long_name ) const
+  {
+    std::map<std::string, Option*>::const_iterator it = m_options.find(long_name);
+    return (it != m_options.end() && (it->second->is_set));
+  }
+
+  template<typename T>
+  T value( const std::string & long_name ) const
+  {
+    std::map<std::string, Option*>::const_iterator it = m_options.find(long_name);
+    if (it == m_options.end())
+      return T();
+    OptionT<T> *typed_option = option_cast<T>(it->second);
+    if (!typed_option)
+      return T();
+    return typed_option->is_set ? typed_option->value : typed_option->default_value;
+  }
+
+  void addBoolOption(const std::string & long_name,
+                     const std::string & short_name,
+                     bool value = false)
+  {
+    define_private(long_name, short_name, "", "", value);
+  }
+
+  void addRealOption(const std::string & long_name,
+                     const std::string & short_name,
+                     mrs_real value)
+  {
+    define_private(long_name, short_name, "", "", value);
+  }
+
+  void addNaturalOption(const std::string & long_name,
+                        const std::string & short_name,
+                        mrs_natural value)
+  {
+    define_private(long_name, short_name, "", "", value);
+  }
+
+  void addStringOption(const std::string & long_name,
+                       const std::string & short_name,
+                       const std::string & value)
+  {
+    define_private(long_name, short_name, "", "", value);
+  }
+
+  bool getBoolOption(const std::string & long_name) const
+  {
+    return has(long_name);
+  }
+
+  mrs_natural getNaturalOption(const std::string & long_name) const
+  {
+    return value<mrs_natural>(long_name);
+  }
+
+  mrs_real getRealOption(const std::string & long_name) const
+  {
+    return value<mrs_real>(long_name);
+  }
+
+  std::string getStringOption(const std::string & long_name) const
+  {
+    return value<std::string>(long_name);
+  }
+
+  const std::vector<std::string> & getRemaining() const
+  {
+    return m_remaining;
+  }
 };
 
 template <>
-struct CommandLineOptions::Option<bool>
+struct CommandLineOptions::OptionT<bool> : public CommandLineOptions::Option
 {
-  bool is_set;
+  OptionT(bool set) { is_set = set; }
+  bool parse_value( std::istringstream& ) { return false; }
 };
 
-template <typename T>
-void CommandLineOptions::addOption
-(const std::string & long_name, const std::string & short_name,
- const T & value, std::map<std::string, Option<T> > & option_map )
+template <>
+bool CommandLineOptions::value<bool>( const std::string & long_name ) const
 {
-  option_map[long_name].value = value;
-  m_long_names[short_name] = long_name;
+  return has(long_name);
 }
 
-template <typename T>
-bool CommandLineOptions::isOptionSet
-( const std::string & long_name, const std::map<std::string, Option<T> > & option_map ) const
-{
-  typename std::map<std::string, Option<T> >::const_iterator it;
-  it = option_map.find(long_name);
-  return (it != option_map.end() && it->second.is_set);
-}
-
-template<typename T>
-T CommandLineOptions::getOption
-( const std::string & long_name, const std::map<std::string, Option<T> > & option_map ) const
-{
-  typename std::map<std::string, Option<T> >::const_iterator it;
-  it = option_map.find(long_name);
-  if (it != option_map.end())
-  {
-    const Option<T> & option = it->second;
-    return option.is_set ? option.value : option.default_value;
-  }
-  else
-  {
-    return T();
-  }
-}
-
-}//namespace Marsyas
+} //namespace Marsyas
 
 #endif
-
-
-
