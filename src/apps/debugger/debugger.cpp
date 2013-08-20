@@ -60,15 +60,17 @@ void print_help()
   cout << "Options:" << endl;
   cout << left
        << setw(opt_width) << "-u  --usage"
-       << " : display short usage info" << endl
+       << " : Display short usage info." << endl
        << setw(opt_width) << "-h  --help"
-       << " : display this information" << endl
+       << " : Display this information." << endl
        << setw(opt_width) << "-r --record <file>"
-       << " : record to <file>" << endl
+       << " : Record to <file>." << endl
        << setw(opt_width) << "-c --compare <file>"
-       << " : compare to recording in <file>" << endl
+       << " : Compare to recording in <file>." << endl
        << setw(opt_width) << "-N --count <number>"
-       << " : perform <number> amount of ticks" << endl
+       << " : Perform <number> amount of ticks."
+          " If --compare is not set, defaults to 1. Otherwise defaults to"
+          " as many ticks as recorded in the comparison file." << endl
        << setw(opt_width) << "-b --bugs-only"
        << " : only report bugs" << endl;
 }
@@ -82,7 +84,10 @@ int main (int argc, const char *argv[])
   opt.addBoolOption("bugs-only", "b", false);
   opt.addBoolOption("help", "h", false);
   opt.addBoolOption("usage", "u", false);
-  opt.readOptions(argc, argv);
+
+
+  if (!opt.readOptions(argc, argv))
+    return 1;
 
   if (opt.getBoolOption("help"))
   {
@@ -99,7 +104,7 @@ int main (int argc, const char *argv[])
   const std::vector<std::string> & arguments = opt.getRemaining();
   if (!arguments.size())
   {
-    cout << "Missing system file." << endl;
+    cerr << "Missing system file." << endl;
     print_usage();
     return 1;
   }
@@ -108,11 +113,33 @@ int main (int argc, const char *argv[])
   std::string record_filename = opt.getStringOption("record");
   std::string compare_filename = opt.getStringOption("compare");
 
+  int ticks_remaining;
+  if (opt.isNaturalOptionSet("count"))
+  {
+    ticks_remaining = (int) opt.getNaturalOption("count");
+    if (ticks_remaining < 1)
+    {
+      cerr << "Invalid value for 'count' option (must be >= 1): "
+           << ticks_remaining << endl;
+      return 1;
+    }
+  }
+  else
+  {
+    ticks_remaining = compare_filename.empty() ? 1 : -1;
+  }
+
+  bool bugs_only = opt.getBoolOption("bugs-only");
+
   cout << "Using system file: " << system_filename << endl;
   if (!record_filename.empty())
     cout << "Recording to file: " << record_filename << endl;
   if (!compare_filename.empty())
-    cout << "Comparing with file: " << compare_filename << endl;
+    cout << "Comparing with reference file: " << compare_filename << endl;
+  if (ticks_remaining > 0)
+    cout << "Performing " << ticks_remaining << " ticks..." << endl;
+  else
+    cout << "Performing as many ticks as needed for comparison..." << endl;
 
   MarSystemManager mng;
   ifstream system_file_stream( system_filename );
@@ -131,21 +158,10 @@ int main (int argc, const char *argv[])
   if (!record_filename.empty())
     writer = new Debug::FileWriter(record_filename, system);
 
-  int ticks_remaining = (int) opt.getNaturalOption("count");
-  if (ticks_remaining < 1)
-  {
-    if (reader)
-      ticks_remaining = -1;
-    else
-      ticks_remaining = 1;
-  }
-
-  bool bugs_only = opt.getBoolOption("bugs-only");
-
   int result = 0;
   int tick_count = 0;
 
-  while(ticks_remaining)
+  while(ticks_remaining != 0)
   {
     Debug::Record reference_record;
     bool have_reference = reader && reader->read(reference_record);
