@@ -5,8 +5,9 @@
 #include <QTimer>
 
 // Marsyas
-#include "MarSystemManager.h"
-#include "MarSystemQtWrapper.h"
+
+#include <marsyasqt/marsystem_wrapper.h>
+
 using namespace MarsyasQt;
 using namespace Marsyas;
 
@@ -22,13 +23,18 @@ class GLWidget : public QGLWidget
   Q_OBJECT
 
 public:
-  GLWidget(string inAudioFileName,QWidget *parent = 0);
+  GLWidget(const QString & inAudioFileName, QWidget *parent = 0);
   ~GLWidget();
 
   QSize minimumSizeHint() const;
   QSize sizeHint() const;
 
 public slots:
+  void open(); // Open a new audio file
+  void play( const QString &fileName );
+  void playInput();
+  void playPause(); // Play or pause the playback of the song
+
   void setXRotation(int angle);
   void setYRotation(int angle);
   void setZRotation(int angle);
@@ -62,8 +68,6 @@ signals:
 private slots:
 //   void startTimerRotate();                // Start the animation timer
 //   void doTimerRotate();                   // Do one time step of the animation timer
-  void playPause(); // Play or pause the playback of the song
-  void open(); // Open a new audio file
 
 protected:
   void initializeGL();                    // Initialize the GL window
@@ -95,7 +99,7 @@ private:
   int rotation_speed;
 
   // A timer to make the animation happen
-  QTimer *timer;
+  QTimer m_updateTimer;
 
   // The current tick of the animation
   int timerCount;
@@ -109,9 +113,19 @@ private:
   void addDataToRingBuffer();
 
   // Marsyas
-  MarSystemManager mng;
-  MarSystemQtWrapper*  mwr_;
-  MarSystem* pnet_;
+  MarSystem* m_marsystem;
+  MarsyasQt::System *m_system;
+  MarsyasQt::Control *m_fileNameControl;
+  MarsyasQt::Control *m_initAudioControl;
+  MarsyasQt::Control *m_posControl;
+  MarsyasQt::Control *m_spectrumTypeControl;
+  MarsyasQt::Control *m_inputEnableControl;
+  MarsyasQt::Control *m_inputDisableControl;
+
+  MarsyasQt::Control *m_statsSource;
+  MarsyasQt::Control *m_waveformSource;
+  MarsyasQt::Control *m_spectrumSource;
+
 
   // A ring buffer that holds our data
   double **spectrum_ring_buffer;
@@ -137,10 +151,6 @@ private:
   float stats_rms;
 
   void setAudioStats();
-
-  MarControlPtr posPtr_;
-  MarControlPtr initPtr_;
-  MarControlPtr fnamePtr_;
 };
 
 #endif

@@ -1,3 +1,8 @@
+#include "glwidget.h"
+
+// Marsyas
+#include <marsyas/core/MarSystemManager.h>
+
 #include <QtGui>
 #include <QtOpenGL>
 #include <QTimer>
@@ -7,14 +12,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-using namespace std;
-
-// Marsyas
-#include "MarSystemManager.h"
-#include "MarSystemQtWrapper.h"
-using namespace MarsyasQt;
-
-#include "glwidget.h"
 
 #ifdef MARSYAS_MACOSX
 #  include <OpenGL/glu.h>
@@ -22,7 +19,9 @@ using namespace MarsyasQt;
 #  include <GL/glu.h>
 #endif
 
-GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
+using namespace std;
+
+GLWidget::GLWidget(const QString & inAudioFileName, QWidget *parent)
   : QGLWidget(parent)
 {
   // Initialize member variables
@@ -65,20 +64,10 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   MarSystem* inputfanout = mng.create("Fanout", "inputfanout");
   net->addMarSystem(inputfanout);
 
-  inputfanout->addMarSystem(mng.create("SoundFileSource", "src"));
   inputfanout->addMarSystem(mng.create("AudioSource", "src"));
+  inputfanout->addMarSystem(mng.create("SoundFileSource", "src"));
 
   net->addMarSystem(mng.create("Selector", "inputselector"));
-
-  if (inAudioFileName == "") {
-    net->updctrl("Selector/inputselector/mrs_natural/enable", 0);
-    net->updctrl("Selector/inputselector/mrs_natural/enable", 1);
-    cout << "input from AudioSource" << endl;
-  } else {
-    net->updctrl("Selector/inputselector/mrs_natural/enable", 1);
-    net->updctrl("Selector/inputselector/mrs_natural/enable", 0);
-    cout << "input from SoundFileSource" << endl;
-  }
 
   // Add the AudioSink right after we've selected the input and
   // before we've calculated any features.  Nice trick.
@@ -99,45 +88,88 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
 
   // Set the controls of this MarSystem
 
-  net->updctrl("Fanout/inputfanout/SoundFileSource/src/mrs_real/repetitions",-1.0);
+  net->updControl("Fanout/inputfanout/SoundFileSource/src/mrs_real/repetitions",-1.0);
+  net->updControl("mrs_real/israte", 44100.0);
+  inputfanout->updControl("AudioSource/src/mrs_bool/initAudio", true);
 
-  if (inAudioFileName == "") {
-    net->updctrl("mrs_real/israte", 44100.0);
-    inputfanout->updctrl("AudioSource/src/mrs_bool/initAudio", true);
-  } else {
-    net->updctrl("Fanout/inputfanout/SoundFileSource/src/mrs_string/filename",inAudioFileName);
-    net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  if (inAudioFileName.isEmpty())
+  {
+    cout << "input from AudioSource" << endl;
   }
 
-  // Create and start playing the MarSystemQtWrapper that wraps
-  // Marsyas in a Qt thread
-  mwr_ = new MarSystemQtWrapper(net);
-  mwr_->start();
+  m_marsystem = net;
+  m_system = new MarsyasQt::System(net);
 
-  if (inAudioFileName == "") {
-    mwr_->play();
-    play_state = true;
-  } else {
-    play_state = false;
-  }
+  m_fileNameControl = m_system->control("Fanout/inputfanout/SoundFileSource/src/mrs_string/filename");
+  m_initAudioControl = m_system->control("AudioSink/dest/mrs_bool/initAudio");
+  m_posControl = m_system->control("Fanout/inputfanout/SoundFileSource/src/mrs_natural/pos");
+  m_spectrumTypeControl = m_system->control("PowerSpectrum/pspk/mrs_string/spectrumType");
+  m_inputEnableControl = m_system->control("Selector/inputselector/mrs_natural/enable");
+  m_inputDisableControl = m_system->control("Selector/inputselector/mrs_natural/disable");
 
-  // Create some handy pointers to access the MarSystem
-  posPtr_ = mwr_->getctrl("Fanout/inputfanout/SoundFileSource/src/mrs_natural/pos");
-  initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
-  fnamePtr_ = mwr_->getctrl("Fanout/inputfanout/SoundFileSource/src/mrs_string/filename");
+  m_statsSource = m_system->control("mrs_realvec/processedData");
+  m_waveformSource = m_system->control("Windowing/ham/mrs_realvec/processedData");
+  m_spectrumSource = m_system->control("PowerSpectrum/pspk/mrs_realvec/processedData");
 
-  //
-  // Create the animation timer that periodically redraws the screen
-  //
-  QTimer *timer = new QTimer( this );
-  connect( timer, SIGNAL(timeout()), this, SLOT(animate()) );
-  timer->start(10); // Redraw the screen every 10ms
+  // Connect the animation timer that periodically redraws the screen.
+  // It is activated in the 'play()' function.
+  connect( &m_updateTimer, SIGNAL(timeout()), this, SLOT(animate()) );
 
+  // Run:
+  if (inAudioFileName.isEmpty())
+    playInput();
+  else
+    play(inAudioFileName);
 }
 
 GLWidget::~GLWidget()
 {
   makeCurrent();
+}
+
+void GLWidget::open()
+{
+  QString fileName = QFileDialog::getOpenFileName(this);
+  play(fileName);
+}
+
+void GLWidget::playInput()
+{
+  m_inputDisableControl->setValue(1);
+  m_inputEnableControl->setValue(0);
+
+  m_system->start();
+  m_updateTimer.start(20);
+}
+
+void GLWidget::play( const QString & fileName )
+{
+  if (fileName.isEmpty())
+    return;
+
+  static const bool NO_UPDATE = false;
+  m_fileNameControl->setValue(fileName, NO_UPDATE);
+  m_initAudioControl->setValue(true, NO_UPDATE);
+  m_inputDisableControl->setValue(0, NO_UPDATE);
+  m_inputEnableControl->setValue(1, NO_UPDATE);
+  m_system->update();
+
+  m_system->start();
+  m_updateTimer.start(20);
+}
+
+void GLWidget::playPause()
+{
+  if (m_system->isRunning())
+  {
+    m_system->stop();
+    m_updateTimer.stop();
+  }
+  else
+  {
+    m_system->start();
+    m_updateTimer.start(20);
+  }
 }
 
 // The minimum size of the widget
@@ -209,18 +241,17 @@ void GLWidget::paintGL()
 
 }
 
-void GLWidget::animate() {
-  //    cout << "animate" << endl;
-  emit updateGL();
-  if (play_state) {
-    addDataToRingBuffer();
-    setWaveformData();
-    setAudioStats();
-  }
+void GLWidget::animate()
+{
+  addDataToRingBuffer();
+  setWaveformData();
+  setAudioStats();
+  updateGL();
 }
 
-void GLWidget::setAudioStats() {
-  mrs_realvec data = mwr_->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+void GLWidget::setAudioStats()
+{
+  mrs_realvec data = m_statsSource->value().value<realvec>();
 
   stats_centroid = data(0,0);
   stats_rolloff = data(1,0);
@@ -229,13 +260,15 @@ void GLWidget::setAudioStats() {
 }
 
 // Read in the waveform data from the waveformnet MarSystem
-void GLWidget::setWaveformData() {
-  waveform_data = mwr_->getctrl("Windowing/ham/mrs_realvec/processedData")->to<mrs_realvec>();
+void GLWidget::setWaveformData()
+{
+  waveform_data = m_waveformSource->value().value<realvec>();
 }
 
 // Read in a line of data from the spectrumnet MarSystem
-void GLWidget::addDataToRingBuffer() {
-  mrs_realvec data = mwr_->getctrl("PowerSpectrum/pspk/mrs_realvec/processedData")->to<mrs_realvec>();
+void GLWidget::addDataToRingBuffer()
+{
+  mrs_realvec data = m_spectrumSource->value().value<realvec>();
 
   for (int i = 0; i < SPECTRUM_SIZE; i++) {
     spectrum_ring_buffer[ring_buffer_pos][i] = data(i,0);
@@ -388,35 +421,10 @@ void GLWidget::powerSpectrumModeChanged(int val)
     sval = "powerdensity";
   }
 
-  mwr_->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType",sval);
-
+  m_spectrumTypeControl->setValue( QString::fromStdString(sval) );
 }
 
 void GLWidget::setWaterfallVisible(bool val)
 {
   cout << "GLWidget::setWaterfallVisible val=" << val << endl;
-}
-
-void GLWidget::playPause()
-{
-  play_state = !play_state;
-
-  if (play_state == true) {
-    mwr_->play();
-  } else {
-    mwr_->pause();
-  }
-}
-
-
-void GLWidget::open()
-{
-  QString fileName = QFileDialog::getOpenFileName(this);
-
-  mwr_->updctrl(fnamePtr_, fileName.toStdString());
-  mwr_->updctrl(initPtr_, true);
-
-  mwr_->play();
-  play_state = true;
-
 }

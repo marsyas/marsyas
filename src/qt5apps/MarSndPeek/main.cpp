@@ -31,11 +31,15 @@ void usage()
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
-  string inAudioFileName = "";
-  if (argc > 1) {
-    inAudioFileName = argv[1];
-  }
+
+  QStringList arguments = app.arguments();
+
+  QString inAudioFileName;
+  if (arguments.count() > 1)
+    inAudioFileName = arguments[1];
+
   Window window(inAudioFileName);
   window.show();
+
   return app.exec();
 }

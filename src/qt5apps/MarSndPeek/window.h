@@ -1,9 +1,8 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <QMainWindow>
 #include <QWidget>
-#include <QLCDNumber>
+#include <QMainWindow>
 #include <QSlider>
 #include <QPushButton>
 #include <QLabel>
@@ -21,7 +20,7 @@ public slots:
   void about();
 
 public:
-  Window(string inAudioFileName);
+  Window(const QString & inAudioFileName);
 
   QSize minimumSizeHint() const;
   QSize sizeHint() const;

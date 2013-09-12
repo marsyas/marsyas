@@ -1,10 +1,14 @@
-#include <QtGui>
-#include <QLCDNumber>
-
-#include "glwidget.h"
 #include "window.h"
+#include "glwidget.h"
 
-Window::Window(string inAudioFileName)
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QMessageBox>
+#include <QAction>
+#include <QMenu>
+#include <QMenuBar>
+
+Window::Window(const QString & inAudioFileName)
 {
 
   mainWidget = new QWidget();

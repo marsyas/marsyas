@@ -42,7 +42,6 @@ add_subdirectory(Marx2DGraph)
 add_subdirectory(Marx2DStackedGraphs)
 
 if (MARSYAS_OPENGL)
-	add_subdirectory(MarSndPeek)
 	add_subdirectory(MarCorrelogram)
 endif (MARSYAS_OPENGL)
 
