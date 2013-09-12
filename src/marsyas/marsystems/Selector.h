@@ -53,9 +53,6 @@ private:
   void addControls();
   void myUpdate(MarControlPtr sender);
 
-  mrs_natural enable_;
-  mrs_natural disable_;
-
   MarControlPtr ctrl_enabled_;
 
 public:

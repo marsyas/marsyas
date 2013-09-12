@@ -71,36 +71,33 @@ Selector::myUpdate(MarControlPtr sender)
   // If the enabled realvec has not been created, create it now.
   // Enable all observations by default.
   //
-  if ((mrs_natural)enabled.getSize() < inObservations_)
   {
-    enabled.create(inObservations_);
-    enabled.setval(1.0);
+    mrs_natural current_size = enabled.getSize();
+    if (current_size != inObservations_)
+    {
+      if (current_size < inObservations_)
+        enabled.create(inObservations_);
+      enabled.setval(1.0);
+    }
   }
 
   //
   // Disable any observations that the user asks to be disabled
   //
-  disable_ = getctrl("mrs_natural/disable")->to<mrs_natural>();
-  if (disable_ != -1 && disable_ < inObservations_)
-  {
-    enabled(disable_) = 0.0;
-    setctrl("mrs_natural/disable", -1);
+  mrs_natural input_to_disable = getctrl("mrs_natural/disable")->to<mrs_natural>();
+  if (input_to_disable != -1 && input_to_disable < inObservations_) {
+    enabled(input_to_disable) = 0.0;
   }
-  else
-    setctrl("mrs_natural/disable", -1);
-
+  setctrl("mrs_natural/disable", -1);
 
   //
   // Enable any observations that the user asks to be disabled
   //
-  enable_ = getctrl("mrs_natural/enable")->to<mrs_natural>();
-  if (enable_ != -1 && enable_ < inObservations_)
-  {
-    enabled(enable_) = 1.0;
-    setctrl("mrs_natural/enable", -1);
+  mrs_natural input_to_enable = getctrl("mrs_natural/enable")->to<mrs_natural>();
+  if (input_to_enable != -1 && input_to_enable < inObservations_) {
+    enabled(input_to_enable) = 1.0;
   }
-  else
-    setctrl("mrs_natural/enable", -1);
+  setctrl("mrs_natural/enable", -1);
 
   //
   // Count how many of the observations are enabled
