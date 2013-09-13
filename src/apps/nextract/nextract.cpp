@@ -442,8 +442,9 @@ void extract(string inCollectionName)
           ofs << net->getctrl("SoundFileSource/src/mrs_real/currentLabel")->to<mrs_real>() << " ";
         }
 
+        // Don't include the column with the label, added by Annotator
         int numCols = data.getCols();
-        int numRows = data.getRows();
+        int numRows = data.getRows() - 1;
         for (int col = 0; col < numCols; col++) {
           for (int row = 0; row < numRows; row++) {
 
