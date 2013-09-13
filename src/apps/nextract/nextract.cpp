@@ -359,14 +359,14 @@ void extract(string inCollectionName)
 
   net->addMarSystem(mainFanout);
 
-  if (wekaFilename_ != EMPTYSTRING) {
-    net->addMarSystem(mng.create("Annotator", "annotator"));
-    net->addMarSystem(mng.create("WekaSink", "wsink"));
-  }
-
   if(memSize_ != 0) {
     net->addMarSystem(mng.create("TextureStats", "tStats"));
     net->updControl("TextureStats/tStats/mrs_natural/memSize", memSize_);
+  }
+
+  if (wekaFilename_ != EMPTYSTRING) {
+    net->addMarSystem(mng.create("Annotator", "annotator"));
+    net->addMarSystem(mng.create("WekaSink", "wsink"));
   }
 
   net->linkControl("mrs_real/currentLabel",
