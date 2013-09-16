@@ -105,9 +105,9 @@ printHelp(string progName)
 
   cerr << "         --timeOutput   : Output the current time as the label" << endl;
   cerr << "         --mfcc         : Output MFCC features." << endl;
-  cerr << "         --ctd          : Output spectral centroid features." << endl;
-  cerr << "         --rlf          : Output spectral rolloff features." << endl;
-  cerr << "         --flx          : Output spectral flux features." << endl;
+  cerr << "         --centroid     : Output spectral centroid features." << endl;
+  cerr << "         --rolloff      : Output spectral rolloff features." << endl;
+  cerr << "         --flux         : Output spectral flux features." << endl;
   cerr << "         --kurtosis     : Output spectral kurtosis features." << endl;
   cerr << "         --skewness     : Output spectral skewness features." << endl;
   cerr << "         --sfm          : Output spectral flatness measure features." << endl;
@@ -156,9 +156,9 @@ void initOptions()
   cmdOptions_.addNaturalOption("stereo", "st", false);
 
   cmdOptions_.addBoolOption("mfcc","", false);
-  cmdOptions_.addBoolOption("ctd","", false);
-  cmdOptions_.addBoolOption("rlf","", false);
-  cmdOptions_.addBoolOption("flx","", false);
+  cmdOptions_.addBoolOption("centroid","", false);
+  cmdOptions_.addBoolOption("rolloff","", false);
+  cmdOptions_.addBoolOption("flux","", false);
   cmdOptions_.addBoolOption("kurtosis","", false);
   cmdOptions_.addBoolOption("skewness","", false);
   cmdOptions_.addBoolOption("sfm","", false);
