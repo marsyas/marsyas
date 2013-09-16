@@ -51,6 +51,8 @@ protected:
   void resizeGL(int width, int height);   // Resize the GL window
 
 private:
+  QString m_audioFileName;
+
   GLuint makeObject();                    // Make the object
 
   // The current x,y,z rotation angles

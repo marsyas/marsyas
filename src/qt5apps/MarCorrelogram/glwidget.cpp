@@ -105,6 +105,8 @@ void GLWidget::play( const QString & fileName )
 
   m_system->start();
   m_updateTimer.start(20);
+
+  m_audioFileName = fileName;
 }
 
 void GLWidget::playPause()
@@ -114,7 +116,7 @@ void GLWidget::playPause()
     m_system->stop();
     m_updateTimer.stop();
   }
-  else
+  else if (!m_audioFileName.isEmpty())
   {
     m_system->start();
     m_updateTimer.start(20);

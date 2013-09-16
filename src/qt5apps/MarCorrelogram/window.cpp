@@ -27,6 +27,7 @@ Window::Window(const QString & inAudioFileName)
   playpause_button  = new QPushButton(tr("Play/Pause"));
   // Connect a click signal on the go button to a slot to start the rotation time
   connect(playpause_button, SIGNAL(clicked()), glWidget, SLOT(playPause()));
+
   // A main layout to hold everything
   QHBoxLayout *layout = new QHBoxLayout;
 
