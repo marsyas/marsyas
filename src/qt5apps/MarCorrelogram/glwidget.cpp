@@ -22,19 +22,11 @@ using namespace std;
 GLWidget::GLWidget(const QString & inAudioFileName, QWidget *parent)
   : QGLWidget(parent)
 {
-  // // Initialize member variables
-  xRot = 30;
-  yRot = 0;
-  zRot = 0;
-
   max_data.create(POWERSPECTRUM_BUFFER_SIZE);
 
   for (int i = 0; i < POWERSPECTRUM_BUFFER_SIZE; i++) {
     max_data(i) = -999.9;
   }
-
-  // Defaults
-  y_scale = 350;
 
   //
   // Create the MarSystem to play and analyze the data

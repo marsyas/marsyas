@@ -38,39 +38,18 @@ public slots:
   void playPause(); // Play or pause the playback of the song
   void animate();
 
-signals:
-
-  void timerChanged(int value);
-
-private slots:
-
-
 protected:
   void initializeGL();                    // Initialize the GL window
   void paintGL();                         // Paint the objects in the GL window
   void resizeGL(int width, int height);   // Resize the GL window
 
 private:
+  void redrawScene();
+
   QString m_audioFileName;
-
-  GLuint makeObject();                    // Make the object
-
-  // The current x,y,z rotation angles
-  int xRot;
-  int yRot;
-  int zRot;
 
   // A timer to make the animation happen
   QTimer m_updateTimer;
-
-  // The current tick of the animation
-  int timerCount;
-
-  // The vertices we will draw
-  GLfloat **vertices;
-
-  void redrawScene();
-  void addDataToRingBuffer();
 
   // Marsyas
   MarSystem* m_marsystem;
@@ -81,20 +60,6 @@ private:
   MarsyasQt::Control *m_statsSource;
   MarsyasQt::Control *m_waveformSource;
   MarsyasQt::Control *m_spectrumSource;
-
-  // Scale
-  double y_scale;
-
-  float stats_centroid;
-  float stats_rolloff;
-  float stats_flux;
-  float stats_rms;
-
-  // void setAudioStats();
-
-  MarControlPtr posPtr_;
-  MarControlPtr initPtr_;
-  MarControlPtr fnamePtr_;
 
   // Maximum data for drawing when scaling
   Marsyas::mrs_realvec max_data;
