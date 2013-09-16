@@ -102,7 +102,6 @@ GLWidget::GLWidget(const QString & inAudioFileName, QWidget *parent)
 
   m_fileNameControl = m_system->control("Fanout/inputfanout/SoundFileSource/src/mrs_string/filename");
   m_initAudioControl = m_system->control("AudioSink/dest/mrs_bool/initAudio");
-  m_posControl = m_system->control("Fanout/inputfanout/SoundFileSource/src/mrs_natural/pos");
   m_spectrumTypeControl = m_system->control("PowerSpectrum/pspk/mrs_string/spectrumType");
   m_inputEnableControl = m_system->control("Selector/inputselector/mrs_natural/enable");
   m_inputDisableControl = m_system->control("Selector/inputselector/mrs_natural/disable");

@@ -117,7 +117,6 @@ private:
   MarsyasQt::System *m_system;
   MarsyasQt::Control *m_fileNameControl;
   MarsyasQt::Control *m_initAudioControl;
-  MarsyasQt::Control *m_posControl;
   MarsyasQt::Control *m_spectrumTypeControl;
   MarsyasQt::Control *m_inputEnableControl;
   MarsyasQt::Control *m_inputDisableControl;
@@ -125,7 +124,6 @@ private:
   MarsyasQt::Control *m_statsSource;
   MarsyasQt::Control *m_waveformSource;
   MarsyasQt::Control *m_spectrumSource;
-
 
   // A ring buffer that holds our data
   double **spectrum_ring_buffer;
