@@ -10,13 +10,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "window.h"
+
 #include <QApplication>
 #include <iostream>
-#include <fstream>
-#include <sstream>
-using namespace std;
 
-#include "window.h"
+using namespace std;
 
 void usage()
 {
@@ -31,11 +30,15 @@ void usage()
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
-  string inAudioFileName = "";
-  if (argc > 1) {
-    inAudioFileName = argv[1];
-  }
+
+  QStringList args = app.arguments();
+
+  QString inAudioFileName;
+  if (args.count() > 1)
+    inAudioFileName = args[1];
+
   Window window(inAudioFileName);
   window.show();
+
   return app.exec();
 }

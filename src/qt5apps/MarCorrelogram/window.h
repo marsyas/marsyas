@@ -21,7 +21,7 @@ public slots:
   void about();
 
 public:
-  Window(string inAudioFileName);
+  Window(const QString & inAudioFileName);
 
   QSize minimumSizeHint() const;
   QSize sizeHint() const;

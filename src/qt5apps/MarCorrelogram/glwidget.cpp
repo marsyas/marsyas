@@ -1,4 +1,7 @@
-#include <QtGui>
+#include "glwidget.h"
+
+#include <marsyas/core/MarSystemManager.h>
+
 #include <QtOpenGL>
 #include <QTimer>
 #include <QTextStream>
@@ -7,14 +10,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-using namespace std;
-
-// Marsyas
-#include "MarSystemManager.h"
-#include "MarSystemQtWrapper.h"
-using namespace MarsyasQt;
-
-#include "glwidget.h"
 
 #ifdef MARSYAS_MACOSX
 #  include <OpenGL/glu.h>
@@ -22,7 +17,9 @@ using namespace MarsyasQt;
 #  include <GL/glu.h>
 #endif
 
-GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
+using namespace std;
+
+GLWidget::GLWidget(const QString & inAudioFileName, QWidget *parent)
   : QGLWidget(parent)
 {
   // // Initialize member variables
@@ -63,64 +60,65 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   net->addMarSystem(mng.create("ShiftInput", "si"));
   net->addMarSystem(mng.create("AutoCorrelation", "auto"));
 
-  net->updctrl("Accumulator/accum/mrs_natural/nTimes", 10);
+  net->updControl("Accumulator/accum/mrs_natural/nTimes", 10);
 
-  net->updctrl("Accumulator/accum/Series/accum_series/SoundFileSource/src/mrs_string/filename", inAudioFileName);
-  net->updctrl("ShiftInput/si/mrs_natural/winSize", MEMORY_SIZE);
+  net->updControl("ShiftInput/si/mrs_natural/winSize", MEMORY_SIZE);
 
-  net->updctrl("mrs_real/israte", 44100.0);
-  net->updctrl("Accumulator/accum/Series/accum_series/AudioSink/dest/mrs_bool/initAudio", true);
-  // net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  net->updControl("mrs_real/israte", 44100.0);
 
-  // // A Fanout to let us read audio from either a SoundFileSource or an
-  // // AudioSource
-  // MarSystem* inputfanout = mng.create("Fanout", "inputfanout");
-  // net->addMarSystem(inputfanout);
+  // Create a Qt wrapper that provides thread-safe control of the MarSystem:
+  m_marsystem = net;
+  m_system = new MarsyasQt::System(net);
 
-  // inputfanout->addMarSystem(mng.create("SoundFileSource", "src"));
-  // inputfanout->addMarSystem(mng.create("AudioSource", "src"));
+  // Get controls:
+  m_fileNameControl = m_system->control("Accumulator/accum/Series/accum_series/SoundFileSource/src/mrs_string/filename");
+  m_initAudioControl = m_system->control("Accumulator/accum/Series/accum_series/AudioSink/dest/mrs_bool/initAudio");
+  m_spectrumSource = m_system->control("mrs_realvec/processedData");
 
-  // net->addMarSystem(mng.create("Selector", "inputselector"));
+  // Connect the animation timer that periodically redraws the screen.
+  // It is activated in the 'play()' function.
+  connect( &m_updateTimer, SIGNAL(timeout()), this, SLOT(animate()) );
 
-  // if (inAudioFileName == "") {
-  // 	net->updctrl("Selector/inputselector/mrs_natural/enable", 0);
-  // 	net->updctrl("Selector/inputselector/mrs_natural/enable", 1);
-  // 	cout << "input from AudioSource" << endl;
-  // } else {
-  // 	net->updctrl("Selector/inputselector/mrs_natural/enable", 1);
-  // 	net->updctrl("Selector/inputselector/mrs_natural/enable", 0);
-  // 	cout << "input from SoundFileSource" << endl;
-  // }
-
-  // Create and start playing the MarSystemQtWrapper that wraps
-  // Marsyas in a Qt thread
-  mwr_ = new MarSystemQtWrapper(net);
-  mwr_->start();
-
-  if (inAudioFileName == "") {
-    mwr_->play();
-    play_state = true;
-  } else {
-    play_state = false;
-  }
-
-  // Create some handy pointers to access the MarSystem
-  posPtr_ = mwr_->getctrl("Fanout/inputfanout/SoundFileSource/src/mrs_natural/pos");
-  initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
-  fnamePtr_ = mwr_->getctrl("Fanout/inputfanout/SoundFileSource/src/mrs_string/filename");
-
-  //
-  // Create the animation timer that periodically redraws the screen
-  //
-  QTimer *timer = new QTimer( this );
-  connect( timer, SIGNAL(timeout()), this, SLOT(animate()) );
-  timer->start(10); // Redraw the screen every 10ms
-
+  play(inAudioFileName);
 }
 
 GLWidget::~GLWidget()
 {
   makeCurrent();
+}
+
+void GLWidget::open()
+{
+  QString fileName = QFileDialog::getOpenFileName(this);
+  play(fileName);
+}
+
+void GLWidget::play( const QString & fileName )
+{
+  if (fileName.isEmpty())
+    return;
+
+  static const bool NO_UPDATE = false;
+  m_fileNameControl->setValue(fileName, NO_UPDATE);
+  m_initAudioControl->setValue(true, NO_UPDATE);
+  m_system->update();
+
+  m_system->start();
+  m_updateTimer.start(20);
+}
+
+void GLWidget::playPause()
+{
+  if (m_system->isRunning())
+  {
+    m_system->stop();
+    m_updateTimer.stop();
+  }
+  else
+  {
+    m_system->start();
+    m_updateTimer.start(20);
+  }
 }
 
 // The minimum size of the widget
@@ -165,19 +163,14 @@ void GLWidget::paintGL()
 
 }
 
-void GLWidget::animate() {
-  emit updateGL();
-  if (play_state) {
-    setData();
-  }
+void GLWidget::animate()
+{
+  updateGL();
 }
 
-// Read in the waveform data from the waveformnet MarSystem
-void GLWidget::setData() {
-}
-
-void GLWidget::redrawScene() {
-  correlogram_data = mwr_->getctrl("mrs_realvec/processedData")->to<Marsyas::mrs_realvec>();
+void GLWidget::redrawScene()
+{
+  mrs_realvec correlogram_data( m_spectrumSource->value().value<mrs_realvec>() );
 
   for (int x = 0; x < MEMORY_SIZE; x++) {
     for (int y = 0; y < POWERSPECTRUM_BUFFER_SIZE; y++) {
@@ -235,28 +228,4 @@ void GLWidget::resizeGL(int width, int height)
 
   // Switch back to GL_MODELVIEW mode
   glMatrixMode(GL_MODELVIEW);
-}
-
-void GLWidget::playPause()
-{
-  play_state = !play_state;
-
-  if (play_state == true) {
-    mwr_->play();
-  } else {
-    mwr_->pause();
-  }
-}
-
-
-void GLWidget::open()
-{
-  QString fileName = QFileDialog::getOpenFileName(this);
-
-  mwr_->updctrl(fnamePtr_, fileName.toStdString());
-  mwr_->updctrl(initPtr_, true);
-
-  mwr_->play();
-  play_state = true;
-
 }
