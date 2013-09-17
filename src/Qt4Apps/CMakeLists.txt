@@ -34,5 +34,3 @@ endmacro (marsyas_qt4app)
 ## build apps
 add_subdirectory(MarGrid)
 add_subdirectory(MarMonitors)
-add_subdirectory(Marx2DGraph)
-add_subdirectory(Marx2DStackedGraphs)
