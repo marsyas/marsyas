@@ -1,8 +1,8 @@
 #ifndef MARSYASQT_REALVEC_ITEM_MODEL_INCLUDED
 #define MARSYASQT_REALVEC_ITEM_MODEL_INCLUDED
 
+#include "marsyasqt_common.h"
 #include <marsyas/core/realvec.h>
-#include <marsyasqt/marsyasqt_common.h>
 #include <QAbstractTableModel>
 
 namespace MarsyasQt {

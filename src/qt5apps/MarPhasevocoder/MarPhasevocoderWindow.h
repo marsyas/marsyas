@@ -2,7 +2,7 @@
 #ifndef MARPHASEVOCODERWINDOW_H
 #define MARPHASEVOCODERWINDOW_H
 
-#include <marsyasqt/marsystem_wrapper.h>
+#include "../common/marsystem_wrapper.h"
 
 #include <QMainWindow>
 #include <QMenu>

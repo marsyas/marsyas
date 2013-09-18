@@ -6,7 +6,7 @@
 
 // Marsyas
 
-#include <marsyasqt/marsystem_wrapper.h>
+#include "../common/marsystem_wrapper.h"
 
 using namespace MarsyasQt;
 using namespace Marsyas;

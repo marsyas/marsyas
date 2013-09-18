@@ -3,9 +3,9 @@
 #define MARLPCWINDOW_H
 
 #include "realvec_edit.h"
+#include "../common/marsystem_wrapper.h"
 
 #include <marsyas/core/MarSystem.h>
-#include <marsyasqt/marsystem_wrapper.h>
 
 #include <QMainWindow>
 #include <QSlider>

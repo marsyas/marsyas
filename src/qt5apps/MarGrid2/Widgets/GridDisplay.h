@@ -20,7 +20,6 @@
 #include <QToolTip>
 
 #include "MarSystemManager.h"
-#include "MarSystemQtWrapper.h"
 #include "Collection.h"
 
 #include "../Music/MusicCollection.h"

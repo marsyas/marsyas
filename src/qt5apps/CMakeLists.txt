@@ -9,7 +9,6 @@ endif()
 include_directories( ${CMAKE_SOURCE_DIR}/src/ )
 include_directories( ${CMAKE_SOURCE_DIR}/src/marsyas/ )
 include_directories( ${CMAKE_SOURCE_DIR}/src/marsyas/core )
-include_directories( ${CMAKE_SOURCE_DIR}/src/marsyasqt/ )
 
 add_subdirectory(common)
 

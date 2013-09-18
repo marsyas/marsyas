@@ -11,7 +11,7 @@
 #endif
 
 // Marsyas
-#include <marsyasqt/marsystem_wrapper.h>
+#include "../common/marsystem_wrapper.h"
 
 using namespace Marsyas;
 using namespace MarsyasQt;

@@ -16,8 +16,8 @@
 using namespace std;
 
 #include "window.h"
-#include "OscMapper.h"
-using namespace MarsyasQt;
+//#include "OscMapper.h"
+//using namespace MarsyasQt;
 
 void usage()
 {

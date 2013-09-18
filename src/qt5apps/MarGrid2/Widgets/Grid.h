@@ -27,7 +27,7 @@
 #include "../Music/MusicCollection.h"
 #include "../Colormaps/Colormap.h"
 
-#include <marsyasqt/marsystem_wrapper.h>
+#include "../../common/marsystem_wrapper.h"
 #include <marsyas/core/MarSystemManager.h>
 #include <marsyas/Collection.h>
 

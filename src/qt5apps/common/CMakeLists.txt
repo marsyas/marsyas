@@ -10,11 +10,11 @@ set(moc_hdr
 if(MARSYAS_REALTIME)
   set(src
     ${src}
-    ${CMAKE_SOURCE_DIR}/src/marsyasqt/marsystem_wrapper.cpp
+    marsystem_wrapper.cpp
   )
   set(moc_hdr
     ${moc_hdr}
-    ${CMAKE_SOURCE_DIR}/src/marsyasqt/marsystem_wrapper.h
+    marsystem_wrapper.h
   )
 endif()
 

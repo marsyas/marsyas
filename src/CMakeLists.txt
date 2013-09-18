@@ -108,7 +108,6 @@ if (QT4_FOUND)
     SET(QT_USE_QTOPENGL TRUE)
   endif()
   include (${QT_USE_FILE})
-  add_subdirectory(marsyasqt)
   add_subdirectory(Qt4Apps)
 endif (QT4_FOUND)
 

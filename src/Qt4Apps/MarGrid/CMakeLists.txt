@@ -3,6 +3,7 @@ set(APP
 )
 
 set(APP_SOURCES 
+  ../common/MarSystemQtWrapper.cpp
 	MarGrid.cpp
 	ColorMap.cpp
 	GreyScaleColormap.cpp
@@ -12,6 +13,7 @@ set(APP_SOURCES
 )
 
 set(APP_HEADERS 
+  ../common/MarSystemQtWrapper.h
 	MarGrid.h
 	MarGridWindow.h
 )

@@ -4,7 +4,6 @@
 #include <sstream>
 
 #include "MarSystemManager.h"
-#include "MarSystemQtWrapper.h"
 
 using namespace std;
 using namespace Marsyas;

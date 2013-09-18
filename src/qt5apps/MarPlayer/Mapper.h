@@ -31,7 +31,7 @@ which it signals to MainWindow to update the GUI.
 #ifndef MAPPER_H
 #define MAPPER_H
 
-#include <marsyasqt/marsystem_wrapper.h>
+#include "../common/marsystem_wrapper.h"
 
 #include <QObject>
 #include <QTimer>
