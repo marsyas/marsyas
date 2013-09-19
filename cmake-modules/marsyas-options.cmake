@@ -37,11 +37,11 @@ MARK_AS_ADVANCED(CMAKE_EXE_LINKER_FLAGS_PROFILE)
 
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
-	IF (CMAKE_SIZEOF_VOID_P EQUAL 8)
-		SET(CMAKE_CXX_FLAGS "-Wall -Wextra -fPIC")
-	ELSE ()
-		SET(CMAKE_CXX_FLAGS "-Wall -Wextra")
-	ENDIF ()
+  IF (CMAKE_SIZEOF_VOID_P EQUAL 8)
+    SET(CMAKE_CXX_FLAGS "-Wall -Wextra -fPIC")
+  ELSE ()
+    SET(CMAKE_CXX_FLAGS "-Wall -Wextra")
+  ENDIF ()
 #	SET(CMAKE_CXX_FLAGS "-Wall -D_GLIBCXX_DEBUG")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
@@ -87,13 +87,13 @@ option(MARSYAS_MIDIIO "Build the MIDI I/O interface" ON)
 option(MARSYAS_INLINE "Inline functions" ON)
 
 if(MARSYAS_LINUX)
-	option(WITH_JACK "Support Jack audio backend." ON)
-	option(WITH_ALSA "Support Alsa audio backend." ON)
-	option(WITH_OSS "Support OSS audio backend." OFF)
+  option(WITH_JACK "Support Jack audio backend." ON)
+  option(WITH_ALSA "Support Alsa audio backend." ON)
+  option(WITH_OSS "Support OSS audio backend." OFF)
 endif()
 
 if (MARSYAS_WIN32 OR MARSYAS_MINGW OR MARSYAS_CYGWIN)
-	option(MARSYAS_ASIO "[WINDOWS ONLY] Use ASIO instead of DirectSound" OFF)
+  option(MARSYAS_ASIO "[WINDOWS ONLY] Use ASIO instead of DirectSound" OFF)
 endif (MARSYAS_WIN32 OR MARSYAS_MINGW OR MARSYAS_CYGWIN)
 
 
@@ -111,12 +111,12 @@ if(MARSYAS_TESTS)
 endif (MARSYAS_TESTS)
 
 if (MARSYAS_LINUX OR MARSYAS_MACOSX)
-	option(MARSYAS_BUILD_DISTRIBUTED "[EXPERIMENTAL] compile code for
-		distributed audio processing" OFF)
-	mark_as_advanced(MARSYAS_BUILD_DISTRIBUTED)
-	if (MARSYAS_BUILD_DISTRIBUTED)
-		set(MARSYAS_DISTRIBUTED 1)
-	endif (MARSYAS_BUILD_DISTRIBUTED)
+  option(MARSYAS_BUILD_DISTRIBUTED "[EXPERIMENTAL] compile code for
+    distributed audio processing" OFF)
+  mark_as_advanced(MARSYAS_BUILD_DISTRIBUTED)
+  if (MARSYAS_BUILD_DISTRIBUTED)
+    set(MARSYAS_DISTRIBUTED 1)
+  endif (MARSYAS_BUILD_DISTRIBUTED)
 endif (MARSYAS_LINUX OR MARSYAS_MACOSX)
 
 
@@ -128,14 +128,14 @@ option(MARSYAS_FLOWCHECK "Check dataflow information" OFF)
 mark_as_advanced (MARSYAS_FLOWCHECK)
 option(MARSYAS_BOUNDCHECK "Check vector element access for boundary violations (large performance penalty)" OFF)
 mark_as_advanced (MARSYAS_BOUNDCHECK)
-option(MARSYAS_STATIC "Build as a static library" OFF) 
+option(MARSYAS_STATIC "Build as a static library" OFF)
 
 ## STL DEBUGGING
 option(MARSYAS_ENABLE_CHECKED_STL "Enable bounds checking on STL code" OFF)
 mark_as_advanced (MARSYAS_ENABLE_CHECKED_STL)
 
 IF(MARSYAS_ENABLE_CHECKED_STL)
-	SET(CMAKE_CXX_FLAGS "-Wall -D_GLIBCXX_DEBUG")
+  SET(CMAKE_CXX_FLAGS "-Wall -D_GLIBCXX_DEBUG")
 ENDIF(MARSYAS_ENABLE_CHECKED_STL)
 
 ## logging stuff
@@ -163,7 +163,7 @@ option(WITH_VAMP "Build plugins for Vamp" OFF)
 option(WITH_MAX/MSP "Build externals for Max/MSP" OFF)
 option(WITH_PD "Build externals for Pd" OFF)
 option(WITH_OSC  "Build osc support" OFF)
-option(WITH_PNG  "Build png writer" OFF) 
+option(WITH_PNG  "Build png writer" OFF)
 option(WITH_OPENGL "Build programs that require OpenGL" OFF)
 option(WITH_GSTREAMER "Enable use of GStreamer as audio source" OFF)
 #option(WITH_QGL "Enable qglviewer (Qt-based OpenGL viewer)" OFF)
@@ -172,17 +172,17 @@ option(WITH_GSTREAMER "Enable use of GStreamer as audio source" OFF)
 
 ## SWIG sub-options
 if (WITH_SWIG)
-	option(WITH_SWIG_PYTHON "Enable the SWIG bindings for Python" ON)
-	option(WITH_SWIG_JAVA "Enable the SWIG bindings for Java
+  option(WITH_SWIG_PYTHON "Enable the SWIG bindings for Python" ON)
+  option(WITH_SWIG_JAVA "Enable the SWIG bindings for Java
 NOTWORKING" OFF)
-	option(WITH_SWIG_LUA "Enable the SWIG bindings for Lua
+  option(WITH_SWIG_LUA "Enable the SWIG bindings for Lua
 NOTWORKING" OFF)
-	option(WITH_SWIG_RUBY "Enable the SWIG bindings for Ruby
+  option(WITH_SWIG_RUBY "Enable the SWIG bindings for Ruby
 NOTWORKING" OFF)
 endif (WITH_SWIG)
 
 
-IF (CMAKE_BUILD_TYPE STREQUAL "Debug") 
+IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
 # set(MARSYAS_ASSERTS ON CACHE BOOL "" FORCE)
 set(MARSYAS_FLOWCHECK ON CACHE BOOL "" FORCE)
 set(MARSYAS_TRACECONTROLS ON CACHE BOOL "" FORCE)

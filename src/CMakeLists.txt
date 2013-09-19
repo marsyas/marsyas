@@ -3,33 +3,33 @@
 mark_as_advanced (EXECUTABLE_OUTPUT_PATH)
 mark_as_advanced (LIBRARY_OUTPUT_PATH)
 if (APPLE)
-	mark_as_advanced (CMAKE_OSX_ARCHITECTURES)
-	mark_as_advanced (CMAKE_OSX_SYSROOT)
+  mark_as_advanced (CMAKE_OSX_ARCHITECTURES)
+  mark_as_advanced (CMAKE_OSX_SYSROOT)
 endif (APPLE)
 
 set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 if (MSVC)
-## windows likes DLL near executables 
+## windows likes DLL near executables
 set (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-else (MSVC) 
+else (MSVC)
 set (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
-endif (MSVC) 
+endif (MSVC)
 
 
 
 ## find OS
 if(UNIX)
-	if(APPLE)
-		set(MARSYAS_MACOSX 1)
-	elseif(CYGWIN)
-		set(MARSYAS_CYGWIN 1)
-	else(APPLE)
-		set(MARSYAS_LINUX 1)
-	endif(APPLE)
+  if(APPLE)
+    set(MARSYAS_MACOSX 1)
+  elseif(CYGWIN)
+    set(MARSYAS_CYGWIN 1)
+  else(APPLE)
+    set(MARSYAS_LINUX 1)
+  endif(APPLE)
 elseif(MINGW)
-	set(MARSYAS_MINGW 1)
+  set(MARSYAS_MINGW 1)
 elseif(MSVC)
-	set(MARSYAS_WIN32 1)
+  set(MARSYAS_WIN32 1)
 endif(UNIX)
 
 # for testing
@@ -93,8 +93,8 @@ if (MARSYAS_BUILD_APPS)
   add_subdirectory(apps)
 endif (MARSYAS_BUILD_APPS)
 
-if (SWIG_FOUND) 
-	add_subdirectory(swig)
+if (SWIG_FOUND)
+  add_subdirectory(swig)
 endif (SWIG_FOUND)
 
 if(WITH_QT5)
@@ -112,23 +112,21 @@ if (QT4_FOUND)
 endif (QT4_FOUND)
 
 if (VAMP_FOUND)
-	add_subdirectory(mvamp)
+  add_subdirectory(mvamp)
 endif (VAMP_FOUND)
 
 if (MAXSDK_FOUND)
-	add_subdirectory(marsyas_max-msp)
+  add_subdirectory(marsyas_max-msp)
 endif (MAXSDK_FOUND)
 
 if (PD_FOUND)
-	add_subdirectory(marsyas_pd)
+  add_subdirectory(marsyas_pd)
 endif (PD_FOUND)
 
 ## tests, for verification
 if (MARSYAS_TESTS)
-	add_subdirectory (tests)
+  add_subdirectory (tests)
 endif (MARSYAS_TESTS)
 
 ## packaging
 include(marsyas-package)
-
-
