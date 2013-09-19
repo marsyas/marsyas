@@ -25,7 +25,7 @@ if (MARSYAS_LINUX)
 		# No libraries for OSS
 	endif()
 
-	list (APPEND OS_LIBS pthread)
+	list (APPEND OS_LIBS pthread rt)
 endif (MARSYAS_LINUX)
 
 if (MARSYAS_WIN32)
