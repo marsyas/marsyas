@@ -37,11 +37,14 @@ Marsyas.
 @node CMake installation, Compiler configuration, Prerequisites, Prerequisites
 @subsection CMake installation
 
-Before compiling Marsyas, you @strong{must} install CMake 2.6 or
-higher.  CMake is available in source and binary forms from:
+Before compiling Marsyas, you @strong{must} install CMake 2.8.2 or
+higher. However, if you also want to compile Marsyas Qt applications, you will
+need at least CMake 2.8.9.
+
+CMake is available in source and binary forms from:
 
 @quotation
-@uref{http://www.cmake.org/HTML/Download.html}
+@uref{http://www.cmake.org/cmake/resources/software.html}
 @end quotation
 
 
@@ -124,34 +127,48 @@ in the DirectX SDK installation.
 
 @unnumberedsubsec Stable(-ish) Version
 
-Marsyas is hosted at SourceForge:
-
-@example
-@uref{http://marsyas.sourceforge.net/}
-
-@uref{http://www.sourceforge.net/projects/marsyas}
-@end example
+Stable Marsyas releases are hosted at SourceForge:
+@uref{http://sourceforge.net/projects/marsyas/}
 
 Marsyas is open source software and is distributed as a tarball
-(something like @file{marsyas-0.2.8.tar.gz}).  Uncompress this
+(something like @file{marsyas-0.5.0.tar.gz}).  Uncompress this
 file using whatever uncompression program you prefer (@code{tar},
 winzip, etc).
 
 @unnumberedsubsec Development Version
 
-The latest version can be obtained from the subversion repository
-stored at the sourceforge website.  If you are planning on working
-extensively with Marsyas and writing your own source code it is
-highly recommend that you download a subversion working copy.
+The latest version can be obtained using the Marsyas git repository. If you
+plan to work extensively with Marsyas and extend it with your own source code,
+it is highly recommend that you use the git repository.
 
+The Marsyas git repository is hosted at GitHub:
+@uref{https://github.com/marsyas/marsyas/}
+
+@unnumberedsubsubsec Read access
+
+To clone the repository onto your computer, use the following git command:
 @example 
-svn co https://svn.code.sf.net/p/marsyas/code/trunk my-marsyas-dir
+git clone https://github.com/marsyas/marsyas.git
 @end example
 
-You can replace @file{my-marsyas-dir} with any directory you want.
+@unnumberedsubsubsec Write access
 
-For Windows users, we recommend
-@uref{http://toroisesvn.net/downloads, TortoiseSVN}.
+The above command will only provide read access to the online repository
+(for latest updates). If you want to publish your contributions back to the
+online repository, you will need write access:
+@enumerate
+@item
+Create a GitHub account, if you don't have one yet.
+@item
+Ask permission for write access to the repository on marsyas development
+mailing list.
+@item
+Clone the repository using the following command:
+@end enumerate
+
+@example
+git clone git@@github.com:marsyas/marsyas.git
+@end example
 
 
 
@@ -160,7 +177,7 @@ For Windows users, we recommend
 
 CMake produces build systems as desired -- Makefiles on Linux /
 MacOS X / Cygwin, XCode projects on MacOS X, and MSVC projects on
-Windows.  It can also create Eclipse and KDevelop3 projects.
+Windows. It can also create Eclipse and KDevelop projects.
 
 @subsection Windows
 
@@ -169,7 +186,7 @@ Windows.  It can also create Eclipse and KDevelop3 projects.
 @enumerate
 @item Run the CMake GUI.
 
-@item Select the Marsyas @code{src} directory.
+@item Select the root directory of Marsyas source.
 
 @item Select a new directory in which to build Marsyas.
 
@@ -196,7 +213,7 @@ you change any options, run @emph{Configure...} again.
 cd MY-MARSYAS-DIR
 mkdir build
 cd build
-ccmake ../src/
+ccmake ..
 @end example 
 
 @item Press @code{[c]} to begin the configuration.  Once you have
@@ -222,8 +239,11 @@ generate the build system.
 
 @item MARSYAS_AUDIOIO
 This enables audio input/output.  Requires DirectX on Windows and
-either ALSA or OSS on Linux.  MacOS X audio support is built-in
+either JACK, ALSA or OSS on Linux.  MacOS X audio support is built-in
 with the basic developer tools.
+
+Note that this option also requires WITH_CPP11 option to be enabled (described
+below).
 
 @item MARSYAS_MIDIIO
 This enables midi input/output.  Requires DirectX on Windows and
@@ -231,6 +251,9 @@ either ALSA or OSS on Linux.  MacOS X audio support is built-in
 with the basic developer tools.
 
 @end table
+
+Audio and MIDI IO support also depends on WITH_JACK, WITH_ALSA, and WITH_OSS
+options, described below.
 
 
 @subsection Code messages and optional portions
@@ -274,12 +297,31 @@ These are @emph{advanced} options.
 @end table
 
 
+@subsection Testing options
+
+@table @code
+@item MARSYAS_TESTS
+Build Marsyas tests, so they can be run using @code{make test}.
+@xref{Compiling}.
+
+@end table
+
+
 @subsection Optional software (WITH_*)
 
 All of these options require additional software to be
 @strong{installed and properly configured}.
 
 @table @code
+
+@item WITH_CPP11
+Enables compilation in C++11 mode. If disabled, Marsyas will be compiled with
+limited functionality. Specifically, the audio IO and multi-threading support
+require this option to be enabled.
+
+This option requires a compiler with adequate C++11 support.
+Minimum required compiler versions are ensured by CMake, and reported if not
+satisfied.
 
 @item WITH_MAD
 mp3 audio decoding with
@@ -308,6 +350,17 @@ Use GStreamer as an audio source
 
 @end table
 
+@unnumberedsubsubsec Linux-specific:
+
+@table @code
+@item WITH_JACK
+Enables audio IO using JACK, if available.
+@item WITH_ALSA
+Enables audio and MIDI IO using ALSA, if available.
+@item WITH_OSS
+Enables audio and MIDI IO using OSS, if available.
+@end table
+
 
 
 @node Compiling, Specific installation examples, Marsyas options, Source installation
@@ -319,17 +372,16 @@ IN Unix/OS X that is typically make. There are other possibilities
 for example to use XCode in OS X do: 
 
 @example
-cmake -G Xcode ../src/
+cmake -G Xcode ..
 @end example 
 
-On Windows there different options such as generate a project file 
-for Visual Studio, compiling from commandline using nmake or using 
+On Windows, there are various options such as: generating a project file
+for Visual Studio, compiling from command-line using nmake, or using
 the MinGW toolchain. More specific instructions for some 
 configurations can be found in @ref{Specific installation examples}. 
 
-On Unix, use @code{make install} to install Marsyas.  There is no
-functionality to install Marsyas outside of the source tree on
-Windows.
+On Unix, use @code{make install} to compile and install Marsyas. There is no
+functionality to install Marsyas outside of the source tree on Windows.
 
 @c FIXME: check about lack of install on Windows.
 
@@ -337,8 +389,13 @@ Windows.
 
 Marsyas contains some unit tests and black-box tests.  They do
 not test a great deal of Marsyas, but running them is still
-recommended.  On Unix, simply run @code{make test}.  On MSVC on
-Windows, build the @code{RUN-TESTS} project.
+recommended.
+
+The tests are only compiled if @code{MARSYAS_TESTS} option has been enabled.
+@xref{Marsyas options}.
+
+On Unix, simply run @code{make test}. On Windows with MSVC, build the
+@code{RUN-TESTS} project.
 
 
 @node Specific installation examples, Post-install setup, Compiling, Source installation
