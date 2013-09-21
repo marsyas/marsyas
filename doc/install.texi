@@ -1165,59 +1165,53 @@ DEFUNCT, MIGHT POSSIBLY BE USED AGAIN LATER)
 @node Structure of distribution,  , Post-install setup, Source installation
 @section Structure of distribution 
 
-Marsyas is primarily targeted to researchers and software
-developers who want to build new systems and applications using
-existing building blocks.  Therefore familiarity with the
-directory structure of the Marsyas distribution is important for
-any serious work with the framework. 
+Marsyas is primarily targeting researchers and software developers who
+want to advance the existing knowledge within Marsyas' area of application
+and in turn develop Marsyas further. For that purpose, familiarity with the
+structure of the source code and file system is important.
 
-The main marsyas directory consists of the following files: 
+The root directory contains the following files:
 
 @itemize
 @item @b{AUTHORS, COPYING, README, TODO:} these files are
-self-explanatory.  Changes are recorded in @code{svn log} messages
-instead of a @file{Changelog} file.
-
+self-explanatory.
 @end itemize 
 
 
 @noindent
-In addition there are the following subdirectories: 
+In addition, there are the following subdirectories:
 
-@itemize 
-@item @b{src/} all the C++ source files.
+@itemize
+@item @b{src/} All the C++ source files.
 
-@item @b{src/marsyas/} the main directory containing all the
-important source code of Marsyas.  The source files in this
-subdirectory are compiled into a static library that other
-programs can use to access Marsyas functionality. 
+@item @b{src/marsyas/} The Marsyas framework and modules (MarSystems). This is
+compiled into a library for use in other executable programs.
 
-@item @b{src/apps/} the source code for executables.
+@item @b{src/marsyas/core} Framework core.
+@item @b{src/marsyas/realtime} Facilities for realtime MarSystem execution.
+@item @b{src/marsyas/debug} Facilities for dataflow debugging.
+@item @b{src/marsyas/marsystems} Concrete MarSystems.
+@item @b{src/marsyas/optional} Optionally-compiled MarSystems that depend on
+third-party libraries.
 
-@item @b{src/marsyasqt/} source for the static library MarsyasQt,
-which allows the use of Marsyas in Qt applications.
 
-@item @b{src/Qt4Apps/} provides GUI interfaces using Qt4. These
-will not work with earlier versions of Qt. You must have Qt4
-installed in order to use or compile these applications. A README
-file is supplied with each one that has instructions on how to
-compile and run it.
+@item @b{src/apps/} Various command-line applications.
 
-@item @b{src/tests/unit_tests/} tests for individual MarSystems.
+@item @b{src/Qt4Apps/} GUI applications using Qt 4. Most of those have been
+ported to use Qt 5.
 
-@item @b{src/tests/black-box/} tests for apps.
+@item @b{src/qt5apps/} GUI applications using Qt 5. All future GUI applications
+using Qt shall be developed here.
 
-@item @b{doc/} contains the source for the user manual (which you
-are currently reading) and developer manual.
+@item @b{src/tests/unit_tests/} Tests for individual framework modules
+(MarSystems).
 
-@item @b{scripts/} useful scripts to help programming with
-Marsyas.
+@item @b{src/tests/black-box/} Tests for executable programs.
+
+@item @b{doc/} Source files for documentation (which you are currently reading).
+
+@item @b{scripts/} Convenient scripts to help programming with Marsyas.
 
 @item @b{scripts/MATLAB/} MATLAB scripts.
 
-@end itemize 
-
-
-
-
-
+@end itemize
