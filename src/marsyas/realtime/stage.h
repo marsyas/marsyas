@@ -63,7 +63,7 @@ class stage
 
   array<item, 3> m_items;
 
-  atomic_int m_stage_index;
+  atomic<int> m_stage_index;
   int m_back_index;
   int m_front_index;
 
