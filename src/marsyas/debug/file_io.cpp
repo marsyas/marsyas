@@ -160,7 +160,7 @@ FileReader::~FileReader()
 
 void FileReader::rewind()
 {
-  if (m_start_pos == -1)
+  if (m_start_pos == (pos_t)-1)
     return;
 
   // Before C++11, and always in GCC,
@@ -223,7 +223,7 @@ bool FileReader::read_header()
 
 bool FileReader::read_record( Record & record )
 {
-  if (!m_record_size || m_start_pos == -1 || m_file.eof())
+  if (!m_record_size || m_start_pos == (pos_t)-1 || m_file.eof())
   {
     std::cerr << "Marsyas::Debug::FileReader: Nothing to read." << std::endl;
     return false;
