@@ -1,4 +1,8 @@
 ## OS-specific
+
+# The preprocessor definitions like "__MACOSX_CORE__" or "__LINUX_JACK__"
+# are required for building RtAudio
+
 if (MARSYAS_MACOSX)
   if (MARSYAS_AUDIOIO OR MARSYAS_MIDIIO)
     add_definitions(-D__MACOSX_CORE__)
