@@ -22,6 +22,7 @@
 #include "record.h"
 
 #include <MarSystem.h>
+#include <DLLDefines.h>
 
 namespace Marsyas { namespace Debug {
 
@@ -32,7 +33,7 @@ enum BugFlags {
   value_mismatch
 };
 
-struct Bug {
+struct marsyas_EXPORT Bug {
   Bug() : flags(no_bug), max_deviation(0.0), average_deviation(0.0) {}
   BugFlags flags;
   Marsyas::mrs_real max_deviation;
@@ -41,6 +42,7 @@ struct Bug {
 
 typedef std::map<std::string, Bug> BugReport;
 
+marsyas_EXPORT
 void compare( const Record & actual, const Record & reference, BugReport & report );
 
 }} // namespace Marsyas::Debug

@@ -22,6 +22,7 @@
 #define MARSYAS_DEBUG_TIMER_INCLUDED
 
 #include <common_source.h>
+#include <DLLDefines.h>
 
 #if defined(MARSYAS_LINUX)
 
@@ -82,7 +83,7 @@ namespace Marsyas { namespace Debug {
 
 using namespace std::chrono;
 
-class Timer
+class marsyas_EXPORT Timer
 {
     high_resolution_clock::time_point m_real_time_start;
     high_resolution_clock::time_point m_real_time_measure;

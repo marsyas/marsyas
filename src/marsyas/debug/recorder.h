@@ -22,12 +22,13 @@
 #include "record.h"
 
 #include <MarSystem.h>
+#include <DLLDefines.h>
 
 #include <vector>
 
 namespace Marsyas { namespace Debug {
 
-class Recorder
+class marsyas_EXPORT Recorder
 {
 public:
   Recorder(MarSystem *system);

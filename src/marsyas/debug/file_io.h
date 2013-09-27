@@ -21,6 +21,7 @@
 
 #include "record.h"
 #include <MarSystem.h>
+#include <DLLDefines.h>
 
 #include <fstream>
 
@@ -43,7 +44,7 @@ void from_bytes( T & dst, const char src_bytes[sizeof(T)] )
 }
 
 
-class FileWriter
+class marsyas_EXPORT FileWriter
 {
   struct SystemDescriptor
   {
@@ -72,7 +73,7 @@ private:
 };
 
 
-class FileReader
+class marsyas_EXPORT FileReader
 {
   struct SystemDescriptor
   {

@@ -20,13 +20,14 @@
 #define MARSYAS_DEBUG_RECORD_INCLUDED
 
 #include <realvec.h>
+#include <DLLDefines.h>
 
 #include <map>
 #include <string>
 
 namespace Marsyas { namespace Debug {
 
-class Record
+class marsyas_EXPORT Record
 {
 public:
   struct Entry
