@@ -1,4 +1,6 @@
 
+include(FindPackageHandleStandardArgs)
+
 if (WIN32)
 	find_path(DSOUND_INCLUDE_DIR dsound.h
 		PATHS	
@@ -20,20 +22,7 @@ if (WIN32)
 	)
 	mark_as_advanced(DSOUND_LIBRARY)
 
-
-	if (DSOUND_INCLUDE_DIR AND DSOUND_LIBRARY)
-		set(DSOUND_FOUND TRUE)
-	endif (DSOUND_INCLUDE_DIR AND DSOUND_LIBRARY)
-
-	if (DSOUND_FOUND)
-		if (NOT DSOUND_FIND_QUIETLY)
-			message (STATUS "Found dsound: ${DSOUND_LIBRARY}")
-		endif (NOT DSOUND_FIND_QUIETLY)
-	else (DSOUND_FOUND)
-		if (DSOUND_FIND_REQUIRED)
-			message (FATAL_ERROR "Could find: dsound")
-		endif (DSOUND_FIND_REQUIRED)
-	endif (DSOUND_FOUND)
+  find_package_handle_standard_args(DirectX DEFAULT_MSG DSOUND_LIBRARY DSOUND_INCLUDE_DIR)
 
 endif(WIN32)
 
