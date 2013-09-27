@@ -91,7 +91,7 @@ IF(PythonInterp_EXECUTABLE)
     # The installation directory for the Python modules.
     # Get the default directory from distutils.
     execute_process(
-      COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(1, 0, '${CMAKE_INSTALL_PREFIX}'))"
+      COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(True, False))"
       OUTPUT_VARIABLE PYTHON_MODULES_DIR_DEFAULT
       OUTPUT_STRIP_TRAILING_WHITESPACE
     )
