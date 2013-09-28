@@ -143,10 +143,10 @@ PCA::myProcess(realvec& in, realvec& out)
 
 
   // Calculate the correlation matrix
-  for ( o1 = 0 ; o1 < inObservations_-2 ; o1++ )
+  for ( o1 = 0 ; o1 < inObservations_-1; o1++ )
   {
     corr_matrix_(o1,o1) = 1.0;
-    for ( o2 = o1+1 ; o2 < inObservations_-1 ; o2++ )
+    for ( o2 = o1; o2 < inObservations_-1 ; o2++ )
     {
       corr_matrix_(o1,o2) = 0.0;
       for( t=0 ; t < inSamples_ ; t++ )
@@ -158,7 +158,6 @@ PCA::myProcess(realvec& in, realvec& out)
 
 
 
-
   // Triangular decomposition
   tred2(corr_matrix_, inObservations_-1, evals_, interm_);
 
@@ -167,7 +166,7 @@ PCA::myProcess(realvec& in, realvec& out)
   tqli( evals_, interm_, inObservations_-1, corr_matrix_);
 
 
-  /*
+  
   mrs_real percent_eig = 0.0;
   mrs_real sum_eig = 0.0;
   for (int m = inObservations_-2; m >= 0; m--)
@@ -177,32 +176,30 @@ PCA::myProcess(realvec& in, realvec& out)
   for (int m = inObservations_-2; m >= 0; m--)
     {
       percent_eig += evals_[m];
-      cout << evals_[m] / sum_eig << "\t";
-      cout << percent_eig / sum_eig << endl;
+      std::cout << evals_[m] / sum_eig << "\t";
+      std::cout << percent_eig / sum_eig << std::endl;
     }
-  */
 
   /* evals now contains the eigenvalues,
      corr_matrix_ now contains the associated eigenvectors. */
-
 
   /* Project row data onto the top "npc_" principal components. */
   for( t=0 ; t<inSamples_ ; t++ )
   {
     for( o=0 ; o<inObservations_ -1; o++ )
-      interm_[o] = in(o,t);
-
+      {
+	interm_[o] = in(o,t);
+      }
     for( o=0 ; o<onObservations_ -1; o++ )
     {
       out(o,t) = 0.0;
       for(o2=0 ; o2 < inObservations_ -1; o2++)
-      {
-        out(o,t) += interm_[o2] * corr_matrix_(o2,inObservations_-o-2);
-        npcs_(o2,o) = corr_matrix_(o2,inObservations_-o-2);
+	{
+	  out(o,t) += interm_[o2] * corr_matrix_(o2,inObservations_-o-2);
+	  npcs_(o2,o) = corr_matrix_(o2,inObservations_-o-2);
       }
     }
   }
-
 
   // copy the labels
   for( t=0 ; t<inSamples_ ; t++ )

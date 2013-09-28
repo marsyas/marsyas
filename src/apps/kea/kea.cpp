@@ -32,6 +32,7 @@ mrs_string svm_svm_;
 mrs_string svm_kernel_;
 mrs_string label_;
 mrs_natural svm_gamma_;
+mrs_natural ncomponents_;
 mrs_real svm_C_;
 
 
@@ -248,11 +249,11 @@ pca()
   net->addMarSystem(mng.create("NormMaxMin", "norm"));
   net->addMarSystem(mng.create("WekaSink", "wsink"));
 
-  net->updControl("PCA/pca/mrs_natural/npc", 2);
+  net->updControl("PCA/pca/mrs_natural/npc", ncomponents_);
   net->updControl("NormMaxMin/norm/mrs_natural/ignoreLast", 1);
   net->updControl("NormMaxMin/norm/mrs_string/mode", "twopass");
   net->updControl("NormMaxMin/norm/mrs_real/lower", 0.0);
-  net->updControl("NormMaxMin/norm/mrs_real/upper", 11.0);
+  net->updControl("NormMaxMin/norm/mrs_real/upper", 11.0); 
 
   net->updControl("WekaSink/wsink/mrs_natural/nLabels",
                   net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_natural/nClasses"));
@@ -260,6 +261,7 @@ pca()
   net->updControl("WekaSink/wsink/mrs_string/filename", "pca_out.arff");
 
   net->tick();
+  return;
 
   // the output of the PCA
   const mrs_realvec& pca_transformed_data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
@@ -1090,7 +1092,7 @@ initOptions()
   cmd_options_.addStringOption("label", "lb", EMPTYSTRING);
   cmd_options_.addNaturalOption("svm_gamma", "sG", 4);
   cmd_options_.addRealOption("svm_C", "sC", 1.0);
-
+  cmd_options_.addNaturalOption("ncomponents", "nc", 2);
 }
 
 
@@ -1115,7 +1117,7 @@ loadOptions()
   label_ = cmd_options_.getStringOption("label");
   svm_C_ = cmd_options_.getRealOption("svm_C");
   svm_gamma_ = cmd_options_.getNaturalOption("svm_gamma");
-
+  ncomponents_ = cmd_options_.getNaturalOption("ncomponents");
 }
 
 
