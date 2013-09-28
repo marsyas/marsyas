@@ -90,8 +90,18 @@ IF(PythonInterp_EXECUTABLE)
 
     # The installation directory for the Python modules.
     # Get the default directory from distutils.
+    if(MARSYAS_LINUX)
+      set(PYTHON_GET_MODULES_DIR_COMMAND
+        "from distutils import sysconfig; print(sysconfig.get_python_lib(True, False, '${CMAKE_INSTALL_PREFIX}'))"
+      )
+    else()
+      set(PYTHON_GET_MODULES_DIR_COMMAND
+        "from distutils import sysconfig; print(sysconfig.get_python_lib(True, False))"
+      )
+    endif()
+
     execute_process(
-      COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(True, False))"
+      COMMAND ${PYTHON_EXECUTABLE} -c "${PYTHON_GET_MODULES_DIR_COMMAND}"
       OUTPUT_VARIABLE PYTHON_MODULES_DIR_DEFAULT
       OUTPUT_STRIP_TRAILING_WHITESPACE
     )
