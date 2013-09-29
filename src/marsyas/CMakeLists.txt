@@ -450,7 +450,11 @@ else (MARSYAS_STATIC)
   endif ()
   set_target_properties(marsyas PROPERTIES INSTALL_NAME_DIR ${LIB_DIR})
 
-  install(TARGETS marsyas DESTINATION lib)
+  install(TARGETS marsyas
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+  )
 
   if(WIN32 OR APPLE AND DEFINED PYTHON_MODULES_DIR)
     install(TARGETS marsyas DESTINATION ${PYTHON_MODULES_DIR})
