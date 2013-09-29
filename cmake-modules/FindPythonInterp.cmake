@@ -59,62 +59,29 @@ IF(PythonInterp_EXECUTABLE)
 
   ### Find default Python module installation directory.
 
-  # User can override the default through the CMake UI - commented out
-  # as it did not work on OS X and macports.
-  # if (DEFINED CMAKE_INSTALL_PREFIX)
-
-  #   execute_process(
-  #     COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(0, 0, prefix=''))"
-  #     OUTPUT_VARIABLE PYTHON_MODULES_DIR_DEFAULT
-  #     OUTPUT_STRIP_TRAILING_WHITESPACE
-  #   )
-
-  #   MESSAGE(${PYTHON_MODULES_DIR_DEFAULT})
-  #   MESSAGE(${CMAKE_INSTALL_PREFIX})
-
-  #   if (MARSYAS_WIN32)
-  #      set(
-  #      PYTHON_MODULES_DIR
-  #      ${PYTHON_MODULES_DIR_DEFAULT}
-  #       CACHE STRING "The installation directory for the Python modules."
-  #       )
-  #     else (MARSYAS_WIN32)
-  #       set(
-  #       PYTHON_MODULES_DIR
-  #       ${CMAKE_INSTALL_PREFIX}/${PYTHON_MODULES_DIR_DEFAULT}
-  #       CACHE STRING "The installation directory for the Python modules."
-  #       )
-  #     endif (MARSYAS_WIN32)
-
-  # else ()
-
-    # The installation directory for the Python modules.
-    # Get the default directory from distutils.
-    if(MARSYAS_LINUX)
-      set(PYTHON_GET_MODULES_DIR_COMMAND
-        "from distutils import sysconfig; print(sysconfig.get_python_lib(True, False, '${CMAKE_INSTALL_PREFIX}'))"
-      )
-    else()
-      set(PYTHON_GET_MODULES_DIR_COMMAND
-        "from distutils import sysconfig; print(sysconfig.get_python_lib(True, False))"
-      )
-    endif()
-
-    execute_process(
-      COMMAND ${PYTHON_EXECUTABLE} -c "${PYTHON_GET_MODULES_DIR_COMMAND}"
-      OUTPUT_VARIABLE PYTHON_MODULES_DIR_DEFAULT
-      OUTPUT_STRIP_TRAILING_WHITESPACE
+  if(MARSYAS_LINUX)
+    set(PYTHON_GET_MODULES_DIR_COMMAND
+      "from distutils import sysconfig; print(sysconfig.get_python_lib(True, False, '${CMAKE_INSTALL_PREFIX}'))"
     )
-
-    set(
-      PYTHON_MODULES_DIR
-      ${PYTHON_MODULES_DIR_DEFAULT}
-      CACHE STRING "The installation directory for the Python modules."
+  else()
+    set(PYTHON_GET_MODULES_DIR_COMMAND
+      "from distutils import sysconfig; print(sysconfig.get_python_lib(True, False))"
     )
+  endif()
 
-    message(STATUS "Python modules destination directory: ${PYTHON_MODULES_DIR}")
+  execute_process(
+    COMMAND ${PYTHON_EXECUTABLE} -c "${PYTHON_GET_MODULES_DIR_COMMAND}"
+    OUTPUT_VARIABLE PYTHON_MODULES_DIR_DEFAULT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
 
-  # endif()
+  set(
+    PYTHON_MODULES_DIR
+    ${PYTHON_MODULES_DIR_DEFAULT}
+    CACHE STRING "The installation directory for the Python modules."
+  )
+
+  message(STATUS "Python modules destination directory: ${PYTHON_MODULES_DIR}")
 
 ENDIF(PythonInterp_EXECUTABLE)
 
