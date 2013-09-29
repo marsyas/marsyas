@@ -23,6 +23,8 @@
 #include "realtime/runner.h"
 #include "realtime/any.h"
 
+#include <realvec.h>
+
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -32,6 +34,9 @@
 namespace MarsyasQt {
 
 using namespace Marsyas;
+using Marsyas::mrs_natural;
+using Marsyas::mrs_real;
+using Marsyas::mrs_realvec;
 using Marsyas::RealTime::any;
 using Marsyas::RealTime::any_cast;
 using Marsyas::RealTime::bad_any_cast;
@@ -260,12 +265,12 @@ class ControlRealvec : public Control
 {
   Q_OBJECT
 public slots:
-  void setValue(const realvec & value)
+  void setValue(const mrs_realvec & value)
   {
     Control::setValue( QVariant::fromValue(value) );
   }
 signals:
-  void valueChanged(const realvec & value);
+  void valueChanged(const mrs_realvec & value);
 
 protected:
   friend class System;
