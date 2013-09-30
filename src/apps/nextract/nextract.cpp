@@ -40,7 +40,7 @@ int usageOpt_;
 mrs_natural memSize_ = 40;
 mrs_natural winSize_ = 512;
 mrs_natural hopSize_ = 512;
-mrs_natural stereo_ = false;
+mrs_bool stereo_ = false;
 
 string outputFilename_ = EMPTYSTRING;
 mrs_bool timeOutput_ = false;
@@ -153,7 +153,7 @@ void initOptions()
   cmdOptions_.addNaturalOption("windowsize", "ws", 512);
   cmdOptions_.addNaturalOption("hopsize", "hp", 512);
 
-  cmdOptions_.addNaturalOption("stereo", "st", false);
+  cmdOptions_.addBoolOption("stereo", "st", false);
 
   cmdOptions_.addBoolOption("mfcc","", false);
   cmdOptions_.addBoolOption("centroid","", false);
@@ -198,6 +198,7 @@ void loadOptions()
   memSize_ = cmdOptions_.getNaturalOption("memory");
   winSize_ = cmdOptions_.getNaturalOption("windowsize");
   hopSize_ = cmdOptions_.getNaturalOption("hopsize");
+  stereo_ = cmdOptions_.getBoolOption("stereo");
   mfccFeature_ = cmdOptions_.getBoolOption("mfcc");
   centroidFeature_ = cmdOptions_.getBoolOption("centroid");
   rolloffFeature_ = cmdOptions_.getBoolOption("rolloff");
@@ -255,6 +256,7 @@ void extract(string inCollectionName)
   MarSystem* net = mng.create("Series", "net");
   net->addMarSystem(mng.create("SoundFileSource", "src"));
   if (stereo_ == false) {
+    cout << "doing stereo2mono" << endl;
     net->addMarSystem(mng.create("Stereo2Mono","toMono"));
   }
   net->addMarSystem(mng.create("ShiftInput/si"));
