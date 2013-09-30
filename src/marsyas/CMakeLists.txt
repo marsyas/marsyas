@@ -202,13 +202,14 @@ list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/linear.cpp)
 list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/linear.h)
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/tron.cpp)
 list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/tron.h)
+
 list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/blas.h)
 list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/blasp.h)
 list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/blas.h)
-list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/daxpy.c)
-list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/ddot.c)
-list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/dnrm2.c)
-list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/dscal.c)
+list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/blas/daxpy.c)
+list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/blas/ddot.c)
+list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/blas/dnrm2.c)
+list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/blas/dscal.c)
 
 
 if (MARSYAS_OSC)
@@ -338,110 +339,71 @@ if (MARSYAS_MIDIIO)
 endif (MARSYAS_MIDIIO)
 
 
-## ACTUAL BUILD
+## DEFINE TARGET
 
-if (MARSYAS_STATIC)
-  add_library(marsyas_static STATIC
+set(MARSYAS_ALL_SOURCES
     ${Marsyas_SOURCES}
-    ${Marsyas_HEADERS}
     ${MARSYAS_REALTIME_SOURCES}
     ${MARSYAS_DEBUG_SOURCES}
-  )
-	SET_TARGET_PROPERTIES(marsyas_static PROPERTIES OUTPUT_NAME "marsyas")
-	SET_TARGET_PROPERTIES(marsyas_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
-	TARGET_LINK_LIBRARIES(marsyas_static ${OS_LIBS})
+)
 
-## LINKING
-if (MARSYAS_MAD)
-	TARGET_LINK_LIBRARIES(marsyas_static ${mad_LIBRARY})
-endif (MARSYAS_MAD)
-
-
-if (MARSYAS_PNG)
-  TARGET_LINK_LIBRARIES(marsyas_static png12_static zlib)
-endif (MARSYAS_PNG)
-
-if (MARSYAS_LAME)
-	TARGET_LINK_LIBRARIES(marsyas_static ${lame_LIBRARY})
-endif (MARSYAS_LAME)
+if(MARSYAS_STATIC)
+  add_library(marsyas STATIC ${MARSYAS_ALL_SOURCES})
+  set_target_properties(marsyas PROPERTIES OUTPUT_NAME "marsyas")
+  set_target_properties(marsyas PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+else()
+  add_library(marsyas SHARED ${MARSYAS_ALL_SOURCES})
+endif()
 
 
-if (MARSYAS_VORBIS)
-	TARGET_LINK_LIBRARIES(marsyas_static ${OGGVORBIS_LIBRARIES})
-endif (MARSYAS_VORBIS)
+## LINK
 
-if (MARSYAS_MATLAB) 
-	TARGET_LINK_LIBRARIES(marsyas_static ${MATLAB_LIBRARIES})
-endif (MARSYAS_MATLAB)
+target_link_libraries(marsyas ${OS_LIBS})
 
-if (MARSYAS_GSTREAMER)
-	TARGET_LINK_LIBRARIES(marsyas_static ${GStreamer_LIBRARY})
-	TARGET_LINK_LIBRARIES(marsyas_static  ${GStramer-App_LIBRARY})
-	TARGET_LINK_LIBRARIES(marsyas_static  ${Glib_LIBRARY})
-	TARGET_LINK_LIBRARIES(marsyas_static  ${_GObjectLibs})
-endif (MARSYAS_GSTREAMER)
+if(MARSYAS_MAD)
+  target_link_libraries(marsyas ${mad_LIBRARY})
+endif(MARSYAS_MAD)
 
+if(MARSYAS_PNG)
+  if(MARSYAS_STATIC)
+    target_link_libraries(marsyas png12_static)
+  else()
+    target_link_libraries(marsyas png12 ${FREETYPE_LIBRARY})
+  endif()
+  target_link_libraries(marsyas zlib)
+endif(MARSYAS_PNG)
 
-else (MARSYAS_STATIC)
-  add_library(marsyas SHARED
-    ${Marsyas_SOURCES}
-    ${Marsyas_HEADERS}
-    ${MARSYAS_REALTIME_SOURCES}
-    ${MARSYAS_DEBUG_SOURCES}
-  )
-	TARGET_LINK_LIBRARIES(marsyas ${OS_LIBS})
+if(MARSYAS_LAME)
+  target_link_libraries(marsyas ${lame_LIBRARY})
+endif(MARSYAS_LAME)
 
-## LINKING
-if (MARSYAS_MAD)
-	TARGET_LINK_LIBRARIES(marsyas ${mad_LIBRARY})
-endif (MARSYAS_MAD)
+if(MARSYAS_VORBIS)
+  target_link_libraries(marsyas ${OGGVORBIS_LIBRARIES})
+endif(MARSYAS_VORBIS)
 
+if(MARSYAS_MATLAB)
+  target_link_libraries(marsyas ${MATLAB_LIBRARIES})
+endif(MARSYAS_MATLAB)
 
-if (MARSYAS_PNG)
-   TARGET_LINK_LIBRARIES(marsyas png12 zlib ${FREETYPE_LIBRARY})
-endif (MARSYAS_PNG)
-
-if (MARSYAS_LAME)
-	TARGET_LINK_LIBRARIES(marsyas ${lame_LIBRARY})
-endif (MARSYAS_LAME)
+if(MARSYAS_GSTREAMER)
+  target_link_libraries(marsyas ${GStreamer_LIBRARY})
+  target_link_libraries(marsyas ${GStramer-App_LIBRARY})
+  target_link_libraries(marsyas ${Glib_LIBRARY})
+  target_link_libraries(marsyas ${_GObjectLibs})
+endif(MARSYAS_GSTREAMER)
 
 
-if (MARSYAS_VORBIS)
-	TARGET_LINK_LIBRARIES(marsyas ${OGGVORBIS_LIBRARIES})
-endif (MARSYAS_VORBIS)
-
-if (MARSYAS_MATLAB) 
-	TARGET_LINK_LIBRARIES(marsyas ${MATLAB_LIBRARIES})
-endif (MARSYAS_MATLAB)
-
-if (MARSYAS_GSTREAMER)
-	TARGET_LINK_LIBRARIES(marsyas ${GStreamer_LIBRARY})
-	TARGET_LINK_LIBRARIES(marsyas ${GStreamer-App_LIBRARY})
-	TARGET_LINK_LIBRARIES(marsyas ${Glib_LIBRARY})
-	TARGET_LINK_LIBRARIES(marsyas ${_GObjectLibs})
-endif (MARSYAS_GSTREAMER)
-
-
-
-endif (MARSYAS_STATIC)
-
-
-
-
-
-
-
-
-
-## INSTALLING
+## INSTALL
 
 install(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)
 install(FILES ${MARSYAS_REALTIME_HEADERS} DESTINATION include/marsyas/realtime)
 install(FILES ${MARSYAS_DEBUG_HEADERS} DESTINATION include/marsyas/debug)
 
 if (MARSYAS_STATIC)
-  install(TARGETS marsyas_static LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib)
+  install(TARGETS marsyas
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+  )
 else (MARSYAS_STATIC)
   if (DEFINED CMAKE_INSTALL_PREFIX)
     set(LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib)

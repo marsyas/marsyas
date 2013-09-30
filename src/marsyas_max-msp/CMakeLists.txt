@@ -73,7 +73,7 @@ if (MARSYAS_STATIC)
 		include_directories(${MAXSDK_MAX_INCLUDE_DIR})
 		include_directories(${MAXSDK_MSP_INCLUDE_DIR})
 
-		TARGET_LINK_LIBRARIES(${ibt_ext} marsyas_static)
+		TARGET_LINK_LIBRARIES(${ibt_ext} marsyas)
 		#Pre-processor defines
 		ADD_DEFINITIONS(-DWIN_VERSION -DEXT_WIN_VERSION)
 		# Define external extension as .mxe

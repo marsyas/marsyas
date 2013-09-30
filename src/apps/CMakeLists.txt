@@ -6,26 +6,18 @@ include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/optional/)
 
 ## BUILD MACRO
 
-macro (marsyas_static_app APP)
+macro(marsyas_app APP)
   add_executable(${APP} ${ARGN})
-	 include_directories(${GSTREAMER_INCLUDE_DIRS}
-   	 ${PNGWRITER_INCLUDE_DIR} ${OSC_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIR_freetype2}
-   	 ${FREETYPE_INCLUDE_DIR_ft2build} )
-	 target_link_libraries(${APP} marsyas_static)
-	 install(TARGETS ${APP} DESTINATION bin)
-endmacro (marsyas_static_app)
-
-macro (marsyas_app APP)
-  add_executable(${APP} ${ARGN})
-	 include_directories(${GSTREAMER_INCLUDE_DIRS}
-   	 ${PNGWRITER_INCLUDE_DIR} ${OSC_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build})
-	 if (MARSYAS_STATIC)
-	 	 target_link_libraries(${APP} marsyas_static)
-	 else (MARSYAS_STATIC)
-	  	 target_link_libraries(${APP} marsyas)
-	  endif (MARSYAS_STATIC)	      
-	 install(TARGETS ${APP} DESTINATION bin)
-endmacro (marsyas_app)
+  include_directories(
+    ${GSTREAMER_INCLUDE_DIRS}
+    ${PNGWRITER_INCLUDE_DIR}
+    ${OSC_INCLUDE_DIR}
+    ${FREETYPE_INCLUDE_DIR_freetype2}
+    ${FREETYPE_INCLUDE_DIR_ft2build}
+  )
+  target_link_libraries(${APP} marsyas)
+  install(TARGETS ${APP} DESTINATION bin)
+endmacro(marsyas_app)
 
 ## build apps
 ## in docs -gp

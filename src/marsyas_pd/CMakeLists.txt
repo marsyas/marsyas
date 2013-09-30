@@ -20,7 +20,7 @@ if (MARSYAS_STATIC)
 	elseif(MARSYAS_LINUX)
 		set(MARSYAS_LIBRARY ${LIBRARY_OUTPUT_PATH}/libmarsyas.a)
 	elseif(MARSYAS_WIN32)
-		set(MARSYAS_LIBRARY marsyas_static)
+		set(MARSYAS_LIBRARY marsyas)
 	endif(MARSYAS_MACOSX)
 	
 else (MARSYAS_STATIC)
