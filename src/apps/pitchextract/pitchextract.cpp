@@ -25,8 +25,8 @@
 
 
 #ifdef MARSYAS_OSC
-#include "OscOutboundPacketStream.h"
-#include "UdpSocket.h"
+#include <oscpack/osc/OscOutboundPacketStream.h>
+#include <oscpack/ip/UdpSocket.h>
 #endif
 
 #include "FileName.h"

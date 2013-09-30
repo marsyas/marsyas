@@ -63,10 +63,8 @@ if (MARSYAS_MATLAB)
   include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/MATLAB)
 endif (MARSYAS_MATLAB)
 
-
 if (MARSYAS_OSC)
-  include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/oscpack/osc)
-  include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/oscpack/ip)
+  include_directories(${OSCPACK_INCLUDE_DIRS})
 endif (MARSYAS_OSC)
 
 if (MARSYAS_PNG)
@@ -90,6 +88,5 @@ endif (MARSYAS_GSTREAMER)
 ## basic library includes
 include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/libsvm/)
 #include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/liblinear/)
-
 
 

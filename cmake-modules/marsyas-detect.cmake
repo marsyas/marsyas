@@ -110,7 +110,9 @@ if (WITH_PD)
 endif (WITH_PD)
 
 if (WITH_OSC)
-  set (MARSYAS_OSC 1)
+  set(MARSYAS_OSC 1)
+  set(OSCPACK_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/otherlibs)
+  set(OSCPACK_LIBRARIES oscpack)
 endif (WITH_OSC)
 
 if (WITH_PNG)

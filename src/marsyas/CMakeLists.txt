@@ -212,44 +212,6 @@ list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/blas/dnrm2.c)
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/blas/dscal.c)
 
 
-if (MARSYAS_OSC)
-
-set( OSCPACK_DIR ${EXTERNALS_DIR}/oscpack )
-
-list(APPEND Marsyas_HEADERS ${OSCPACK_DIR}/osc/OscException.h)
-list(APPEND Marsyas_HEADERS ${OSCPACK_DIR}/osc/OscHostEndianness.h)
-list(APPEND Marsyas_HEADERS ${OSCPACK_DIR}/osc/OscOutboundPacketStream.h)
-list(APPEND Marsyas_HEADERS ${OSCPACK_DIR}/osc/OscPacketListener.h)
-list(APPEND Marsyas_HEADERS ${OSCPACK_DIR}/osc/OscPrintReceivedElements.h)
-list(APPEND Marsyas_HEADERS ${OSCPACK_DIR}/osc/OscReceivedElements.h)
-list(APPEND Marsyas_HEADERS ${OSCPACK_DIR}/osc/OscTypes.h)
-
-list(APPEND Marsyas_HEADERS ${OSCPACK_DIR}/ip/IpEndpointName.h)
-list(APPEND Marsyas_HEADERS ${OSCPACK_DIR}/ip/NetworkingUtils.h)
-list(APPEND Marsyas_HEADERS ${OSCPACK_DIR}/ip/PacketListener.h)
-list(APPEND Marsyas_HEADERS ${OSCPACK_DIR}/ip/TimerListener.h)
-list(APPEND Marsyas_HEADERS ${OSCPACK_DIR}/ip/UdpSocket.h)
-
-
-list(APPEND Marsyas_SOURCES ${OSCPACK_DIR}/osc/OscOutboundPacketStream.cpp)
-list(APPEND Marsyas_SOURCES ${OSCPACK_DIR}/osc/OscPrintReceivedElements.cpp)
-list(APPEND Marsyas_SOURCES ${OSCPACK_DIR}/osc/OscReceivedElements.cpp)
-list(APPEND Marsyas_SOURCES ${OSCPACK_DIR}/osc/OscTypes.cpp)
-list(APPEND Marsyas_SOURCES ${OSCPACK_DIR}/ip/IpEndpointName.cpp)
-
-if (MARSYAS_WIN32)
-   list(APPEND Marsyas_SOURCES ${OSCPACK_DIR}/ip/win32/NetworkingUtils.cpp)
-   list(APPEND Marsyas_SOURCES ${OSCPACK_DIR}/ip/win32/UdpSocket.cpp)
-else (MARSYAS_WIN32)
-   list(APPEND Marsyas_SOURCES ${OSCPACK_DIR}/ip/posix/NetworkingUtils.cpp)
-   list(APPEND Marsyas_SOURCES ${OSCPACK_DIR}/ip/posix/UdpSocket.cpp)
-endif (MARSYAS_WIN32)
-
-endif (MARSYAS_OSC)
-
-
-
-
 if (MARSYAS_PNG)
 	list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/pngwriter/pngwriter.cc)
 	list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/libpng-1.2.35/png.h)
@@ -359,6 +321,10 @@ endif()
 ## LINK
 
 target_link_libraries(marsyas ${OS_LIBS})
+
+if(MARSYAS_OSC)
+  target_link_libraries(marsyas ${OSCPACK_LIBRARIES})
+endif()
 
 if(MARSYAS_MAD)
   target_link_libraries(marsyas ${mad_LIBRARY})

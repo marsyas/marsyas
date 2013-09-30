@@ -76,19 +76,18 @@ include_directories(${CMAKE_BINARY_DIR})
 ## oops, don't install this!  -gp
 #install(FILES ${CMAKE_BINARY_DIR}/config.h DESTINATION include/marsyas)
 
+add_subdirectory(otherlibs)
+
 ## setup includes
 include (marsyas-includes)
 
 ## setup oslibs
 include (marsyas-oslibs)
 
-
-
-
 ## next level
-add_subdirectory(otherlibs)
 
 add_subdirectory(marsyas)
+
 if (MARSYAS_BUILD_APPS)
   add_subdirectory(apps)
 endif (MARSYAS_BUILD_APPS)
