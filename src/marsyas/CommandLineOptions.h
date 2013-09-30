@@ -214,7 +214,7 @@ struct CommandLineOptions::OptionT<bool> : public CommandLineOptions::Option
   bool parse_value( std::istringstream& ) { return false; }
 };
 
-template <>
+template <> inline
 bool CommandLineOptions::value<bool>( const std::string & long_name ) const
 {
   return has(long_name);
