@@ -19,9 +19,9 @@
 #ifndef MARSYAS_PEUTILITIES_H
 #define MARSYAS_PEUTILITIES_H
 
-#include "MarSystemManager.h"
-#include "realvec.h"
-#include "DLLDefines.h"
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/realvec.h>
+#include <marsyas/export.h>
 #include <fstream>
 #include <string>
 

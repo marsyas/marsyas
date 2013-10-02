@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SPECTRALTRANSFORMATIONS_H
 #define MARSYAS_SPECTRALTRANSFORMATIONS_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

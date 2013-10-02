@@ -19,7 +19,7 @@
 #ifndef MARSYAS_METRIC2_H
 #define MARSYAS_METRIC2_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

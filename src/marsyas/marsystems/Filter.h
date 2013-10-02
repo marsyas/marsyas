@@ -19,7 +19,7 @@
 #ifndef MARSYAS_FILTER_H
 #define MARSYAS_FILTER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

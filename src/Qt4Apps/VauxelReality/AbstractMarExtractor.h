@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "realvec.h"
+#include <marsyas/realvec.h>
 
 class AbstractMarExtractor : public QObject
 {

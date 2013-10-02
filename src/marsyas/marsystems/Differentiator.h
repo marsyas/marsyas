@@ -19,7 +19,7 @@
 #ifndef MARSYAS_DIFFERENTIATOR_H
 #define MARSYAS_DIFFERENTIATOR_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -3,8 +3,8 @@
 
 #include <QObject>
 
-#include <marsyas/core/MarSystem.h>
-#include <marsyas/core/realvec.h>
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/realvec.h>
 #include <marsyas/debug/file_io.h>
 #include <marsyas/debug/recorder.h>
 #include <marsyas/debug/debugger.h>

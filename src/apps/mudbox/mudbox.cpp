@@ -38,31 +38,30 @@
 #include <string>
 #include <iomanip>
 
+#include <marsyas/common_source.h>
+#include <marsyas/Collection.h>
+#include <marsyas/NumericLib.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/FileName.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/marsystems/MarSystemTemplateBasic.h>
+#include <marsyas/marsystems/MarSystemTemplateAdvanced.h>
+#include <marsyas/sched/EvValUpd.h>
 
-#include "common_source.h"
-#include "MarSystemManager.h"
-#include "CommandLineOptions.h"
-#include "FileName.h"
+#include <marsyas/marsystems/Spectrum2ACMChroma.h>
 
-#include "MarSystemTemplateBasic.h"
-#include "MarSystemTemplateAdvanced.h"
-#include "EvValUpd.h"
-#include "Collection.h"
-#include "NumericLib.h"
-
-#include "Spectrum2ACMChroma.h"
-#include "time.h"
+#include <time.h>
 
 #ifdef MARSYAS_MIDIIO
-#include "RtMidi.h"
+#include <RtMidi.h>
 #endif
 
 #ifdef MARSYAS_AUDIOIO
-#include "RtAudio.h"
+#include <RtAudio.h>
 #endif
 
 #ifdef MARSYAS_PNG
-#include "pngwriter.h"
+#include <pngwriter.h>
 #endif
 
 
@@ -6464,10 +6463,10 @@ toy_with_multichannel_merge(string sfName)
 
 }
 
-#include "maroxml.h"
-#include "marosvg.h"
-#include "marohtml.h"
-#include "marojson.h"
+#include <marsyas/maroxml.h>
+#include <marsyas/marosvg.h>
+#include <marsyas/marohtml.h>
+#include <marsyas/marojson.h>
 
 void toy_with_marostring(std::string format)
 {

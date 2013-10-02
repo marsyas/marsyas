@@ -17,7 +17,7 @@
 */
 
 #include "WHaSp.h"
-#include "peakView.h"
+#include <marsyas/peakView.h>
 #include "PeakFeatureSelect.h"
 #include "SelfSimilarityMatrix.h"
 #include "HWPS.h"

@@ -22,11 +22,11 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include "Collection.h"
-#include "MarSystemManager.h"
+#include <marsyas/Collection.h>
+#include <marsyas/system/MarSystemManager.h>
 #include "Accumulator.h"
 #include "Fanout.h"
-#include "CommandLineOptions.h"
+#include <marsyas/CommandLineOptions.h>
 
 #include <iostream>
 #include <string>

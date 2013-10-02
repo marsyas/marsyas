@@ -21,7 +21,7 @@
 // 8 SEP. 2008
 /////////////////////////////////
 #include "Metric2.h"
-#include "NumericLib.h"
+#include <marsyas/NumericLib.h>
 
 using std::ostringstream;
 using namespace Marsyas;

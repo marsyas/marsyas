@@ -19,7 +19,7 @@
 #ifndef MARSYAS_MIDIINPUT_H
 #define MARSYAS_MIDIINPUT_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 
 class RtMidiIn;

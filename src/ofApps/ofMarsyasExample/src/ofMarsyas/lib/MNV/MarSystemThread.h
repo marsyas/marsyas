@@ -11,7 +11,7 @@
 
 #include "ofMain.h"
 #include "GraphicalEnvironment.h"
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 
 namespace Marsyas {
 

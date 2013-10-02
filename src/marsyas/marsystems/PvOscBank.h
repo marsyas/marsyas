@@ -20,7 +20,7 @@
 #ifndef MARSYAS_OSCBANK_H
 #define MARSYAS_OSCBANK_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

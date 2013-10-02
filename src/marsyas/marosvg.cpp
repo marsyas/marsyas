@@ -17,7 +17,7 @@
 */
 
 
-#include "marosvg.h"
+#include <marsyas/marosvg.h>
 #include <sstream>
 #include <iostream>
 

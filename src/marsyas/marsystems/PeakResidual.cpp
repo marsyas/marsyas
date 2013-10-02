@@ -17,7 +17,7 @@
 */
 #include <iostream>
 
-#include "common_source.h"
+#include "../common_source.h"
 #include "PeakResidual.h"
 
 //#define MTLB_DBG_LOG

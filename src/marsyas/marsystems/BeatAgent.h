@@ -19,7 +19,7 @@
 #ifndef MARSYAS_BeatAgent_H
 #define MARSYAS_BeatAgent_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -51,8 +51,8 @@
 #include <cstdio>
 #include <vector>
 #include <limits>
-#include "common_header.h"
-#include "realvec.h"
+#include <marsyas/common_header.h>
+#include <marsyas/realvec.h>
 
 namespace Marsyas
 {

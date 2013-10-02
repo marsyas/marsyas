@@ -17,7 +17,7 @@
 */
 
 #include "Yin.h"
-#include "common_source.h"
+#include "../common_source.h"
 
 /*
   THIS MARSYSTEM IS VERY SIMILAR TO AUBIO_YIN, BUT DO NOT DELETE

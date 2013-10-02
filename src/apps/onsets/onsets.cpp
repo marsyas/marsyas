@@ -16,40 +16,35 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include <marsyas/common_source.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/FileName.h>
 
+#include <marsyas/marsystems/MarSystemTemplateBasic.h>
+#include <marsyas/marsystems/MarSystemTemplateAdvanced.h>
+#include <marsyas/marsystems/Spectrum2ACMChroma.h>
+#include <marsyas/sched/EvValUpd.h>
+#include <marsyas/Collection.h>
+#include <marsyas/NumericLib.h>
+
+
+#ifdef MARSYAS_MIDIIO
+#include <RtMidi.h>
+#endif
+
+#ifdef MARSYAS_PNG
+#include <pngwriter.h>
+#endif
 
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-
 #include <cstdio>
 #include <cstdlib>
 #include <string>
 #include <iomanip>
-
-#include "common_source.h"
-#include "MarSystemManager.h"
-#include "CommandLineOptions.h"
-#include "FileName.h"
-
-#include "MarSystemTemplateBasic.h"
-#include "MarSystemTemplateAdvanced.h"
-#include "EvValUpd.h"
-#include "Collection.h"
-#include "NumericLib.h"
-
-#include "Spectrum2ACMChroma.h"
-#include "time.h"
-
-#ifdef MARSYAS_MIDIIO
-#include "RtMidi.h"
-#endif
-
-#ifdef MARSYAS_PNG
-#include "pngwriter.h"
-#endif
-
+#include <time.h>
 
 using namespace std;
 using namespace Marsyas;

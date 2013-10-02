@@ -19,7 +19,7 @@
 #ifndef MARSYAS_CONVERSIONS_H
 #define MARSYAS_CONVERSIONS_H
 
-#include "common_header.h"
+#include <marsyas/common_header.h>
 
 #include <cmath>
 #include <string>

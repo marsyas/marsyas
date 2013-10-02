@@ -16,27 +16,20 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include <marsyas/common_source.h>
+#include <marsyas/Collection.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/marsystems/Accumulator.h>
+#include <marsyas/marsystems/Esitar.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/mididevices.h>
 
-
-
-#include "common_source.h"
 #include <cstdio>
 #include <cstdlib>
-#include "Collection.h"
-#include "MarSystemManager.h"
-#include "Accumulator.h"
-#include "Esitar.h"
-
-#include "CommandLineOptions.h"
-#include "mididevices.h"
-
-
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-
-
 
 using namespace std;
 using namespace Marsyas;

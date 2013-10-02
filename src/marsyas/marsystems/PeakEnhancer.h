@@ -21,7 +21,7 @@
 
 #define DEFAULT_ITNUM 1
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "HalfWaveRectifier.h"
 #include "Filter.h"
 

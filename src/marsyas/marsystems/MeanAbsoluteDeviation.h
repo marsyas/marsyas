@@ -19,7 +19,7 @@
 #ifndef MARSYAS_MEANABSOLUTEDEVIATION_H
 #define MARSYAS_MEANABSOLUTEDEVIATION_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

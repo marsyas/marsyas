@@ -20,7 +20,7 @@
 
 #include "MslModel.h"
 #include "SocketException.h"
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <vector>
 #include <string>

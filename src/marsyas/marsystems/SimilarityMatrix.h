@@ -1,7 +1,7 @@
 #ifndef MARSYAS_SIMILARITYMATRIX2_H
 #define MARSYAS_SIMILARITYMATRIX2_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "Metric.h"
 #include <vector>
 

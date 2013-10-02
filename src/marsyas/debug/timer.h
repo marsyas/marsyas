@@ -21,8 +21,8 @@
 #ifndef MARSYAS_DEBUG_TIMER_INCLUDED
 #define MARSYAS_DEBUG_TIMER_INCLUDED
 
-#include <common_source.h>
-#include <DLLDefines.h>
+#include <marsyas/common_source.h>
+#include <marsyas/export.h>
 
 #if defined(MARSYAS_LINUX)
 

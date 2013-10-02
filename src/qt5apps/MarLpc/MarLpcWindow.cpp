@@ -1,6 +1,6 @@
 #include "MarLpcWindow.h"
 
-#include <marsyas/core/MarSystemManager.h>
+#include <marsyas/system/MarSystemManager.h>
 
 #include <QLabel>
 #include <QGridLayout>

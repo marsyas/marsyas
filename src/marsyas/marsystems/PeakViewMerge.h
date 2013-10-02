@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PeakViewMerge_H
 #define MARSYAS_PeakViewMerge_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <fstream>
 #include <iostream>

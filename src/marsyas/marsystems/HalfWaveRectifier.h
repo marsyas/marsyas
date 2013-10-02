@@ -19,7 +19,7 @@
 #ifndef MARSYAS_HALFWAVERECTIFIER_H
 #define MARSYAS_HALFWAVERECTIFIER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -1,5 +1,5 @@
 #include "MarLpcWindow.h"
-#include "CommandLineOptions.h"
+#include <marsyas/CommandLineOptions.h>
 
 #include <QApplication>
 #include <math.h>

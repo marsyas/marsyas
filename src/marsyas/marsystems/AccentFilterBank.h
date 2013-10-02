@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ACCENTFILTERBANK_H
 #define MARSYAS_ACCENTFILTERBANK_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

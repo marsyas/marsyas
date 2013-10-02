@@ -16,7 +16,7 @@
 #include <QSizePolicy>
 #include <string>
 #include <iostream>
-#include <MarSystem.h>
+#include <marsyas/system/MarSystem.h>
 #include <MarSystemManager.h>
 #include "CanvasWidget.h"
 #include "MarSystemNodeFactory.h"

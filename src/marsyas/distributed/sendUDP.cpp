@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <iostream>
 #include <string>
-#include "Collection.h"
+#include <marsyas/Collection.h>
 #include "AuFileSource.h"
 #include "SocketException.h"
 #include "NetworkUDPSink.h"
@@ -11,13 +11,13 @@
 #include "Gain.h"
 #include "Spectrum.h"
 #include "InvSpectrum.h"
-#include "fft.h"
+#include <marsyas/fft.h>
 #include "AutoCorrelation.h"
 #include "Peaker.h"
 #include "SineSource.h"
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 #include "HalfWaveRectifier.h"
-#include "CommandLineOptions.h"
+#include <marsyas/CommandLineOptions.h>
 
 using namespace Marsyas;
 

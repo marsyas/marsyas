@@ -39,8 +39,8 @@
 
 #include <cstdio>
 #include "vamp-sdk/Plugin.h"
-#include "Collection.h"
-#include "MarSystemManager.h"
+#include <marsyas/Collection.h>
+#include <marsyas/system/MarSystemManager.h>
 
 
 /**

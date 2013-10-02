@@ -19,8 +19,8 @@
 #ifndef MARSYAS_ABSSOUNDFILESINK_H
 #define MARSYAS_ABSSOUNDFILESINK_H
 
-#include "common_header.h"
-#include "MarSystem.h"
+#include <marsyas/common_header.h>
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

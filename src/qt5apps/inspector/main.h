@@ -1,8 +1,8 @@
 #ifndef INSPECTOR_MAIN_CONTROLLER_INCLUDED
 #define INSPECTOR_MAIN_CONTROLLER_INCLUDED
 
-#include <MarSystem.h>
-#include <MarSystemManager.h>
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/system/MarSystemManager.h>
 
 #include <QObject>
 #include <QToolBar>

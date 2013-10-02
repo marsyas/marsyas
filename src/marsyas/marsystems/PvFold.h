@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PVFOLD_H
 #define MARSYAS_PVFOLD_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

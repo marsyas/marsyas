@@ -19,10 +19,10 @@
 #ifndef MARSYAS_WAVFILESINK_H
 #define MARSYAS_WAVFILESINK_H
 
-#include "common_header.h"
+#include <marsyas/common_header.h>
 #include "SoundFileSink.h"
 #include "WavFileSource.h"
-#include "FileName.h"
+#include <marsyas/FileName.h>
 #include "AbsSoundFileSink.h"
 
 namespace Marsyas

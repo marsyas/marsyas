@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SUBTRACT_H
 #define MARSYAS_SUBTRACT_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

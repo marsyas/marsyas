@@ -11,7 +11,7 @@
 
 #include "ofMain.h"
 #include "MarControl.h"
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 #include "BufferUtils.h"
 #include "Widget.h"
 #include "maximizeButton.h"

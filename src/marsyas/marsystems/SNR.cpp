@@ -17,7 +17,7 @@
 */
 
 #include "SNR.h"
-#include "common_source.h"
+#include "../common_source.h"
 
 using namespace std;
 using namespace Marsyas;

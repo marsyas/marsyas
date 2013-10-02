@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PITCHDIFF_H
 #define MARSYAS_PITCHDIFF_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

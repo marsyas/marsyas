@@ -20,10 +20,10 @@
 
 #include <cstdio>
 
-#include "Collection.h"
-#include "MarSystemManager.h"
+#include <marsyas/Collection.h>
+#include <marsyas/system/MarSystemManager.h>
 #include "Messager.h"
-#include "CommandLineOptions.h"
+#include <marsyas/CommandLineOptions.h>
 
 #include <string>
 

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SKEWNESS_H
 #define MARSYAS_SKEWNESS_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

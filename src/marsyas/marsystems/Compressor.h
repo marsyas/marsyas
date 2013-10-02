@@ -22,7 +22,7 @@
 
 #include <cmath>
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -18,7 +18,7 @@
 
 #include "BICchangeDetector.h"
 #include "Memory.h"
-#include "NumericLib.h"
+#include <marsyas/NumericLib.h>
 
 
 using std::ostringstream;

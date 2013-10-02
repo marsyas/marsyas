@@ -21,17 +21,19 @@
    bextract: batch feature extraction
 */
 
+#include <marsyas/Collection.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/marsystems/Accumulator.h>
+#include <marsyas/marsystems/Fanout.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/TimeLine.h>
+#include <marsyas/FileName.h>
+#include <marsyas/common_source.h>
+
 #include <cstdio>
 #include <cstdlib>
-#include "Collection.h"
-#include "MarSystemManager.h"
-#include "Accumulator.h"
-#include "Fanout.h"
-#include "CommandLineOptions.h"
-#include "TimeLine.h"
-#include "FileName.h"
-#include "common_source.h"
 #include <string>
+
 using namespace std;
 using namespace Marsyas;
 

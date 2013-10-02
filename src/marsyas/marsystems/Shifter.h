@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SHIFTER_H
 #define MARSYAS_SHIFTER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

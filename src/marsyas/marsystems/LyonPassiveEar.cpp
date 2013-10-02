@@ -18,13 +18,13 @@
 
 
 #include "LyonPassiveEar.h"
-#include "common_source.h"
+#include "../common_source.h"
 
 #include "Series.h"
 #include "Filter.h"
 #include "Cascade.h"
 #include "HalfWaveRectifier.h"
-#include "basis.h"
+#include <marsyas/basis.h>
 #include <sstream>
 
 using std::ostringstream;

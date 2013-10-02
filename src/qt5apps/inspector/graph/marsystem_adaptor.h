@@ -3,7 +3,7 @@
 
 #include "marsyas_qml.h"
 
-#include <MarSystem.h>
+#include <marsyas/system/MarSystem.h>
 
 #include <QObject>
 #include <QVariant>

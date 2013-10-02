@@ -1,7 +1,7 @@
 #ifndef MARSYAS_AVERAGINGPATTERN_H
 #define MARSYAS_AVERAGINGPATTERN_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

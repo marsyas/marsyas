@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "marostring.h"
+#include <marsyas/marostring.h>
 
 
 namespace Marsyas

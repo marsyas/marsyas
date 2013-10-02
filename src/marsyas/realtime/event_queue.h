@@ -19,9 +19,9 @@
 #ifndef MARSYAS_THREAD_EVENT_QUEUE_INCLUDED
 #define MARSYAS_THREAD_EVENT_QUEUE_INCLUDED
 
-#include "MarControl.h"
-#include "any.h"
-#include "queue.h"
+#include <marsyas/system/MarControl.h>
+#include <marsyas/realtime/any.h>
+#include <marsyas/realtime/queue.h>
 
 #include <atomic>
 #include <list>

@@ -17,7 +17,7 @@
 */
 
 #include "ADSR.h"
-#include "common_source.h"
+#include "../common_source.h"
 
 
 using namespace Marsyas;

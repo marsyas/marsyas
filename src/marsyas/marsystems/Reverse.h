@@ -19,7 +19,7 @@
 #ifndef MARSYAS_REVERSE_H
 #define MARSYAS_REVERSE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

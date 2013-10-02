@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PEAKPERIODS2BPM_H
 #define MARSYAS_PEAKPERIODS2BPM_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

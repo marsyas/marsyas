@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PECONVERT2_H
 #define MARSYAS_PECONVERT2_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

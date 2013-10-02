@@ -15,9 +15,9 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include "Collection.h"
-#include "MarSystemManager.h"
-#include "CommandLineOptions.h"
+#include <marsyas/Collection.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/CommandLineOptions.h>
 
 using namespace std;
 using namespace Marsyas;

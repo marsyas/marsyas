@@ -17,7 +17,7 @@
 */
 
 #include "AMDF.h"
-#include "common_source.h"
+#include "../common_source.h"
 
 
 using std::ostringstream;

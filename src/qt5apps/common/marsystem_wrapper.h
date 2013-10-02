@@ -20,10 +20,10 @@
 #define MARSYASQT_QTMARSYSTEM_INCLUDED
 
 #include "marsyasqt_common.h"
-#include "realtime/runner.h"
-#include "realtime/any.h"
+#include <marsyas/realtime/runner.h>
+#include <marsyas/realtime/any.h>
 
-#include <realvec.h>
+#include <marsyas/realvec.h>
 
 #include <QObject>
 #include <QString>

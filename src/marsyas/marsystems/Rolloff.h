@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ROLLOFF_H
 #define MARSYAS_ROLLOFF_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

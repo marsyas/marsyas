@@ -27,7 +27,7 @@
 	- \b mrs_real/resonances	: resonances of the filtersn
 */
 
-#include "common_source.h"
+#include "../common_source.h"
 #include "PhiSEMFilter.h"
 
 

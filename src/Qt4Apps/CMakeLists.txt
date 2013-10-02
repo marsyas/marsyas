@@ -1,8 +1,5 @@
 ## global includes
-include_directories(${CMAKE_SOURCE_DIR}/src/marsyasqt/)
-include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/core/)
-include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/marsystems/)
-include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/optional/)
+include_directories(${CMAKE_SOURCE_DIR}/src)
 
 set(APP_LIBS marsyas ${OS_LIBS} ${QT_LIBRARIES})
 if(MARSYAS_OPENGL)

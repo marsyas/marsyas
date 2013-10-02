@@ -16,6 +16,16 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include <marsyas/common_source.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/Conversions.h>
+#include <marsyas/FileName.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/marsystems/PeakFeatureSelect.h>
+#include <marsyas/marsystems/SelfSimilarityMatrix.h>
+
+//[TODO]
+//#include <marsyas/PeUtilities.h>
 
 #include <cstdio>
 #include <cstdlib>
@@ -23,17 +33,6 @@
 #include <iomanip>
 #include <ctime>
 #include <string>
-
-#include "common_source.h"
-#include "MarSystemManager.h"
-#include "Conversions.h"
-#include "FileName.h"
-#include "CommandLineOptions.h"
-#include "PeakFeatureSelect.h"
-#include "SelfSimilarityMatrix.h"
-
-//[TODO]
-//#include "PeUtilities.h"
 
 using namespace std;
 using namespace Marsyas;

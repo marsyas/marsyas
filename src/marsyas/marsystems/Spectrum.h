@@ -19,8 +19,8 @@
 #ifndef MARSYAS_SPECTRUM_H
 #define MARSYAS_SPECTRUM_H
 
-#include "MarSystem.h"
-#include "fft.h"
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/fft.h>
 
 namespace Marsyas
 {

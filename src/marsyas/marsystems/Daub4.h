@@ -19,7 +19,7 @@
 #ifndef MARSYAS_DAUB4_H
 #define MARSYAS_DAUB4_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "WaveletStep.h"
 
 namespace Marsyas

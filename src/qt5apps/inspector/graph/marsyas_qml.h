@@ -1,8 +1,8 @@
 #ifndef MARSYAS_QML_COMMON_INCLUDED
 #define MARSYAS_QML_COMMON_INCLUDED
 
-#include <MarSystem.h>
-#include <MarControl.h>
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/system/MarControl.h>
 #include <QMetaType>
 #include <QString>
 #include <QVariant>

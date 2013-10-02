@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PITCH2CHROMA_H
 #define MARSYAS_PITCH2CHROMA_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

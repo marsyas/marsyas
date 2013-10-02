@@ -19,7 +19,7 @@
 #ifndef MARSYAS_GMMCLASSIFIER_H
 #define MARSYAS_GMMCLASSIFIER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include <vector>
 
 namespace Marsyas

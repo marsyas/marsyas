@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SimulMaskingFft_H
 #define MARSYAS_SimulMaskingFft_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

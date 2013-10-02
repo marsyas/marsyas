@@ -19,7 +19,7 @@
 #ifndef MARSYAS_Resample_H
 #define MARSYAS_Resample_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 
 #include "ResampleLinear.h"

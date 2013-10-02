@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SELECTOR_H
 #define MARSYAS_SELECTOR_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

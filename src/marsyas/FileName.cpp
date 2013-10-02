@@ -18,13 +18,13 @@
 
 
 
-#include "common_source.h"
+#include <marsyas/common_source.h>
 
 #ifdef MARSYAS_WIN32
 #include <io.h>
 #endif
 
-#include "FileName.h"
+#include <marsyas/FileName.h>
 
 using std::ostringstream;
 using std::max;

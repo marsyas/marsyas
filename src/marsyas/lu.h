@@ -16,7 +16,7 @@
 #if !defined(_LU_CPP_)
 #define _LU_CPP_
 
-#include "basis.h"
+#include <marsyas/basis.h>
 #include "vmblock.h"
 
 #define NMAX 100

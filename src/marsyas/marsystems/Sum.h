@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SUM_H
 #define MARSYAS_SUM_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

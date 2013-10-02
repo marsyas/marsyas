@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SOUNDFILESINK_H
 #define MARSYAS_SOUNDFILESINK_H
 
-#include "realvec.h"
+#include <marsyas/realvec.h>
 #include "AuFileSink.h"
 #include "WavFileSink.h"
 

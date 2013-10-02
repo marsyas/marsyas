@@ -24,7 +24,7 @@
 #include <windows.h>
 #endif
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

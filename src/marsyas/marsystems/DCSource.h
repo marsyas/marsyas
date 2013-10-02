@@ -20,7 +20,7 @@
 #ifndef MARSYAS_DCSOURCE_H
 #define MARSYAS_DCSOURCE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <cstdio>
 #include <cmath>

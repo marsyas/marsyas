@@ -19,7 +19,7 @@
 #ifndef MARSYAS_DELAY_H
 #define MARSYAS_DELAY_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_LSP_H
 #define MARSYAS_LSP_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

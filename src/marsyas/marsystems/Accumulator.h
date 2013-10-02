@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ACCUMULATOR_H
 #define MARSYAS_ACCUMULATOR_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -16,10 +16,10 @@
 #include <sstream>
 #include <map>
 
-#include "Collection.h"
+#include <marsyas/Collection.h>
 #include "MrsDoctor.h"
-#include "MarSystemManager.h"
-#include "CommandLineOptions.h"
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/CommandLineOptions.h>
 #include "SocketException.h"
 
 using namespace std;

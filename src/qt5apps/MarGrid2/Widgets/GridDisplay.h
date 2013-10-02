@@ -19,8 +19,8 @@
 #include <QApplication>
 #include <QToolTip>
 
-#include "MarSystemManager.h"
-#include "Collection.h"
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/Collection.h>
 
 #include "../Music/MusicCollection.h"
 #include "../Colormaps/Colormap.h"

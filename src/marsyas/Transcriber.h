@@ -1,7 +1,7 @@
 #ifndef MARSYAS_TRANSCRIBER_H
 #define MARSYAS_TRANSCRIBER_H
 
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 #include "TranscriberExtract.h"
 //using namespace std;
 namespace Marsyas

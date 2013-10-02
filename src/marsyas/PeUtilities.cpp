@@ -16,15 +16,15 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "PeUtilities.h"
+#include <marsyas/PeUtilities.h>
 
 #ifdef MARSYAS_AUDIOIO
 #include "AudioSink.h"
 #endif
 
-#include "SoundFileSink.h"
-#include "SoundFileSource.h"
-#include "NumericLib.h"
+#include <marsyas/marsystems/SoundFileSink.h>
+#include <marsyas/marsystems/SoundFileSource.h>
+#include <marsyas/NumericLib.h>
 
 using std::ostringstream;
 using std::abs;

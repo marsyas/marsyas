@@ -5,7 +5,7 @@
 #include "realvec_edit.h"
 #include "../common/marsystem_wrapper.h"
 
-#include <marsyas/core/MarSystem.h>
+#include <marsyas/system/MarSystem.h>
 
 #include <QMainWindow>
 #include <QSlider>

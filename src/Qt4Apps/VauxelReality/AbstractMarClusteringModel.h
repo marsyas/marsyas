@@ -4,7 +4,7 @@
 
 #include <QObject>
 
-#include "realvec.h"
+#include <marsyas/realvec.h>
 
 class AbstractMarClusteringModel : public QObject
 {

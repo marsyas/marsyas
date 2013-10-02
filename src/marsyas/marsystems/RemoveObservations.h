@@ -19,7 +19,7 @@
 #ifndef MARSYAS_REMOVEOBSERVATIONS_H
 #define MARSYAS_REMOVEOBSERVATIONS_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

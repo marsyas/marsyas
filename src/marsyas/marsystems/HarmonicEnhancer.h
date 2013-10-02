@@ -19,7 +19,7 @@
 #ifndef MARSYAS_HARMONICENHANCER_H
 #define MARSYAS_HARMONICENHANCER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include <cfloat>
 
 namespace Marsyas

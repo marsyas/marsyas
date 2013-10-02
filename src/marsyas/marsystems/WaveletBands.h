@@ -19,7 +19,7 @@
 #ifndef MARSYAS_WAVELETBANDS_H
 #define MARSYAS_WAVELETBANDS_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "WaveletPyramid.h"
 
 namespace Marsyas

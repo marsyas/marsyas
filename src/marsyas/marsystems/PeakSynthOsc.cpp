@@ -17,7 +17,7 @@
 */
 
 #include "PeakSynthOsc.h"
-#include "peakView.h"
+#include <marsyas/peakView.h>
 
 using std::ostringstream;
 using namespace Marsyas;

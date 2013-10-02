@@ -19,7 +19,7 @@
 #ifndef MARSYAS_APDELAYOSC_H
 #define MARSYAS_APDELAYOSC_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -11,7 +11,7 @@
 
 #include <cstdio>
 #include <sys/time.h>
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 // #include "Messager.h"
 
 #include <string>

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_WAVELETPYRAMID_H
 #define MARSYAS_WAVELETPYRAMID_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "Daub4.h"
 
 namespace Marsyas

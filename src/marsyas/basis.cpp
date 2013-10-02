@@ -6,7 +6,7 @@
 * "Numerical Algorithms with C, by Gisela Engeln-Muellges *
 *  and Frank Uhlig, Springer-Verlag, 1996".               *
 **********************************************************/
-#include "basis.h"
+#include <marsyas/basis.h>
 
 REAL sqr(REAL x)                    /* square a floating point number */
 /***********************************************************************

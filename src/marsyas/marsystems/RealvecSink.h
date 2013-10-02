@@ -19,7 +19,7 @@
 #ifndef MARSYAS_REALVECSINK_H
 #define MARSYAS_REALVECSINK_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <fstream>
 #include <iostream>

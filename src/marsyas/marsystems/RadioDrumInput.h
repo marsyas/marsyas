@@ -19,7 +19,7 @@
 #ifndef MARSYAS_RADIODRUMINPUT_H
 #define MARSYAS_RADIODRUMINPUT_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 class RtMidiIn;
 

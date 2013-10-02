@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PEAKVIEWSINK_H
 #define MARSYAS_PEAKVIEWSINK_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <fstream>
 #include <iostream>

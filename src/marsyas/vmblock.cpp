@@ -6,7 +6,7 @@
  *  and Frank Uhlig, Springer-Verlag, 1996".               *
  **********************************************************/
 
-#include "common_source.h"
+#include <marsyas/common_source.h>
 #ifndef MARSYAS_MACOSX
 #include <malloc.h>
 #else
@@ -17,7 +17,7 @@
 
 
 
-#include "basis.h"
+#include <marsyas/basis.h>
 #include "vmblock.h"
 /***********************************************************************
 *                                                                      *

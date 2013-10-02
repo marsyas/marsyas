@@ -16,8 +16,8 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "MarSystemManager.h"
-#include "common_source.h"
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/common_source.h>
 
 using namespace std;
 using namespace Marsyas;

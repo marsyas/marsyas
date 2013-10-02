@@ -19,7 +19,7 @@
 #ifndef MARSYAS_NOISESOURCE_H
 #define MARSYAS_NOISESOURCE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <cstdlib>
 

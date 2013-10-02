@@ -19,7 +19,7 @@
 #ifndef MARSYAS_MONO2STEREO_H
 #define MARSYAS_MONO2STEREO_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

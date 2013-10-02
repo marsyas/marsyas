@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PEAKER_H
 #define MARSYAS_PEAKER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

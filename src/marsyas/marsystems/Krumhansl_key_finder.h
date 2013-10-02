@@ -19,7 +19,7 @@
 #ifndef MARSYAS_KRUMHANSL_KEY_FINDER_H
 #define MARSYAS_KRUMHANSL_KEY_FINDER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

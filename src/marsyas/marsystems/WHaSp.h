@@ -19,7 +19,7 @@
 #ifndef MARSYAS_HWPSspectrum_H
 #define MARSYAS_HWPSspectrum_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "Series.h"
 
 namespace Marsyas

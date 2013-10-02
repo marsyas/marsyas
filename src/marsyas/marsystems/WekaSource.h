@@ -8,8 +8,8 @@
 #ifndef MARSYAS_newWEKASOURCE_H
 #define MARSYAS_newWEKASOURCE_H
 
-#include "MarSystem.h"
-#include "WekaData.h"
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/WekaData.h>
 #include <list>
 #include <vector>
 #include <iostream>

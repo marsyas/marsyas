@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SPECTRUM2ACMCHROMA_H
 #define MARSYAS_SPECTRUM2ACMCHROMA_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include <vector>
 
 namespace Marsyas

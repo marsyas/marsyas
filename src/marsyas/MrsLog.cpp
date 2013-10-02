@@ -16,10 +16,11 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include <marsyas/MrsLog.h>
+#include <marsyas/common_source.h>
+
 #include <iostream>
 #include <fstream>
-#include "MrsLog.h"
-#include "common_source.h"
 
 using std::ostringstream;
 using std::cout;

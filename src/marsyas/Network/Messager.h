@@ -37,7 +37,7 @@
 
 #include "Thread.h"
 #include "NetworkSocket.h"
-#include "common_source.h"
+#include <marsyas/common_source.h>
 
 #define RT_BUFFER_SIZE 512
 

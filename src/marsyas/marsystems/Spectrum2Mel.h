@@ -19,7 +19,7 @@
 #ifndef MARSYAS_Spectrum2Mel_H
 #define MARSYAS_Spectrum2Mel_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

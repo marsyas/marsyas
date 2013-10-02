@@ -17,7 +17,7 @@
 */
 
 #include "QGMMModel.h"
-#include "NumericLib.h"
+#include <marsyas/NumericLib.h>
 
 using namespace std;
 using namespace Marsyas;

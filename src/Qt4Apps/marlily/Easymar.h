@@ -1,7 +1,7 @@
 #ifndef MARSYAS_EASYMAR_H
 #define MARSYAS_EASYMAR_H
 
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 using namespace Marsyas;
 
 using namespace std;

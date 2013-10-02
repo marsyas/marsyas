@@ -19,21 +19,18 @@
 #ifndef MARSYAS_TALK_H
 #define MARSYAS_TALK_H
 
+#include <marsyas/marsystems/AbsMax.h>
+#include <marsyas/marsystems/SoundFileSource.h>
+#include <marsyas/marsystems/Series.h>
+#include <marsyas/marsystems/Accumulator.h>
+#include <marsyas/marsystems/AudioSink.h>
+#include <marsyas/TimeLine.h>
+#include "Communicator.h"
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "AbsMax.h"
-#include "SoundFileSource.h"
-#include "Series.h"
-#include "Accumulator.h"
-
 #include <string>
-
-#include "Communicator.h"
-#include "TimeLine.h"
-#include "SoundFileSource.h"
-#include "AudioSink.h"
 
 #define SEPCHARS " \t\n"
 #define UNSPECIFIED -1

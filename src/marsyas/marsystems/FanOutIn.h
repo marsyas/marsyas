@@ -19,7 +19,7 @@
 #ifndef MARSYAS_FanOutIn_H
 #define MARSYAS_FanOutIn_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

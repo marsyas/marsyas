@@ -19,9 +19,9 @@
 #ifndef MARSYAS_PEAKVIEW_H
 #define MARSYAS_PEAKVIEW_H
 
-#include "realvec.h"
+#include <marsyas/realvec.h>
 #include <vector>
-#include "DLLDefines.h"
+#include <marsyas/export.h>
 
 namespace Marsyas
 {

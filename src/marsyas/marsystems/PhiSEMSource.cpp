@@ -26,7 +26,7 @@
 */
 
 
-#include "common_source.h"
+#include "../common_source.h"
 #include "PhiSEMSource.h"
 
 using std::ostringstream;

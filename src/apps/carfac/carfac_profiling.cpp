@@ -26,11 +26,11 @@
 //
 
 #include <cstdio>
-#include "Collection.h"
-#include "FileName.h"
-#include "MarSystemManager.h"
-#include "CommandLineOptions.h"
-#include "common_source.h"
+#include <marsyas/Collection.h>
+#include <marsyas/FileName.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/common_source.h>
 #include "CARFAC.h"
 
 #ifdef MARSYAS_PNG

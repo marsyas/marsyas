@@ -21,9 +21,9 @@
 #define MARSYAS_AUDIOSINK_BLOCKING_H
 
 
-#include "common_header.h"
+#include <marsyas/common_header.h>
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 
 

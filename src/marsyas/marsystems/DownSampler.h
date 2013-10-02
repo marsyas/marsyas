@@ -19,7 +19,7 @@
 #ifndef MARSYAS_DOWNSAMPLER_H
 #define MARSYAS_DOWNSAMPLER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

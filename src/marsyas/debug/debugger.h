@@ -19,10 +19,9 @@
 #ifndef MARSYAS_DEBUG_DEBUGGER_INCLUDED
 #define MARSYAS_DEBUG_DEBUGGER_INCLUDED
 
-#include "record.h"
-
-#include <MarSystem.h>
-#include <DLLDefines.h>
+#include <marsyas/debug/record.h>
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/export.h>
 
 namespace Marsyas { namespace Debug {
 

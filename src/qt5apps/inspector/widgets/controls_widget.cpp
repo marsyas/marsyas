@@ -1,6 +1,6 @@
 #include "controls_widget.h"
 
-#include <MarControl.h>
+#include <marsyas/system/MarControl.h>
 
 #include <QDebug>
 #include <QVBoxLayout>

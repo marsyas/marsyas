@@ -19,7 +19,7 @@
 #ifndef MARSYAS_NORMMINMAX_H
 #define MARSYAS_NORMMINMAX_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <cfloat>
 

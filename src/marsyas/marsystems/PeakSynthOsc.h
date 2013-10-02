@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PESYNOSC_H
 #define MARSYAS_PESYNOSC_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

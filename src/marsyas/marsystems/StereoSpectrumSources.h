@@ -20,7 +20,7 @@
 #ifndef MARSYAS_STEREOSPECTRUMSOURCES_H
 #define MARSYAS_STEREOSPECTRUMSOURCES_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

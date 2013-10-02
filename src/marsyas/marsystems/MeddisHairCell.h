@@ -19,7 +19,7 @@
 #ifndef MARSYAS_MEDDISHAIRCELL_H
 #define MARSYAS_MEDDISHAIRCELL_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

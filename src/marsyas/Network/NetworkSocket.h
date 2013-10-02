@@ -33,8 +33,8 @@
 #define MSG_WAITALL NULL  // HACK HACK NOT SURE IF IT WORKS [!] macro redefinition => Winsock2.h
 #endif
 
-#include "MarSystem.h"
-#include "common_source.h"
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/common_source.h>
 
 #define MAXCONNECT 1
 

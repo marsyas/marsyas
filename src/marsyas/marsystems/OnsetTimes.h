@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ONSETTIMES_H
 #define MARSYAS_ONSETTIMES_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

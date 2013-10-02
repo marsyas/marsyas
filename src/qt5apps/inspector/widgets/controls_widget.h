@@ -19,7 +19,7 @@
 #ifndef MARSYAS_INSPECTOR_CONTROLS_LIST_WIDGET_INCLUDED
 #define MARSYAS_INSPECTOR_CONTROLS_LIST_WIDGET_INCLUDED
 
-#include <MarSystem.h>
+#include <marsyas/system/MarSystem.h>
 
 #include <QTreeWidget>
 #include <QLineEdit>

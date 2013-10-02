@@ -19,7 +19,7 @@
 #ifndef MARSYAS_CSVFILESOURCE_H
 #define MARSYAS_CSVFILESOURCE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <cstdlib>
 #include <cstring>

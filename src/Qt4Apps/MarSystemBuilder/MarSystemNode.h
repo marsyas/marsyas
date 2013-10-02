@@ -11,8 +11,8 @@
 #define MARSYSTEMNODE_H
 
 #include <QtGui>
-#include "MarSystemManager.h"
-#include "MarSystem.h"
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/system/MarSystem.h>
 #include <string>
 using namespace Marsyas;
 

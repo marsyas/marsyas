@@ -17,7 +17,7 @@
 */
 
 #include "Product.h"
-#include "common_source.h"
+#include "../common_source.h"
 
 #include <iostream>
 

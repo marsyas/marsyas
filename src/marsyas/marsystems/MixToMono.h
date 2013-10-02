@@ -19,7 +19,7 @@
 #ifndef MARSYAS_MIXTOMONO_H
 #define MARSYAS_MIXTOMONO_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

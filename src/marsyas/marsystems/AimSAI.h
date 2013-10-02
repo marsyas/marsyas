@@ -19,14 +19,13 @@
 #ifndef MARSYAS_AIMSAI_H
 #define MARSYAS_AIMSAI_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/StrobeList.h>
 
 // sness - TODO - Eventually make these realvecs.  However, in the
 // existing code there is quite a bit of stuff that involves STL
 // methods, so I thought it would be safer to use STL for now.
 #include <vector>
-#include "StrobeList.h"
-#include "ERBTools.h"
 
 namespace Marsyas
 {

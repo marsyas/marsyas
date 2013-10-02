@@ -17,13 +17,13 @@
 */
 #include <algorithm>
 
-#include "common_source.h"
-#include "common_header.h"
+#include "../common_source.h"
+#include <marsyas/common_header.h>
 #include "PeakConvert2.h"
 #include "Peaker.h"
 #include "MaxArgMax.h"
 #include "SimulMaskingFft.h"
-#include "peakView.h"
+#include <marsyas/peakView.h>
 
 
 //#define MTLB_DBG_LOG

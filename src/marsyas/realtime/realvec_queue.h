@@ -19,7 +19,7 @@
 #ifndef MARSYAS_REALVEC_QUEUE_INCLUDED
 #define MARSYAS_REALVEC_QUEUE_INCLUDED
 
-#include <realvec.h>
+#include <marsyas/realvec.h>
 
 #include <cassert>
 #include <atomic>

@@ -16,14 +16,14 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "common_source.h"
-#include "NumericLib.h"
+#include <marsyas/common_source.h>
+#include <marsyas/NumericLib.h>
 
 //*************************************************************
 // Includes for determinant calculation (adapted from):
 // http://perso.wanadoo.fr/jean-pierre.moreau/c_matrices.html
 //*************************************************************
-#include "basis.h"
+#include <marsyas/basis.h>
 #include "vmblock.h"
 #include "lu.h"
 //*************************************************************

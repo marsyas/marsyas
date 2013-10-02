@@ -18,9 +18,9 @@
 */
 
 #include "LSP.h"
-#include "common_source.h"
+#include "../common_source.h"
 
-#include "NumericLib.h"
+#include <marsyas/NumericLib.h>
 
 #include <algorithm>
 #include <vector>

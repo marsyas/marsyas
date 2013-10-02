@@ -19,7 +19,7 @@
 #ifndef MARSYAS_RESAMPLENEARESTNEIGHBOUR_H
 #define MARSYAS_RESAMPLENEARESTNEIGHBOUR_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

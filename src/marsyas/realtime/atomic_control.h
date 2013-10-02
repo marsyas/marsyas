@@ -19,12 +19,12 @@
 #ifndef MARSYAS_THREAD_ATOMIC_CONTROL_INCLUDED
 #define MARSYAS_THREAD_ATOMIC_CONTROL_INCLUDED
 
-#include "any.h"
-#include "stage.h"
+#include <marsyas/realtime/any.h>
+#include <marsyas/realtime/stage.h>
 
-#include <common_header.h>
-#include <realvec.h>
-#include <MarControl.h>
+#include <marsyas/common_header.h>
+#include <marsyas/realvec.h>
+#include <marsyas/system/MarControl.h>
 
 #include <atomic>
 #include <string>

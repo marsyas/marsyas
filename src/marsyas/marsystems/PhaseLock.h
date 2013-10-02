@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PHASELOCK_H
 #define MARSYAS_PHASELOCK_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include <string.h>
 using namespace std;
 

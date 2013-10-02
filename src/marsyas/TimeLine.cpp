@@ -16,8 +16,8 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "TimeLine.h"
-#include "common_source.h"
+#include <marsyas/TimeLine.h>
+#include <marsyas/common_source.h>
 
 using namespace std;
 using namespace Marsyas;

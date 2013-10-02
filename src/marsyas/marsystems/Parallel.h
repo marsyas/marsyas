@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PARALLEL_H
 #define MARSYAS_PARALLEL_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

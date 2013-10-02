@@ -19,7 +19,7 @@
 #ifndef MARSYAS_FLOWTHRU_H
 #define MARSYAS_FLOWTHRU_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

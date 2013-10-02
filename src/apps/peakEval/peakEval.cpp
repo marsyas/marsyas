@@ -3,12 +3,12 @@
 #include<iostream>
 #include<iomanip>
 
-#include "CommandLineOptions.h"
-#include "Collection.h"
-#include "FileName.h"
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/Collection.h>
+#include <marsyas/FileName.h>
 
-//#include "PeUtilities.h"
-#include "peakView.h"
+//#include <marsyas/PeUtilities.h>
+#include <marsyas/peakView.h>
 
 using namespace std;
 using namespace Marsyas;

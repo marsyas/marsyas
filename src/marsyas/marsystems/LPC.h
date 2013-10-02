@@ -20,7 +20,7 @@
 #ifndef MARSYAS_LPC_H
 #define MARSYAS_LPC_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

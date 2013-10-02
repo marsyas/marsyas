@@ -19,7 +19,7 @@
 #ifndef MARSYAS_CHROMAFILTER_H
 #define MARSYAS_CHROMAFILTER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "Fanout.h"
 
 namespace Marsyas

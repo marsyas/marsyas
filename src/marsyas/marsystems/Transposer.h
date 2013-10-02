@@ -19,7 +19,7 @@
 #ifndef MARSYAS_TRANSPOSER_H
 #define MARSYAS_TRANSPOSER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

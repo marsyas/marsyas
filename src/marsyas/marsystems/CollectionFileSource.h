@@ -21,7 +21,7 @@
 
 #include "AbsSoundFileSource.h"
 #include "SoundFileSource.h"
-#include "Collection.h"
+#include <marsyas/Collection.h>
 #include "DownSampler.h"
 
 namespace Marsyas

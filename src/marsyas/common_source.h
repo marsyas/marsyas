@@ -20,7 +20,7 @@
 #include <sys/types.h>
 #include <complex>
 #include <limits>
-#include "MrsLog.h"
+#include <marsyas/MrsLog.h>
 
 
 /************************************************************************/

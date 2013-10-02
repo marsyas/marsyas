@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PECLUSTERSELECT_H
 #define MARSYAS_PECLUSTERSELECT_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <cstdlib>
 

@@ -19,17 +19,18 @@
 #ifndef MARSYAS_MRSLOG_H
 #define MARSYAS_MRSLOG_H 1
 
+#include <marsyas/common_header.h>
+#include <marsyas/export.h>
+
 #include <sstream>
 #include <string>
 #include <cstdlib>
-#include "DLLDefines.h"
-#include "common_header.h"
 
 namespace Marsyas
 {
 /**
 \class MrsLog
-	\ingroup Special
+\ingroup Special
 \brief Logging Class
 
 Logging class for diagnostic, warning, error, debug, etc messages. Can output

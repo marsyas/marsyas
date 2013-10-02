@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ONEPOLE_H
 #define MARSYAS_ONEPOLE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PVCONVERT_H
 #define MARSYAS_PVCONVERT_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_REALVECSOURCE_H
 #define MARSYAS_REALVECSOURCE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

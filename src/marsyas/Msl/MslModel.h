@@ -19,9 +19,9 @@
 #ifndef MARSYAS_MSLMODEL_H
 #define MARSYAS_MSLMODEL_H
 
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 #include "MarControl.h"
-#include "common_source.h"
+#include <marsyas/common_source.h>
 
 namespace Marsyas
 {

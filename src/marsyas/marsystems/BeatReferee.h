@@ -20,7 +20,7 @@
 #define MARSYAS_BEATREFEREE_H
 
 #include <time.h>
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

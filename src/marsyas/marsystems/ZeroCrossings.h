@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ZEROCROSSINGS_H
 #define MARSYAS_ZEROCROSSINGS_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

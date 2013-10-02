@@ -20,7 +20,7 @@
 #ifndef MARSYAS_MEMORYSOURCE_H
 #define MARSYAS_MEMORYSOURCE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

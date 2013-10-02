@@ -19,10 +19,10 @@
 #ifndef MARSYAS_THREAD_SYSTEM_INCLUDED
 #define MARSYAS_THREAD_SYSTEM_INCLUDED
 
-#include "event_queue.h"
-#include "atomic_control.h"
-#include "any.h"
-#include "MarSystem.h"
+#include <marsyas/realtime/event_queue.h>
+#include <marsyas/realtime/atomic_control.h>
+#include <marsyas/realtime/any.h>
+#include <marsyas/system/MarSystem.h>
 
 #include <thread>
 #include <atomic>

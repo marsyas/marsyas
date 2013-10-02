@@ -1,4 +1,4 @@
-#include "WekaData.h"
+#include <marsyas/WekaData.h>
 
 using namespace std;
 using namespace Marsyas;

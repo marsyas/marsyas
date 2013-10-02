@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include <cstdlib>
-#include "MarSystemManager.h"
-#include "Collection.h"
-#include "FileName.h"
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/Collection.h>
+#include <marsyas/FileName.h>
 
 #define CLOSE_ENOUGH 0.0001
 

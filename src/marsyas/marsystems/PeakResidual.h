@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PERESIDUAL_H
 #define MARSYAS_PERESIDUAL_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

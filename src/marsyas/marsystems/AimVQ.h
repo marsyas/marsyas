@@ -19,7 +19,7 @@
 #ifndef MARSYAS_AIMVQ_H
 #define MARSYAS_AIMVQ_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #ifdef MARSYAS_ANN
 #include "ANN.h"

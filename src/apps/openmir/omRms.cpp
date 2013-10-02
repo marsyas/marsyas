@@ -8,13 +8,13 @@
 #include <vector>
 #include <string>
 
-#include "common_source.h"
-#include "MarSystemManager.h"
-#include "CommandLineOptions.h"
-#include "FileName.h"
+#include <marsyas/common_source.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/FileName.h>
 
-#include "MarSystemTemplateBasic.h"
-#include "MarSystemTemplateAdvanced.h"
+#include <marsyas/marsystems/MarSystemTemplateBasic.h>
+#include <marsyas/marsystems/MarSystemTemplateAdvanced.h>
 
 using namespace std;
 using namespace Marsyas;

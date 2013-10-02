@@ -10,7 +10,7 @@
 #ifndef MARSYAS_BUFFER_UTILS_H
 #define MARSYAS_BUFFER_UTILS_H
 
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 
 namespace Marsyas {
 

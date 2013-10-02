@@ -19,7 +19,7 @@
 #ifndef MARSYAS_TRIANGULAR_FILTERBANK_H
 #define MARSYAS_TRIANGULAR_FILTERBANK_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 
 namespace Marsyas

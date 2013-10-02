@@ -15,7 +15,7 @@
 
 #undef PI //FIXME: lmartins!!!
 
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 
 #include "GraphicalParameters.h"
 

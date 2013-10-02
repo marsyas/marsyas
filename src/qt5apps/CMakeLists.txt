@@ -7,8 +7,6 @@ if(MARSYAS_OPENGL)
 endif()
 
 include_directories( ${CMAKE_SOURCE_DIR}/src/ )
-include_directories( ${CMAKE_SOURCE_DIR}/src/marsyas/ )
-include_directories( ${CMAKE_SOURCE_DIR}/src/marsyas/core )
 
 add_subdirectory(common)
 

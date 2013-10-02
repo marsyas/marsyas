@@ -19,7 +19,7 @@
 #ifndef MARSYAS_MIDIOUTPUT_H
 #define MARSYAS_MIDIOUTPUT_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 class RtMidiOut;
 

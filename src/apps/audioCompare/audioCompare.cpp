@@ -18,10 +18,10 @@
 
 
 
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 using namespace Marsyas;
 using namespace std;
-#include "common_source.h"
+#include <marsyas/common_source.h>
 
 #define CLOSE_ENOUGH 0.0001
 

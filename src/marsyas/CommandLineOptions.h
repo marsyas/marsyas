@@ -20,7 +20,7 @@
 #ifndef MARSYAS_COMMANDLINEOPTIONS_H
 #define MARSYAS_COMMANDLINEOPTIONS_H
 
-#include "common_header.h"
+#include <marsyas/common_header.h>
 
 #include <vector>
 #include <string>

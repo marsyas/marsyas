@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ANN_NODE_H
 #define MARSYAS_ANN_NODE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

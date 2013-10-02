@@ -17,7 +17,7 @@
 */
 
 
-#include "common_source.h"
+#include "../common_source.h"
 #include "BeatHistoFeatures.h"
 #include <algorithm>
 #include <iterator>

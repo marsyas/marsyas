@@ -19,7 +19,7 @@
 #ifndef MARSYAS_MARSYSTEMTEMPLATEBASIC_H
 #define MARSYAS_MARSYSTEMTEMPLATEBASIC_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

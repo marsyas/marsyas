@@ -19,8 +19,8 @@
 #ifndef BICCHANGEDETECTOR_H
 #define BICCHANGEDETECTOR_H
 
-#include "MarSystem.h"
-#include "QGMMModel.h"
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/QGMMModel.h>
 #include <time.h>
 
 namespace Marsyas

@@ -18,7 +18,7 @@
 
 
 
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 
 #include <string>
 #include <iostream>

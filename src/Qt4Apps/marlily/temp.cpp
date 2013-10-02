@@ -1,4 +1,4 @@
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 #include "math.h"
 using namespace Marsyas;
 using namespace std;

@@ -29,13 +29,13 @@
 #include <QPoint>
 #include <QPixmap>
 #include <QWidget>
-#include "Collection.h"
+#include <marsyas/Collection.h>
 #include "ColorMap.h"
 
 class QDragEnterEvent;
 class QDropEvent;
 class QMouseEvent;
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 #include "MarSystemQtWrapper.h"
 
 

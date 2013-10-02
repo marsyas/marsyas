@@ -20,7 +20,7 @@
 #define MARSYAS_VIBRATO_H
 
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

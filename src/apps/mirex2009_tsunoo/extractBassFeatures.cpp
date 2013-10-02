@@ -1,7 +1,7 @@
-#include "MarSystemManager.h"
-#include "ConstQFiltering.h"
-#include "MatchBassModel.h"
-#include "Collection.h"
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/marsystems/ConstQFiltering.h>
+#include <marsyas/marsystems/MatchBassModel.h>
+#include <marsyas/Collection.h>
 #include <vector>
 
 using namespace std;

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PVCONVOLVE_H
 #define MARSYAS_PVCONVOLVE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

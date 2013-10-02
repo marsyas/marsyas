@@ -19,8 +19,8 @@
 #ifndef MARSYAS_DEBUG_RECORD_INCLUDED
 #define MARSYAS_DEBUG_RECORD_INCLUDED
 
-#include <realvec.h>
-#include <DLLDefines.h>
+#include <marsyas/realvec.h>
+#include <marsyas/export.h>
 
 #include <map>
 #include <string>

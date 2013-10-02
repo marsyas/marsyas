@@ -28,9 +28,6 @@ add_executable( inspector
 )
 
 include_directories( ${CMAKE_SOURCE_DIR}/src )
-include_directories( ${CMAKE_SOURCE_DIR}/src/marsyas/ )
-include_directories( ${CMAKE_SOURCE_DIR}/src/marsyas/core )
-include_directories( ${CMAKE_SOURCE_DIR}/src/marsyasqt/ )
 include_directories( ${CMAKE_SOURCE_DIR}/src/otherlibs/qwt )
 
 qt5_use_modules( inspector Quick Widgets )

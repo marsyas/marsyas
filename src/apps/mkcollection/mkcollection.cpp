@@ -30,10 +30,10 @@ Daniel German at UVic added recursive reading of subdirectories
 #include <cstring>
 #include <sys/stat.h>
 #include <assert.h>
-#include "common_source.h"
-#include "CommandLineOptions.h"
-#include "FileName.h"
-#include "Collection.h"
+#include <marsyas/common_source.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/FileName.h>
+#include <marsyas/Collection.h>
 #include <string>
 
 using namespace std;

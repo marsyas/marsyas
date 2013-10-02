@@ -17,7 +17,7 @@
  */
 
 #include "RunningStatistics.h"
-#include "common_source.h"
+#include "../common_source.h"
 
 #include <string>
 #include <sstream>

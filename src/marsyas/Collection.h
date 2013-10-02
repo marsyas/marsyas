@@ -24,7 +24,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "common_header.h"
+#include <marsyas/common_header.h>
 
 
 namespace Marsyas

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_CONFIDENCE_H
 #define MARSYAS_CONFIDENCE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <fstream>
 #include <iostream>

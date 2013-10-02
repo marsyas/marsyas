@@ -1,6 +1,6 @@
 #include <marsyas/CommandLineOptions.h>
-#include <marsyas/core/MarSystemManager.h>
-#include <marsyas/core/MarSystem.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/system/MarSystem.h>
 #include <marsyas/realtime/runner.h>
 
 #include <fstream>

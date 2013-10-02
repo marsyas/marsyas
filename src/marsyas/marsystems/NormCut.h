@@ -19,7 +19,7 @@
 #ifndef MARSYAS_NORMCUT_H
 #define MARSYAS_NORMCUT_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

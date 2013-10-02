@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QObject>
 #include <QWaitCondition>
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 #include "MarSystemQtWrapper.h"
 
 // #include "global.h"

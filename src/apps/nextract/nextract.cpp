@@ -27,10 +27,10 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
-#include "Collection.h"
-#include "MarSystemManager.h"
-#include "CommandLineOptions.h"
-#include "common_source.h"
+#include <marsyas/Collection.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/common_source.h>
 
 using namespace std;
 using namespace Marsyas;

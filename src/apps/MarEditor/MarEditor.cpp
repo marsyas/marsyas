@@ -29,8 +29,8 @@
 #include <fstream>
 
 //Marsyas0.2
-#include "MarSystemManager.h"
-#include "MarSystem.h"
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/system/MarSystem.h>
 
 #ifdef MARSYAS_MATLAB
 #include "MATLABengine.h"

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_STRETCHLINEAR_H
 #define MARSYAS_STRETCHLINEAR_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

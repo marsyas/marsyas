@@ -16,8 +16,8 @@
 #include <QWaitCondition>
 #include <QTimer>
 #include <QMetaType>
-#include "common_source.h"
-#include "MarSystemManager.h"
+#include <marsyas/common_source.h>
+#include <marsyas/system/MarSystemManager.h>
 
 
 using namespace std;

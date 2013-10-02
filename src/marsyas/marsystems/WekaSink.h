@@ -19,7 +19,7 @@
 #ifndef MARSYAS_WEKASINK_H
 #define MARSYAS_WEKASINK_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <fstream>
 #include <sstream>

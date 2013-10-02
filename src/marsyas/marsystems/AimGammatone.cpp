@@ -17,8 +17,8 @@
 */
 
 #include "AimGammatone.h"
-#include "common_source.h"
-
+#include "../common_source.h"
+#include "../ERBTools.h"
 
 using std::ostringstream;
 using std::complex;

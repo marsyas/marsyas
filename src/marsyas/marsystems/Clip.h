@@ -19,7 +19,7 @@
 #ifndef MARSYAS_CLIP_H
 #define MARSYAS_CLIP_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

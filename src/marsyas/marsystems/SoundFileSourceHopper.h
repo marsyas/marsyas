@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SOUNDFILESOURCEHOPPER_H
 #define MARSYAS_SOUNDFILESOURCEHOPPER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -19,9 +19,9 @@
 #ifndef MARSYAS_SVMCLASSIFIER_H
 #define MARSYAS_SVMCLASSIFIER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "svm.h"
-#include "WekaData.h"
+#include <marsyas/WekaData.h>
 
 namespace Marsyas
 {

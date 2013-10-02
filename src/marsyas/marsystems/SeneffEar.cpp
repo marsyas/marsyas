@@ -17,9 +17,9 @@
 */
 
 #include "SeneffEar.h"
-#include "common_source.h"
+#include "../common_source.h"
 
-#include "fft.h"
+#include <marsyas/fft.h>
 
 #include <sstream>
 

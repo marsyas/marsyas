@@ -1,9 +1,9 @@
-#include "MarSystemManager.h"
-#include "SimilarityMatrix.h"
-#include "Metric2.h"
-#include "DTW.h"
-#include "AveragingPattern.h"
-#include "Collection.h"
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/marsystems/SimilarityMatrix.h>
+#include <marsyas/marsystems/Metric2.h>
+#include <marsyas/marsystems/DTW.h>
+#include <marsyas/marsystems/AveragingPattern.h>
+#include <marsyas/Collection.h>
 
 using namespace std;
 using namespace Marsyas;

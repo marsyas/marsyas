@@ -20,7 +20,7 @@
 #include "PeakConvert.h"
 #include "Peaker.h"
 #include "MaxArgMax.h"
-#include "peakView.h"
+#include <marsyas/peakView.h>
 
 #include <algorithm>
 

@@ -22,7 +22,7 @@
 
 #include <marsyas/debug/record.h>
 
-#include <MarSystem.h>
+#include <marsyas/system/MarSystem.h>
 #include <QWidget>
 #include <QTreeWidget>
 

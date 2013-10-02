@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SPECTRALFLATNESSALLBANDS_H
 #define MARSYAS_SPECTRALFLATNESSALLBANDS_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

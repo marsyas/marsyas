@@ -19,10 +19,9 @@
 #ifndef MARSYAS_DEBUG_RECORDER_INCLUDED
 #define MARSYAS_DEBUG_RECORDER_INCLUDED
 
-#include "record.h"
-
-#include <MarSystem.h>
-#include <DLLDefines.h>
+#include <marsyas/debug/record.h>
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/export.h>
 
 #include <vector>
 

@@ -22,8 +22,8 @@
 
 #include <vector>
 #include <string>
-#include "DLLDefines.h"
-#include "common_header.h"
+#include <marsyas/export.h>
+#include <marsyas/common_header.h>
 
 namespace Marsyas
 {

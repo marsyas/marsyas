@@ -20,7 +20,7 @@
 #define MARSYAS_PLUCKED_H
 
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "Gain.h"
 
 #include <cstdlib>

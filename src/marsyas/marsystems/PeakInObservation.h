@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PEAKINOBSERVATION_H
 #define MARSYAS_PEAKINOBSERVATION_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

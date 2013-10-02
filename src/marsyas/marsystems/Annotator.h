@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ANNOTATOR_H
 #define MARSYAS_ANNOTATOR_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <vector>
 

@@ -22,11 +22,6 @@
 #include <cstring>
 
 #include "AbsSoundFileSink.h"
-#include "AuFileSource.h"
-#include "FileName.h"
-
-
-
 
 namespace Marsyas
 {

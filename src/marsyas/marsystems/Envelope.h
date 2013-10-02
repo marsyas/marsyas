@@ -20,7 +20,7 @@
 #ifndef MARSYAS_ENVELOPE_H
 #define MARSYAS_ENVELOPE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 
 namespace Marsyas

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_BEATHISTOGRAM_H
 #define MARSYAS_BEATHISTOGRAM_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

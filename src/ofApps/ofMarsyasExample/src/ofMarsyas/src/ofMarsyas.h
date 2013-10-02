@@ -11,7 +11,7 @@
 
 #include "ofMain.h"
 #include "MarSystemThread.h"
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 #include "utils.h"
 #include "MarSystemWidget.h"
 #include "MiniViewWidget.h"

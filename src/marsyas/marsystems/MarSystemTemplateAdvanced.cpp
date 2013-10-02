@@ -16,10 +16,9 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include <marsyas/system/MarControlManager.h>
 #include "MarSystemTemplateAdvanced.h"
-#include "common_source.h"
-#include "MarControlManager.h"
-
+#include "../common_source.h"
 
 using std::ostringstream;
 using std::ofstream;

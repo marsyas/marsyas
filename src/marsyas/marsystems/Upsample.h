@@ -19,7 +19,7 @@
 #ifndef MARSYAS_UPSAMPLE_H
 #define MARSYAS_UPSAMPLE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

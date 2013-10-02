@@ -19,7 +19,7 @@
 #ifndef MARSYAS_TIMESCALE_H
 #define MARSYAS_TIMESCALE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

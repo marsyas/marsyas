@@ -19,7 +19,7 @@
 #ifndef MARSYAS_BASEAUDIOSINK_H
 #define MARSYAS_BASEAUDIOSINK_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_Biquad_H
 #define MARSYAS_Biquad_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "Filter.h"
 
 namespace Marsyas

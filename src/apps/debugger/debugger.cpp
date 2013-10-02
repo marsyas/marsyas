@@ -17,7 +17,7 @@
 */
 
 #include <marsyas/CommandLineOptions.h>
-#include <marsyas/core/MarSystemManager.h>
+#include <marsyas/system/MarSystemManager.h>
 #include <marsyas/debug/recorder.h>
 #include <marsyas/debug/file_io.h>
 #include <marsyas/debug/debugger.h>

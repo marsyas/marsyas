@@ -38,7 +38,7 @@
 #ifndef MARSYAS_CLASSIFICATIONREPORT_H
 #define MARSYAS_CLASSIFICATIONREPORT_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 
 namespace Marsyas

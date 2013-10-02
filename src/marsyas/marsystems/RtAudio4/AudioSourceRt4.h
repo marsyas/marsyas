@@ -25,7 +25,7 @@
 #include "RtAudio.h"
 #endif
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

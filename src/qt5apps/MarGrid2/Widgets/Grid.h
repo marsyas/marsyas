@@ -28,7 +28,7 @@
 #include "../Colormaps/Colormap.h"
 
 #include "../../common/marsystem_wrapper.h"
-#include <marsyas/core/MarSystemManager.h>
+#include <marsyas/system/MarSystemManager.h>
 #include <marsyas/Collection.h>
 
 #include <ostream>

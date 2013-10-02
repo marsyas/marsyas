@@ -19,7 +19,7 @@
 #ifndef MARSYAS_LYONEAR_H
 #define MARSYAS_LYONEAR_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

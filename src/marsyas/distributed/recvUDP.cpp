@@ -5,20 +5,20 @@
 
 #include "SocketException.h"
 #include "NetworkUDPSource.h"
-#include "Collection.h"
+#include <marsyas/Collection.h>
 #include "AuFileSource.h"
 #include "AudioSink.h"
 #include "MrsDoctor.h"
 #include "Gain.h"
 #include "Spectrum.h"
 #include "InvSpectrum.h"
-#include "fft.h"
+#include <marsyas/fft.h>
 #include "AutoCorrelation.h"
 #include "Peaker.h"
 #include "SineSource.h"
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 #include "HalfWaveRectifier.h"
-#include "CommandLineOptions.h"
+#include <marsyas/CommandLineOptions.h>
 
 using namespace Marsyas;
 

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_RBF_H
 #define MARSYAS_RBF_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

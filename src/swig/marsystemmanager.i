@@ -1,7 +1,7 @@
 
 /* Headers for classes used here */
 %{
-#include <MarSystemManager.h>
+#include <marsyas/system/MarSystemManager.h>
 
 using namespace Marsyas;
 

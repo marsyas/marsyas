@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ResampleBezier_H
 #define MARSYAS_ResampleBezier_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

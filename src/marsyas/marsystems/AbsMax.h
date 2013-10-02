@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ABSMAX_H
 #define MARSYAS_ABSMAX_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

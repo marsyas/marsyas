@@ -17,7 +17,7 @@
 */
 
 #include "HWPS.h"
-#include "NumericLib.h"
+#include <marsyas/NumericLib.h>
 
 
 using std::ostringstream;

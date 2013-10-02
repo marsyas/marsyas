@@ -19,7 +19,7 @@
 #ifndef MARSYAS_MEAN_H
 #define MARSYAS_MEAN_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -15,14 +15,14 @@
 /*      common includes                                                 */
 /************************************************************************/
 
+#include <marsyas/types.h>
+#include <marsyas/MrsLog.h>
+
 #include <cstdio>
 #include <sys/types.h>
 #include <complex>
 #include <limits>
 #include <cassert>
-#include "marsyas_types.h"
-#include "MrsLog.h"
-
 
 /************************************************************************/
 /*      common constants */

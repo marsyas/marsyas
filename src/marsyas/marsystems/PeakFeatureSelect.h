@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PEFEATSELECT_H
 #define MARSYAS_PEFEATSELECT_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include <sstream>
 
 namespace Marsyas

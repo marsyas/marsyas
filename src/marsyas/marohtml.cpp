@@ -17,7 +17,7 @@
 */
 
 
-#include "marohtml.h"
+#include <marsyas/marohtml.h>
 #include <sstream>
 #include <iostream>
 

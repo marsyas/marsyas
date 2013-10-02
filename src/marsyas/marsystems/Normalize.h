@@ -19,7 +19,7 @@
 #ifndef MARSYAS_NORMALIZE_H
 #define MARSYAS_NORMALIZE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

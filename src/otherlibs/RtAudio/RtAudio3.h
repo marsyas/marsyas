@@ -42,7 +42,7 @@
 #ifndef __RTAUDIO3_H
 #define __RTAUDIO3_H
 
-#include "DLLDefines.h" 
+#include <marsyas/export.h> 
 #include "RtError3.h"
 #include <string>
 #include <vector>

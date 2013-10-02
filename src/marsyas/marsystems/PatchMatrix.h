@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PatchMatrix_H
 #define MARSYAS_PatchMatrix_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

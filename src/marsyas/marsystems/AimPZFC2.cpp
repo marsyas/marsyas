@@ -17,7 +17,8 @@
 */
 
 #include "AimPZFC2.h"
-#include "common_source.h"
+#include "../common_source.h"
+#include "../ERBTools.h"
 
 using std::ostringstream;
 using std::cout;

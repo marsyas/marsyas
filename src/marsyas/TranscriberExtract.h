@@ -1,7 +1,7 @@
 #ifndef MARSYAS_TRANSCRIBERINFO_H
 #define MARSYAS_TRANSCRIBERINFO_H
 
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 //#include "Easymar.h"
 
 namespace Marsyas

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_BEATPHASE_H
 #define MARSYAS_BEATPHASE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

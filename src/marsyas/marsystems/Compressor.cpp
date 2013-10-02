@@ -19,7 +19,7 @@
 #include <cmath>
 
 #include "Compressor.h"
-#include "common_source.h"
+#include "../common_source.h"
 
 
 using std::ostringstream;

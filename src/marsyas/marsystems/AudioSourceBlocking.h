@@ -19,7 +19,7 @@
 #ifndef MARSYAS_AUDIOSOURCEBLOCKING_H
 #define MARSYAS_AUDIOSOURCEBLOCKING_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 class RtAudio3;
 

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_NEGATIVE_H
 #define MARSYAS_NEGATIVE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -2,7 +2,7 @@
 #include "../debug_controller.h"
 #include "../../common/realvec_table_widget.h"
 
-#include <MarControl.h>
+#include <marsyas/system/MarControl.h>
 
 #include <QDebug>
 #include <QStackedLayout>

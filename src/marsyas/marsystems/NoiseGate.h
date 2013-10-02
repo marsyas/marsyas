@@ -19,7 +19,7 @@
 #ifndef MARSYAS_NOISEGATE_H
 #define MARSYAS_NOISEGATE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

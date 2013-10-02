@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PVMULTIRESOLUTION_H
 #define MARSYAS_PVMULTIRESOLUTION_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "Flux.h"
 
 namespace Marsyas

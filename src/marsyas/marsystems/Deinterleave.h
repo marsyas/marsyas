@@ -19,7 +19,7 @@
 #ifndef MARSYAS_DEINTERLEAVE_H
 #define MARSYAS_DEINTERLEAVE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "PatchMatrix.h"
 
 namespace Marsyas

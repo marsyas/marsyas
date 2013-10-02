@@ -1,8 +1,36 @@
-include_directories(core)
-include_directories(marsystems)
-include_directories(optional)
+include_directories(${CMAKE_SOURCE_DIR}/src)
 
 set( Marsyas_SOURCES
+  system/MarControl.cpp
+  system/MarControlManager.cpp
+  system/MarControlValue.cpp
+  system/MarSystem.cpp
+  system/MarSystemManager.cpp
+
+  sched/TmTimerManager.cpp
+  sched/TmRealTime.cpp
+  sched/TmParam.cpp
+  sched/TmControlValue.cpp
+  sched/TmSampleCount.cpp
+  sched/EvGetUpd.cpp
+  sched/TmTime.cpp
+  sched/TmVirtualTime.cpp
+  sched/Repeat.cpp
+  sched/TmTimer.cpp
+  sched/EvExpr.cpp
+  sched/EvValUpd.cpp
+  sched/EvEvent.cpp
+  sched/Scheduler.cpp
+
+  expr/ExSymTbl.cpp
+  expr/Expr.cpp
+  expr/ExScanner.cpp
+  expr/ExNode.cpp
+  expr/ExCommon.cpp
+  expr/ExVal.cpp
+  expr/ExParser.cpp
+
+  realvec.cpp
   basis.cpp
   Collection.cpp
   Color.cpp
@@ -31,117 +59,10 @@ set( Marsyas_SOURCES
   TranscriberExtract.cpp
   vmblock.cpp
   WekaData.cpp
-
-  core/EvEvent.cpp
-  core/EvExpr.cpp
-  core/EvGetUpd.cpp
-  core/EvValUpd.cpp
-  core/ExCommon.cpp
-  core/ExNode.cpp
-  core/ExParser.cpp
-  core/Expr.cpp
-  core/ExScanner.cpp
-  core/ExSymTbl.cpp
-  core/ExVal.cpp
-  core/MarControl.cpp
-  core/MarControlManager.cpp
-  core/MarControlValue.cpp
-  core/MarSystem.cpp
-  core/MarSystemManager.cpp
-  core/realvec.cpp
-  core/Repeat.cpp
-  core/Scheduler.cpp
-  core/TmControlValue.cpp
-  core/TmParam.cpp
-  core/TmRealTime.cpp
-  core/TmSampleCount.cpp
-  core/TmTime.cpp
-  core/TmTimer.cpp
-  core/TmTimerManager.cpp
-  core/TmVirtualTime.cpp
-)
-
-set( Marsyas_HEADERS
-  basis.h
-  Collection.h
-  Color.h
-  CommandLineOptions.h
-  common_header.h
-  common_source.h
-  Communicator.h
-  Conversions.h
-  DLLDefines.h
-  dsound.h
-  ERBTools.h
-  fft.h
-  FileName.h
-  Heap.h
-  lu.h
-  marohtml.h
-  marojson.h
-  marostring.h
-  marosvg.h
-  maroxml.h
-  marsyas_types.h
-  MATLABengine.h
-  mididevices.h
-  MrsLog.h
-  NumericLib.h
-  peakView.h
-  PeUtilities.h
-  QGMMModel.h
-  static_vq_codebook.h
-  statistics.h
-  Stk.h
-  StrobeList.h
-  Thread.h
-  TimeLine.h
-  TranscriberExtract.h
-  Transcriber.h
-  vmblock.h
-  WekaData.h
-
-  core/EvEvent.h
-  core/EvExpr.h
-  core/EvGetUpd.h
-  core/EvValUpd.h
-  core/ExCommon.h
-  core/ExNode.h
-  core/ExParser.h
-  core/Expr.h
-  core/ExScanner.h
-  core/ExSymTbl.h
-  core/ExVal.h
-  core/MarControlAccessor.h
-  core/MarControl.h
-  core/MarControlManager.h
-  core/MarControlValue.h
-  core/MarSystem.h
-  core/MarSystemManager.h
-  core/realvec.h
-  core/Repeat.h
-  core/Scheduler.h
-  core/TmControlValue.h
-  core/TmParam.h
-  core/TmRealTime.h
-  core/TmSampleCount.h
-  core/TmTime.h
-  core/TmTimer.h
-  core/TmTimerManager.h
-  core/TmVirtualTime.h
 )
 
 if(MARSYAS_REALTIME)
   set(MARSYAS_REALTIME_SOURCES realtime/runner.cpp)
-  set(MARSYAS_REALTIME_HEADERS
-    realtime/any.h
-    realtime/queue.h
-    realtime/stage.h
-    realtime/realvec_queue.h
-    realtime/event_queue.h
-    realtime/atomic_control.h
-    realtime/runner.h
-  )
 endif()
 
 if(WITH_CPP11)
@@ -150,29 +71,13 @@ if(WITH_CPP11)
     debug/debugger.cpp
     debug/file_io.cpp
   )
-  set(MARSYAS_DEBUG_HEADERS
-    debug/debugger.h
-    debug/record.h
-    debug/recorder.h
-    debug/file_io.h
-  )
 endif()
 
 file(STRINGS marsystems/CMake-compile-cpp.txt
   MARSYAS_MARSYSTEMS_SOURCES)
-file(STRINGS marsystems/CMake-compile-h.txt
-  MARSYAS_MARSYSTEMS_HEADERS)
 
-
-# this doesn't work, so I expanded it below:
-#list(APPEND Marsyas_SOURCES ${MARSYAS_CORE_SOURCES})
-#list(APPEND Marsyas_HEADERS ${MARSYAS_CORE_HEADERS})
-# expanded version:
 foreach (filename ${MARSYAS_MARSYSTEMS_SOURCES})
 	list(APPEND Marsyas_SOURCES marsystems/${filename})
-endforeach()
-foreach (filename ${MARSYAS_MARSYSTEMS_HEADERS})
-	list(APPEND Marsyas_HEADERS marsystems/${filename})
 endforeach()
 
 if(MARSYAS_AUDIOIO)
@@ -183,13 +88,6 @@ if(MARSYAS_AUDIOIO)
 		marsystems/AudioSink.cpp
 		marsystems/AudioSinkBlocking.cpp
 	)
-	list(APPEND Marsyas_HEADERS
-		Talk.h
-		marsystems/AudioSource.h
-		marsystems/AudioSourceBlocking.h
-		marsystems/AudioSink.h
-		marsystems/AudioSinkBlocking.h
-	)
 endif()
 
 ## OTHERLIBS
@@ -197,15 +95,9 @@ endif()
 set( EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/src/otherlibs )
 
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/libsvm/svm.cpp)
-list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/libsvm/svm.h)
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/linear.cpp)
-list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/linear.h)
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/tron.cpp)
-list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/tron.h)
 
-list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/blas.h)
-list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/blasp.h)
-list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/blas.h)
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/blas/daxpy.c)
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/blas/ddot.c)
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/blas/dnrm2.c)
@@ -214,8 +106,6 @@ list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/blas/dscal.c)
 
 if (MARSYAS_PNG)
 	list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/pngwriter/pngwriter.cc)
-	list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/libpng-1.2.35/png.h)
-	list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/pngwriter/pngwriter.h)
 endif (MARSYAS_PNG)
 
 
@@ -225,33 +115,19 @@ if (MARSYAS_ANN)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/bd_pr_search.cpp)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/bd_search.cpp)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/bd_tree.cpp)
-    list(APPEND Marsyas_HEADERS ${ANN_DIR}/bd_tree.h)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/brute.cpp)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/kd_dump.cpp)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/kd_fix_rad_search.cpp)
-    list(APPEND Marsyas_HEADERS ${ANN_DIR}/kd_fix_rad_search.h)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/kd_pr_search.cpp)
-    list(APPEND Marsyas_HEADERS ${ANN_DIR}/kd_pr_search.h)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/kd_search.cpp)
-    list(APPEND Marsyas_HEADERS ${ANN_DIR}/kd_search.h)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/kd_split.cpp)
-    list(APPEND Marsyas_HEADERS ${ANN_DIR}/kd_split.h)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/kd_tree.cpp)
-    list(APPEND Marsyas_HEADERS ${ANN_DIR}/kd_tree.h)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/kd_util.cpp)
-    list(APPEND Marsyas_HEADERS ${ANN_DIR}/kd_util.h)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/perf.cpp)
-    list(APPEND Marsyas_HEADERS ${ANN_DIR}/pr_queue.h)
-    list(APPEND Marsyas_HEADERS ${ANN_DIR}/pr_queue_k.h)
-    list(APPEND Marsyas_HEADERS ${ANN_DIR}/ANN.cpp)
-    list(APPEND Marsyas_HEADERS ${ANN_DIR}/ANN.h)
-    list(APPEND Marsyas_HEADERS ${ANN_DIR}/ANNperf.h)
-    list(APPEND Marsyas_HEADERS ${ANN_DIR}/ANNx.h)
 endif (MARSYAS_ANN)
 
 if (MARSYAS_MAD)
-    list(APPEND Marsyas_SOURCES optional/MP3FileSource.cpp)
-    list(APPEND Marsyas_HEADERS optional/MP3FileSource.h)
+    list(APPEND Marsyas_SOURCES marsystems/MP3FileSource.cpp)
     include_directories(${mad_INCLUDE_DIR})
 endif (MARSYAS_MAD)
 
@@ -262,21 +138,17 @@ if (MARSYAS_PNG)
 endif (MARSYAS_PNG)
 
 if (MARSYAS_LAME)
-    list(APPEND Marsyas_SOURCES optional/MP3FileSink.cpp)
-    list(APPEND Marsyas_HEADERS optional/MP3FileSink.h)
+  list(APPEND Marsyas_SOURCES marsystems/MP3FileSink.cpp)
 	include_directories(${lame_INCLUDE_DIR})
 endif (MARSYAS_LAME)
 
 if (MARSYAS_VORBIS)
-    list(APPEND Marsyas_SOURCES optional/OggFileSource.cpp)
-    list(APPEND Marsyas_HEADERS optional/OggFileSource.h)
+    list(APPEND Marsyas_SOURCES marsystems/OggFileSource.cpp)
 	include_directories(${VORBIS_INCLUDE_DIR})
 endif (MARSYAS_VORBIS)
 
 if (MARSYAS_GSTREAMER)
-#	list(APPEND Marsyas_SOURCES GStreamerSource.cpp)
-	list(APPEND Marsyas_SOURCES optional/GStreamerSource.cpp)
-	list(APPEND Marsyas_HEADERS optional/GStreamerSource.h)
+	list(APPEND Marsyas_SOURCES marsystems/GStreamerSource.cpp)
 	include_directories(${GSTREAMER_INCLUDE_DIRS})
 endif (MARSYAS_GSTREAMER)
 
@@ -287,17 +159,11 @@ endif (MARSYAS_MATLAB)
 
 if (MARSYAS_AUDIOIO)
 	list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/RtAudio/RtAudio.cpp)
-	list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/RtAudio/RtAudio.h)
-	list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/RtAudio/RtError.h)
 	list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/RtAudio/RtAudio3.cpp)
-	list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/RtAudio/RtAudio3.h)
-	list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/RtAudio/RtError3.h)
 endif (MARSYAS_AUDIOIO)
 
 if (MARSYAS_MIDIIO)
 	list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/RtMidi/RtMidi.cpp)
-	list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/RtMidi/RtMidi.h)
-	list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/RtMidi/RtError.h)
 endif (MARSYAS_MIDIIO)
 
 
@@ -361,9 +227,115 @@ endif(MARSYAS_GSTREAMER)
 
 ## INSTALL
 
-install(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)
-install(FILES ${MARSYAS_REALTIME_HEADERS} DESTINATION include/marsyas/realtime)
-install(FILES ${MARSYAS_DEBUG_HEADERS} DESTINATION include/marsyas/debug)
+install( FILES
+  basis.h
+  Collection.h
+  Color.h
+  CommandLineOptions.h
+  common_header.h
+  common_source.h
+  Communicator.h
+  Conversions.h
+  export.h
+  dsound.h
+  ERBTools.h
+  fft.h
+  FileName.h
+  Heap.h
+  lu.h
+  marohtml.h
+  marojson.h
+  marostring.h
+  marosvg.h
+  maroxml.h
+  types.h
+  MATLABengine.h
+  mididevices.h
+  MrsLog.h
+  NumericLib.h
+  peakView.h
+  PeUtilities.h
+  QGMMModel.h
+  static_vq_codebook.h
+  statistics.h
+  Stk.h
+  StrobeList.h
+  Thread.h
+  TimeLine.h
+  TranscriberExtract.h
+  Transcriber.h
+  vmblock.h
+  WekaData.h
+  realvec.h
+
+  DESTINATION include/marsyas
+)
+
+install( FILES
+  system/MarControlAccessor.h
+  system/MarControl.h
+  system/MarControlManager.h
+  system/MarControlValue.h
+  system/MarSystem.h
+  system/MarSystemManager.h
+
+  DESTINATION include/marsyas/system
+)
+
+install( FILES
+  sched/EvEvent.h
+  sched/EvExpr.h
+  sched/EvGetUpd.h
+  sched/EvValUpd.h
+  sched/Repeat.h
+  sched/Scheduler.h
+  sched/TmControlValue.h
+  sched/TmParam.h
+  sched/TmRealTime.h
+  sched/TmSampleCount.h
+  sched/TmTime.h
+  sched/TmTimer.h
+  sched/TmTimerManager.h
+  sched/TmVirtualTime.h
+
+  DESTINATION include/marsyas/sched
+)
+
+install( FILES
+  expr/ExCommon.h
+  expr/ExNode.h
+  expr/ExParser.h
+  expr/Expr.h
+  expr/ExScanner.h
+  expr/ExSymTbl.h
+  expr/ExVal.h
+
+  DESTINATION include/marsyas/expr
+)
+
+install( FILES
+  realtime/any.h
+  realtime/queue.h
+  realtime/stage.h
+  realtime/realvec_queue.h
+  realtime/event_queue.h
+  realtime/atomic_control.h
+  realtime/runner.h
+
+  DESTINATION include/marsyas/realtime
+)
+
+install( FILES
+  debug/debugger.h
+  debug/record.h
+  debug/recorder.h
+  debug/file_io.h
+
+  DESTINATION include/marsyas/debug
+)
+
+# FIXME: Install headers for MarSystem subclasses
+# after they are cleaned-up and good for public.
 
 if (MARSYAS_STATIC)
   install(TARGETS marsyas

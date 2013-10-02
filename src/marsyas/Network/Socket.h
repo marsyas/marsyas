@@ -23,7 +23,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "common_source.h"
+#include <marsyas/common_source.h>
 
 namespace Marsyas
 {

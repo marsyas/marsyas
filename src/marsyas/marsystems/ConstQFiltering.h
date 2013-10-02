@@ -1,8 +1,8 @@
 #ifndef MARSYAS_CONSTQFILTERING_H
 #define MARSYAS_CONSTQFILTERING_H
 
-#include "MarSystem.h"
-#include "fft.h"
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/fft.h>
 
 namespace Marsyas
 {

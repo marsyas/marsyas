@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PANORAMA_H
 #define MARSYAS_PANORAMA_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

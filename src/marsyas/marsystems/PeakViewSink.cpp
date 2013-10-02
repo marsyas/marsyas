@@ -17,9 +17,9 @@
 */
 
 #include "PeakViewSink.h"
-#include "common_source.h"
+#include "../common_source.h"
 
-#include "peakView.h"
+#include <marsyas/peakView.h>
 
 
 using std::ostringstream;

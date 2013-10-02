@@ -23,10 +23,10 @@
 #include<iomanip>
 #include <string>
 
-#include "Conversions.h"
-#include "CommandLineOptions.h"
-#include "MarSystemManager.h"
-#include "FileName.h"
+#include <marsyas/Conversions.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/FileName.h>
 
 using namespace std;
 using namespace Marsyas;

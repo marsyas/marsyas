@@ -17,10 +17,10 @@
 */
 
 #include "McAulayQuatieri.h"
-#include "common_source.h"
+#include "../common_source.h"
 
-#include "peakView.h"
-#include "NumericLib.h"
+#include <marsyas/peakView.h>
+#include <marsyas/NumericLib.h>
 
 using std::ostringstream;
 using std::abs;

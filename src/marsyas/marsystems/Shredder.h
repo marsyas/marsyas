@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SHREDDER_H
 #define MARSYAS_SHREDDER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

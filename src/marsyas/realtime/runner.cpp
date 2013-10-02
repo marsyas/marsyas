@@ -16,11 +16,10 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "runner.h"
-#include "atomic_control.h"
-
-#include "common_header.h"
-#include "common_source.h"
+#include <marsyas/realtime/runner.h>
+#include <marsyas/realtime/atomic_control.h>
+#include <marsyas/common_header.h>
+#include "../common_source.h"
 
 #include <iostream>
 #include <algorithm>

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PEAKMASK_H
 #define MARSYAS_PEAKMASK_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

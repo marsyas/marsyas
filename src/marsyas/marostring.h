@@ -19,9 +19,10 @@
 #ifndef MARSYAS_OUTPUT_STRING_STREAM_H
 #define MARSYAS_OUTPUT_STRING_STREAM_H
 
+#include <marsyas/export.h>
+
 #include <string>
 #include <sstream>
-#include "DLLDefines.h"
 
 namespace Marsyas
 {

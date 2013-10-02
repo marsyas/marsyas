@@ -29,7 +29,7 @@ upsampled fvec from the original fvec.
 #include "PeakEnhancer.h"
 #include "HalfWaveRectifier.h"
 #include "Filter.h"
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 using std::ostringstream;
 using namespace Marsyas;

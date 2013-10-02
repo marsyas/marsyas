@@ -1,5 +1,5 @@
 %{
-#include <MarControl.h>
+#include <marsyas/system/MarControl.h>
 
 using namespace Marsyas;
 

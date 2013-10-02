@@ -19,7 +19,7 @@
 #ifndef MARSYAS_WAVEGUIDEOSC_H
 #define MARSYAS_WAVEGUIDEOSC_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

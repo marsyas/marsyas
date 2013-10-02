@@ -19,7 +19,7 @@
 #ifndef MARSYAS_CREST_H
 #define MARSYAS_CREST_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

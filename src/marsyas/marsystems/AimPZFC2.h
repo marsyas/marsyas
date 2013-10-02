@@ -19,8 +19,7 @@
 #ifndef MARSYAS_AIMPZFC2_H
 #define MARSYAS_AIMPZFC2_H
 
-#include "MarSystem.h"
-#include "ERBTools.h"
+#include <marsyas/system/MarSystem.h>
 
 // sness - TODO - Eventually make these realvecs.  However, in the
 // existing code there is quite a bit of stuff that involves STL

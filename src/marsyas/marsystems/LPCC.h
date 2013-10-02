@@ -19,8 +19,8 @@
 #ifndef MARSYAS_LPCC_H
 #define MARSYAS_LPCC_H
 
-#include "MarSystem.h"
-#include "realvec.h"
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/realvec.h>
 
 namespace Marsyas
 {

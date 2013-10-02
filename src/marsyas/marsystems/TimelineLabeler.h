@@ -19,8 +19,8 @@
 #ifndef MARSYAS_TIMELINELABELER_H
 #define MARSYAS_TIMELINELABELER_H
 
-#include "MarSystem.h"
-#include "TimeLine.h"
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/TimeLine.h>
 
 namespace Marsyas
 {

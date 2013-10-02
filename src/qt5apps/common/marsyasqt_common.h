@@ -1,7 +1,7 @@
 #ifndef MARSYASQT_COMMON_INCLUDED
 #define MARSYASQT_COMMON_INCLUDED
 
-#include <marsyas_types.h>
+#include <marsyas/types.h>
 
 #include <QMetaType>
 

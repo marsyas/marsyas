@@ -19,7 +19,7 @@
 #ifndef MARSYAS_TEMPOHYPOTHESES_H
 #define MARSYAS_TEMPOHYPOTHESES_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

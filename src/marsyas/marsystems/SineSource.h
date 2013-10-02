@@ -20,7 +20,7 @@
 #ifndef MARSYAS_SINESOURCE_H
 #define MARSYAS_SINESOURCE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <cstdio>
 #include <cmath>

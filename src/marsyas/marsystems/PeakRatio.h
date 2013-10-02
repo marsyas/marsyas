@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PEAKRATIO_H
 #define MARSYAS_PEAKRATIO_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

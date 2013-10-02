@@ -16,8 +16,8 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "Conversions.h"
-#include "realvec.h"
+#include <marsyas/Conversions.h>
+#include <marsyas/realvec.h>
 
 using std::ostringstream;
 using namespace Marsyas;

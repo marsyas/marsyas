@@ -10,7 +10,7 @@
 #ifndef MARSYAS_CHROMASCALE_H
 #define MARSYAS_CHROMASCALE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

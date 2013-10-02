@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SENEFFEAR_H
 #define MARSYAS_SENEFFEAR_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "Filter.h"
 #include "Cascade.h"
 #include "Parallel.h"

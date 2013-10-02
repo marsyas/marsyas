@@ -1,7 +1,7 @@
 #ifndef MARSYAS_UPDATINGBASSMODEL_H
 #define MARSYAS_UPDATINGBASSMODEL_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include <cstdlib>
 #include <ctime>
 

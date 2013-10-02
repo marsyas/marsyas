@@ -16,15 +16,15 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "DLLDefines.h"
+#include <marsyas/export.h>
 #include <cstdio>
 #include <cstdlib>
 
-#include "Collection.h"
-#include "MarSystemManager.h"
-#include "MarSystemManager.h"
-#include "CommandLineOptions.h"
-#include "common_source.h"
+#include <marsyas/Collection.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/common_source.h>
 
 #include <fstream>
 #include <iostream>

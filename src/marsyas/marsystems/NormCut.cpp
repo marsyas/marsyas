@@ -16,9 +16,9 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "common_source.h"
+#include "../common_source.h"
 #include "NormCut.h"
-#include "NumericLib.h"
+#include <marsyas/NumericLib.h>
 
 #include <iostream>
 #include <cmath>

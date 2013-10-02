@@ -19,8 +19,8 @@
 #ifndef MARSYAS_INSPECTOR_REALVEC_WIDGET_INCLUDED
 #define MARSYAS_INSPECTOR_REALVEC_WIDGET_INCLUDED
 
-#include <marsyas/core/MarSystem.h>
-#include <marsyas/core/realvec.h>
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/realvec.h>
 
 #include <qwt_plot.h>
 #include <qwt_series_data.h>

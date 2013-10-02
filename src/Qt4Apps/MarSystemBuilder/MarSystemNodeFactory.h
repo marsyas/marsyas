@@ -13,7 +13,7 @@
 #include "FanoutNode.h"
 #include "SeriesNode.h"
 #include "DefaultCompositeNode.h"
-#include <MarSystem.h>
+#include <marsyas/system/MarSystem.h>
 #include <MarSystemManager.h>
 #include <string>
 #include <iostream>

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_MFCC_H
 #define MARSYAS_MFCC_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 
 namespace Marsyas

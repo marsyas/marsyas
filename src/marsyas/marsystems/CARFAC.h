@@ -19,7 +19,7 @@
 #ifndef MARSYAS_CARFAC_H
 #define MARSYAS_CARFAC_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "CARFAC_coeffs.h"
 
 namespace Marsyas

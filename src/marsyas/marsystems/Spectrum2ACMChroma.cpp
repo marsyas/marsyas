@@ -1,5 +1,5 @@
 #include "Spectrum2ACMChroma.h"
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 #include "Series.h"
 
 #include "MedianFilter.h"

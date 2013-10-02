@@ -19,7 +19,7 @@
 #ifndef MARSYAS_KURTOSIS_H
 #define MARSYAS_KURTOSIS_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -6,8 +6,8 @@
 
 #include <cstdio>
 #include <vector>
-#include "MarSystemManager.h"
-#include "CommandLineOptions.h"
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/CommandLineOptions.h>
 // #include "pngwriter.h"
 
 using namespace std;

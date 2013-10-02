@@ -1,8 +1,8 @@
 #include <cxxtest/TestSuite.h>
 
 #include <cstdio>
-#include "Collection.h"
-#include "MarSystemManager.h"
+#include <marsyas/Collection.h>
+#include <marsyas/system/MarSystemManager.h>
 
 #include "SubtractMean.h"
 

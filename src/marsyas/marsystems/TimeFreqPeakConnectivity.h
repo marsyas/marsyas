@@ -19,7 +19,7 @@
 #ifndef MARSYAS_TimeFreqPeakConnectivity_H
 #define MARSYAS_TimeFreqPeakConnectivity_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 class DoubleListEntries;
 

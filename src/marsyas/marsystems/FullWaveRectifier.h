@@ -19,7 +19,7 @@
 #ifndef MARSYAS_FULLWAVERECTIFIER_H
 #define MARSYAS_FULLWAVERECTIFIER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

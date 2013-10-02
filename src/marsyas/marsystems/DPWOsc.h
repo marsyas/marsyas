@@ -19,7 +19,7 @@
 #ifndef MARSYAS_DPWOSC_H
 #define MARSYAS_DPWOSC_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

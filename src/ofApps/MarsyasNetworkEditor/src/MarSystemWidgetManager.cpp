@@ -7,7 +7,7 @@
 //
 
 #include "MarSystemWidgetManager.h"
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 #include "MarSystemWidget.h"
 #include "SeriesWidget.h"
 #include "FanoutWidget.h"

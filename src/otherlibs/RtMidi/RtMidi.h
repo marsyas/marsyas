@@ -45,7 +45,7 @@
 #ifndef RTMIDI_H
 #define RTMIDI_H
 
-#include "DLLDefines.h" // Marsyas: symbol exporting
+#include <marsyas/export.h> // Marsyas: symbol exporting
 
 #include "RtError.h"
 #include <string>

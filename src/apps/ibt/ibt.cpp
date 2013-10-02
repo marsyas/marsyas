@@ -32,16 +32,16 @@
 #include <string>
 #include <iomanip>
 
-#include "common_source.h"
-#include "MarSystemManager.h"
-#include "CommandLineOptions.h"
-#include "FileName.h"
+#include <marsyas/common_source.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/Collection.h>
+#include <marsyas/FileName.h>
+#include <marsyas/NumericLib.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/sched/EvValUpd.h>
+#include <marsyas/marsystems/MarSystemTemplateBasic.h>
+#include <marsyas/marsystems/MarSystemTemplateAdvanced.h>
 
-#include "MarSystemTemplateBasic.h"
-#include "MarSystemTemplateAdvanced.h"
-#include "EvValUpd.h"
-#include "Collection.h"
-#include "NumericLib.h"
 #include <string.h>
 
 #ifdef MARSYAS_MIDIIO

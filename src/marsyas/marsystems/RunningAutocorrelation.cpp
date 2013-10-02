@@ -17,7 +17,7 @@
  */
 
 #include "RunningAutocorrelation.h"
-#include "common_source.h"
+#include "../common_source.h"
 
 // For min().
 #include <algorithm>

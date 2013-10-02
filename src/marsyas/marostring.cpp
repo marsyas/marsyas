@@ -17,7 +17,7 @@
 */
 
 
-#include "marostring.h"
+#include <marsyas/marostring.h>
 
 using namespace std;
 using namespace Marsyas;

@@ -11,7 +11,7 @@
 //#include "audioproperties.h"
 #include "dockwindow.h"
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "MarSystemThread.h"
 
 

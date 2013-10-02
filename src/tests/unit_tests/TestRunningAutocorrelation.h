@@ -1,6 +1,6 @@
 #include <cxxtest/TestSuite.h>
 
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 
 // The class that you want to test, for example "WekaSource"
 #include "RunningAutocorrelation.h"

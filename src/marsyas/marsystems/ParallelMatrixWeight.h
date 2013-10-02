@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ParallelMatrixWeight_H
 #define MARSYAS_ParallelMatrixWeight_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -18,7 +18,7 @@
 
 
 #include "ERB.h"
-#include "common_source.h"
+#include "../common_source.h"
 #include "Series.h"
 #include "Filter.h"
 #include <sstream>

@@ -3,7 +3,7 @@
 #include "OSCReceiver.h"
 #include <sstream>
 
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 
 using namespace std;
 using namespace Marsyas;

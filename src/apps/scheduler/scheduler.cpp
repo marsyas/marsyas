@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 #include "EvExpr.h"
 #include "Expr.h"
 

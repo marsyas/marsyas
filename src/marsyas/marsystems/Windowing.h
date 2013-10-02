@@ -19,7 +19,7 @@
 #ifndef MARSYAS_WINDOWING_H
 #define MARSYAS_WINDOWING_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

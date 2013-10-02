@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ERB_H
 #define MARSYAS_ERB_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "Fanout.h"
 
 namespace Marsyas

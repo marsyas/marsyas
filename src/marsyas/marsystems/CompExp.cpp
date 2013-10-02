@@ -17,7 +17,7 @@
 */
 
 #include "CompExp.h"
-#include "common_source.h"
+#include "../common_source.h"
 #include <algorithm>
 #include <cmath>
 

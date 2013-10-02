@@ -10,7 +10,7 @@
 #include <iostream>
 using namespace std;
 #include "MarSystemNode.h"
-#include <MarSystem.h>
+#include <marsyas/system/MarSystem.h>
 using namespace Marsyas;
 
 class CompositeNode:public MarSystemNode

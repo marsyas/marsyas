@@ -1,7 +1,7 @@
 #ifndef MARSYAS_WEKADATA_H
 #define MARSYAS_WEKADATA_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include <list>
 #include <vector>
 #include <cfloat>

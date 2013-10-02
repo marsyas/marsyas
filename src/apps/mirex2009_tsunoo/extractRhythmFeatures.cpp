@@ -1,12 +1,12 @@
-#include "MarSystemManager.h"
-#include "SimilarityMatrix.h"
-#include "Metric2.h"
-#include "DTWWD.h"
-#include "DTW.h"
-#include "AveragingPattern.h"
-#include "Delta.h"
-#include "Chroma.h"
-#include "Collection.h"
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/marsystems/SimilarityMatrix.h>
+#include <marsyas/marsystems/Metric2.h>
+#include <marsyas/marsystems/DTWWD.h>
+#include <marsyas/marsystems/DTW.h>
+#include <marsyas/marsystems/AveragingPattern.h>
+#include <marsyas/marsystems/Delta.h>
+#include <marsyas/marsystems/Chroma.h>
+#include <marsyas/Collection.h>
 #include <vector>
 
 using namespace std;

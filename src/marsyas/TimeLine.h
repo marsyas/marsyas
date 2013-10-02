@@ -19,8 +19,8 @@
 #ifndef MARSYAS_TIMELINE_H
 #define MARSYAS_TIMELINE_H
 
-#include "FileName.h"
-#include "realvec.h"
+#include <marsyas/FileName.h>
+#include <marsyas/realvec.h>
 #include "Color.h"
 
 #include <string>

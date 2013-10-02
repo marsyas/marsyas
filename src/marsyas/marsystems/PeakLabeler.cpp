@@ -16,9 +16,9 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "common_source.h"
+#include "../common_source.h"
 #include "PeakLabeler.h"
-#include "peakView.h"
+#include <marsyas/peakView.h>
 
 using std::ostringstream;
 using namespace Marsyas;

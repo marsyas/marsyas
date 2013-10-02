@@ -16,8 +16,10 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "common_source.h"
+#include "../common_source.h"
+#include "../FileName.h"
 #include "AuFileSink.h"
+#include "AuFileSource.h"
 
 using std::ostringstream;
 using namespace Marsyas;

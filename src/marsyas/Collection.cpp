@@ -16,8 +16,8 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "common_source.h"
-#include "Collection.h"
+#include <marsyas/common_source.h>
+#include <marsyas/Collection.h>
 #include <algorithm>
 #include <iterator>
 #include <time.h>  // for srand(time(NULL))

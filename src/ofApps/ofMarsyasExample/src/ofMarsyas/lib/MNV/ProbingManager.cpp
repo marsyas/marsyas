@@ -10,8 +10,8 @@
 #include "utils.h"
 #include "ProbingManager.h"
 #include "ofMain.h"
-#include "MarSystem.h"
-#include "realvec.h"
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/realvec.h>
 #include "GraphicalEnvironment.h"
 #include "GraphicalParameters.h"
 

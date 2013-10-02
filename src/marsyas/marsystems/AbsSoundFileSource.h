@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ABSSOUNDFILESOURCE_H
 #define MARSYAS_ABSSOUNDFILESOURCE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include <string>
 
 namespace Marsyas

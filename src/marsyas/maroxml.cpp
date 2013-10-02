@@ -17,7 +17,7 @@
 */
 
 
-#include "maroxml.h"
+#include <marsyas/maroxml.h>
 #include <sstream>
 #include <iostream>
 

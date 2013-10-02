@@ -1,5 +1,5 @@
 #include <marsyas/CommandLineOptions.h>
-#include <marsyas/core/MarSystemManager.h>
+#include <marsyas/system/MarSystemManager.h>
 #include <marsyas/realtime/runner.h>
 #include <cstdlib>
 #include <iostream>

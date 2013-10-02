@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SELFSIMILARITYMATRIX_H
 #define MARSYAS_SELFSIMILARITYMATRIX_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "Metric.h"
 
 namespace Marsyas

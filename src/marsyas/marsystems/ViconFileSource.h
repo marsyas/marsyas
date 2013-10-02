@@ -19,7 +19,7 @@
 #ifndef MARSYAS_VICONFILESOURCE_H
 #define MARSYAS_VICONFILESOURCE_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <cstdlib>
 #include <cstring>

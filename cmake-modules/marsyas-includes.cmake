@@ -43,7 +43,6 @@ endif()
 
 
 ## setup Marsyas includes
-include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/)
 
 if (MARSYAS_AUDIOIO)
   include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/RtAudio/)

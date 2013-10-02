@@ -16,7 +16,7 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "file_io.h"
+#include <marsyas/debug/file_io.h>
 
 static const char magic_id[] = "#marsystemrecording";
 

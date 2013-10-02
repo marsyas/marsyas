@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PLOTSINK_H
 #define MARSYAS_PLOTSINK_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

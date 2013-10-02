@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SOM_H
 #define MARSYAS_SOM_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 #include <cstdlib>
 

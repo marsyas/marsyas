@@ -1,7 +1,7 @@
 #include "glwidget.h"
 
 // Marsyas
-#include <marsyas/core/MarSystemManager.h>
+#include <marsyas/system/MarSystemManager.h>
 
 #include <QtGui>
 #include <QtOpenGL>

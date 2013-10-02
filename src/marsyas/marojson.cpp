@@ -18,7 +18,7 @@
 */
 
 
-#include "marojson.h"
+#include <marsyas/marojson.h>
 #include <sstream>
 #include <iostream>
 

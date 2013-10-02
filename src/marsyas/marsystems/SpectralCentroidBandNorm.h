@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SPECTRALCENTROIDBANDNORM_H
 #define MARSYAS_SPECTRALCENTROIDBANDNORM_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

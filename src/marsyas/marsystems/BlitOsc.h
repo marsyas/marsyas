@@ -19,7 +19,7 @@
 #ifndef MARSYAS_BLITOSC_H
 #define MARSYAS_BLITOSC_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

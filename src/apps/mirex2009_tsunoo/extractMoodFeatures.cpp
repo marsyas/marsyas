@@ -1,7 +1,7 @@
-#include "MarSystemManager.h"
-#include "Chroma.h"
-#include "ChromaScale.h"
-#include "Collection.h"
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/marsystems/Chroma.h>
+#include <marsyas/marsystems/ChromaScale.h>
+#include <marsyas/Collection.h>
 
 using namespace std;
 using namespace Marsyas;

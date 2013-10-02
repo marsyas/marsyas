@@ -18,9 +18,8 @@
 #ifndef MARSYAS_AutoCorrelationFFT_H
 #define MARSYAS_AutoCorrelationFFT_H
 
-#include "MarSystem.h"
-#include "fft.h"
-
+#include <marsyas/system/MarSystem.h>
+#include <marsyas/fft.h>
 
 namespace Marsyas
 {

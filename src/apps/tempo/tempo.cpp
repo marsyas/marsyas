@@ -17,18 +17,18 @@
 */
 
 
-#include "common_source.h"
+#include <marsyas/common_source.h>
 #include <cstdio>
 #include <cstdlib>
 #include <algorithm>
 
 
-#include "FileName.h"
-#include "Collection.h"
-#include "MarSystemManager.h"
-#include "CommandLineOptions.h"
-#include "Esitar.h"
-#include "mididevices.h"
+#include <marsyas/FileName.h>
+#include <marsyas/Collection.h>
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/marsystems/Esitar.h>
+#include <marsyas/mididevices.h>
 #include <string>
 #include <string.h> // This file also uses C-style string functions like strcmp().
 #include <fstream>

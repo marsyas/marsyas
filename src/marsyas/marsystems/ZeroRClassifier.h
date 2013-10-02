@@ -19,7 +19,7 @@
 #ifndef MARSYAS_ZERORCLASSIFIER_H
 #define MARSYAS_ZERORCLASSIFIER_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_RUNNINGSTATISTICS_H
 #define MARSYAS_RUNNINGSTATISTICS_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

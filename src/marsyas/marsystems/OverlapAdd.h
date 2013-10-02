@@ -19,7 +19,7 @@
 #ifndef MARSYAS_OVERLAPADD_H
 #define MARSYAS_OVERLAPADD_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

@@ -1,7 +1,7 @@
 #ifndef MARSYAS_DTWWD_H
 #define MARSYAS_DTWWD_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

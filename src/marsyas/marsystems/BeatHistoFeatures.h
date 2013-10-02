@@ -19,7 +19,7 @@
 #ifndef MARSYAS_BEATHISTOFEATURES_H
 #define MARSYAS_BEATHISTOFEATURES_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 #include "MaxArgMax.h"
 #include "Peaker.h"
 

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SPECTRALSNR_H
 #define MARSYAS_SPECTRALSNR_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

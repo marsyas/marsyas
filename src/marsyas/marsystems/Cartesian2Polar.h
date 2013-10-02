@@ -19,7 +19,7 @@
 #ifndef MARSYAS_CARTESIAN2POLAR_H
 #define MARSYAS_CARTESIAN2POLAR_H
 
-#include "MarSystem.h"
+#include <marsyas/system/MarSystem.h>
 
 namespace Marsyas
 {

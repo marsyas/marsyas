@@ -1,8 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR}/src/)
-include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/core/)
-include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/marsystems/)
-include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/optional/)
-
+include_directories(${CMAKE_SOURCE_DIR}/src)
 
 ## BUILD MACRO
 

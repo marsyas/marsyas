@@ -24,16 +24,16 @@
 #include <ctime>
 #include <string>
 
-#include "MarSystemManager.h"
-#include "Conversions.h"
-#include "CommandLineOptions.h"
-#include "FileName.h"
-#include "PeakFeatureSelect.h"
-#include "SelfSimilarityMatrix.h"
-#include "common_source.h"
+#include <marsyas/system/MarSystemManager.h>
+#include <marsyas/Conversions.h>
+#include <marsyas/CommandLineOptions.h>
+#include <marsyas/FileName.h>
+#include <marsyas/marsystems/PeakFeatureSelect.h>
+#include <marsyas/marsystems/SelfSimilarityMatrix.h>
+#include <marsyas/common_source.h>
 
 //[TODO]
-//#include "PeUtilities.h"
+//#include <marsyas/PeUtilities.h>
 
 using namespace std;
 using namespace Marsyas;

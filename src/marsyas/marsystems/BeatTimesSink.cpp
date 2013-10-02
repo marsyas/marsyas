@@ -17,7 +17,7 @@
 */
 
 #include "BeatTimesSink.h"
-#include "common_source.h"
+#include "../common_source.h"
 #include <fstream>
 #include <string.h>
 

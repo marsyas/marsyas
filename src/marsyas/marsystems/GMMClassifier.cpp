@@ -17,8 +17,8 @@
 */
 
 #include "GMMClassifier.h"
-#include "common_source.h"
-#include "NumericLib.h"
+#include "../common_source.h"
+#include <marsyas/NumericLib.h>
 
 
 using std::ostringstream;

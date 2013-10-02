@@ -25,12 +25,12 @@
 #include <cstdio>
 #include <string>
 
-#include "MarSystemManager.h"
+#include <marsyas/system/MarSystemManager.h>
 #include "SoundFileSource.h"
 #include "SoundFileSink.h"
 #include "Gain.h"
 #include "Series.h"
-#include "CommandLineOptions.h"
+#include <marsyas/CommandLineOptions.h>
 
 using namespace std;
 using namespace Marsyas;
