@@ -5,7 +5,7 @@ include_directories(${LIBRARY_OUTPUT_PATH})
 
 # In case we build the static version of Marsyas, we need to link
 # to that specific archive library. Also linking some additional libs/frameworks
-if (MARSYAS_STATIC)
+if (OFF AND MARSYAS_STATIC)
 
 	if(MARSYAS_MACOSX)
 		find_library(COREAUDIO CoreAudio "/System/Library/Frameworks")
@@ -24,12 +24,12 @@ if (MARSYAS_STATIC)
 		
 	endif(MARSYAS_MACOSX)
 	
-else (MARSYAS_STATIC)
+else()
 	# Cmake knows the location of the libraries it builds
 	# the search path to the dynamic lib will automatically be added
 	# maryas will result in  a "-lmarsyas" linker option.
 	set(MARSYAS_LIBRARIES marsyas)
-endif (MARSYAS_STATIC)
+endif()
 
 
 
