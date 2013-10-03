@@ -1,5 +1,3 @@
-include_directories(${CMAKE_SOURCE_DIR}/src)
-
 ## BUILD MACRO
 
 macro(marsyas_app APP)

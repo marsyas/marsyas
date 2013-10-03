@@ -1,6 +1,4 @@
 ## global includes
-include_directories(${CMAKE_SOURCE_DIR}/src)
-
 set(APP_LIBS marsyas ${OS_LIBS} ${QT_LIBRARIES})
 if(MARSYAS_OPENGL)
   set(APP_LIBS ${APP_LIBS} ${OPENGL_LIBRARIES})

@@ -62,6 +62,10 @@ include (marsyas-detect)
 
 ## general setup
 
+# Include current directory, so that include paths of form <marsyas/...>
+# work just like when installed.
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 if(WITH_CPP11)
   if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")

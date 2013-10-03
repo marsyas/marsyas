@@ -27,7 +27,6 @@ add_executable( inspector
   ${inspector_resources_src}
 )
 
-include_directories( ${CMAKE_SOURCE_DIR}/src )
 include_directories( ${CMAKE_SOURCE_DIR}/src/otherlibs/qwt )
 
 qt5_use_modules( inspector Quick Widgets )

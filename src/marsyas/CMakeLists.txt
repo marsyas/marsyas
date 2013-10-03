@@ -1,5 +1,3 @@
-include_directories(${CMAKE_SOURCE_DIR}/src)
-
 set( Marsyas_SOURCES
   system/MarControl.cpp
   system/MarControlManager.cpp

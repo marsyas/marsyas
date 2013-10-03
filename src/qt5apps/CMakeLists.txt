@@ -6,8 +6,6 @@ if(MARSYAS_OPENGL)
   find_package(Qt5OpenGL 5.1 REQUIRED)
 endif()
 
-include_directories( ${CMAKE_SOURCE_DIR}/src/ )
-
 add_subdirectory(common)
 
 if(WITH_CPP11)
