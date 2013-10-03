@@ -4,7 +4,7 @@
 #include <marsyas/Collection.h>
 #include <marsyas/system/MarSystemManager.h>
 
-#include "SubtractMean.h"
+#include <marsyas/marsystems/SubtractMean.h>
 
 #include <vector>
 

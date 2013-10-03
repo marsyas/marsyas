@@ -13,7 +13,7 @@
 #include <cstdio>
 #include <marsyas/Collection.h>
 #include <marsyas/system/MarSystemManager.h>
-#include "Sum.h"
+#include <marsyas/marsystems/Sum.h>
 #include <marsyas/CommandLineOptions.h>
 
 #include <vector>

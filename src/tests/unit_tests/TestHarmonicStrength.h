@@ -5,7 +5,7 @@
 #include <marsyas/system/MarSystemManager.h>
 #include <marsyas/CommandLineOptions.h>
 
-#include "HarmonicStrength.h"
+#include <marsyas/marsystems/HarmonicStrength.h>
 
 using namespace std;
 using namespace Marsyas;

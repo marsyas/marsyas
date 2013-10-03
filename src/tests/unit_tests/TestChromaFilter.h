@@ -13,7 +13,7 @@
 #include <cstdio>
 #include <marsyas/Collection.h>
 #include <marsyas/system/MarSystemManager.h>
-#include "ChromaFilter.h"
+#include <marsyas/marsystems/ChromaFilter.h>
 
 #include <vector>
 

@@ -9,7 +9,7 @@
 #include <cstdio>
 #include <marsyas/Collection.h>
 #include <marsyas/system/MarSystemManager.h>
-#include "AimGammatone.h"
+#include <marsyas/marsystems/AimGammatone.h>
 #include <marsyas/CommandLineOptions.h>
 
 #include <vector>

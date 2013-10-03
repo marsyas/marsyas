@@ -11,7 +11,7 @@
 #include <cstdio>
 #include <marsyas/Collection.h>
 #include <marsyas/system/MarSystemManager.h>
-#include "CARFAC.h"
+#include <marsyas/marsystems/CARFAC.h>
 #include <marsyas/CommandLineOptions.h>
 
 #include <vector>

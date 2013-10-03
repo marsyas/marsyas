@@ -51,7 +51,7 @@
 #include <marsyas/CommandLineOptions.h>
 
 // The class that you want to test, for example "FooBar"
-#include "FooBar.h"
+#include <marsyas/marsystems/FooBar.h>
 
 #include <vector>
 

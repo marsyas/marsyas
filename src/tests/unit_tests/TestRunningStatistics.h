@@ -7,7 +7,7 @@
 #include <marsyas/system/MarSystemManager.h>
 #include <marsyas/CommandLineOptions.h>
 
-#include "RunningStatistics.h"
+#include <marsyas/marsystems/RunningStatistics.h>
 
 // Include TestRunningAutocorrelation.h for helper functions for sum of ints, etc.
 #include "TestRunningAutocorrelation.h"

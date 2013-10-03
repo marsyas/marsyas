@@ -9,7 +9,7 @@
 #include <cstdio>
 #include <marsyas/Collection.h>
 #include <marsyas/system/MarSystemManager.h>
-#include "AimLocalMax.h"
+#include <marsyas/marsystems/AimLocalMax.h>
 #include <marsyas/CommandLineOptions.h>
 
 #include <vector>

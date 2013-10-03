@@ -3,7 +3,7 @@
 #include <marsyas/system/MarSystemManager.h>
 
 // The class that you want to test, for example "WekaSource"
-#include "RunningAutocorrelation.h"
+#include <marsyas/marsystems/RunningAutocorrelation.h>
 
 using namespace std;
 using namespace Marsyas;

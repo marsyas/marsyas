@@ -5,7 +5,7 @@
 #include <marsyas/system/MarSystemManager.h>
 #include <marsyas/CommandLineOptions.h>
 
-#include "DelaySamples.h"
+#include <marsyas/marsystems/DelaySamples.h>
 
 #include <vector>
 #include <sstream>

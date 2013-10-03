@@ -6,7 +6,7 @@
 #include <marsyas/CommandLineOptions.h>
 
 // The class that you want to test, for example "DeltaFirstOrderRegression"
-#include "DeltaFirstOrderRegression.h"
+#include <marsyas/marsystems/DeltaFirstOrderRegression.h>
 
 #include <vector>
 
