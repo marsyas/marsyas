@@ -1,11 +1,11 @@
 @node Building latest Marsyas on Windows, Compiling with Visual Studio Express 2008 on Windows XP, Compiling on Ubuntu, Specific installation examples
-@section Building latest Marsyas on Windows
+@subsection Building latest Marsyas on Windows
 
 These instructions are for building the latest development version of Marsyas.
 It is assumed that you have already obtained the source code.
 If not, please consult @ref{Get Marsyas sources} for instructions.
 
-@subsection Install prerequisits
+@subsubsection Install prerequisits
 
 @itemize
 
@@ -32,7 +32,7 @@ Download and install Visual Studio from:
 
 @end itemize
 
-@subsection Choose correct Visual Studio Command Prompt
+@subsubsection Choose correct Visual Studio Command Prompt
 
 Visual Studio versions which support compilation of 64 bit programs provide you
 with several alternative versions of Command Prompt, intended specifically
@@ -50,7 +50,7 @@ populate the PATH environment variable so as to provide appropriate versions
 of compilation tools and libraries for the intended compilation mode.}
 
 
-@subsection Configure Marsyas using CMake
+@subsubsection Configure Marsyas using CMake
 
 @enumerate
 
@@ -99,7 +99,7 @@ CMake should now have generated a number of new files in the build directory,
 including a Visual Studio solution file named "marsyas.sln".
 
 
-@subsection Compile Marsyas using Visual Studio
+@subsubsection Compile Marsyas using Visual Studio
 
 Still in the build directory, use 'msbuild' (the Visual Studio build tool)
 to compile Marsyas in Release mode:
