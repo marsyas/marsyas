@@ -22,7 +22,7 @@ supported way to build Marsyas.
 * Structure of distribution::   
 @end menu
 
-@node Prerequisites, Get Marsyas sources, Source installation, Source installation
+@node Prerequisites
 @section Prerequisites
 
 Some additional software must be installed before compiling
@@ -34,7 +34,7 @@ Marsyas.
 @end menu
 
 
-@node CMake installation, Compilation tools, Prerequisites, Prerequisites
+@node CMake installation
 @subsection CMake installation
 
 Marsyas uses a CMake build system. The minimum required CMake version is 2.8.2.
@@ -48,7 +48,7 @@ CMake is available in source and binary forms from:
 @end quotation
 
 
-@node Compilation tools,  , CMake installation, Prerequisites
+@node Compilation tools
 @subsection Compilation tools
 
 @unnumberedsubsubsec Linux
@@ -72,9 +72,8 @@ The free 'Express' version is sufficient.
 
 
 
-@node Get Marsyas sources, Configuring with CMake, Prerequisites, Source installation
+@node Get Marsyas sources
 @section Get Marsyas sources
-
 
 @unnumberedsubsec Stable(-ish) Version
 
@@ -129,7 +128,7 @@ git clone git@@github.com:marsyas/marsyas.git
 
 
 
-@node Configuring with CMake, Marsyas options, Get Marsyas sources, Source installation
+@node Configuring with CMake
 @section Configuring with CMake
 
 CMake produces build systems as desired -- Makefiles on Linux /
@@ -187,7 +186,7 @@ generate the build system.
 @end enumerate
 
 
-@node Marsyas options, Compiling, Configuring with CMake, Source installation
+@node Marsyas options
 @section Marsyas options
 
 @subsection Input/Output
@@ -320,7 +319,7 @@ Enables audio and MIDI IO using OSS, if available.
 
 
 
-@node Compiling, Specific installation examples, Marsyas options, Source installation
+@node Compiling
 @section Compiling
 
 Once the build system has been created, simply compile Marsyas
@@ -355,7 +354,7 @@ On Unix, simply run @code{make test}. On Windows with MSVC, build the
 @code{RUN-TESTS} project.
 
 
-@node Specific installation examples, Post-install setup, Compiling, Source installation
+@node Specific installation examples
 @section Specific installation examples
 
 This section contains tips on how to properly install and configure
@@ -380,7 +379,7 @@ your own examples and case studies to help cover more configurations.
 * MacOS X additional notes::    
 @end menu
 
-@node Compiling on MacOS X 10.6 Snow Leopard , Compiling on Ubuntu 11.04 - Natty Narwhal (2011) , Specific installation examples, Specific installation examples
+@node Compiling on MacOS X 10.6 Snow Leopard
 @subsection Compiling on MacOS X 10.6 Snow Leopard 
 
 These steps were used to install Marsyas on a fresh 
@@ -732,7 +731,7 @@ etc...
 @end enumerate 
  
 
-@node Compiling on Ubuntu 11.04 - Natty Narwhal (2011) , Compiling on Ubuntu, Compiling on MacOS X 10.6 Snow Leopard , Specific installation examples
+@node Compiling on Ubuntu 11.04 - Natty Narwhal (2011)
 @subsection Compiling on Ubuntu 11.04 - Natty Narwhal (2011) 
 
  
@@ -805,7 +804,7 @@ steps:
 
 
 
-@node Compiling on Ubuntu, Building latest Marsyas on Windows, Compiling on Ubuntu 11.04 - Natty Narwhal (2011) , Specific installation examples
+@node Compiling on Ubuntu
 @subsection Compiling on Ubuntu
 
 These steps were used to install Marsyas from a fresh 
@@ -836,7 +835,7 @@ compile and install the source code from @uref{http://www.cmake.org}
 @include build_windows.texi
 
 
-@node Compiling with Visual Studio Express 2008 on Windows XP, Compiling with MinGW on Windows XP, Building latest Marsyas on Windows, Specific installation examples
+@node Compiling with Visual Studio Express 2008 on Windows XP
 @subsection Compiling with Visual Studio Express 2008 on Windows XP
 
 
@@ -962,7 +961,7 @@ scripts in src/swig/python.
 @end enumerate 
 
 
-@node Compiling with MinGW on Windows XP, MacOS X additional notes, Compiling with Visual Studio Express 2008 on Windows XP, Specific installation examples
+@node Compiling with MinGW on Windows XP
 @subsection Compiling with MinGW on Windows XP
 
 @enumerate 
@@ -1007,7 +1006,7 @@ useful scripts which are written in Python.
 
 
 
-@node MacOS X additional notes,  , Compiling with MinGW on Windows XP, Specific installation examples
+@node MacOS X additional notes
 @subsection MacOS X additional notes
 
 These random notes might be useful for OS X users. 
@@ -1077,7 +1076,7 @@ email the mailing lists for some help.
 
 
 
-@node Post-install setup, Structure of distribution, Specific installation examples, Source installation
+@node Post-install setup
 @section Post-install setup
 
 @menu
@@ -1085,7 +1084,7 @@ email the mailing lists for some help.
 * Datasets::                    
 @end menu
 
-@node Vim editor support, Datasets, Post-install setup, Post-install setup
+@node Vim editor support
 @subsection Vim editor support
 
 A syntax file for vim color highlighting is in @file{misc/marsyas.vim}.
@@ -1103,7 +1102,7 @@ augroup END
 @end example
 
 
-@node Datasets,  , Vim editor support, Post-install setup
+@node Datasets
 @subsection Datasets
 
 Useful datasets:
@@ -1121,7 +1120,7 @@ DEFUNCT, MIGHT POSSIBLY BE USED AGAIN LATER)
 @end itemize
 
 
-@node Structure of distribution, , Post-install setup, Source installation
+@node Structure of distribution
 @section Structure of distribution 
 
 Marsyas is primarily targeting researchers and software developers who
