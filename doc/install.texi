@@ -30,11 +30,11 @@ Marsyas.
 
 @menu
 * CMake installation::          
-* Compiler configuration::      
+* Compilation tools::
 @end menu
 
 
-@node CMake installation, Compiler configuration, Prerequisites, Prerequisites
+@node CMake installation, Compilation tools, Prerequisites, Prerequisites
 @subsection CMake installation
 
 Marsyas uses a CMake build system. The minimum required CMake version is 2.8.2.
@@ -48,77 +48,27 @@ CMake is available in source and binary forms from:
 @end quotation
 
 
-@node Compiler configuration,  , CMake installation, Prerequisites
-@subsection Compiler configuration
+@node Compilation tools,  , CMake installation, Prerequisites
+@subsection Compilation tools
 
+@unnumberedsubsubsec Linux
 
-@unnumberedsubsubsec Linux compiler configuration
+The GNU Compiler Collection (gcc, g++, ...), and the 'make' program must
+be installed. Note that on Debian/Ubuntu, you can install all required
+compilation tools by installing a single package named 'build-essential'.
 
-@itemize
+@unnumberedsubsubsec MacOS X
 
-@item Standard development environment (gcc, g++, etc): probably already
-installed.
-
-@item @uref{http://www.alsa-project.org/,ALSA} headers.  On most
-distributions, this is a package called @code{alsa-devel} or
-@code{libalsa-devel}.
-
-@end itemize
-
-If you install additional software via a package manager such as
-@code{apt} or @code{rpm}, then the relevant environment variables
-will be configured automatically.
-
-
-@unnumberedsubsubsec MacOS X compiler configuration
-
-@itemize
-@item @uref{http://developer.apple.com/tools/xcode/, Xcode}: standard
-development platform on OSX.  Please install from your OSX installation
-CD/DVD, or download.
-
-@end itemize
-
-If you install additional software via a package manager such as
-@uref{http://www.finkproject.org/, fink} or
-@uref{http://macports.com, macports}, then the relevant
-environment variables will be configured automatically.
-
+Xcode development environment: For sufficient C++11 support, please install
+the latest version from
+@uref{https://developer.apple.com/xcode/,Apple}.
 
 @unnumberedsubsubsec Windows compiler configuration
 
-@itemize
-
-@item Download and install either the free Visual Studio Express
-or the full commercial Visual Studio.
-
-@item @uref{http://msdn2.microsoft.com/en-us/xna/aa937788.aspx,
-Microsoft DirectX SDK}: (optional) required for audio
-input/output. 
-
-@end itemize
-
-If you install additional software, you might need to modify
-environment variables manually.
-
-
-@subsubheading Windows command-line compiler configuration
-
-If you would like to use the Command prompt version, check that
-the command-line compiling works:
-
-@example
-c:\nmake 
-@end example
-
-You will see some version number and it should complain that no
-MAKEFILE was found and no target specified.
-
-If you want to use DirectX SDK on the command-line verison, you
-may need to add an environment variable called @env{DXSDK_DIR}
-and modify your the @env{INCLUDES} and @env{LIBRARY}
-environment variables to include the corresponding directories 
-in the DirectX SDK installation. 
+Microsoft Visual Studio: For sufficient C++11 support, please install at least
+Visual Studio 2012 or later from
+@uref{http://www.microsoft.com/visualstudio/eng/downloads,Microsoft}.
+The free 'Express' version is sufficient.
 
 
 
