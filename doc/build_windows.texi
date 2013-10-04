@@ -1,4 +1,4 @@
-@node Building latest Marsyas on Windows, Compiling with Visual Studio Express 2008 on Windows XP, Compiling on Ubuntu, Specific installation examples
+@node Building latest Marsyas on Windows
 @subsection Building latest Marsyas on Windows
 
 These instructions are for building the latest development version of Marsyas.

@@ -370,14 +370,22 @@ your own examples and case studies to help cover more configurations.
 
 
 @menu
+* Building latest Marsyas on Debian/Ubuntu::
+* Building latest Marsyas on Windows::
 * Compiling on MacOS X 10.6 Snow Leopard ::  
 * Compiling on Ubuntu 11.04 - Natty Narwhal (2011) ::  
 * Compiling on Ubuntu::         
-* Building latest Marsyas on Windows::
 * Compiling with Visual Studio Express 2008 on Windows XP::  
 * Compiling with MinGW on Windows XP::  
 * MacOS X additional notes::    
 @end menu
+
+
+@include build_debian.texi
+
+@include build_windows.texi
+
+
 
 @node Compiling on MacOS X 10.6 Snow Leopard
 @subsection Compiling on MacOS X 10.6 Snow Leopard 
@@ -831,8 +839,6 @@ compile and install the source code from @uref{http://www.cmake.org}
 
 @end enumerate
 
-
-@include build_windows.texi
 
 
 @node Compiling with Visual Studio Express 2008 on Windows XP

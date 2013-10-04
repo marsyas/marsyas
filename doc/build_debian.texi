@@ -1,0 +1,88 @@
+@node Building latest Marsyas on Debian/Ubuntu
+@subsection Building latest Marsyas on Debian/Ubuntu
+
+These instructions are for building the latest development version of Marsyas.
+It is assumed that you have already obtained the source code.
+If not, please consult @ref{Get Marsyas sources} for instructions.
+
+@subsubsection Install prerequisits
+
+These are the prerequisits and their corresponding Debian package names:
+
+@itemize
+@item (Required) GNU Compiler Collection and related tools: 'build-essential'
+@item (Required) CMake: 'cmake'
+@item (Recommended) JACK development files: 'libjack-jack2-dev' or 'libjack-dev' for older version
+@item (Recommended) ALSA development files: 'libasound2-dev'
+@end itemize
+
+If you want to use all Marsyas features, you will need a compiler with a
+decent C++11 support. Any recent Linux distribution will probably include
+a new enough GNU compiler.
+
+JACK and ALSA are different interfaces between a program and the computer's
+real-time audio input/output capabilities. Preferrably, you would build with
+support for both, so that either one of them can be used.
+
+As usual on Debian-based Linux distributions, let's use Apt to install required
+packages. You can install all of the above packages with a single command like
+this:
+@example
+sudo apt-get install build-essential cmake libjack-jack2-dev libasound2-dev
+@end example
+
+
+@subsubsection Configure Marsyas using CMake
+
+@enumerate
+
+@item Navigate to the top-level directory of Marsyas sources. For example:
+
+@example
+cd ~/marsyas
+@end example
+
+@item Create a build directory within, which will contain configuration
+options and compiled Marsyas libraries and programs. Navigate to the build
+directory:
+
+@example
+mkdir build
+cd build
+@end example
+
+@item Run CMake, passing it the Marsyas source directory as argument:
+
+@example
+cmake ..
+@end example
+
+@end enumerate
+
+CMake should now have generated a number of new files in the build directory,
+including a file named "Makefile" which allows you to compile Marsyas.
+
+
+@subsubsection Compile Marsyas using 'make'
+
+Still in the build directory, use 'make' to compile Marsyas:
+
+@example
+make
+@end example
+
+You could also compile Marsyas in Debug mode, which would help developers
+discover bugs in case you run into troubles when using Marsyas. However,
+Marsyas will run significantly slower when compiled in Debug mode.
+
+To compile in Debug mode, you need to first use 'cmake' to change a CMake
+option named CMAKE_BUILD_TYPE, and then run 'make'. Please mind the "."
+add the end of the first command, to indicate the current directory:
+
+@example
+cmake -DCMAKE_BUILD_TYPE=Debug .
+make
+@end example
+
+After compiling, you should have Marsyas programs in the 'bin' subdirectory
+and the Marsyas library in the 'lib' subdirectory.
