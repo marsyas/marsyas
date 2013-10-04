@@ -11,6 +11,8 @@ If not, please consult @ref{Get Marsyas sources} for instructions.
 
 @item CMake
 
+Marsyas uses CMake to configure and guide its building process.
+
 Download CMake Windows installer from:
 @uref{http://www.cmake.org/cmake/resources/software.html}
 
@@ -115,3 +117,6 @@ Marsyas will run significantly slower when compiled in Debug mode:
 @example
 msbuild /p:Configuration=Debug marsyas.sln
 @end example
+
+After compiling, you should have Marsyas programs in the 'bin' subdirectory
+and the Marsyas library in the 'lib' subdirectory.

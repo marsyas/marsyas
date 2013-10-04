@@ -371,6 +371,7 @@ your own examples and case studies to help cover more configurations.
 
 @menu
 * Building latest Marsyas on Debian/Ubuntu::
+* Building latest Marsyas on Mac OS X::
 * Building latest Marsyas on Windows::
 * Compiling on MacOS X 10.6 Snow Leopard ::  
 * Compiling on Ubuntu 11.04 - Natty Narwhal (2011) ::  
@@ -382,6 +383,8 @@ your own examples and case studies to help cover more configurations.
 
 
 @include build_debian.texi
+
+@include build_macosx.texi
 
 @include build_windows.texi
 

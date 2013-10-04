@@ -1,0 +1,94 @@
+@node Building latest Marsyas on Mac OS X
+@subsection Building latest Marsyas on Mac OS X
+
+These instructions are for building the latest development version of Marsyas.
+It is assumed that you have already obtained the source code.
+If not, please consult @ref{Get Marsyas sources} for instructions.
+
+
+@subsubsection Install prerequisits
+
+@itemize
+
+@item CMake
+
+Marsyas uses CMake to configure and guide its building process.
+
+Download CMake from the following link and install it:
+@uref{http://www.cmake.org/cmake/resources/software.html}
+
+At some point in installation you may be asked whether you want to install
+links to CMake to system locations - choose "yes": this will allow you to run
+CMake from the Terminal.
+
+@item Xcode
+
+Xcode development environment provides the Clang compiler required to compile
+Marsyas. If you want to use all Marsyas features, you need a compiler with
+a decent C++11 support. Hence, please install the latest Xcode version from
+Apple:
+@uref{https://developer.apple.com/xcode/}
+
+Just as with CMake above, confirm installation of compilation tools to
+system locations, so as to make them available for use in the Terminal.
+
+@end itemize
+
+
+
+@subsubsection Configure Marsyas using CMake
+
+@enumerate
+
+@item Start up the Terminal application.
+
+@item Navigate to the top-level directory of Marsyas sources. For example:
+
+@example
+cd ~/marsyas
+@end example
+
+@item Create a build directory within, which will contain configuration
+options and compiled Marsyas libraries and programs. Navigate to the build
+directory:
+
+@example
+mkdir build
+cd build
+@end example
+
+@item Run CMake, passing it the Marsyas source directory as argument:
+
+@example
+cmake ..
+@end example
+
+@end enumerate
+
+CMake should now have generated a number of new files in the build directory,
+including a file named "Makefile" which allows you to compile Marsyas.
+
+
+@subsubsection Compile Marsyas using 'make'
+
+Still in the build directory, use 'make' to compile Marsyas:
+
+@example
+make
+@end example
+
+You could also compile Marsyas in Debug mode, which would help developers
+discover bugs in case you run into troubles when using Marsyas. However,
+Marsyas will run significantly slower when compiled in Debug mode.
+
+To compile in Debug mode, you need to first use 'cmake' to change a CMake
+option named CMAKE_BUILD_TYPE, and then run 'make'. Please mind the "."
+add the end of the first command, to indicate the current directory:
+
+@example
+cmake -DCMAKE_BUILD_TYPE=Debug .
+make
+@end example
+
+After compiling, you should have Marsyas programs in the 'bin' subdirectory
+and the Marsyas library in the 'lib' subdirectory.
