@@ -37,9 +37,9 @@ Marsyas.
 @node CMake installation, Compiler configuration, Prerequisites, Prerequisites
 @subsection CMake installation
 
-Before compiling Marsyas, you @strong{must} install CMake 2.8.2 or
-higher. However, if you also want to compile Marsyas Qt applications, you will
-need at least CMake 2.8.9.
+Marsyas uses a CMake build system. The minimum required CMake version is 2.8.2.
+However, if you also want to compile (optional) Marsyas GUI applications
+(using the Qt framework), you will need at least CMake 2.8.9.
 
 CMake is available in source and binary forms from:
 
