@@ -32,7 +32,7 @@
 #include <marsyas/system/MarSystemManager.h>
 #include <marsyas/CommandLineOptions.h>
 #include <marsyas/common_source.h>
-#include "CARFAC.h"
+#include <marsyas/marsystems/CARFAC.h>
 
 #include <vector>
 #include <iomanip>
