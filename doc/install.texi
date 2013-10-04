@@ -13,7 +13,7 @@ supported way to build Marsyas.
 
 @menu
 * Prerequisites::               
-* Download::                    
+* Get Marsyas sources::
 * Configuring with CMake::      
 * Marsyas options::             
 * Compiling::                   
@@ -22,7 +22,7 @@ supported way to build Marsyas.
 * Structure of distribution::   
 @end menu
 
-@node Prerequisites, Download, Source installation, Source installation
+@node Prerequisites, Get Marsyas sources, Source installation, Source installation
 @section Prerequisites
 
 Some additional software must be installed before compiling
@@ -72,24 +72,31 @@ The free 'Express' version is sufficient.
 
 
 
-@node Download, Configuring with CMake, Prerequisites, Source installation
-@section Download
+@node Get Marsyas sources, Configuring with CMake, Prerequisites, Source installation
+@section Get Marsyas sources
+
 
 @unnumberedsubsec Stable(-ish) Version
 
-Stable Marsyas releases are hosted at SourceForge:
-@uref{http://sourceforge.net/projects/marsyas/}
+@strong{Note:} Marsyas is currently approaching the next stable release
+(version 0.5.0) which will bring a lot of changes that also affect the build
+process. Instructions in this manual do not apply anymore to the last
+stable release! For this reason we suggest to use the latest development state
+of Marsyas sources.
 
-Marsyas is open source software and is distributed as a tarball
-(something like @file{marsyas-0.5.0.tar.gz}).  Uncompress this
-file using whatever uncompression program you prefer (@code{tar},
-winzip, etc).
+To get the latest Marsyas sources visit the
+@uref{https://github.com/marsyas/marsyas/,Marsyas GitHub project page}
+and use the "Download ZIP" button.
+
+If you still want to use the last stable Marsyas release, you can obtain
+it from SourceForge:
+@uref{http://sourceforge.net/projects/marsyas/}
 
 @unnumberedsubsec Development Version
 
-The latest version can be obtained using the Marsyas git repository. If you
-plan to work extensively with Marsyas and extend it with your own source code,
-it is highly recommend that you use the git repository.
+If you intend to keep updating your copy of the Marsyas sources along with the
+latest development or contribute to development, you will need to use git to
+interact with the Marsyas git repository.
 
 The Marsyas git repository is hosted at GitHub:
 @uref{https://github.com/marsyas/marsyas/}
@@ -122,7 +129,7 @@ git clone git@@github.com:marsyas/marsyas.git
 
 
 
-@node Configuring with CMake, Marsyas options, Download, Source installation
+@node Configuring with CMake, Marsyas options, Get Marsyas sources, Source installation
 @section Configuring with CMake
 
 CMake produces build systems as desired -- Makefiles on Linux /
