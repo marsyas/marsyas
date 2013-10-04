@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8.2)
 
+option(MARSYAS_DOCUMENTATION_ONLY "Only build documentation, not program sources" OFF)
+
 # If only building documentation, tell CMake
 # not to check for any language compilers.
 if(MARSYAS_DOCUMENTATION_ONLY)

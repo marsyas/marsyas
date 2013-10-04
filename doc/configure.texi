@@ -25,6 +25,17 @@ on CMake's website:
 
 Following is a list of options specific to Marsyas:
 
+@subsection General
+
+@table @code
+
+@item MARSYAS_DOCUMENTATION_ONLY
+If enabled, only build documentation, not program sources. This allows to
+build documentation without even the presence of a compiler or any requirements
+related to program code.
+
+@end table
+
 @subsection Input/Output
 
 @table @code
