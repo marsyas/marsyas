@@ -1,0 +1,117 @@
+@node Building latest Marsyas on Windows, Compiling with Visual Studio Express 2008 on Windows XP, Compiling on Ubuntu, Specific installation examples
+@section Building latest Marsyas on Windows
+
+These instructions are for building the latest development version of Marsyas.
+It is assumed that you have already obtained the source code.
+If not, please consult @ref{Get Marsyas sources} for instructions.
+
+@subsection Install prerequisits
+
+@itemize
+
+@item CMake
+
+Download CMake Windows installer from:
+@uref{http://www.cmake.org/cmake/resources/software.html}
+
+Run the installer.
+
+At some point you may be asked whether you want to make CMake available to the
+whole system - choose "yes": this will allow you to run CMake from Visual
+Studio Command Prompt.
+
+
+@item Microsoft Visual Studio
+
+If you want to use all features of Marsyas, you need a compiler with a
+decent C++11 support. Hence, please install at least Visual Studio 2012 or
+newer version. The free 'Express' version is sufficient.
+
+Download and install Visual Studio from:
+@uref{http://www.microsoft.com/visualstudio/eng/downloads}
+
+@end itemize
+
+@subsection Choose correct Visual Studio Command Prompt
+
+Visual Studio versions which support compilation of 64 bit programs provide you
+with several alternative versions of Command Prompt, intended specifically
+for compiling 32 bit or 64 bit programs:
+@itemize
+@item Visual Studio Command Prompt ...x86 - intended for 32 bit compilation.
+@item Visual Studio Command Prompt ...x64 - intended for 64 bit compilation.
+@end itemize
+
+Search the Start menu for the Command Prompt that matches your intended
+compilation mode.
+
+@emph{Geeky details: The different Command Prompt versions automatically
+populate the PATH environment variable so as to provide appropriate versions
+of compilation tools and libraries for the intended compilation mode.}
+
+
+@subsection Configure Marsyas using CMake
+
+@enumerate
+
+@item Start the appropriate Visual Studio Command Prompt, as described above.
+
+@item Navigate to the top-level directory of Marsyas sources. Use the 'cd'
+command, passing it the path to Marsyas as argument. For example:
+
+@example
+cd C:\Users\John\marsyas
+@end example
+
+@item Create a build directory within, which will contain configuration
+options and compiled Marsyas libraries and programs. Navigate to the build
+directory:
+
+@example
+mkdir build
+cd build
+@end example
+
+@item Start CMake GUI, passing it the source directory (one level up: "..")
+as argument:
+
+@example
+cmake-gui ..
+@end example
+
+@item In CMake GUI: Click "Configure" to start auto-configuration of Marsyas
+for Windows.
+
+@item In CMake GUI: A dialog will ask you to choose the desired "generator".
+From the drop-down menu, choose the version of Visual Studio that you have
+installed. Click "Finish".
+
+@strong{Note:} "Visual Studio 11" corresponds to Visual Studio 2012. If you
+intend to compile in 64 bit mode, choose the generator which contains "Win64"
+in its name.
+
+@item In CMake GUI: Click "Generate" to generate a Visual Studio solution for
+desired configuration. Exit CMake GUI.
+
+@end enumerate
+
+CMake should now have generated a number of new files in the build directory,
+including a Visual Studio solution file named "marsyas.sln".
+
+
+@subsection Compile Marsyas using Visual Studio
+
+Still in the build directory, use 'msbuild' (the Visual Studio build tool)
+to compile Marsyas in Release mode:
+
+@example
+msbuild /p:Configuration=Release marsyas.sln
+@end example
+
+You could also compile Marsyas in Debug mode, which would help developers
+discover bugs in case you run into troubles when using Marsyas. However,
+Marsyas will run significantly slower when compiled in Debug mode:
+
+@example
+msbuild /p:Configuration=Debug marsyas.sln
+@end example

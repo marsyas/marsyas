@@ -374,6 +374,7 @@ your own examples and case studies to help cover more configurations.
 * Compiling on MacOS X 10.6 Snow Leopard ::  
 * Compiling on Ubuntu 11.04 - Natty Narwhal (2011) ::  
 * Compiling on Ubuntu::         
+* Building latest Marsyas on Windows::
 * Compiling with Visual Studio Express 2008 on Windows XP::  
 * Compiling with MinGW on Windows XP::  
 * MacOS X additional notes::    
@@ -804,7 +805,7 @@ steps:
 
 
 
-@node Compiling on Ubuntu, Compiling with Visual Studio Express 2008 on Windows XP, Compiling on Ubuntu 11.04 - Natty Narwhal (2011) , Specific installation examples
+@node Compiling on Ubuntu, Building latest Marsyas on Windows, Compiling on Ubuntu 11.04 - Natty Narwhal (2011) , Specific installation examples
 @subsection Compiling on Ubuntu
 
 These steps were used to install Marsyas from a fresh 
@@ -832,9 +833,10 @@ compile and install the source code from @uref{http://www.cmake.org}
 @end enumerate
 
 
+@include build_windows.texi
 
 
-@node Compiling with Visual Studio Express 2008 on Windows XP, Compiling with MinGW on Windows XP, Compiling on Ubuntu, Specific installation examples
+@node Compiling with Visual Studio Express 2008 on Windows XP, Compiling with MinGW on Windows XP, Building latest Marsyas on Windows, Specific installation examples
 @subsection Compiling with Visual Studio Express 2008 on Windows XP
 
 
@@ -1119,7 +1121,7 @@ DEFUNCT, MIGHT POSSIBLY BE USED AGAIN LATER)
 @end itemize
 
 
-@node Structure of distribution,  , Post-install setup, Source installation
+@node Structure of distribution, , Post-install setup, Source installation
 @section Structure of distribution 
 
 Marsyas is primarily targeting researchers and software developers who
