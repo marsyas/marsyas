@@ -17,7 +17,7 @@ supported way to build Marsyas.
 * Configuring with CMake::      
 * Marsyas options::             
 * Compiling::                   
-* Specific installation examples::  
+* Step-by-step building instructions::
 * Post-install setup::          
 * Structure of distribution::   
 @end menu
@@ -334,7 +334,7 @@ cmake -G Xcode ..
 On Windows, there are various options such as: generating a project file
 for Visual Studio, compiling from command-line using nmake, or using
 the MinGW toolchain. More specific instructions for some 
-configurations can be found in @ref{Specific installation examples}. 
+configurations can be found in @ref{Step-by-step building instructions}.
 
 On Unix, use @code{make install} to compile and install Marsyas. There is no
 functionality to install Marsyas outside of the source tree on Windows.
@@ -354,25 +354,36 @@ On Unix, simply run @code{make test}. On Windows with MSVC, build the
 @code{RUN-TESTS} project.
 
 
-@node Specific installation examples
-@section Specific installation examples
+@node Step-by-step building instructions
+@section Step-by-step building instructions
 
-This section contains tips on how to properly install and configure
-Marsyas and additional supporting software for different operating
-systems and compiler configurations. The instructions are more specific
-and detailed. There many possible ways to install supporting software
-and install and compile Marsyas depending on your setup and it would be
-impossible to cover them all. Therefore only a few representative case
-studies are provided. Ideally the basic installation instructions have
-worked for you.  If not some of these specific examples might help you 
-and you can always ask for help in the mailing lists. Please send us
-your own examples and case studies to help cover more configurations. 
+You will find here detailed step-by-step instructions for building Marsyas
+with basic features only. These instructions are intended as a beginner's
+introduction to the procedure of software building in general. For extra
+features, please look at other sections of the manual.
 
+Please note that there are a lot of optional extensions to the basic
+Marsyas functionality which require installation of additional supporting
+software. Moreover, there may be slight differences in installation
+procedures based on your particular computer setup. Only a few representative
+cases are described here. If you find troubles you can always ask for help
+on the user or developer mailing lists. If you find solutions to issues not
+covered here, please send us information so we can include it in this manual.
+
+The following sections contain instructions for building latest Marsyas on
+most recent versions of Linux, Mac OS X and Windows.
 
 @menu
 * Building latest Marsyas on Debian/Ubuntu::
 * Building latest Marsyas on Mac OS X::
 * Building latest Marsyas on Windows::
+@end menu
+
+The following sections cover building older Marsyas versions
+(up to 0.4.8), and on older platform versions. They are most probably not
+relevant for the latest Marsyas sources anymore:
+
+@menu
 * Compiling on MacOS X 10.6 Snow Leopard ::  
 * Compiling on Ubuntu 11.04 - Natty Narwhal (2011) ::  
 * Compiling on Ubuntu::         
