@@ -100,6 +100,9 @@ desired configuration. Exit CMake GUI.
 CMake should now have generated a number of new files in the build directory,
 including a Visual Studio solution file named "marsyas.sln".
 
+If you would like to use CMake options to enable and disable specific features,
+please see instructions in @ref{Configuring with CMake}.
+
 
 @subsubsection Compile Marsyas using Visual Studio
 

@@ -1,0 +1,169 @@
+@node Configuring with CMake
+@section Configuring with CMake
+
+Marsyas uses CMake to configure and guide its building process. CMake allows
+for automatic configuration according to the current platform, as well as
+user-configurable building options. It allows you to enable and disable
+specific Marsyas features.
+
+After configuration, CMake creates building instructions for various other
+build systems:
+@itemize
+@item Makefiles for Linux, Mac OS X or MinGW
+@item Xcode projects for Mac OS X
+@item MS Visual Studio solutions for Windows.
+@end itemize
+
+On all platforms, CMake configuration can be performed using the CMake GUI
+application (the 'cmake-gui' command). There are also alternative ways to
+perform configuration. Please read detailed instructions on how to use CMake
+on CMake's website:
+@itemize
+@item @uref{http://www.cmake.org/cmake/help/runningcmake.html, General instructions}
+@item @uref{http://www.cmake.org/cmake/help/v2.8.11/cmake.html#section_Usage, Command-line usage}
+@end itemize
+
+Following is a list of options specific to Marsyas:
+
+@subsection Input/Output
+
+@table @code
+
+@item MARSYAS_AUDIOIO
+This enables audio input/output.  Requires DirectX on Windows and
+either JACK, ALSA or OSS on Linux.  MacOS X audio support is built-in
+with the basic developer tools.
+
+@strong{Note:} This option requires C++11 support - in other words,
+the WITH_CPP11 option must also be enabled (described below).
+
+@item MARSYAS_MIDIIO
+This enables midi input/output.  Requires DirectX on Windows and
+either ALSA or OSS on Linux.  MacOS X audio support is built-in
+with the basic developer tools.
+
+@end table
+
+@strong{Note:} Audio and MIDI IO support also depend on WITH_JACK, WITH_ALSA,
+and WITH_OSS options, described below.
+
+
+@subsection Code messages and optional portions
+
+@table @code
+
+@item MARSYAS_ASSERT
+Turns on assertions.
+
+@item MARSYAS_PROFILING
+Turns on profiling.
+
+@item MARSYAS_DEBUG
+Turns on debugging info (large performance penalty).
+
+@item DISTRIBUTED
+(@emph{advanced} option) experimental code for distributed
+systems.
+
+@end table
+
+
+@subsection Logging options
+
+These are @emph{advanced} options.
+
+@table @code
+
+@item MARSYAS_LOG_WARNINGS
+
+@item MARSYAS_LOG_DEBUGS
+
+@item MARSYAS_LOG_DIAGNOSTICS
+
+@item MARSYAS_LOG2FILE
+
+@item MARSYAS_LOG2STDOUT
+
+@item MARSYAS_LOG2GUI
+
+@end table
+
+
+@subsection Testing options
+
+@table @code
+@item MARSYAS_TESTS
+Build Marsyas tests, so they can be run using @code{make test}.
+@end table
+
+
+@subsection Optional software
+
+All of these options require additional software to be
+@strong{installed and properly configured}.
+
+@table @code
+
+@item WITH_CPP11
+Enables compilation in C++11 mode. If disabled, Marsyas will be compiled with
+limited functionality. Specifically, the audio IO and multi-threading support
+require this option to be enabled.
+
+This option requires a compiler with adequate C++11 support.
+Minimum required compiler versions are ensured by CMake, and reported if not
+satisfied.
+
+@item WITH_MAD
+mp3 audio decoding with
+@uref{http://sourceforge.net/projects/mad/, LibMAD}
+
+@item WITH_VORBIS
+ogg vorbis audio decoding with libvorbis - it requires
+
+@item WITH_MATLAB
+Builds the MATLAB engine interface.
+
+@item WITH_SWIG
+Builds SWIG bindings.  This option enables the following
+sub-options: WITH_SWIG_PYTHON, WITH_SWIG_JAVA, WITH_SWIG_LUA, and
+WITH_SWIG_RUBY.
+@table @code
+@item WITH_SWIG_PYTHON
+Use Swig to generate Python bindings
+@item WITH_SWIG_JAVA
+Use Swig to generate Java bindings
+@item WITH_SWIG_LUA
+Use Swig to generate Lua bindings
+@item WITH_SWIG_RUBY
+Use Swig to generate Ruby bindings
+@end table
+
+
+@item WITH_QT5
+Builds the Qt5 GUI applications. Most Marsyas GUI applications are of this type.
+Requires Qt 5.0 or higher.
+
+@item WITH_QT
+Builds the Qt4 GUI applications. There are only a few unmaintained Marsyas GUI
+applications of this type, preserved mostly for inspiration.
+Requires Qt 4.2.3 or higher.
+
+
+@item WITH_VAMP
+Build plugins for Vamp (see @ref{SonicVisualiser Vamp Plugins} for more information).
+
+@item WITH_GSTREAMER
+Use GStreamer as an audio source
+
+@end table
+
+Linux-specific:
+
+@table @code
+@item WITH_JACK
+Enables audio IO using JACK, if available.
+@item WITH_ALSA
+Enables audio and MIDI IO using ALSA, if available.
+@item WITH_OSS
+Enables audio and MIDI IO using OSS, if available.
+@end table
