@@ -72,7 +72,7 @@ the building process (see @ref{Step-by-step building instructions}).
 @end enumerate
 
 
-@subsubsection Entirely on command-line:
+@subsubsection Entirely on command-line
 
 You can also perform CMake configuration entirely on command-line.
 Options are controlled by using the 'cmake' command and passing it arguments
@@ -91,7 +91,7 @@ options, you can proceed with the compilation step of the building process
 (see @ref{Step-by-step building instructions})
 
 
-@subsubsection More alternatives:
+@subsubsection More alternatives
 
 There are more alternative ways to use CMake. Please read detailed instructions
 on the CMake website:
@@ -100,21 +100,14 @@ on the CMake website:
 @item @uref{http://www.cmake.org/cmake/help/v2.8.11/cmake.html#section_Usage, Command-line usage}
 @end itemize
 
-Following is a list of options specific to Marsyas:
+
+@subsection Most prominent options
+
+The following is a list of most important and commonly used options provided
+either by Marsyas or CMake itself.
 
 
-@subsection General
-
-@table @code
-
-@item MARSYAS_DOCUMENTATION_ONLY
-If enabled, only build documentation, not program sources. This allows to
-build documentation without even the presence of a compiler or any requirements
-related to program code.
-
-@end table
-
-@subsection Input/Output
+@subsubsection Input / output
 
 @table @code
 
@@ -137,7 +130,7 @@ with the basic developer tools.
 and WITH_OSS options, described below.
 
 
-@subsection Code messages and optional portions
+@subsubsection Code messages and optional portions
 
 @table @code
 
@@ -157,7 +150,7 @@ systems.
 @end table
 
 
-@subsection Logging options
+@subsubsection Message logging
 
 These are @emph{advanced} options.
 
@@ -178,7 +171,7 @@ These are @emph{advanced} options.
 @end table
 
 
-@subsection Testing options
+@subsubsection Testing
 
 @table @code
 @item MARSYAS_TESTS
@@ -186,7 +179,7 @@ Build Marsyas tests, so they can be run using @code{make test}.
 @end table
 
 
-@subsection Optional software
+@subsubsection Optional software
 
 All of these options require additional software to be
 @strong{installed and properly configured}.
@@ -255,4 +248,16 @@ Enables audio IO using JACK, if available.
 Enables audio and MIDI IO using ALSA, if available.
 @item WITH_OSS
 Enables audio and MIDI IO using OSS, if available.
+@end table
+
+
+@subsubsection Documentation
+
+@table @code
+
+@item MARSYAS_DOCUMENTATION_ONLY
+If enabled, only build documentation, not program sources. This allows to
+build documentation without even the presence of a compiler or any requirements
+related to program code.
+
 @end table
