@@ -6,24 +6,102 @@ for automatic configuration according to the current platform, as well as
 user-configurable building options. It allows you to enable and disable
 specific Marsyas features.
 
-After configuration, CMake creates building instructions for various other
-build systems:
+After configuration, CMake creates files that contain instructions for the
+next step of the building process. This may be:
 @itemize
-@item Makefiles for Linux, Mac OS X or MinGW
-@item Xcode projects for Mac OS X
-@item MS Visual Studio solutions for Windows.
+@item Makefiles on Linux, Mac OS X or MinGW
+@item Xcode projects on Mac OS X
+@item MS Visual Studio solutions on Windows.
 @end itemize
 
-On all platforms, CMake configuration can be performed using the CMake GUI
-application (the 'cmake-gui' command). There are also alternative ways to
-perform configuration. Please read detailed instructions on how to use CMake
-on CMake's website:
+@subsection Running CMake
+
+@strong{Note:} The following instructions assume that you have done the
+prerequisite steps described in @ref{Step-by-step building instructions}:
+@enumerate
+@item Obtained Marsyas sources
+@item Installed CMake and other prerequisite software
+@item Created a @code{build} directory within the top-level Marsyas
+directory and navigated your command-line to the @code{build} directory
+@end enumerate
+
+There are several ways that configuration using CMake can be performed.
+
+@subsubsection Using CMake GUI
+
+@strong{Note:} On Linux, you will need to install an extra package for the
+CMake GUI. On Debian/Ubuntu the package name is @code{cmake-qt-gui}.
+
+You can start CMake GUI either graphically via the list of
+applications installed on your system, or by using the 'cmake-gui' command
+in the Linux console, OS X Terminal, or Windows Command Prompt.
+
+@itemize
+
+@item If you start it the graphical way, you will need to set the Marsyas
+source and build directories manually in the CMake GUI
+
+@item If you start it using the 'cmake-gui' command, you can pass it the
+Marsyas source directory as argument, and the current directory will
+be used as the build directory. For example, assuming that you are in the
+@code{build} directory:
+
+@example
+cmake-gui ..
+@end example
+
+@end itemize
+
+CMake GUI contains a list of available options: the left column lists option
+names, and the right column their editable values. By moving the mouse cursor
+over an option name, its description will pop up. To perform configuration,
+follow the steps below:
+
+@enumerate
+
+@item If Marsyas has not been configured before, the list of options will be
+empty. Click "Configure" to do the initial auto-configuration.
+
+@item Modify options as desired, and click "Configure" again.
+
+@item Once you are satisfied with options, click "Generate" to apply them.
+
+@item You can now exit CMake GUI and proceed with the compilation step of
+the building process (see @ref{Step-by-step building instructions}).
+
+@end enumerate
+
+
+@subsubsection Entirely on command-line:
+
+You can also perform CMake configuration entirely on command-line.
+Options are controlled by using the 'cmake' command and passing it arguments
+of the form "-D" + [option name] + "=" + [value]. Values can be paths to
+directories and files, or simply "ON" and "OFF" (or equivalently,
+"TRUE" and "FALSE"). Multiple options can be changed using the same command.
+
+For example, assuming that you are in the @code{build} directory:
+
+@example
+cmake -DMARSYAS_AUDIOIO=OFF -DMARSYAS_TESTS=ON ..
+@end example
+
+After invoking the @code{cmake} command one or multiple times to apply desired
+options, you can proceed with the compilation step of the building process
+(see @ref{Step-by-step building instructions})
+
+
+@subsubsection More alternatives:
+
+There are more alternative ways to use CMake. Please read detailed instructions
+on the CMake website:
 @itemize
 @item @uref{http://www.cmake.org/cmake/help/runningcmake.html, General instructions}
 @item @uref{http://www.cmake.org/cmake/help/v2.8.11/cmake.html#section_Usage, Command-line usage}
 @end itemize
 
 Following is a list of options specific to Marsyas:
+
 
 @subsection General
 
