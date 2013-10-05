@@ -96,5 +96,32 @@ cmake -DCMAKE_BUILD_TYPE=Debug .
 make -j3
 @end example
 
-After compiling, you should have Marsyas programs in the 'bin' subdirectory
-and the Marsyas library in the 'lib' subdirectory.
+
+@subsubsection Marsyas usage and system-wide installation
+
+After compiling, you should have several Marsyas programs in the
+@code{build/bin} subdirectory and the Marsyas library in the @code{build/lib}
+subdirectory.
+
+For example, assuming that you are in the @code{build} directory, you can run
+the @code{sfplay} program to play an uncompressed sound file like this:
+@example
+./bin/sfplay my_sound_file.wav
+@end example
+
+If you want to make the programs and the library available outside of your
+build directory, you should use the following command to install all parts
+of Marsyas to appropriate system locations:
+
+@example
+make install
+@end example
+
+By default, the above command will install programs and libraries under the
+@code{/usr/local} prefix. You can change that by setting the CMake option
+CMAKE_INSTALL_PREFIX to the desired prefix before installation:
+
+@example
+cmake -DCMAKE_INSTALL_PREFIX=~/marsyas-install .
+make install
+@end example
