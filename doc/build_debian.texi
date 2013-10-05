@@ -68,10 +68,19 @@ please see instructions in @ref{Configuring with CMake}.
 
 @subsubsection Compile Marsyas using 'make'
 
-Still in the build directory, use 'make' to compile Marsyas:
+Still in the build directory, use the 'make' command to compile Marsyas.
 
 @example
 make
+@end example
+
+@emph{Geeky note: If your CPU has multiple cores (it is capable of running
+multiple threads in parallel), you can shorten the compilation time by running
+several instances of 'make' in parallel by using the '-j' option followed by
+the number of instances. The example below runs 3 parallel 'make' instances:}
+
+@example
+make -j3
 @end example
 
 You could also compile Marsyas in Debug mode, which would help developers
@@ -80,11 +89,11 @@ Marsyas will run significantly slower when compiled in Debug mode.
 
 To compile in Debug mode, you need to first use 'cmake' to change a CMake
 option named CMAKE_BUILD_TYPE, and then run 'make'. Please mind the "."
-add the end of the first command, to indicate the current directory:
+at the end of the first command, to indicate the current directory:
 
 @example
 cmake -DCMAKE_BUILD_TYPE=Debug .
-make
+make -j3
 @end example
 
 After compiling, you should have Marsyas programs in the 'bin' subdirectory
