@@ -127,22 +127,24 @@ void MidiInput::mycallback(double deltatime, std::vector< unsigned char > * mess
   nBytes = message->size();
 
   MidiInput* mythis = (MidiInput*) userData;
+  std::vector<int> v(3);
 
   if (nBytes > 0)
   {
     if (nBytes > 2)
     {
-      mythis->byte3 = message->at(2);
-      mythis->byte2 = message->at(1);
-      mythis->byte1 = message->at(0);
+	  v[0] = message->at(0);
+	  v[1] = message->at(1);
+	  v[2] = message->at(2);
+	  mythis->msgQueue.push(v);
     }
-
   }
 }
 
 void MidiInput::myProcess(realvec& in, realvec& out)
 {
   mrs_natural t,o;
+  std::vector<int> *v;
   // just pass data through
   for (o=0; o < inObservations_; o++)
   {
@@ -151,8 +153,12 @@ void MidiInput::myProcess(realvec& in, realvec& out)
       out(o,t) =  in(o,t);
     }
   }
-  ctrl_byte1_->setValue((mrs_natural)byte1, NOUPDATE);
-  ctrl_byte2_->setValue((mrs_natural)byte2, NOUPDATE);
-  ctrl_byte3_->setValue((mrs_natural)byte3, NOUPDATE);
-
+  if (!msgQueue.empty()) {
+	v = new std::vector<int>(msgQueue.front());
+	msgQueue.pop();
+	ctrl_byte1_->setValue((mrs_natural)v->at(0), NOUPDATE);
+	ctrl_byte2_->setValue((mrs_natural)v->at(1), NOUPDATE);
+	ctrl_byte3_->setValue((mrs_natural)v->at(2), NOUPDATE);
+	delete v;
+  }
 }
