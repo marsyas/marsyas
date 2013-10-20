@@ -88,14 +88,20 @@ class Osc(object):
         self.noteoff_ctrl = self.osc.getControl("ADSR/gadsr/mrs_bool/noteoff")
 
         self.osc.updControl("SVFilter/filter/mrs_bool/freqin", MarControlPtr.from_bool(True))
+        self.osc.updControl("SVFilter/filter/mrs_real/res", 0.6)
+        self.osc.updControl("SVFilter/filter/mrs_natural/type", 0)
 
         self.osc.updControl("Fanout/fout/ADSR/fadsr/mrs_bool/bypass", MarControlPtr.from_bool(True))
+        self.osc.updControl("Fanout/fout/ADSR/fadsr/mrs_real/aTarget", 0.2)
+        self.osc.updControl("Fanout/fout/ADSR/fadsr/mrs_real/susLevel", 0.08)
+        self.osc.updControl("Fanout/fout/ADSR/fadsr/mrs_real/aTime", 1.6)
+
         self.fnoteon_ctrl = self.osc.getControl("Fanout/fout/ADSR/fadsr/mrs_bool/noteon")
         self.fnoteoff_ctrl = self.osc.getControl("Fanout/fout/ADSR/fadsr/mrs_bool/noteoff")
 
         self.freq_ctrl = self.osc.getControl("Fanout/fout/" + osc_type + "/mrs_real/frequency")
         self.osc.updControl("Fanout/fout/" + osc_type + "/mrs_bool/noteon", MarControlPtr.from_bool(True))
-        self.osc.updControl("Fanout/fout/" + osc_type + "/mrs_natural/type", 0)
+        self.osc.updControl("Fanout/fout/" + osc_type + "/mrs_natural/type", 1)
 
         self.note = None
         self.num = None

@@ -45,9 +45,11 @@ private:
   void addControls();
 
   mrs_bool freqIn_;
+  mrs_natural type_;
 
   mrs_real israte_;
   mrs_real frequency_;
+  mrs_real res_ = 0.1;
 
 	mrs_real notch = 0.0;
 	mrs_real low = 0.0;
