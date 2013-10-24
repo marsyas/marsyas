@@ -17,11 +17,6 @@
 */
 
 #include <marsyas/PeUtilities.h>
-
-#ifdef MARSYAS_AUDIOIO
-#include "AudioSink.h"
-#endif
-
 #include <marsyas/marsystems/SoundFileSink.h>
 #include <marsyas/marsystems/SoundFileSource.h>
 #include <marsyas/NumericLib.h>
