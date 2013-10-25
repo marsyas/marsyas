@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
 import os
-marsyas_datadir = os.environ['MARSYAS_DATADIR']
+try:
+    marsyas_datadir = os.environ['MARSYAS_DATADIR']
+except:
+    marsyas_datadir = "."
 
 class MarCollection():
     def __init__(self, mf_filename=None):
