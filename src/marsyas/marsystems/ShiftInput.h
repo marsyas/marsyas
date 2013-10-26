@@ -24,46 +24,48 @@
 namespace Marsyas
 {
 /**
-	\class ShiftInput
-	\ingroup Processing Basic
-	\brief Apply sliding window with certain hop size and window size.
+\class ShiftInput
+\ingroup Processing Basic
+\brief Apply sliding window with certain hop size and window size.
 
-	The ShiftInput MarSystem is useful for generating slices from an
-	input source in a sliding window fashion with certain window size
-	and hop size.
+The ShiftInput MarSystem is useful for generating slices from an
+input source in a sliding window fashion with certain window size
+and hop size.
 
-	The hop size between the overlapping windows is defined by the
-	number of input samples of the ShiftInput MarSystem, which is
-	in turn automatically determined from the number of output
-	samples of the <b>preceding</b> source or MarSystem.
-	A typical example is a SoundFileSource MarSystem followed by a
-	ShiftInput MarSystem. To set the hop size of the sliding window
-	in ShiftInput, one has to set the onSamples control of the
-	SoundFileSource.
+The **hop size** between the overlapping windows is defined by the number of
+input samples to the ShiftInput.
 
-	The window size can be set with the winSize control.
+The **window size** can be set with the *winSize* control.
 
-	If the hop size is smaller than the window size, there will be
-	overlap between successive output slices. If the hop size is
-	larger than the window size, the output slices will be trimmed
-	versions of the input slices.
+If the hop size is smaller than the window size, there will be
+overlap between successive output slices. If the hop size is
+larger than the window size, the output slices will be trimmed
+versions of the input slices.
 
-	Controls:
-	- \b mrs_natural/winSize [rw] : the window size of the sliding window.
-	- \b mrs_bool/reset [w] : reset the internal buffer (used in case of
-		overlapping windows) to zero.
-	- \b mrs_bool/clean [w] : call for a partial clean of the internal buffer.
-		(limited by lowCleanLimit and highCleanLimit).
-	- \b mrs_real/lowCleanLimit [rw] : low limit of a cleaning request
-		(as a portion of the internal buffer size).
-	- \b mrs_real/highCleanLimit [rw] : high limit of a cleaning request
-		(as a portion of the internal buffer size).
+A typical example is a SoundFileSource followed by a ShiftInput, in a Series.
+Mind that he number of input samples to a MarSystem is automatically determined
+from the number of output samples of the **preceding** MarSystem. Hence, to
+define the hop size of the sliding window produced by the ShiftInput, one has
+to make sure that the *onSamples* control of the SoundFileSource equals the
+desired hop size. Because each MarSystem automatically determines its output
+number of samples from it's input number of samples, that in turn requires
+setting the *inSamples* control of the SoundFileSource.
 
-	\see SoundFileSource
+Controls:
+- \b mrs_natural/winSize [rw] : the window size of the sliding window.
+- \b mrs_bool/reset [w] : reset the internal buffer (used in case of
+    overlapping windows) to zero.
+- \b mrs_bool/clean [w] : call for a partial clean of the internal buffer.
+    (limited by lowCleanLimit and highCleanLimit).
+- \b mrs_real/lowCleanLimit [rw] : low limit of a cleaning request
+    (as a portion of the internal buffer size).
+- \b mrs_real/highCleanLimit [rw] : high limit of a cleaning request
+    (as a portion of the internal buffer size).
 
-	\see SoundFileSourceHopper for generating an audio slices from
-	a SoundFileSource in a sliding/hopping window fashion.
+\see SoundFileSource
 
+\see SoundFileSourceHopper for generating an audio slices from
+a SoundFileSource in a sliding/hopping window fashion.
 */
 
 
