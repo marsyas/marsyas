@@ -32,7 +32,7 @@ fi
 buildDir=$testDir/build
 logDir=$testDir/logs
 report=$logDir/`date +%y%m%d`-report.txt
-lastGoodVersion=$testDir/lastworking.txt
+lastGoodVersionFile=$testDir/lastworking.txt
 
 logBase=$logDir/`date +%y%m%d`
 gitLog=$logBase-git.log
@@ -76,6 +76,7 @@ test_configuration() {
 
 ######## actual script
 
+last_good_version=`cat $lastGoodVersionFile`
 
 ### setup clean dir
 mkdir -p $testDir
@@ -95,6 +96,16 @@ testthing "git pull --ff-only" $gitLog "Git update"
 version=`git rev-parse HEAD`
 
 report "-- Git revision: $version"
+
+# Check for new commits, exit if none.
+if [ "$version" = "$last_good_version" ]
+then
+  report "-- No new git commits."
+  exit 0
+fi
+
+# Run configuration tests
+
 subjectBase="Marsyas Auto-Tester ("`date +%y%m%d`", rev $version):"
 
 report ""
@@ -119,14 +130,15 @@ test_configuration "Complete" "$gitDir" "$testDir" \
 
 report ""
 
+
 if [ $PASS = 1 ]
 then
-  echo $version > $lastGoodVersion
+  echo $version > $lastGoodVersionFile
   report "-- All configurations have passed."
   emailSubject="$subjectBase PASS"
 else
   report "!! Some configurations have failed."
-  report "!! Last good version: `cat $lastGoodVersion`"
+  report "!! Last good version: $last_good_version"
   emailSubject="$subjectBase FAIL"
 fi
 
