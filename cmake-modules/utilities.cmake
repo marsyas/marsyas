@@ -1,0 +1,7 @@
+function(list_to_space_separated_string OUTPUT_VAR LIST)
+  set(STRING)
+  foreach(ITEM ${LIST})
+    set(STRING "${STRING} ${ITEM}")
+  endforeach()
+  set(${OUTPUT_VAR} "${STRING}" PARENT_SCOPE)
+endfunction()
