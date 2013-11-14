@@ -1,5 +1,6 @@
 # This script expects the following variables to be set beforehand:
 #
+# CTEST_CMAKE_GENERATOR
 # CTEST_SOURCE_DIRECTORY
 # CTEST_BINARY_DIRECTORY
 # CTEST_SITE
@@ -16,8 +17,6 @@ elseif(MARSYAS_CONFIGURATION STREQUAL "Minimal")
 else()
   message(FATAL_ERROR "Unknown Marsyas configuration: '${MARSYAS_CONFIGURATION}'")
 endif()
-
-set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
 
 #set(WITH_MEMCHECK TRUE)
 #set(WITH_COVERAGE TRUE)
