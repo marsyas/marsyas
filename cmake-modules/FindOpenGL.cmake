@@ -18,26 +18,9 @@
 include(FindPackageHandleStandardArgs)
 
 IF (WIN32)
-  IF (CYGWIN)
-
     FIND_PATH(OPENGL_INCLUDE_DIR GL/gl.h )
-
     FIND_LIBRARY(OPENGL_gl_LIBRARY opengl32 )
-
     FIND_LIBRARY(OPENGL_glu_LIBRARY glu32 )
-
-  ELSE (CYGWIN)
-
-    IF(BORLAND)
-      SET (OPENGL_gl_LIBRARY import32 CACHE STRING "OpenGL library for win32")
-      SET (OPENGL_glu_LIBRARY import32 CACHE STRING "GLU library for win32")
-    ELSE(BORLAND)
-      SET (OPENGL_gl_LIBRARY opengl32 CACHE STRING "OpenGL library for win32")
-      SET (OPENGL_glu_LIBRARY glu32 CACHE STRING "GLU library for win32")
-    ENDIF(BORLAND)
-
-  ENDIF (CYGWIN)
-
 ELSE (WIN32)
 
   IF (APPLE)
