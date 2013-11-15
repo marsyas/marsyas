@@ -8,171 +8,76 @@
 #  PYTHON_DEBUG_LIBRARIES = path to the debug library
 #
 
+set(PYTHON_SUITABLE_VERSIONS 2.7 2.6 2.5 2.4 2.3 2.2 2.1 2.0 1.6 1.5)
+
 EXECUTE_PROCESS(COMMAND python-config --prefix OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-INCLUDE(CMakeFindFrameworks)
-IF(WIN32)
-  FIND_LIBRARY(PYTHON_DEBUG_LIBRARY
-    NAMES python27_d python26_d python25_d python24_d python23_d python22_d python21_d python20_d python
+if(APPLE)
+  include(CMakeFindFrameworks)
+  cmake_find_frameworks(Python)
+endif()
+
+foreach(PYTHON_VERSION ${PYTHON_SUITABLE_VERSIONS})
+  string(REPLACE "." "" PYTHON_VERSION_DOTLESS ${PYTHON_VERSION})
+
+  set(PYTHON_INCLUDE_SEARCH_PATHS ${PYTHON_PREFIX}/include)
+  set(PYTHON_LIB_SEARCH_PATHS ${PYTHON_PREFIX}/lib)
+
+  if(WIN32)
+    get_filename_component(PYTHON_INSTALL_PATH [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${PYTHON_VERSION}\\InstallPath] ABSOLUTE)
+    if(PYTHON_INSTALL_PATH)
+      list(APPEND PYTHON_INCLUDE_SEARCH_PATHS "${PYTHON_INSTALL_PATH}/include")
+      list(APPEND PYTHON_LIB_SEARCH_PATHS "${PYTHON_INSTALL_PATH}/libs" "${PYTHON_INSTALL_PATH}/libs/Debug")
+    endif()
+  elseif(APPLE AND Python_FRAMEWORKS)
+    foreach(dir ${Python_FRAMEWORKS})
+      list(APPEND PYTHON_INCLUDE_SEARCH_PATHS "${dir}/Versions/${PYTHON_VERSION}/include/python${PYTHON_VERSION}")
+    endforeach()
+  endif()
+
+  if(WIN32)
+    find_library(PYTHON_DEBUG_LIBRARY
+      NAMES
+        python
+        python${PYTHON_VERSION_DOTLESS}_d
+      PATHS
+        ${PYTHON_LIB_SEARCH_PATHS}
+    )
+  endif()
+
+  find_library(PYTHON_LIBRARY
+    NAMES
+      python${PYTHON_VERSION}
+      python${PYTHON_VERSION_DOTLESS}
     PATHS
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]/libs/Debug
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/libs/Debug
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/libs/Debug
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/libs/Debug
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/libs/Debug
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/libs/Debug
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/libs/Debug
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/libs/Debug
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/libs/Debug
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/libs
-
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]/libs/Debug
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/libs/Debug
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/libs/Debug
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/libs/Debug
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/libs/Debug
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/libs/Debug
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/libs/Debug
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/libs/Debug
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/libs/Debug
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/libs
-
+      ${PYTHON_LIB_SEARCH_PATHS}
+    PATH_SUFFIXES python${PYTHON_VERSION}/config
+    # Avoid finding the .dll in the PATH.  We want the .lib.
+    NO_SYSTEM_ENVIRONMENT_PATH
   )
-ENDIF(WIN32)
 
-FIND_LIBRARY(PYTHON_LIBRARY
-  NAMES python27 python2.7
-        python26 python2.6
-	    python25 python2.5
-        python24 python2.4
-        python23 python2.3
-        python22 python2.2
-        python21 python2.1
-        python20 python2.0
-        python16 python1.6
-        python15 python1.5
-
-  PATHS
-    ${PYTHON_PREFIX}/lib
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/libs
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/libs
-
-
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/libs
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/libs
-
-  PATH_SUFFIXES
-    python2.7/config
-    python2.6/config
-    python2.5/config
-    python2.4/config
-    python2.3/config
-    python2.2/config
-    python2.1/config
-    python2.0/config
-    python1.6/config
-    python1.5/config
-  
-  # Avoid finding the .dll in the PATH.  We want the .lib.
-  NO_SYSTEM_ENVIRONMENT_PATH
-)
-
-# Search for the python framework on Apple.
-CMAKE_FIND_FRAMEWORKS(Python)
-SET(PYTHON_FRAMEWORK_INCLUDES)
-IF(Python_FRAMEWORKS)
-  IF(NOT PYTHON_INCLUDE_PATH)
-    FOREACH(version 2.7 2.6 2.5 2.4 2.3 2.2 2.1 2.0 1.6 1.5)
-      FOREACH(dir ${Python_FRAMEWORKS})
-        SET(PYTHON_FRAMEWORK_INCLUDES ${PYTHON_FRAMEWORK_INCLUDES}
-          ${dir}/Versions/${version}/include/python${version})
-      ENDFOREACH(dir)
-    ENDFOREACH(version)
-  ENDIF(NOT PYTHON_INCLUDE_PATH)
-ENDIF(Python_FRAMEWORKS)
-
-FIND_PATH(PYTHON_INCLUDE_PATH
-  NAMES Python.h
-
-  PATHS
-    ${PYTHON_PREFIX}/include
-    ${PYTHON_FRAMEWORK_INCLUDES}
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]/include
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]/include
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/include
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/include
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/include
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/include
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/include
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/include
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/include
-    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/include
-
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]/include
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]/include
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/include
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/include
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/include
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/include
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/include
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/include
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/include
-    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/include
-
-  PATH_SUFFIXES
-    python2.7
-    python2.6
-    python2.5
-    python2.4
-    python2.3
-    python2.2
-    python2.1
-    python2.0
-    python1.6
-    python1.5
-
-  NO_DEFAULT_PATH
-)
-
-IF (WIN32)
-  MARK_AS_ADVANCED(
-    PYTHON_DEBUG_LIBRARY
-    PYTHON_LIBRARY
-    PYTHON_INCLUDE_PATH
+  find_path(PYTHON_INCLUDE_PATH
+    NAMES Python.h
+    PATHS
+      ${PYTHON_INCLUDE_SEARCH_PATHS}
+    PATH_SUFFIXES
+      python${PYTHON_VERSION}
+    NO_DEFAULT_PATH
   )
-ENDIF(WIN32)
+
+  message("Python ${PYTHON_VERSION} include: ${PYTHON_INCLUDE_PATH}")
+  message("Python ${PYTHON_VERSION} lib: ${PYTHON_LIBRARY}")
+  if(PYTHON_LIBRARY AND PYTHON_INCLUDE_PATH)
+    break()
+  endif()
+endforeach() # PYTHON_VERSION
+
+
+MARK_AS_ADVANCED(
+  PYTHON_DEBUG_LIBRARY
+  PYTHON_LIBRARY
+  PYTHON_INCLUDE_PATH
+)
 
 # Python Should be built and installed as a Framework on OSX
 IF(Python_FRAMEWORKS)
