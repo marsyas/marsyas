@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 2.8.9)
+# Accept new policy related to automatically linking Qt apps to qtmain.lib on Windows
+cmake_policy(SET CMP0020 NEW)
 
 find_package(Qt5Quick 5.1 REQUIRED)
 find_package(Qt5Widgets 5.1 REQUIRED)

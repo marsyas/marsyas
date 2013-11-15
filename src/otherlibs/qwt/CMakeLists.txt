@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 2.8.9)
+# Accept new policy related to automatically linking Qt apps to qtmain.lib on Windows
+cmake_policy(SET CMP0020 NEW)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
