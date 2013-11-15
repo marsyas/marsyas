@@ -1,2 +1,0 @@
-set(CTEST_BUILD_NAME "Default")
-set(CTEST_BUILD_CONFIGURATION "Debug")
