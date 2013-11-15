@@ -1,6 +1,8 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
+#include <config.h> // needed for MARSYAS_MACOSX
+
 #include <QGLWidget>
 #include <QTimer>
 
