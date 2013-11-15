@@ -136,6 +136,9 @@ endif (WITH_GSTREAMER)
 
 if (WITH_OPENGL)
   find_package(OpenGL REQUIRED)
-  find_package(GLUT REQUIRED)
   set (MARSYAS_OPENGL 1)
 endif (WITH_OPENGL)
+
+if(WITH_OPENGLUT)
+  find_package(GLUT REQUIRED)
+endif()

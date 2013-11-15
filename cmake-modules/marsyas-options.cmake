@@ -165,6 +165,7 @@ option(WITH_PD "Build externals for Pd" OFF)
 option(WITH_OSC  "Build osc support" OFF)
 option(WITH_PNG  "Build png writer" OFF)
 option(WITH_OPENGL "Build programs that require OpenGL" OFF)
+option(WITH_OPENGLUT "Build programs that require OpenGL Utility Toolkit" OFF)
 option(WITH_GSTREAMER "Enable use of GStreamer as audio source" OFF)
 #option(WITH_QGL "Enable qglviewer (Qt-based OpenGL viewer)" OFF)
 #option(WITH_READLINE "Readline functionality for Marsyas Scripting

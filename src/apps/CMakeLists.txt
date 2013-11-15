@@ -41,12 +41,12 @@ add_subdirectory(speakerSeg)
 add_subdirectory(wreckBeach)
 add_subdirectory(openmir)
 
-if (MARSYAS_OPENGL)
-	add_subdirectory(helloglut)
-	add_subdirectory(carfac)
-endif (MARSYAS_OPENGL)
+if(MARSYAS_OPENGL AND GLUT_FOUND)
+  add_subdirectory(helloglut)
+  add_subdirectory(carfac)
+endif()
 
-if (WITH_CPP11)
+if(WITH_CPP11)
   add_subdirectory(debugger)
 endif()
 
