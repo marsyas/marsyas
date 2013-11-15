@@ -65,8 +65,6 @@ foreach(PYTHON_VERSION ${PYTHON_SUITABLE_VERSIONS})
     NO_DEFAULT_PATH
   )
 
-  message("Python ${PYTHON_VERSION} include: ${PYTHON_INCLUDE_PATH}")
-  message("Python ${PYTHON_VERSION} lib: ${PYTHON_LIBRARY}")
   if(PYTHON_LIBRARY AND PYTHON_INCLUDE_PATH)
     break()
   endif()
