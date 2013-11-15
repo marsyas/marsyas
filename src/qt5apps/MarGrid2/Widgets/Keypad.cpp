@@ -202,9 +202,7 @@ int KeypadSquare::getCount() const {
 void KeypadSquare::clear() {
   _list.clear();
   for(int i=0; i < KEYPAD_SIZE; i++) {
-    if ( _children[i] ) {
-      delete _children;
-    }
+      delete _children[i];
   }
 }
 
