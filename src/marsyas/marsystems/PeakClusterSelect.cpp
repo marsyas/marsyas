@@ -18,6 +18,7 @@
 
 #include "PeakClusterSelect.h"
 #include "../common_source.h"
+#include <algorithm>
 
 using std::min;
 using std::max;

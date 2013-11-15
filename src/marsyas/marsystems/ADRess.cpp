@@ -17,7 +17,7 @@
 */
 
 #include "ADRess.h"
-
+#include <algorithm>
 
 using std::ostringstream;
 using std::min;

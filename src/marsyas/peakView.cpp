@@ -18,6 +18,7 @@
 */
 
 #include <marsyas/peakView.h>
+#include <algorithm>
 
 using namespace std;
 using namespace Marsyas;

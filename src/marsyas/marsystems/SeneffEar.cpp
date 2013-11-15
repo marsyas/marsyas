@@ -22,6 +22,7 @@
 #include <marsyas/fft.h>
 
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 using namespace Marsyas;

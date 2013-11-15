@@ -17,7 +17,7 @@
 */
 
 #include "FanOutIn.h"
-
+#include <algorithm>
 
 using std::ostringstream;
 using std::vector;

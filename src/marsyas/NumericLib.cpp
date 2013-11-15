@@ -34,7 +34,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
+#include <algorithm>
 
 using std::ostringstream;
 using std::numeric_limits;

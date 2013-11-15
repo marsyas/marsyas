@@ -19,6 +19,7 @@
 #include "../common_source.h"
 #include "RBF.h"
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 using namespace Marsyas;

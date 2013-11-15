@@ -1,5 +1,6 @@
-#include <map>
 #include "Pitch2Chroma.h"
+#include <map>
+#include <algorithm>
 
 using std::ostringstream;
 using std::max;

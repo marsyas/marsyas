@@ -17,6 +17,7 @@
 */
 
 #include "Spectrum2Mel.h"
+#include <algorithm>
 
 using namespace std;
 using namespace Marsyas;

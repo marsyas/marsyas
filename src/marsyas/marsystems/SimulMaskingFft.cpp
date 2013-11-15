@@ -18,7 +18,7 @@
 
 #include "../common_source.h"
 #include "SimulMaskingFft.h"
-
+#include <algorithm>
 //#define MTLB_DBG_LOG
 
 using std::min;

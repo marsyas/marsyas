@@ -1,6 +1,6 @@
-#include <map>
 #include "MedianFilter.h"
-
+#include <map>
+#include <algorithm>
 
 using std::ostringstream;
 using std::map;

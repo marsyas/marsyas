@@ -26,6 +26,8 @@
 
 #include <marsyas/FileName.h>
 
+#include <algorithm>
+
 using std::ostringstream;
 using std::max;
 

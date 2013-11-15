@@ -18,7 +18,7 @@
 
 #include "MeddisHairCell.h"
 #include "../common_source.h"
-
+#include <algorithm>
 
 using std::ostringstream;
 using std::max;

@@ -18,7 +18,7 @@
 
 #include "HWPS.h"
 #include <marsyas/NumericLib.h>
-
+#include <algorithm>
 
 using std::ostringstream;
 using std::min;

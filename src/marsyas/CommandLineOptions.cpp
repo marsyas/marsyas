@@ -19,6 +19,7 @@
 #include <marsyas/CommandLineOptions.h>
 
 #include <iomanip>
+#include <algorithm>
 
 using namespace std;
 
@@ -53,7 +54,7 @@ void CommandLineOptions::print() const
     syntax << "--" << long_name;
     if (!option->value_name.empty())
       syntax << " " << option->value_name;
-    syntax_field_width = max( syntax_field_width, syntax.str().size() );
+    syntax_field_width = std::max( syntax_field_width, syntax.str().size() );
     syntax_strings.push_back( syntax.str() );
   }
 

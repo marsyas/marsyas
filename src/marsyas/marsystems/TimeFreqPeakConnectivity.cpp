@@ -18,6 +18,7 @@
 
 #include "../common_source.h"
 #include "TimeFreqPeakConnectivity.h"
+#include <algorithm>
 
 using std::max;
 using namespace Marsyas;

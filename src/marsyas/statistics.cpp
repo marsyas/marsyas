@@ -18,6 +18,7 @@
 
 
 #include "statistics.h"
+#include <algorithm>
 
 using std::ostringstream;
 using std::numeric_limits;
