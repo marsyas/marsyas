@@ -13,6 +13,7 @@
 #include "TestRunningAutocorrelation.h"
 
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 using namespace Marsyas;
