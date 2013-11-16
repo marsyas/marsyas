@@ -23,11 +23,13 @@
 
 #include "OneRClassifier.h"
 #include "../common_source.h"
+#include <cstddef>
 
 using std::ostringstream;
 using std::cout;
 using std::endl;
 using std::vector;
+using std::size_t;
 
 using namespace Marsyas;
 
@@ -145,15 +147,15 @@ OneRClassifier::OneRRule *OneRClassifier::newRule(mrs_natural attr, mrs_natural 
   vector<mrs_natural> counts(nClasses);
 
   //set correct count to 0
-  mrs_natural correct = 0;
-  mrs_natural lastInstance = instances_.size();
+  size_t correct = 0;
+  size_t lastInstance = instances_.size();
 
   //Sort the data table for this attribute
   instances_.Sort(attr);
 
-  mrs_natural ii = 0;
-  mrs_natural cl = 0;			//index of next bucket to create
-  mrs_natural it = 0;
+  size_t ii = 0;
+  size_t cl = 0;			//index of next bucket to create
+  size_t it = 0;
 
   //scan thru all rows in table
   while(ii < lastInstance)

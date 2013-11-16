@@ -20,6 +20,7 @@
 #define MARSYAS_FANOUT_H
 
 #include <marsyas/system/MarSystem.h>
+#include <cstddef>
 
 namespace Marsyas
 {
@@ -57,8 +58,8 @@ private:
 
   realvec localIndices_;
 
-  mrs_natural enable_, enableChildIndex_;
-  mrs_natural disable_, disableChildIndex_;
+  std::size_t enable_, enableChildIndex_;
+  std::size_t disable_, disableChildIndex_;
 
   mrs_string enableChild_;
   mrs_string disableChild_;

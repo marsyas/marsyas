@@ -156,8 +156,8 @@ MarSystem::MarSystem(const MarSystem& a)
   isComposite_ = a.isComposite_;
   if (isComposite_)
   {
-    unsigned int child_count = a.marsystems_.size();
-    for (mrs_natural i=0; i< child_count; ++i)
+    child_count_t child_count = a.marsystems_.size();
+    for (child_count_t i=0; i< child_count; ++i)
     {
       MarSystem* clonedChild = (*a.marsystems_[i]).clone();
       addMarSystem(clonedChild);
@@ -273,8 +273,8 @@ MarSystem::relinkControls(const MarSystem& a)
 MarSystem::~MarSystem()
 {
   //delete children (if any)
-  unsigned int child_count = marsystems_.size();
-  for (mrs_natural i=0; i< child_count; ++i)
+  child_count_t child_count = marsystems_.size();
+  for (child_count_t i=0; i< child_count; ++i)
   {
     delete marsystems_[i];
   }
@@ -487,8 +487,8 @@ MarSystem::setName(mrs_string name) // => mutexes [?]
 
   if (isComposite_)
   {
-    unsigned int child_count = marsystems_.size();
-    for (mrs_natural i=0; i<child_count; ++i)
+    child_count_t child_count = marsystems_.size();
+    for (child_count_t i=0; i<child_count; ++i)
     {
       marsystems_[i]->updatePath();
     }
@@ -513,8 +513,8 @@ MarSystem::setType(mrs_string type) // => mutexes [?]
 
   if (isComposite_)
   {
-    unsigned int child_count = marsystems_.size();
-    for (mrs_natural i=0; i<child_count; ++i)
+    child_count_t child_count = marsystems_.size();
+    for (child_count_t i=0; i<child_count; ++i)
     {
       marsystems_[i]->updatePath();
     }
@@ -559,8 +559,8 @@ MarSystem::updatePath() // => mutexes [?]
 
   //propagate new path to all children (if any)
   if (isComposite_) {
-    unsigned int child_count = marsystems_.size();
-    for (mrs_natural i=0; i< child_count; ++i)
+    child_count_t child_count = marsystems_.size();
+    for (child_count_t i=0; i< child_count; ++i)
       marsystems_[i]->updatePath();
   }
 }
@@ -606,17 +606,17 @@ MarSystem::process(realvec& in, realvec& out)
 #endif
 
 #ifndef MARSYAS_NO_MARSYSTEM_OBSERVERS
-  unsigned int observer_count = observers_.size();
+  observer_count_t observer_count = observers_.size();
   if (observer_count)
   {
-    for (unsigned int idx = 0; idx < observer_count; ++idx)
+    for (observer_count_t idx = 0; idx < observer_count; ++idx)
     {
       observers_[idx]->preProcess(in);
     }
 
     myProcess(in, out);
 
-    for (unsigned int idx = 0; idx < observer_count; ++idx)
+    for (observer_count_t idx = 0; idx < observer_count; ++idx)
     {
       observers_[idx]->postProcess(out);
     }
@@ -805,8 +805,8 @@ MarSystem::localActivate(bool state)
   //call activate for all Composite's components
   if (isComposite_)
   {
-    unsigned int child_count = marsystems_.size();
-    for (mrs_natural i=0; i<child_count; ++i)
+    child_count_t child_count = marsystems_.size();
+    for (child_count_t i=0; i<child_count; ++i)
     {
       //marsystems_[i]->activate(state);
       marsystems_[i]->updControl("mrs_bool/active", state); //thread-safe
@@ -1462,7 +1462,7 @@ MarSystem::toStringGraphViz(ostringstream& oss_defs, ostringstream& oss_links)
   static int a=0;
 
   // Print the links
-  int sz=marsystems_.size();
+  child_count_t sz = marsystems_.size();
   if (sz>0)
   {
     // Make a cluster.
@@ -1470,7 +1470,7 @@ MarSystem::toStringGraphViz(ostringstream& oss_defs, ostringstream& oss_links)
     oss_links << "\t\tlabel = \"" << prefix_  << "\"" << endl;
     oss_links << "\t\t";
 
-    for (int i=0; i<sz-1; ++i)
+    for (child_count_t i=0; i<sz-1; ++i)
     {
       // TODO are there other composite types to handle?
       if (type_ == "Fanout" || type_ == "Parallel") {
@@ -1585,11 +1585,11 @@ MarSystem::toString(marostring& m)
   }
   m.end_controls(controls_.size());
 
-  int sz=marsystems_.size();
+  child_count_t sz = marsystems_.size();
   if (sz>0)
   {
     m.begin_children(sz);
-    for (int i=0; i<sz; ++i)
+    for (child_count_t i=0; i<sz; ++i)
     {
       marsystems_[i]->toString(m);
     }
@@ -1661,13 +1661,13 @@ MarSystem::put(ostream &o, bool verbose)
 
   if (isComposite_)
   {
-    unsigned int child_count = marsystems_.size();
+    child_count_t child_count = marsystems_.size();
 
     o << endl;
     o << "# nComponents = " << child_count << endl;
     o << endl;
 
-    for (mrs_natural i=0; i < child_count; ++i)
+    for (child_count_t i=0; i < child_count; ++i)
       marsystems_[i]->put(o,verbose);
   }
 
@@ -1776,13 +1776,13 @@ MarSystem::put_html_worker(ostream &o)
 
   if (isComposite_)
   {
-    unsigned int child_count = marsystems_.size();
+    child_count_t child_count = marsystems_.size();
 
     o << endl;
     o << "<li>Components = " << child_count << endl;
     o << "<ul>" << endl;
 
-    for (mrs_natural i=0; i < child_count; ++i)
+    for (child_count_t i=0; i < child_count; ++i)
       (marsystems_[i])->put_html_worker(o);
 
     o << "</ul>" << endl;
@@ -1825,8 +1825,8 @@ MarSystem::put(istream& is)
   // if composite, clear all children to avoid bad links to prototype children
   if (isComposite_)
   {
-    unsigned int child_count = marsystems_.size();
-    for (mrs_natural i=0; i< child_count; ++i)
+    child_count_t child_count = marsystems_.size();
+    for (child_count_t i=0; i< child_count; ++i)
     {
       delete marsystems_[i];
     }

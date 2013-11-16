@@ -147,7 +147,7 @@ FileName::getFilesInDir (mrs_string wildcard)
   search4	= filename_ + "/" + wildcard;
 
   // find first file
-  if( (hFile = _findfirst( search4.c_str (), &CurrentFile )) == -1L )
+  if( (hFile = (long)_findfirst( search4.c_str (), &CurrentFile )) == -1L )
     return result;
   else
   {

@@ -78,8 +78,8 @@ RemoveObservations::myUpdate(MarControlPtr sender)
   // overwrite other observations from other parts
   // of the network
   mrs_string names = ctrl_inObsNames_->to<mrs_string>();
-  int lowNamePos = 0;
-  int highNamePos = 0;
+  std::string::size_type lowNamePos = 0;
+  std::string::size_type highNamePos = 0;
   for (int i=0; i < lowestObs_; i++) {
     lowNamePos = names.find(",", lowNamePos) + 1;
   }

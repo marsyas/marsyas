@@ -46,7 +46,7 @@ Series::addControls()
 void
 Series::myUpdate(MarControlPtr sender)
 {
-  int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if (child_count)
   {
     //propagate in flow controls to first child
@@ -102,7 +102,7 @@ Series::myProcess(realvec& in, realvec& out)
 {
   // Add assertions about sizes [!]
 
-  int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if (child_count == 1)
     marsystems_[0]->process(in,out);
   else if(child_count > 1)

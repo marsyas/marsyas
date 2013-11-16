@@ -100,7 +100,7 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
     invecs_[k].create(obs, (mrs_natural)sizes_(k));
   }
 
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if(child_count == 1 && inSamples_ > 0)
   {
     // allocate realvec for the pair of stacked feature vectors
@@ -146,7 +146,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 
   if(inSamples_ > 0)
   {
-    unsigned int child_count = marsystems_.size();
+    child_count_t child_count = marsystems_.size();
     if(child_count == 1)
     {
       mrs_natural nfeats = in.getRows()/sizes_.getSize();

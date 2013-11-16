@@ -21,11 +21,6 @@
 #include "AuFileSink.h"
 #include "AuFileSource.h"
 
-using std::ostringstream;
-using namespace Marsyas;
-
-
-
 #ifdef MARSYAS_WIN32
 #ifndef MARSYAS_CYGWIN
 typedef __int32 int32_t;
@@ -34,6 +29,11 @@ typedef __int32 int32_t;
 #include <stdint.h>
 #endif
 
+#include <cstddef>
+
+using std::ostringstream;
+using std::size_t;
+using namespace Marsyas;
 
 /********  NeXT/Sun Soundfile Header Struct   *******/
 struct Marsyas::snd_header
@@ -159,7 +159,7 @@ AuFileSink::putHeader(mrs_string filename)
 
   written_ = 0;
   const char *comment = "MARSYAS 2001, George Tzanetakis.\n";
-  mrs_natural commentSize = strlen(comment);
+  size_t commentSize = strlen(comment);
   sfp_ = fopen(filename.c_str(), "wb");
   hdr_->pref[0] = '.';
   hdr_->pref[1] = 's';

@@ -18,6 +18,7 @@
 
 #include <marsyas/TimeLine.h>
 #include <marsyas/common_source.h>
+#include <cstddef>
 
 using namespace std;
 using namespace Marsyas;
@@ -349,13 +350,13 @@ TimeLine::load(mrs_string filename, mrs_string lexicon_labels)
   // Load lexicon dictionary if available
   mrs_string lexicon_label;
   mrs_string remainder;
-  mrs_natural nLabels;
+  size_t nLabels;
 
   nLabels = std::count(lexicon_labels.begin(), lexicon_labels.end(), ',');
 
   if (lexicon_labels != ",")
   {
-    for (int i=0; i < nLabels; i++)
+    for (size_t i=0; i < nLabels; i++)
     {
       lexicon_label = lexicon_labels.substr(0, lexicon_labels.find(","));
       labels.push_back(lexicon_label);
@@ -417,7 +418,7 @@ TimeLine::load(mrs_string filename, mrs_string lexicon_labels)
       mrs_string label = regions_[i].name;
       vector<mrs_string>::iterator it = find(labels.begin(), labels.end(), label);
       if (it == labels.end())
-        regions_[i].classId = -1;
+        regions_[i].classId = (mrs_natural)-1;
       mrs_natural l = distance(labels.begin(), it);
       regions_[i].classId = l;
     }

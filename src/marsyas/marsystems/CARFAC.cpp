@@ -27,7 +27,7 @@ namespace Marsyas
 
 void CARFAC::CARFAC_AGCStep(const std::vector<std::vector<double> > &avg_detects)
 {
-  int n_AGC_stages = CF.AGC_coeffs.AGC_epsilon.size();
+  int n_AGC_stages = (int) CF.AGC_coeffs.AGC_epsilon.size();
   int n_mics = CF.n_mics;
   int n_ch = CF.n_ch;
 

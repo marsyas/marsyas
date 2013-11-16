@@ -91,7 +91,7 @@ Esitar::mycallback(double deltatime, std::vector< unsigned char > * message, voi
 {
   // FIXME Unused parameter
   (void) deltatime;
-  int nBytes = 0;
+  size_t nBytes = 0;
   nBytes = message->size();
 
   Esitar* mythis = (Esitar*) userData;

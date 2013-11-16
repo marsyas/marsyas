@@ -180,9 +180,9 @@ SoundFileSourceHopper::myProcess(realvec& in, realvec& out)
 
   // The other steps: do the processing of MixToMono (if required)
   // and ShiftInput (and maybe more MarSystems).
-  mrs_natural i_prev = 0;
-  mrs_natural i_curr = ctrl_mixToMono_->to<mrs_bool>() ? 1 : 2;
-  unsigned int child_count = marsystems_.size();
+  child_count_t i_prev = 0;
+  child_count_t i_curr = ctrl_mixToMono_->to<mrs_bool>() ? 1 : 2;
+  child_count_t child_count = marsystems_.size();
   for ( ; i_curr < child_count; i_prev = i_curr, i_curr++) {
     MarSystem* m_prev = marsystems_[i_prev];
     MarSystem* m_curr = marsystems_[i_curr];

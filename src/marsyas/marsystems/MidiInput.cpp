@@ -24,8 +24,10 @@
 #include "RtMidi.h"
 #endif
 
+#include <cstddef>
 
 using std::ostringstream;
+using std::size_t;
 using namespace Marsyas;
 
 MidiInput::MidiInput(mrs_string name):MarSystem("MidiInput",name)
@@ -123,7 +125,7 @@ void MidiInput::mycallback(double deltatime, std::vector< unsigned char > * mess
 {
   // FIXME Unused parameter
   (void) deltatime;
-  int nBytes = 0;
+  std::size_t nBytes = 0;
   nBytes = message->size();
 
   MidiInput* mythis = (MidiInput*) userData;

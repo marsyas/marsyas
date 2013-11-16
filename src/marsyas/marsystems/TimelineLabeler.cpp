@@ -183,7 +183,7 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
   if((labelFiles_ != newLabelFiles) && (newLabelFiles != "" || newLabelFiles != ","))
   {
     labelFiles_ = newLabelFiles;
-    mrs_natural i;
+    std::string::size_type i;
     labelFilesVec_.clear();
     while(newLabelFiles.length() != 0 )
     {

@@ -55,7 +55,7 @@ Fanin::clone() const
 void
 Fanin::myUpdate(MarControlPtr sender)
 {
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if (child_count)
   {
     //propagate in flow controls to first child
@@ -70,7 +70,7 @@ Fanin::myUpdate(MarControlPtr sender)
 
     mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 
-    for (mrs_natural i=1; i < child_count; ++i)
+    for (child_count_t i=1; i < child_count; ++i)
     {
       marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
       marsystems_[i]->setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte")); //[!] israte
@@ -89,7 +89,7 @@ Fanin::myUpdate(MarControlPtr sender)
     if (slices_.size() < child_count)
       slices_.resize(child_count, NULL);
 
-    for (mrs_natural i=0; i< child_count; ++i)
+    for (child_count_t i=0; i< child_count; ++i)
     {
       if (slices_[i] != NULL)
       {
@@ -118,7 +118,7 @@ void
 Fanin::myProcess(realvec& in, realvec& out)
 {
   mrs_natural o,t;
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if(child_count)
   {
     out.setval(0.0);

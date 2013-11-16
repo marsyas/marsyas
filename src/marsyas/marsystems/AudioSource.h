@@ -29,6 +29,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
+#include <cstddef>
 
 class RtAudio;
 
@@ -76,7 +77,7 @@ private:
 
     realvec_queue buffer;
 
-    std::atomic<unsigned int> watermark;
+    std::atomic<std::size_t> watermark;
     bool overrun;
 
     unsigned int sample_rate;

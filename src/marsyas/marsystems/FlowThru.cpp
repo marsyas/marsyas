@@ -60,7 +60,7 @@ FlowThru::myUpdate(MarControlPtr sender)
   //just pass input flow to the output
   MarSystem::myUpdate(sender);
 
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if (child_count)
   {
     //propagate in flow controls to first child
@@ -71,7 +71,7 @@ FlowThru::myUpdate(MarControlPtr sender)
     marsystems_[0]->update();
 
     // update dataflow component MarSystems in order
-    for(mrs_natural i=1; i < child_count; ++i) {
+    for(child_count_t i=1; i < child_count; ++i) {
       marsystems_[i]->setctrl(marsystems_[i]->ctrl_inObsNames_,
                               marsystems_[i-1]->ctrl_onObsNames_);
       marsystems_[i]->setctrl(marsystems_[i]->ctrl_inObservations_,
@@ -90,7 +90,7 @@ FlowThru::myUpdate(MarControlPtr sender)
 
 
 
-    for(mrs_natural i=0; i< child_count; ++i)
+    for(child_count_t i=0; i< child_count; ++i)
     {
       MarControlAccessor acc(marsystems_[i]->ctrl_processedData_, NOUPDATE);
       realvec& processedData = acc.to<mrs_realvec>();
@@ -121,10 +121,10 @@ FlowThru::myProcess(realvec& in, realvec& out)
   //input should be passed thru the output untouched!
   out = in;
 
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if(child_count >= 1)
   {
-    for (mrs_natural i = 0; i < child_count; ++i)
+    for (child_count_t i = 0; i < child_count; ++i)
     {
       if (i==0)
       {

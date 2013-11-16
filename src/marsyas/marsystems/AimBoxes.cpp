@@ -156,7 +156,7 @@ AimBoxes::InitializeInternal() {
     temporal_width *= 2;
   }
 
-  box_count_ = box_limits_time_.size() * box_limits_channels_.size();
+  box_count_ = (int) (box_limits_time_.size() * box_limits_channels_.size());
   feature_size_ = ctrl_box_size_spectral_->to<mrs_natural>() + ctrl_box_size_temporal_->to<mrs_natural>();
 
 }

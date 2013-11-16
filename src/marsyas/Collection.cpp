@@ -32,7 +32,7 @@ using std::ostream_iterator;
 using std::endl;
 using std::ostream;
 using std::istream;
-
+using std::size_t;
 
 
 // if the directory doesn't exist, we need to make it a "".
@@ -102,12 +102,12 @@ Collection::labelAll(mrs_string label)
   {
     hasLabels_ = true;
     labelList_.reserve(collectionList_.size());
-    for (unsigned int i = 0; i < collectionList_.size(); ++i)
+    for (size_t i = 0; i < collectionList_.size(); ++i)
       labelList_.push_back(label);
   }
   else
   {
-    for (unsigned int i=0; i < collectionList_.size(); ++i)
+    for (size_t i=0; i < collectionList_.size(); ++i)
       labelList_[i] = label;
   }
 }
@@ -117,7 +117,7 @@ operator<<(ostream& o, const Collection& l)
 {
   // o << "# MARSYAS Collection " << endl;
   // o << "# name = " << l.name_ << endl << endl;
-  for (unsigned int i=0; i < l.collectionList_.size(); ++i)
+  for (size_t i=0; i < l.collectionList_.size(); ++i)
   {
     o << l.collectionList_[i];
     if (l.hasLabels_)
@@ -135,7 +135,7 @@ Collection::size()
 {
   return collectionList_.size();
 }
-/// TODO choose one...
+
 size_t
 Collection::getSize()
 {
@@ -190,16 +190,16 @@ Collection::add(mrs_string entry, mrs_string label)
 
 
 
-mrs_natural
+size_t
 Collection::getNumLabels()
 {
   return labelNames_.size();
 }
 
 mrs_string
-Collection::labelName(mrs_natural i)
+Collection::labelName(size_t i)
 {
-  if ((unsigned)i < labelNames_.size())
+  if (i < labelNames_.size())
     return labelNames_[i];
 
   return EMPTYSTRING;
@@ -222,11 +222,11 @@ Collection::shuffle()
 {
   // Use a Fisher-Yates shuffle
   // http://en.wikipedia.org/wiki/Fisher-Yates_shuffle
-  unsigned int n = collectionList_.size();
+  size_t n = collectionList_.size();
   while (n > 1)
   {
     // Generate a random index in the range [0, n).
-    int k = (unsigned int)(n * ((mrs_real)rand() / ((mrs_real)(RAND_MAX) + (mrs_real)1)));
+    size_t k = (size_t)(n * ((mrs_real)rand() / ((mrs_real)(RAND_MAX) + (mrs_real)1)));
 
     n--;
     swap(collectionList_[n], collectionList_[k]);
@@ -241,7 +241,7 @@ Collection::toLongString()
   return join(collectionList_, ",");
 }
 
-mrs_natural
+size_t
 Collection::labelNum(mrs_string label)
 {
 
@@ -249,12 +249,11 @@ Collection::labelNum(mrs_string label)
   if (it == labelNames_.end())
     return -1;
 
-  mrs_natural l = distance(labelNames_.begin(), it);
-  return l ;
+  return (size_t) distance(labelNames_.begin(), it);
 
 }
 mrs_real
-Collection::regression_label(mrs_natural cindex)
+Collection::regression_label(size_t cindex)
 {
   if (hasLabels_) {
     return (mrs_real) atof(labelList_[cindex].c_str());
@@ -263,7 +262,7 @@ Collection::regression_label(mrs_natural cindex)
 }
 
 mrs_string
-Collection::labelEntry(unsigned int i)
+Collection::labelEntry(size_t i)
 {
   if (hasLabels_) {
     if (i < labelList_.size()) {
@@ -274,7 +273,7 @@ Collection::labelEntry(unsigned int i)
 }
 
 mrs_string
-Collection::entry(unsigned int i)
+Collection::entry(size_t i)
 {
   return collectionList_[i];
 }

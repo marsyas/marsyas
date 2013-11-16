@@ -88,7 +88,7 @@ SelfSimilarityMatrix::myUpdate(MarControlPtr sender)
     //if the metric MarSystem exists and at least there is an element
     // to process at the input (it may not exist!), configure child marSystem.
     // Otherwise do nothing to it.
-    unsigned int child_count = marsystems_.size();
+    child_count_t child_count = marsystems_.size();
     if(child_count == 1 && inSamples_ > 0)
     {
       //allocate realvec for the pair of stacked feature vectors
@@ -143,7 +143,7 @@ SelfSimilarityMatrix::myUpdate(MarControlPtr sender)
     //if the metric MarSystem exists and at least there is an element
     // to process at the input (it may not exist!), configure child marSystem.
     // Otherwise do nothing to it.
-    unsigned int child_count = marsystems_.size();
+    child_count_t child_count = marsystems_.size();
     if(child_count == 1 && inSamples_ > 0)
     {
       //allocate realvec for the pair of stacked feature vectors
@@ -201,7 +201,7 @@ SelfSimilarityMatrix::myProcess(realvec& in, realvec& out)
     //(i.e. output will be zeroed out)
     if(inSamples_ > 0)
     {
-      unsigned int child_count = marsystems_.size();
+      child_count_t child_count = marsystems_.size();
       if(child_count == 1)
       {
         mrs_natural nfeats = in.getRows();
@@ -296,7 +296,7 @@ SelfSimilarityMatrix::myProcess(realvec& in, realvec& out)
   {
     if(inSamples_ == 2) //we always need two column vector instances at input
     {
-      unsigned int child_count = marsystems_.size();
+      child_count_t child_count = marsystems_.size();
       if(child_count == 1)
       {
         MarControlAccessor acc(ctrl_instanceIndexes_);

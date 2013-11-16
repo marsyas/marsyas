@@ -53,7 +53,7 @@ Cascade::clone() const
 void
 Cascade::myUpdate(MarControlPtr sender)
 {
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if (child_count)
   {
     //propagate in flow controls to first child
@@ -67,7 +67,7 @@ Cascade::myUpdate(MarControlPtr sender)
     ostringstream oss;
     oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
     mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-    for (mrs_natural i=1; i < child_count; ++i)
+    for (child_count_t i=1; i < child_count; ++i)
     {
       marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/onSamples"));
       marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/onObservations"));
@@ -89,7 +89,7 @@ Cascade::myUpdate(MarControlPtr sender)
       slices_.resize(child_count, NULL);
     }
 
-    for (mrs_natural i = 0; i < child_count; ++i)
+    for (child_count_t i = 0; i < child_count; ++i)
     {
       if (slices_[i] != NULL)
       {
@@ -120,7 +120,7 @@ Cascade::myProcess(realvec& in, realvec& out)
   mrs_natural o,t;
   mrs_natural outIndex = 0;
   mrs_natural localIndex = 0;
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
 
   if (child_count == 1)
   {
@@ -138,7 +138,7 @@ Cascade::myProcess(realvec& in, realvec& out)
       }
     }
     outIndex += localIndex;
-    for (mrs_natural i = 1; i < child_count; ++i)
+    for (child_count_t i = 1; i < child_count; ++i)
     {
       marsystems_[i]->process(*(slices_[i-1]), *(slices_[i]));
       localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();

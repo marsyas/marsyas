@@ -130,12 +130,12 @@ void WekaData::Shuffle()
 {
   srand(0);
 
-  mrs_natural size = this->size()-1;
-  for (mrs_natural ii=0; ii<size; ++ii)
+  size_t size = this->size()-1;
+  for (size_t ii=0; ii<size; ++ii)
   {
     mrs_natural rind = (mrs_natural)(((mrs_real)rand() / (mrs_real)(RAND_MAX))*size);
     //swap row ii with row rind
-    swapRows(ii, rind);
+    swapRows((mrs_natural)ii, rind);
   }//for ii
 }//Shuffle
 
@@ -205,7 +205,7 @@ void WekaData::quickSort(mrs_natural attIndex, mrs_natural left, mrs_natural rig
 void WekaData::Sort(mrs_natural attr)
 {
   MRSASSERT(attr>=0&&attr<cols_);
-  quickSort(attr, 0, this->size()-1);
+  quickSort(attr, 0, (mrs_natural) this->size()-1);
 }
 
 //add rows of data to the table

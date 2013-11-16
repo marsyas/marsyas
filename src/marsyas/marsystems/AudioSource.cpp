@@ -84,7 +84,7 @@ AudioSource::myUpdate(MarControlPtr sender)
 
   unsigned int source_block_size = getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
   unsigned int dest_block_size = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-  unsigned int sample_rate = getctrl("mrs_real/israte")->to<mrs_real>();
+  unsigned int sample_rate = (unsigned int) getctrl("mrs_real/israte")->to<mrs_real>();
   unsigned int channel_count = getctrl("mrs_natural/nChannels")->to<mrs_natural>();
   bool realtime = getControl("mrs_bool/realtime")->to<mrs_bool>();
 
@@ -262,7 +262,7 @@ bool AudioSource::reformatBuffer(size_t source_block_size,
     }
 
     //cout << "Changing capacity: " << new_capacity << "/" << shared.buffer.samples() << endl;
-    unsigned int new_watermark = realtime ? 0 : new_capacity / 2;;
+    size_t new_watermark = realtime ? 0 : new_capacity / 2;;
     if (new_capacity > shared.buffer.capacity())
     {
       // First increase capacity, then watermark.

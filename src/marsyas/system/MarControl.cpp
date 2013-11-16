@@ -24,10 +24,12 @@
 #include <marsyas/system/MarControlValue.h>
 #include <marsyas/system/MarSystem.h>
 
+#include <cstddef>
+
 using std::ostringstream;
 using std::vector;
 using std::pair;
-
+using std::size_t;
 
 namespace Marsyas {
 
@@ -357,9 +359,9 @@ MarControl::unlinkFromTarget()
   vector<pair<MarControl*, MarControl*> >* inSet = new vector<pair<MarControl*, MarControl*> >;
   vector<pair<MarControl*, MarControl*> >* outSet = new vector<pair<MarControl*, MarControl*> >;
 
-  mrs_natural toProcess = oldvalue->links_.size();
-  bool* processed = new bool[oldvalue->links_.size()];
-  for(mrs_natural i=0; i < (mrs_natural)oldvalue->links_.size(); ++i)
+  size_t toProcess = oldvalue->links_.size();
+  bool* processed = new bool[toProcess];
+  for(size_t i=0; i < toProcess; ++i)
     processed[i] = false;
 
   //iterate over all the links

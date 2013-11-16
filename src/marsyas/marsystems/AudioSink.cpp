@@ -27,6 +27,7 @@ using std::ostringstream;
 using std::cout;
 using std::endl;
 using std::min;
+using std::size_t;
 
 using namespace Marsyas;
 
@@ -288,7 +289,7 @@ bool AudioSink::reformatBuffer(size_t source_block_size,
     }
 
     //cout << "Changing capacity: " << new_capacity << "/" << shared.buffer.samples() << endl;
-    unsigned int new_watermark = realtime ? 0 : new_capacity / 2;;
+    size_t new_watermark = realtime ? 0 : new_capacity / 2;;
     if (new_capacity > shared.buffer.capacity())
     {
       // First increase capacity, then watermark.

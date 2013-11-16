@@ -80,7 +80,7 @@ FanOutIn::addControls()
 void
 FanOutIn::myUpdate(MarControlPtr sender)
 {
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if (enabled_.getSize() != child_count)
   {
     enabled_.create(child_count);
@@ -216,7 +216,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 void
 FanOutIn::myProcess(realvec& in, realvec& out)
 {
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if(child_count)
   {
     if(ctrl_combinator_->to<mrs_string>() == "+")
@@ -238,7 +238,7 @@ FanOutIn::myProcess(realvec& in, realvec& out)
       return;
     }
 
-    for (mrs_natural i = 0; i < child_count; ++i)
+    for (child_count_t i = 0; i < child_count; ++i)
     {
       if (enabled_(i))
       {

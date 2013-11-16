@@ -164,7 +164,7 @@ void MatchBassModel::myUpdate(MarControlPtr sender)
   costVector_.create(rootMax_-rootMin_,K_);
   distance_.create(K_,seg_.getSize()-1);
 
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if(child_count == 1 && inSamples_ > 0) {
     // configure the metric child MarSystem:
     // the input to metric are the two vectors to process stacked vertically
@@ -201,7 +201,7 @@ void MatchBassModel::myUpdate(MarControlPtr sender)
 void
 MatchBassModel::myProcess(realvec& in, realvec& out)
 {
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   mrs_natural i, j, k, l, m, d;
   mrs_real tmpreal, min;
   realvec covMatrix, tmpvec;

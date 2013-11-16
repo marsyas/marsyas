@@ -17,10 +17,12 @@
 */
 
 #include "CARFAC.h"
+#include <cstddef>
 
 using std::cout;
 using std::endl;
 using std::ostream;
+using std::size_t;
 
 namespace Marsyas
 {
@@ -99,8 +101,8 @@ std::vector<double> filter_state_class::FilterStep(CF_class &CF, double input_wa
 
 ostream& operator<<(ostream& o, std::vector<double> a)
 {
-  int max_x = (a.size() < 5) ? a.size() : 5;
-  for (int i=0; i<max_x; i++) {
+  size_t max_x = (a.size() < 5) ? a.size() : 5;
+  for (size_t i=0; i<max_x; i++) {
     o << a[i] << " ";
   }
   return o;
@@ -108,10 +110,10 @@ ostream& operator<<(ostream& o, std::vector<double> a)
 
 ostream& operator<<(ostream& o, std::vector<std::vector<double> > a)
 {
-  int max_x = (a.size() < 5) ? a.size() : 5;
-  int max_y = (a[0].size() < 5) ? a[0].size() : 5;
-  for (int i=0; i<max_x; i++) {
-    for (int j=0; j<max_y; j++) {
+  size_t max_x = (a.size() < 5) ? a.size() : 5;
+  size_t max_y = (a[0].size() < 5) ? a[0].size() : 5;
+  for (size_t i=0; i<max_x; i++) {
+    for (size_t j=0; j<max_y; j++) {
       o << a[i][j] << " ";
     }
     o << endl << "\t\t\t";
@@ -423,7 +425,7 @@ double CF_class::ERB_Hz(double CF_Hz, double ERB_break_freq, double ERB_Q)
 // pole_frequencies, create all the filter coefficients.
 void CF_class::CARFAC_DesignFilters()
 {
-  int n_ch = pole_freqs.size();
+  int n_ch = (int) pole_freqs.size();
 
   filter_coeffs.init(CF_filter_params.velocity_scale, n_ch);
 

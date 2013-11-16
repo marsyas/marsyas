@@ -122,11 +122,11 @@ ExRecord::getRecord(std::string path)
 bool
 ExRecord::params_compare(std::string a, std::string b)
 {
-  int p1=0;
-  int p2=0;
-  int len1=a.length();
-  int len2=b.length();
-  int start=1;
+  std::string::size_type p1=0;
+  std::string::size_type p2=0;
+  std::string::size_type len1 = a.length();
+  std::string::size_type len2 = b.length();
+  std::string::size_type start=1;
 
   while (p1<len1&&p2<len2) {
     if (a[p1]!=b[p2]) {
@@ -193,7 +193,7 @@ ExRecord::split_on(std::string p, char c, std::string& hd, std::string& tl, bool
 void
 ExRecord::rsplit_on(std::string p, char c, std::string& hd, std::string& tl)
 {
-  int i; for(i=p.length()-1; i>=0&&p[i]!=c; ++i);
+  std::string::size_type i; for(i=p.length()-1; i>=0&&p[i]!=c; ++i);
   if (p[i]==c) { hd=p.substr(0,i); tl=p.substr(i+1,p.length()-i-1); }
   else { hd=""; tl=p; }
 }

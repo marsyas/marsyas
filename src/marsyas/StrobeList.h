@@ -32,6 +32,7 @@
 
 #include <cmath>
 #include <deque>
+#include <cstddef>
 
 namespace Marsyas {
 using std::deque;
@@ -59,19 +60,19 @@ public:
 
   /*! \brief Return the strobe time (in samples, can be negative)
    */
-  inline StrobePoint Strobe(int strobe_number) {
+  inline StrobePoint Strobe(std::size_t strobe_number) {
     return strobes_.at(strobe_number);
   };
 
   /*! \brief Set the strobe weight
    */
-  inline void SetWeight(int strobe_number, double weight) {
+  inline void SetWeight(std::size_t strobe_number, double weight) {
     strobes_.at(strobe_number).weight = weight;
   };
 
   /*! \brief Set the strobe's working weight
    */
-  inline void SetWorkingWeight(int strobe_number, double working_weight) {
+  inline void SetWorkingWeight(std::size_t strobe_number, double working_weight) {
     strobes_.at(strobe_number).working_weight = working_weight;
   };
 
@@ -92,7 +93,7 @@ public:
 
   /*! \brief Get the number of strobes
    */
-  inline int strobe_count() const {
+  inline std::size_t strobe_count() const {
     return strobes_.size();
   };
 

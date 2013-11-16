@@ -52,7 +52,7 @@ void Parallel::myUpdate(MarControlPtr sender)
 {
   childInfos_.clear();
 
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if (child_count)
   {
     mrs_natural highestStabilizingDelay = ctrl_inStabilizingDelay_->to<mrs_natural>();
@@ -80,7 +80,7 @@ void Parallel::myUpdate(MarControlPtr sender)
     ostringstream oss;
     oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
 
-    for (mrs_natural i=1; i < child_count; ++i)
+    for (child_count_t i=1; i < child_count; ++i)
     {
       marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
       marsystems_[i]->setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte")); //[!] israte
@@ -115,7 +115,7 @@ void Parallel::myUpdate(MarControlPtr sender)
       slices_.resize(2*child_count, NULL);
     }
 
-    for (mrs_natural i = 0; i < child_count; ++i)
+    for (child_count_t i = 0; i < child_count; ++i)
     {
       if (slices_[2*i] != NULL)
       {
@@ -165,7 +165,7 @@ void Parallel::myProcess(realvec& in, realvec& out)
   mrs_natural inIndex = 0;
   mrs_natural outIndex = 0;
   mrs_natural localIndex = 0;
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
 
   if (child_count == 1)
   {
@@ -173,7 +173,7 @@ void Parallel::myProcess(realvec& in, realvec& out)
   }
   else if (child_count > 1)
   {
-    for (mrs_natural i = 0; i < child_count; ++i)
+    for (child_count_t i = 0; i < child_count; ++i)
     {
       localIndex = childInfos_[i].inObservations;
       for (o = 0; o < localIndex; o++)

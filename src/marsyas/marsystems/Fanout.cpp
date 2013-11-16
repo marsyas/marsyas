@@ -81,7 +81,7 @@ Fanout::myUpdate(MarControlPtr sender)
 {
   MarControlAccessor acc(ctrl_enabled_);
   mrs_realvec& enabled = acc.to<mrs_realvec>();
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if (enabled.getSize() < child_count)
   {
     enabled.create(child_count);
@@ -197,7 +197,7 @@ Fanout::myUpdate(MarControlPtr sender)
         highestStabilizingDelay = localStabilizingDelay;
 
     }
-    for (mrs_natural i=1; i < child_count; ++i)
+    for (child_count_t i=1; i < child_count; ++i)
     {
       marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/inSamples"));
       marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/inObservations"));
@@ -255,7 +255,7 @@ void
 Fanout::myProcess(realvec& in, realvec& out)
 {
   mrs_natural o,t;
-  unsigned int child_count = marsystems_.size();
+  child_count_t child_count = marsystems_.size();
   if (child_count)
   {
     mrs_natural outIndex = 0;
@@ -266,7 +266,7 @@ Fanout::myProcess(realvec& in, realvec& out)
     MarControlAccessor accMuted(ctrl_muted_);
     mrs_realvec& muted = accMuted.to<mrs_realvec>();
 
-    for (mrs_natural i = 0; i < child_count; ++i)
+    for (child_count_t i = 0; i < child_count; ++i)
     {
       if (localIndices_(i))//enabled child have a non-zero localIndex
       {

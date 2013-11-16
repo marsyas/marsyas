@@ -96,6 +96,10 @@ class marsyas_EXPORT MarSystem
   friend class MarSystemManager;
   friend class MarControl;
 
+public:
+  typedef std::vector<MarSystem*>::size_type child_count_t;
+  typedef std::vector<MarSystemObserver*>::size_type observer_count_t;
+
 private:
   void addControls();//add MarSystem default controls
   virtual void activate(bool state);

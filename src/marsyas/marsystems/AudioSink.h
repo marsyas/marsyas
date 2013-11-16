@@ -28,7 +28,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
-
+#include <cstddef>
 
 class RtAudio;
 class Thread;
@@ -72,7 +72,7 @@ private:
 
     realvec_queue buffer;
 
-    std::atomic<unsigned int> watermark;
+    std::atomic<std::size_t> watermark;
     bool underrun;
 
     unsigned int channel_count;
