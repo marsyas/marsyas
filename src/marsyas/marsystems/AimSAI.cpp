@@ -259,7 +259,7 @@ void
 AimSAI::myProcess(realvec& in, realvec& out)
 {
   // cout << "AimSAI::myProcess" << endl;
-  mrs_natural _max_concurrent_strobes = ctrl_max_concurrent_strobes_->to<mrs_natural>();
+  size_t _max_concurrent_strobes = (size_t) std::max((mrs_natural) 0, ctrl_max_concurrent_strobes_->to<mrs_natural>());
   mrs_real _israte = ctrl_israte_->to<mrs_real>();
   // mrs_natural _inSamples = ctrl_inSamples_->to<mrs_natural>();
 
@@ -330,12 +330,12 @@ AimSAI::myProcess(realvec& in, realvec& out)
 
           // Update the strobe weights
           double total_strobe_weight = 0.0;
-          for (int si = 0; si < active_strobes.strobe_count(); ++si) {
+          for (size_t si = 0; si < active_strobes.strobe_count(); ++si) {
             // cout << "si=" << si << "\tw=" << active_strobes.Strobe(si).weight << "\tw2=" << strobe_weights_[active_strobes.strobe_count() - si - 1] << endl;
             total_strobe_weight += (active_strobes.Strobe(si).weight
                                     * strobe_weights_[active_strobes.strobe_count() - si - 1]);
           }
-          for (int si = 0; si < active_strobes.strobe_count(); ++si) {
+          for (size_t si = 0; si < active_strobes.strobe_count(); ++si) {
             // cout << "si=" << si << "\tw1=" << active_strobes.Strobe(si).weight << "\tw2=" << strobe_weights_[active_strobes.strobe_count() - si - 1] << " tot=" << total_strobe_weight << endl;
             active_strobes.SetWorkingWeight(si,
                                             (active_strobes.Strobe(si).weight
@@ -359,7 +359,7 @@ AimSAI::myProcess(realvec& in, realvec& out)
 
       // Update the SAI buffer with the weighted effect of all the active
       // strobes at the current sample
-      for (int si = 0; si < active_strobes.strobe_count(); ++si) {
+      for (size_t si = 0; si < active_strobes.strobe_count(); ++si) {
         // cout << "si=" << si << endl;
         // Add the effect of active strobe at correct place in the SAI buffer
         // Calculate 'delay', the time from the strobe event to now

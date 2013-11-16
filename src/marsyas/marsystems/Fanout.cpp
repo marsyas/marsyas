@@ -104,7 +104,7 @@ Fanout::myUpdate(MarControlPtr sender)
   //check child MarSystems to disable (passed as a string)
   disableChild_ = getctrl("mrs_string/disableChild")->to<mrs_string>();
   disableChildIndex_ = -1;
-  for (size_t i=0; i < marsystems_.size(); ++i)
+  for (child_count_t i=0; i < marsystems_.size(); ++i)
   {
     mrs_string s;
     s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
@@ -122,7 +122,7 @@ Fanout::myUpdate(MarControlPtr sender)
   }
   if (disableChild_ == "all")
   {
-    for (size_t i=0; i < marsystems_.size(); ++i)
+    for (child_count_t i=0; i < marsystems_.size(); ++i)
     {
       enabled(i) = 0.0;
       localIndices_(i) = 0.0;
@@ -132,7 +132,7 @@ Fanout::myUpdate(MarControlPtr sender)
   }
   //check child MarSystem to disable (passed as an index)
   disable_ = getctrl("mrs_natural/disable")->to<mrs_natural>();
-  if (disable_ != -1 && disable_ < child_count)
+  if (disable_ != -1 && disable_ < (mrs_natural) child_count)
   {
     enabled(disable_) = 0.0;
     localIndices_(disable_) = 0.0;
@@ -145,13 +145,13 @@ Fanout::myUpdate(MarControlPtr sender)
   //check child MarSystems to enable (passed as a string)
   enableChild_ = getctrl("mrs_string/enableChild")->to<mrs_string>();
   enableChildIndex_ = -1;
-  for (size_t i=0; i < marsystems_.size(); ++i)
+  for (child_count_t i=0; i < marsystems_.size(); ++i)
   {
     mrs_string s;
     s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
     if (enableChild_ == s)
     {
-      enableChildIndex_ = i;
+      enableChildIndex_ = (mrs_natural) i;
       MRSDIAG("Fanout::myUpdate(): ENABLING child: " + marsystems_[i]->getAbsPath());
     }
   }
@@ -163,7 +163,7 @@ Fanout::myUpdate(MarControlPtr sender)
   }
   //check child MarSystem to enable (passed as an index)
   enable_ = getctrl("mrs_natural/enable")->to<mrs_natural>();
-  if (enable_ != -1 && enable_ < child_count)
+  if (enable_ != -1 && enable_ < (mrs_natural) child_count)
   {
     enabled(enable_) = 1.0;
     localIndices_(enable_) = 1.0;
@@ -227,7 +227,7 @@ Fanout::myUpdate(MarControlPtr sender)
     // update buffers between components
     if (slices_.size() < child_count)
       slices_.resize(child_count, NULL);
-    for (mrs_natural i=0; i< child_count; ++i)
+    for (child_count_t i=0; i< child_count; ++i)
     {
       if (slices_[i] != NULL)
       {

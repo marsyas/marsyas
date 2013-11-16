@@ -48,8 +48,6 @@ void print_usage()
 
 void print_help(const CommandLineOptions & opt)
 {
-  static const unsigned int opt_width = 20;
-
   cout << endl;
   cout << "'marsyas-debug' loads a marsystem from file, runs it and prints debugging information." << endl;
   cout << endl;

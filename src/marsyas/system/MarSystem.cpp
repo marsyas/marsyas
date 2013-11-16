@@ -1496,7 +1496,7 @@ MarSystem::toStringGraphViz(ostringstream& oss_defs, ostringstream& oss_links)
     // TODO are there other composite types to handle?
     if (type_ == "Fanout" || type_ == "Parallel") {
       // Link to all first items for parallel types of composites.
-      for (int j=0; j<sz; ++j)
+      for (child_count_t j=0; j<sz; ++j)
         oss_links << "\t\"" << prefix_ << "\" -> \"" << marsystems_[j]->prefix_ << "\";" << endl;
     } else {
       // Only link to first item in series.
@@ -1512,7 +1512,7 @@ MarSystem::toStringGraphViz(ostringstream& oss_defs, ostringstream& oss_links)
   // Children.
   if (sz>0)
   {
-    for (int i=0; i<sz; ++i)
+    for (child_count_t i=0; i<sz; ++i)
       marsystems_[i]->toStringGraphViz(oss_defs, oss_links);
   }
 }

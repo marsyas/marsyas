@@ -113,7 +113,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 
   //check child MarSystem to disable (passed as an index)
   disable_ = getctrl("mrs_natural/disable")->to<mrs_natural>();
-  if (disable_ != -1 && disable_ < child_count)
+  if (disable_ != -1 && disable_ < (mrs_natural) child_count)
   {
     enabled_(disable_) = 0.0;
     setctrl("mrs_natural/disable", -1);
@@ -138,7 +138,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
   }
   //check child MarSystem to enable (passed as an index)
   enable_ = getctrl("mrs_natural/enable")->to<mrs_natural>();
-  if (enable_ != -1 && enable_ < child_count)
+  if (enable_ != -1 && enable_ < (mrs_natural) child_count)
   {
     enabled_(enable_) = 1.0;
     setctrl("mrs_natural/enable", -1);
@@ -158,7 +158,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
     marsystems_[0]->update();
 
     // update dataflow component MarSystems in order
-    for (mrs_natural i=1; i < child_count; ++i)
+    for (child_count_t i=1; i < child_count; ++i)
     {
       marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
       marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[0]->getctrl("mrs_natural/inObservations"));
@@ -189,7 +189,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
     // update buffers between components
     if (slices_.size() < child_count)
       slices_.resize(child_count, NULL);
-    for (mrs_natural i=0; i< child_count; ++i)
+    for (child_count_t i=0; i< child_count; ++i)
     {
       if (slices_[i] != NULL)
       {

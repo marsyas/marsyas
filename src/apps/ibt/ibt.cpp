@@ -998,7 +998,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
     std::string::size_type loc;
     loc = outputTxt.rfind(".txt", outputTxt.length()-1);
 
-    if(loc == -1) //if only output dir defined -> append filename:
+    if(loc == std::string::npos) //if only output dir defined -> append filename:
       path << outputTxt << outputFile.nameNoExt();
     else
     {
