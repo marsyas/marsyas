@@ -8,8 +8,6 @@
 #  PYTHON_DEBUG_LIBRARIES = path to the debug library
 #
 
-message("Python Components: ${PythonLibs_FIND_COMPONENTS}")
-
 list(FIND PythonLibs_FIND_COMPONENTS DEBUG PYTHON_FIND_DEBUG)
 if(PYTHON_FIND_DEBUG EQUAL -1)
   set(PYTHON_FIND_DEBUG FALSE)
