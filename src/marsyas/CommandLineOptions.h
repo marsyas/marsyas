@@ -135,6 +135,16 @@ public:
                    default_value);
   }
 
+  template <typename T>
+  void define_old_style(const std::string & long_name,
+                        const std::string & short_name,
+                        const std::string & value_name,
+                        const std::string & description,
+                        const T & default_value = T())
+  {
+    define_private(long_name, short_name, value_name, description, default_value);
+  }
+
   bool has( const std::string & long_name ) const
   {
     std::map<std::string, Option*>::const_iterator it = m_options.find(long_name);
