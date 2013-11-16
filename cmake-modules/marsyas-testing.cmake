@@ -7,11 +7,11 @@
 #    CTEST_SOURCE_DIRECTORY = Marsyas source directory.
 #    CTEST_BINARY_DIRECTORY = Desired build directory.
 #    CTEST_CMAKE_GENERATOR = CMake generator (e.g. "Unix Makefiles", "Visual Studio 12 Win64")
-#    CMAKE_BUILD_TYPE = CMake configuration (e.g. "Debug")
+#    CTEST_CONFIGURATION_TYPE = CMake configuration (e.g. "Debug")
 #
 # 2. Include this module
 #
-# 3. Use the marsyas_test_experimental macro for each test
+# 3. Use the marsyas_test_experimental function for each test
 #    using a different set of CMake options:
 #
 #    marsyas_test_experimental(name branch options)
@@ -27,13 +27,13 @@ get_filename_component(CTEST_BINARY_DIRECTORY "${CTEST_BINARY_DIRECTORY}" ABSOLU
 find_program(CTEST_GIT_COMMAND NAMES git)
 set(CTEST_UPDATE_COMMAND "${CTEST_GIT_COMMAND}")
 
-macro(marsyas_test_experimental name branch options)
+function(marsyas_test_experimental name branch options)
 
-  if(DEFINED CMAKE_BUILD_TYPE)
-    list(APPEND options -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE})
+  if(DEFINED CTEST_CONFIGURATION_TYPE)
+    list(APPEND options "-DCMAKE_BUILD_TYPE=${CTEST_CONFIGURATION_TYPE}")
   endif()
 
-  list(APPEND options -DMARSYAS_TESTS=ON)
+  list(APPEND options "-DMARSYAS_TESTS=ON")
 
   set(CTEST_BUILD_NAME "${branch}-${name}")
 
@@ -46,4 +46,4 @@ macro(marsyas_test_experimental name branch options)
   ctest_test()
   ctest_submit()
 
-endmacro()
+endfunction()
