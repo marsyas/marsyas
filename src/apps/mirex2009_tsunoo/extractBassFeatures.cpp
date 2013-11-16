@@ -137,7 +137,7 @@ void recognize(string sfName, string segName, string tempName, string outName)
   total3->updControl("mrs_natural/inSamples", 1);
   total3->updControl("mrs_natural/inObservations", hist3.getRows());
   total3->updControl("WekaSink/wks3/mrs_string/labelNames",inputs.getLabelNames());
-  total3->updControl("WekaSink/wks3/mrs_natural/nLabels",inputs.getNumLabels());
+  total3->updControl("WekaSink/wks3/mrs_natural/nLabels", (mrs_natural)inputs.getNumLabels());
   total3->updControl("WekaSink/wks3/mrs_natural/downsample",1);
   total3->updControl("WekaSink/wks3/mrs_string/inObsNames",oss.str());
   //oss.str("");
@@ -246,7 +246,7 @@ void recognize(string sfName, string segName, string tempName, string outName)
 
     //total->updControl("Annotator/ann/mrs_natural/label", inputs.labelNum(inputs.labelEntry(m)));
     //total2->updControl("Annotator/ann2/mrs_natural/label", inputs.labelNum(inputs.labelEntry(m)));
-    total3->updControl("Annotator/ann3/mrs_natural/label", inputs.labelNum(inputs.labelEntry(m)));
+    total3->updControl("Annotator/ann3/mrs_natural/label", (mrs_natural)inputs.labelNum(inputs.labelEntry(m)));
     //total4->updControl("Annotator/ann4/mrs_natural/label", inputs.labelNum(inputs.labelEntry(m)));
 
     //total->process(hist, tmpvec);

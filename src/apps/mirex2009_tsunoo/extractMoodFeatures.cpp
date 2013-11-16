@@ -61,7 +61,7 @@ void recognize(string sfName, string outName)
   wksnet->updControl("mrs_natural/inSamples", 1);
   wksnet->updControl("mrs_natural/inObservations", all->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
   wksnet->updControl("WekaSink/wks/mrs_string/labelNames", inputs.getLabelNames()); // change to just sfName
-  wksnet->updControl("WekaSink/wks/mrs_natural/nLabels", inputs.getNumLabels());  // change to just 1
+  wksnet->updControl("WekaSink/wks/mrs_natural/nLabels", (mrs_natural)inputs.getNumLabels());  // change to just 1
   wksnet->updControl("WekaSink/wks/mrs_natural/downsample", 1);
   wksnet->updControl("WekaSink/wks/mrs_string/filename", outName);
   tmpvec.create(all->getctrl("mrs_natural/onObservations")->to<mrs_natural>()+1,1);
@@ -89,7 +89,7 @@ void recognize(string sfName, string outName)
 
     out = all->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
-    wksnet->updControl("Annotator/ant/mrs_natural/label", inputs.labelNum(inputs.labelEntry(i)));  // change to just 0
+    wksnet->updControl("Annotator/ant/mrs_natural/label", (mrs_natural)inputs.labelNum(inputs.labelEntry(i)));  // change to just 0
     wksnet->updControl("WekaSink/wks/mrs_string/currentlyPlaying", inputs.entry(i));
     wksnet->process(out, tmpvec);
 

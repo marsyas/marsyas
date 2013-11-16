@@ -719,7 +719,7 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
     for (size_t i=0; i < l.size(); ++i)
     {
       total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
-      total->updControl("Annotator/ann/mrs_natural/label", l.labelNum(l.labelEntry(i)));
+      total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)l.labelNum(l.labelEntry(i)));
       cout << "Processing" << l.entry(i) << endl;
       total->tick();
     }
@@ -865,7 +865,7 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
     for (size_t i=0; i < l.size(); ++i)
     {
       total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
-      total->updControl("Annotator/ann/mrs_natural/label", l.labelNum(l.labelEntry(i)));
+      total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)l.labelNum(l.labelEntry(i)));
       cout << "Processing" << l.entry(i) << endl;
       total->tick();
     }
@@ -989,7 +989,7 @@ bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
     for (size_t i=0; i < l.size(); ++i)
     {
       total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
-      total->updControl("Annotator/ann/mrs_natural/label", l.labelNum(l.labelEntry(i)));
+      total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)l.labelNum(l.labelEntry(i)));
       cout << "Processing" << l.entry(i) << endl;
       total->tick();
     }
@@ -1112,7 +1112,7 @@ bextract_trainADRessStereoSPS(vector<Collection> cls, string classNames,
     for (size_t i=0; i < l.size(); ++i)
     {
       total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
-      total->updControl("Annotator/ann/mrs_natural/label", l.labelNum(l.labelEntry(i)));
+      total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)l.labelNum(l.labelEntry(i)));
       cout << "Processing" << l.entry(i) << endl;
       total->tick();
     }
@@ -1233,7 +1233,7 @@ bextract_trainADRessStereoSPSMFCC(vector<Collection> cls, string classNames,
     for (size_t i=0; i < l.size(); ++i)
     {
       total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
-      total->updControl("Annotator/ann/mrs_natural/label", l.labelNum(l.labelEntry(i)));
+      total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)l.labelNum(l.labelEntry(i)));
       cout << "Processing" << l.entry(i) << endl;
       total->tick();
     }
@@ -1553,7 +1553,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
       total->updControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", offset);
       //wc = 0;
       //samplesPlayed = 0;
-      annotator->updControl("mrs_natural/label", l.labelNum(l.labelEntry(i)));
+      annotator->updControl("mrs_natural/label", (mrs_natural)l.labelNum(l.labelEntry(i)));
 
       if (extractorStr != "BEAT")
       {
@@ -1813,7 +1813,7 @@ bextract_train(vector<Collection> cls, Collection cl,
     featureNetwork->updControl("Confidence/confidence/mrs_bool/print",true);
 
     Collection l = cl;
-    mrs_natural nLabels = l.getNumLabels();
+    mrs_natural nLabels = (mrs_natural) l.getNumLabels();
 
     if (wekafname != EMPTYSTRING)
     {
@@ -1843,7 +1843,7 @@ bextract_train(vector<Collection> cls, Collection cl,
       // if(memSize != 0)
       // featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", true);
 
-      featureNetwork->updControl("Annotator/annotator/mrs_natural/label", l.labelNum(l.labelEntry(i)));
+      featureNetwork->updControl("Annotator/annotator/mrs_natural/label", (mrs_natural)l.labelNum(l.labelEntry(i)));
 
       featureNetwork->updControl(ctrl_filename_, l.entry(i));
       wc = 0;
@@ -3384,7 +3384,7 @@ mirex_bextract()
   if ((workspaceDir != EMPTYSTRING) && (wekafname[0] != '/' ))
     wekafname = workspaceDir + wekafname;
 
-  mrs_natural nLabels = l.getNumLabels();
+  mrs_natural nLabels = (mrs_natural)l.getNumLabels();
 
   if (wekafname != EMPTYSTRING)
   {
@@ -3399,7 +3399,7 @@ mirex_bextract()
     total->updControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", l.entry(i));
     cout << "Label = " << l.labelEntry(i) << endl;
     cout << "LabelID = " << l.labelNum(l.labelEntry(i)) << endl;
-    total->updControl("Annotator/ann/mrs_natural/label", l.labelNum(l.labelEntry(i)));
+    total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)l.labelNum(l.labelEntry(i)));
     cout << "Extracting: " << l.entry(i) << endl;
     total->tick();
   }
