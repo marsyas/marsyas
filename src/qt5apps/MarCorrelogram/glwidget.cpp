@@ -1,6 +1,7 @@
 #include "glwidget.h"
 
 #include <marsyas/system/MarSystemManager.h>
+#include <config.h>
 
 #include <QtOpenGL>
 #include <QTimer>

@@ -2,6 +2,7 @@
 
 // Marsyas
 #include <marsyas/system/MarSystemManager.h>
+#include <config.h>
 
 #include <QtGui>
 #include <QtOpenGL>
