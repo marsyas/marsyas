@@ -29,72 +29,31 @@
 using namespace std;
 using namespace Marsyas;
 
-/* global variables for various commandline options */
-int helpopt;
-int usageopt;
-int verboseopt;
-string fileName;
-string pluginName;
-float start = 0.0f;
-float length = -1.0f;
-float gain = 1.0f;
-float repetitions = 1;
-mrs_natural offset;
-mrs_natural duration;
-mrs_natural windowsize;
-CommandLineOptions cmd_options;
-
-int
-printUsage(string progName)
-{
-  MRSDIAG("sfplay.cpp - printUsage");
-  cerr << "Usage : " << progName << " [-g gain] [-sa start(seconds)] [-ln length(seconds)] [-o outputfile] [-pl pluginName] [-rp repetitions] [-ws windowsize(samples)] file1 file2 file3" << endl;
-  cerr << endl;
-  cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format or collections " << endl;
-  return(1);
-}
-
-int
-printHelp(string progName)
-{
-  MRSDIAG("sfplay.cpp - printHelp");
-  cerr << "sfplay, MARSYAS, Copyright George Tzanetakis " << endl;
-  cerr << "--------------------------------------------" << endl;
-  cerr << "Play the sound files provided as arguments " << endl;
-  cerr << endl;
-  cerr << "Usage : " << progName << " file1 file2 file3" << endl;
-  cerr << endl;
-  cerr << "where file1, ..., fileN are sound files in a Marsyas supported format" << endl;
-  cerr << "Help Options:" << endl;
-  cerr << "-u  --usage       : display short usage info" << endl;
-  cerr << "-h  --help        : display this information " << endl;
-  cerr << "-v  --verbose     : verbose output " << endl;
-  cerr << "-o  --output      : output to file " << endl;
-  cerr << "-g  --gain        : linear volume gain " << endl;
-  cerr << "-sa --start       : playback start offest in seconds " << endl;
-  cerr << "-ln --length      : playback length in seconds " << endl;
-  cerr << "-pl --plugin      : output plugin name " << endl;
-  cerr << "-rp --repetitions : number of repetitions " << endl;
-  cerr << "-ws --windowsize  : windows size in samples " << endl;
-  return(1);
-}
-
-
 // Play a collection l of soundfiles
-void sfplay(vector<string> soundfiles)
+void sfplay(const CommandLineOptions & options)
 {
   MRSDIAG("sfplay.cpp - sfplay");
+
+  vector<string> soundfiles = options.getRemaining();
+  string output_filename = options.value<string>("output");
+  string output_network_filename = options.value<string>("plugin");
+  bool verbose = options.has("verbose");
+  float start = options.value<float>("start");
+  float length = options.value<float>("length");
+  float repetitions = options.value<float>("repetitions");
+  float gain = options.value<float>("gain");
+  int windowsize = options.value<int>("windowsize");
 
   MarSystemManager mng;
   string sfName;
 
   // Output destination is either audio or soundfile
   MarSystem* dest;
-  if (fileName == EMPTYSTRING)	// audio output
+  if (output_filename.empty())	// audio output
   {
     dest = mng.create("AudioSink", "dest");
 
-    string backend = cmd_options.getStringOption("audio-backend");
+    string backend = options.value<string>("audio-backend");
     if (!backend.empty())
       dest->setControl("mrs_string/backend", backend);
   }
@@ -125,7 +84,7 @@ void sfplay(vector<string> soundfiles)
   playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 
 
-  if (fileName == EMPTYSTRING)	// audio output
+  if (output_filename.empty()) // audio output
     playbacknet->linkControl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
 
 
@@ -140,25 +99,24 @@ void sfplay(vector<string> soundfiles)
     mrs_real srate = playbacknet->getctrl("mrs_real/israte")->to<mrs_real>();
 
     ;
-    offset = (mrs_natural) (start * srate * nChannels);
+    mrs_natural offset = (mrs_natural) (start * srate * nChannels);
 
     playbacknet->updControl("mrs_natural/loopPos", offset);
     playbacknet->updControl("mrs_natural/pos", offset);
     playbacknet->updControl("SoundFileSource/src/mrs_real/repetitions", repetitions);
     playbacknet->updControl("SoundFileSource/src/mrs_real/duration", length);
 
-
-
-    if (fileName != EMPTYSTRING) // soundfile output instead of audio output
-      playbacknet->updControl("SoundFileSink/dest/mrs_string/filename", fileName);
-
-    if (fileName == EMPTYSTRING)	// audio output
+    if (!output_filename.empty())
+    {
+      playbacknet->updControl("SoundFileSink/dest/mrs_string/filename", output_filename);
+    }
+    else
     {
       playbacknet->updControl("AudioSink/dest/mrs_natural/bufferSize", 256);
       playbacknet->updControl("AudioSink/dest/mrs_bool/initAudio", true);
     }
-    MarControlPtr hasDataPtr_ =
-      playbacknet->getctrl("mrs_bool/hasData");
+
+    MarControlPtr hasDataPtr_ = playbacknet->getctrl("mrs_bool/hasData");
 
     while (hasDataPtr_->isTrue())
     {
@@ -168,75 +126,84 @@ void sfplay(vector<string> soundfiles)
   }
 
   // output network description to cout
-  if ((pluginName == EMPTYSTRING) && (verboseopt)) // output to stdout
+  if (output_network_filename.empty()) // output to stdout
   {
-    cout << (*playbacknet) << endl;
+    if (verbose)
+      cout << (*playbacknet) << endl;
   }
-  else if (pluginName != EMPTYSTRING)             // output to plugin
+  else
   {
-    ofstream oss(pluginName.c_str());
+    ofstream oss(output_network_filename.c_str());
     oss << (*playbacknet) << endl;
   }
   delete playbacknet;
 }
 
-
 void
-initOptions()
+printUsage(const string & program_name, bool detailed = false)
 {
-  cmd_options.addBoolOption("help", "h", false);
-  cmd_options.addBoolOption("usage", "u", false);
-  cmd_options.addBoolOption("verbose", "v", false);
-  cmd_options.addRealOption("start", "sa", 0.0f);
-  cmd_options.addStringOption("output", "o", EMPTYSTRING);
-  cmd_options.addRealOption("length", "ln", -1.0f);
-  cmd_options.addRealOption("gain", "g", 1.0);
-  cmd_options.addStringOption("plugin", "pl", EMPTYSTRING);
-  cmd_options.addRealOption("repetitions", "rp", 1.0);
-  cmd_options.addNaturalOption("windowsize", "ws", 2048);
-  cmd_options.addStringOption("audio-backend", "a", "");
+  MRSDIAG("sfplay.cpp - printUsage");
+  cout << "Usage: " << program_name << " [options] file1 [file2 ...]" << endl;
+  if (detailed)
+  {
+    cout << endl;
+    cout << "file1, ..., fileN are sound files in a format supported by Marsyas, or collections." << endl;
+  }
 }
 
-
 void
-loadOptions()
+printHelp(const string & program_name, const CommandLineOptions & options)
 {
-  helpopt = cmd_options.getBoolOption("help");
-  usageopt = cmd_options.getBoolOption("usage");
-  start = (float)cmd_options.getRealOption("start");
-  length = (float)cmd_options.getRealOption("length");
-  repetitions = (float)cmd_options.getRealOption("repetitions");
-  verboseopt = cmd_options.getBoolOption("verbose");
-  gain = (float)cmd_options.getRealOption("gain");
-  pluginName = cmd_options.getStringOption("plugin");
-  fileName   = cmd_options.getStringOption("output");
-  windowsize = cmd_options.getNaturalOption("windowsize");
+  MRSDIAG("sfplay.cpp - printHelp");
+  cout << "sfplay, MARSYAS, Copyright George Tzanetakis " << endl;
+  cout << "--------------------------------------------" << endl;
+  cout << "Play sound files provided as arguments." << endl;
+  cout << endl;
+  printUsage(program_name, true);
+  cout << endl;
+  cout << "Options:" << endl;
+  options.print();
 }
-
 
 int
 main(int argc, const char **argv)
 {
   MRSDIAG("sfplay.cpp - main");
 
-  string progName = argv[0];
-  if (argc == 1)
-    printUsage(progName);
+  string program_name( argv[0] );
 
-  // handling of command-line options
-  initOptions();
-  cmd_options.readOptions(argc, argv);
-  loadOptions();
+  if (argc <= 1) {
+    printUsage(program_name);
+    return 1;
+  }
 
-  vector<string> soundfiles = cmd_options.getRemaining();
-  if (helpopt)
-    return printHelp(progName);
+  CommandLineOptions options;
+  options.define_old_style<bool>("help", "h", "", "Display this information.");
+  options.define_old_style<bool>("usage", "u", "", "Display short usage information.");
+  options.define_old_style<bool>("verbose", "v", "", "Verbose output.");
+  options.define_old_style<float>("start", "sa", "", "Playback start offest in seconds.", 0.0f);
+  options.define_old_style<float>("length", "ln", "", "Playback length in seconds.", -1.0f);
+  options.define_old_style<float>("repetitions", "rp", "", "Number of repetitions.", 1.0f);
+  options.define_old_style<float>("gain", "g", "", "Linear volume gain.", 1.0f);
+  options.define_old_style<int>("windowsize", "ws", "", "Processing windows size in samples.", 2048);
+  options.define_old_style<string>("audio-backend", "a", "", "Audio backend to use for playback.");
+  options.define_old_style<string>("output", "o", "", "Write output to this file instead of playing to audio device.");
+  options.define_old_style<string>("plugin", "pl", "", "Save processing network into this file.");
 
-  if (usageopt)
-    return printUsage(progName);
+  options.readOptions(argc, argv);
+
+  if (options.has("help")) {
+    printHelp(program_name, options);
+    return 0;
+  }
+
+  if (options.has("usage")) {
+    printUsage(program_name);
+    return 0;
+  }
 
   // play the soundfiles/collections
-  sfplay(soundfiles);
+  sfplay(options);
 
   return(0);
 }
