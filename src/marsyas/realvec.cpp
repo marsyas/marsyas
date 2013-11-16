@@ -278,7 +278,7 @@ void
 realvec::debug_info()
 {
   MRSERR("realvec information");
-  MRSERR("size = " + size_);
+  MRSERR("size = " << size_);
 }
 
 /* keep the old data and possibly extend */
@@ -785,7 +785,7 @@ realvec::read(mrs_string filename)
   }
   else
   {
-    MRSERR("realvec::read: failed to open file: " + filename);
+    MRSERR("realvec::read: failed to open file: " << filename);
     return false;
   }
 }
@@ -860,7 +860,7 @@ realvec::readText(mrs_string filename)
   }
   else
   {
-    MRSERR("realvec::readText: failed to open file: " + filename);
+    MRSERR("realvec::readText: failed to open file: " << filename);
     return false;
   }
 }
@@ -883,7 +883,7 @@ realvec::writeText(mrs_string filename)
   }
   else
   {
-    MRSERR("realvec::writeText: failed to open file: " + filename);
+    MRSERR("realvec::writeText: failed to open file: " << filename);
     return false;
   }
 }
@@ -941,7 +941,7 @@ operator>>(istream& is, realvec& vec)
   //  if (vec.size_ != 0)
   //    {
   //      MRSERR("realvec::operator>>: realvec already allocated cannot read from istream");
-  //      MRSERR("vec.size_ = " + vec.size_);
+  //      MRSERR("vec.size_ = " << vec.size_);
   //
   //      return is;
   //    }
