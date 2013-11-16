@@ -101,7 +101,7 @@ bool FileWriter::write_record( const Record & record )
       const Record::Entry & record_entry = record.entries().at(descriptor.path);
       output = &record_entry.output;
     }
-    catch (const std::out_of_range & e)
+    catch (const std::out_of_range &)
     {
       std::cerr << "Marsyas::Debug::FileWriter: Record has no entry for path: "
                 << descriptor.path << std::endl;
@@ -175,13 +175,12 @@ void FileReader::rewind()
 
 bool FileReader::read_magic()
 {
-  char *id = strdup(magic_id);
-  m_file.read(id, strlen(id));
+  char id[sizeof magic_id];
+  m_file.read(id, sizeof magic_id);
   if (m_file.fail())
     return false;
   id[m_file.gcount()] = 0;
   bool ok = strcmp(id, magic_id) == 0;
-  free(id);
   return ok;
 }
 
