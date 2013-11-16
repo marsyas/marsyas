@@ -19,7 +19,7 @@ void usage()
 
 void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 {
-  unsigned int max_size;
+  size_t max_size;
 
   MarSystemManager mng;
 
@@ -52,10 +52,10 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
   sizes.create(2);
 
   // Find the DTW distance between all pairs of files
-  for (unsigned int i = 0; i < data.size(); i++) {
+  for (size_t i = 0; i < data.size(); i++) {
     tmp_distances.clear();
     cerr << "Processing query " << i << endl;
-    for (unsigned int j = 0; j < data.size(); j++) {
+    for (size_t j = 0; j < data.size(); j++) {
 
       // Which of the two files is longer?
       if (data[i].size() > data[j].size()) {
@@ -70,7 +70,7 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 
       // Copy both data[i] and data[j] into input_realvec.  If one
       // file is shorter than the other, pad it with zeros.
-      for(unsigned int k = 0; k < max_size; k++) {
+      for(size_t k = 0; k < max_size; k++) {
         if (k < data[i].size()) {
           input_realvec(0,k) = data[i][k];
         } else {
@@ -86,8 +86,8 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 
       // Update the SimilarityMatrix with the sizes
       // of the two input vectors
-      sizes(0) = data[i].size();
-      sizes(1) = data[j].size();
+      sizes(0) = (mrs_real) data[i].size();
+      sizes(1) = (mrs_real) data[j].size();
       sim->updControl("mrs_realvec/sizes",sizes);
       sim->update();
 
@@ -120,11 +120,11 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 
 
   // Print out all the distances
-  for (unsigned int i = 0; i < distances.size(); i++) {
+  for (size_t i = 0; i < distances.size(); i++) {
     mrs_string className = filenames[i].substr(0, filenames[i].find("_"));
     cout << className << " ";
     // cout << filenames[i] << " ";
-    for (unsigned int j = 0; j < distances[i].size(); j++) {
+    for (size_t j = 0; j < distances[i].size(); j++) {
       cout << distances[i][j] << " ";
       flush(cout);
     }
@@ -137,7 +137,7 @@ void read_file_of_floats_into_vector(string name, vector<float> &file) {
 
   int readChars;
   char line[256];
-  double f;
+  float f;
 
   FILE *inFile = fopen(name.c_str(), "r");
 
@@ -145,7 +145,7 @@ void read_file_of_floats_into_vector(string name, vector<float> &file) {
     readChars = fscanf(inFile,"%s", line );
     if (readChars < 0)
       break;
-    f = atof(line);
+    f = (float)atof(line);
     file.push_back(f);
   } while (readChars > 0);
 

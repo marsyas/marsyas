@@ -67,10 +67,10 @@ void run(string inFilename) {
   net->updControl("SoundFileSource/src/mrs_string/filename",inFilename);
   net->updControl("mrs_natural/inSamples", hopSize);
 
-  float soundFileSampleRate = net->getControl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
-  float secPerTick = hopSize / soundFileSampleRate;
+  mrs_real soundFileSampleRate = net->getControl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+  mrs_real secPerTick = hopSize / soundFileSampleRate;
 
-  float currTime, data;
+  mrs_real currTime, data;
   int i = 0;
   while (net->getControl("SoundFileSource/src/mrs_bool/hasData")->isTrue())	{
     net->tick();

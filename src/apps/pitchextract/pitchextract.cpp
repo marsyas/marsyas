@@ -168,7 +168,7 @@ pitchextract_caricature(mrs_string sfName, mrs_natural winSize, mrs_natural hopS
     pitches(i) = samples2hertz(pitchres(1), srate);
     // cout << "Pitch = " << pitches(i) << "- (conf) - " << confidences(i) << endl;
 
-    float scaled_pitch = pitches(i);
+    mrs_real scaled_pitch = pitches(i);
     if (frsopt == "bark") {
       scaled_pitch = hertz2bark(pitches(i));
     }
@@ -178,7 +178,6 @@ pitchextract_caricature(mrs_string sfName, mrs_natural winSize, mrs_natural hopS
     if (frsopt == "midi") {
       scaled_pitch = hertz2pitch(pitches(i));
     }
-
 
     if (pitches(i) <= pitch2hertz(lowPitch))
     {
@@ -621,7 +620,7 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
     pitches(i) = samples2hertz(pitchres(1), srate);
     cout << "Pitch = " << pitches(i) << "- (conf) - " << confidences(i) << endl;
 
-    float scaled_pitch = pitches(i);
+    mrs_real scaled_pitch = pitches(i);
     if (frsopt == "bark") {
       scaled_pitch = hertz2bark(pitches(i));
     }
@@ -1069,7 +1068,7 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
     //printf("%12.12f\t%12.12f\t%12.12f\n",time,pitch,rms);
 
     // Scale the pitch
-    float scaled_pitch = pitch;
+    mrs_real scaled_pitch = pitch;
     if (frsopt == "bark") {
       scaled_pitch = hertz2bark(pitch);
     }

@@ -86,7 +86,7 @@ AudioSink::myUpdate(MarControlPtr sender)
 
   unsigned int source_block_size = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   unsigned int dest_block_size = getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
-  unsigned int sample_rate = getctrl("mrs_real/israte")->to<mrs_real>();
+  unsigned int sample_rate = (unsigned int) getctrl("mrs_real/israte")->to<mrs_real>();
   unsigned int channel_count = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   bool realtime = getControl("mrs_bool/realtime")->to<mrs_bool>();
 

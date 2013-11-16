@@ -995,7 +995,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
   else
   {
     path.str("");
-    int loc;
+    std::string::size_type loc;
     loc = outputTxt.rfind(".txt", outputTxt.length()-1);
 
     if(loc == -1) //if only output dir defined -> append filename:

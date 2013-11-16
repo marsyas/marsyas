@@ -220,7 +220,7 @@ void report( const Debug::Record & record,
     {
       bug = bugs.at(path);
     }
-    catch (const std::out_of_range & e)
+    catch (const std::out_of_range &)
     {}
 
     print_entry(path, entry, bug);
@@ -246,7 +246,7 @@ void report_bugs( const Debug::Record & record,
     {
       record_entry = record.entries().at(path);
     }
-    catch (const std::out_of_range & e)
+    catch (const std::out_of_range &)
     {}
 
     print_entry(path, record_entry, bug);

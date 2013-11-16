@@ -437,7 +437,6 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
   //double stamp;
   mrs_real diff;
   RtMidiIn *midiin = NULL;
-  int nBytes;
 
   // open midi if midiPort is specified
   if (midi_ != -1)
@@ -480,7 +479,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
     if (midi_ != -1)
     {
       //stamp = midiin->getMessage( &message );
-      nBytes = message.size();
+      size_t nBytes = message.size();
       if (nBytes >2)
       {
         byte3 = message[2];
@@ -683,7 +682,6 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 #endif
 
   std::vector<unsigned char> message;
-  int nBytes;
   int voiceCount =0;
 
   while(1)
@@ -695,7 +693,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 #ifdef MARSYAS_MIDIIO
         //stamp = midiin->getMessage( &message );
 #endif
-        nBytes = message.size();
+        size_t nBytes = message.size();
         if (nBytes >2)
         {
           byte3 = message[2];
@@ -1087,7 +1085,6 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 
   // midi message
   std::vector<unsigned char> message;
-  int nBytes;
   int byte2, byte3;
   double s1x;
   double s1y;
@@ -1101,7 +1098,7 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
   {
     if (midi_ != -1)
     {
-      nBytes = message.size();
+      size_t nBytes = message.size();
       if (nBytes >2)
       {
         byte3 = message[2];
