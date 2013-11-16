@@ -193,9 +193,16 @@ ExRecord::split_on(std::string p, char c, std::string& hd, std::string& tl, bool
 void
 ExRecord::rsplit_on(std::string p, char c, std::string& hd, std::string& tl)
 {
-  std::string::size_type i; for(i=p.length()-1; i>=0&&p[i]!=c; ++i);
-  if (p[i]==c) { hd=p.substr(0,i); tl=p.substr(i+1,p.length()-i-1); }
-  else { hd=""; tl=p; }
+  std::string::size_type i = p.length();
+  while(i>0)
+  {
+    --i;
+    if(p[i]==c)
+    {
+      hd=p.substr(0,i); tl=p.substr(i+1,p.length()-i-1); return;
+    }
+  }
+  hd=""; tl=p;
 }
 //
 ExRecord*
