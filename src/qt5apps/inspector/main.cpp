@@ -6,6 +6,7 @@
 #include "widgets/stats_widget.h"
 
 #include <marsyas/system/MarSystemManager.h>
+#include <marsyas/json_io.h>
 
 #include <QDebug>
 
@@ -36,6 +37,7 @@
 #include <QQuickView>
 
 #include <fstream>
+#include <stdexcept>
 
 using namespace std;
 using namespace Marsyas;
@@ -228,8 +230,27 @@ void Main::openSystem(const QString & filename)
   if (filename.isEmpty())
     return;
 
-  ifstream plugin_stream( filename.toStdString().c_str() );
-  MarSystem *system = m_system_manager.getMarSystem(plugin_stream);
+  QString json_ending(".json");
+  QString mpl_ending(".mpl");
+
+  MarSystem *system = 0;
+
+  if (filename.endsWith(mpl_ending))
+  {
+    ifstream plugin_stream( filename.toStdString().c_str() );
+    system = m_system_manager.getMarSystem(plugin_stream);
+  }
+  else if (filename.endsWith(json_ending))
+  {
+    try {
+      system = system_from_json_file(filename.toStdString());
+    }
+    catch (const std::runtime_error &e)
+    {
+      qCritical() << "Failed to parse JSON file:" << e.what();
+    }
+  }
+
   if (!system) {
     qCritical("Could not open MarSystem file!");
     return;
