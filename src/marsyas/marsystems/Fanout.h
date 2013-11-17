@@ -21,6 +21,7 @@
 
 #include <marsyas/system/MarSystem.h>
 #include <cstddef>
+#include <vector>
 
 namespace Marsyas
 {
@@ -48,26 +49,26 @@ namespace Marsyas
 */
 
 
-class Fanout: public MarSystem
+class marsyas_EXPORT Fanout: public MarSystem
 {
 private:
   void addControls();
   void myUpdate(MarControlPtr sender);
   void deleteSlices();
 
-
-  realvec localIndices_;
-
-  mrs_natural enable_, enableChildIndex_;
-  mrs_natural disable_, disableChildIndex_;
-
-  mrs_string enableChild_;
-  mrs_string disableChild_;
-
   MarControlPtr ctrl_enabled_;
   MarControlPtr ctrl_muted_;
 
-  std::vector<realvec*> slices_;
+  struct child_info {
+    child_info(): enabled(true) {}
+    bool enabled;
+    //int observation_count;
+    realvec buffer;
+  };
+
+  std::vector<child_info> children_info_;
+
+  //realvec buffer_;
 
 public:
   Fanout(std::string name);

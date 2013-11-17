@@ -22,6 +22,7 @@
 
 using std::ostringstream;
 using std::vector;
+using std::string;
 
 using namespace Marsyas;
 
@@ -39,18 +40,6 @@ Fanout::Fanout(const Fanout& a): MarSystem(a)
 
 Fanout::~Fanout()
 {
-  deleteSlices();
-}
-
-void
-Fanout::deleteSlices()
-{
-  vector<realvec *>::const_iterator iter;
-  for (iter= slices_.begin(); iter != slices_.end(); iter++)
-  {
-    delete *(iter);
-  }
-  slices_.clear();
 }
 
 MarSystem*
@@ -81,7 +70,7 @@ Fanout::myUpdate(MarControlPtr sender)
 {
   MarControlAccessor acc(ctrl_enabled_);
   mrs_realvec& enabled = acc.to<mrs_realvec>();
-  child_count_t child_count = marsystems_.size();
+  mrs_natural child_count = (mrs_natural) marsystems_.size();
   if (enabled.getSize() < child_count)
   {
     enabled.create(child_count);
@@ -98,80 +87,74 @@ Fanout::myUpdate(MarControlPtr sender)
 
   if (child_count)
   {
-    localIndices_.create(child_count);
+    children_info_.resize((size_t)child_count);
   }
 
   //check child MarSystems to disable (passed as a string)
-  disableChild_ = getctrl("mrs_string/disableChild")->to<mrs_string>();
-  disableChildIndex_ = -1;
-  for (child_count_t i=0; i < marsystems_.size(); ++i)
   {
-    mrs_string s;
-    s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
-    if (disableChild_ == s)
+    const string & child_name_to_disable = getctrl("mrs_string/disableChild")->to<mrs_string>();
+    if (child_name_to_disable == "all")
     {
-      disableChildIndex_ = i;
-      MRSDIAG("Fanout::myUpdate(): DISABLING child: " + marsystems_[i]->getAbsPath());
+      for (mrs_natural i=0; i < (mrs_natural) marsystems_.size(); ++i)
+      {
+        enabled(i) = 0.0;
+        MRSDIAG("Fanout::myUpdate(): DISABLING child: " + marsystems_[i]->getAbsPath());
+      }
     }
-  }
-  if (disableChildIndex_ != -1)
-  {
-    enabled(disableChildIndex_) = 0.0;
-    localIndices_(disableChildIndex_) = 0.0;
+    else
+    {
+      for (mrs_natural i=0; i < (mrs_natural) marsystems_.size(); ++i)
+      {
+        mrs_string s;
+        s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
+        if (child_name_to_disable == s)
+        {
+          enabled(i) = 0.0;
+          MRSDIAG("Fanout::myUpdate(): DISABLING child: " + marsystems_[i]->getAbsPath());
+        }
+      }
+    }
     setctrl("mrs_string/disableChild", ",");
   }
-  if (disableChild_ == "all")
-  {
-    for (child_count_t i=0; i < marsystems_.size(); ++i)
-    {
-      enabled(i) = 0.0;
-      localIndices_(i) = 0.0;
-      setctrl("mrs_string/disableChild", ",");
-      MRSDIAG("Fanout::myUpdate(): DISABLING child: " + marsystems_[i]->getAbsPath());
-    }
-  }
   //check child MarSystem to disable (passed as an index)
-  disable_ = getctrl("mrs_natural/disable")->to<mrs_natural>();
-  if (disable_ != -1 && disable_ < (mrs_natural) child_count)
   {
-    enabled(disable_) = 0.0;
-    localIndices_(disable_) = 0.0;
-    setctrl("mrs_natural/disable", -1);
-    MRSDIAG("Fanout::myUpdate(): DISABLING child: " + marsystems_[disable_]->getAbsPath());
-  }
-  else
-    setctrl("mrs_natural/disable", -1);
-
-  //check child MarSystems to enable (passed as a string)
-  enableChild_ = getctrl("mrs_string/enableChild")->to<mrs_string>();
-  enableChildIndex_ = -1;
-  for (child_count_t i=0; i < marsystems_.size(); ++i)
-  {
-    mrs_string s;
-    s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
-    if (enableChild_ == s)
+    mrs_natural child_index_to_disable = getctrl("mrs_natural/disable")->to<mrs_natural>();
+    if (child_index_to_disable >= 0 && child_index_to_disable < child_count)
     {
-      enableChildIndex_ = (mrs_natural) i;
-      MRSDIAG("Fanout::myUpdate(): ENABLING child: " + marsystems_[i]->getAbsPath());
+      enabled(child_index_to_disable) = 0.0;
+      MRSDIAG("Fanout::myUpdate(): DISABLING child: " + marsystems_[child_index_to_disable]->getAbsPath());
     }
+    setctrl("mrs_natural/disable", -1);
   }
-  if (enableChildIndex_ != -1)
+  //check child MarSystems to enable (passed as a string)
   {
-    enabled(enableChildIndex_) = 1.0;
-    localIndices_(enableChildIndex_) = 1.0;
+    const string & child_name_to_enable = getctrl("mrs_string/enableChild")->to<mrs_string>();
+    for (mrs_natural i=0; i < (mrs_natural) marsystems_.size(); ++i)
+    {
+      mrs_string s;
+      s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
+      if (child_name_to_enable == s)
+      {
+        enabled(i) = 1.0;
+        MRSDIAG("Fanout::myUpdate(): ENABLING child: " + marsystems_[i]->getAbsPath());
+      }
+    }
     setctrl("mrs_string/enableChild", ",");
   }
   //check child MarSystem to enable (passed as an index)
-  enable_ = getctrl("mrs_natural/enable")->to<mrs_natural>();
-  if (enable_ != -1 && enable_ < (mrs_natural) child_count)
   {
-    enabled(enable_) = 1.0;
-    localIndices_(enable_) = 1.0;
+    mrs_natural child_index_to_enable = getctrl("mrs_natural/enable")->to<mrs_natural>();
+    if (child_index_to_enable > 0 && child_index_to_enable < child_count)
+    {
+      enabled(child_index_to_enable) = 1.0;
+    }
     setctrl("mrs_natural/enable", -1);
   }
-  else
-    setctrl("mrs_natural/enable", -1);
 
+  for (mrs_natural i = 0; i < child_count; ++i)
+  {
+    children_info_[i].enabled = enabled(i) != 0.0;
+  }
 
   if (child_count)
   {
@@ -187,17 +170,20 @@ Fanout::myUpdate(MarControlPtr sender)
     // update dataflow component MarSystems in order
     ostringstream oss;
     mrs_natural onObservations = 0;
-    if (enabled(0))
+    if (children_info_[0].enabled)
     {
-      onObservations += marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-      localIndices_(0) = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+      mrs_natural child_out_observations = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+      mrs_natural child_out_samples = marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+      children_info_[0].buffer.create( child_out_observations, child_out_samples );
+
+      onObservations += child_out_observations;
       oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
       mrs_natural localStabilizingDelay = marsystems_[0]->getctrl("mrs_natural/onStabilizingDelay")->to<mrs_natural>();
       if (highestStabilizingDelay < localStabilizingDelay)
         highestStabilizingDelay = localStabilizingDelay;
 
     }
-    for (child_count_t i=1; i < child_count; ++i)
+    for (mrs_natural i=1; i < child_count; ++i)
     {
       marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/inSamples"));
       marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/inObservations"));
@@ -205,11 +191,13 @@ Fanout::myUpdate(MarControlPtr sender)
       marsystems_[i]->setctrl("mrs_string/inObsNames", marsystems_[0]->getctrl("mrs_string/inObsNames"));
       marsystems_[i]->setctrl("mrs_natural/inStabilizingDelay", inStabilizingDelay_);
       marsystems_[i]->update(sender);
-      if (enabled(i))
+      if (children_info_[i].enabled)
       {
-        onObservations += (marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
-        localIndices_(i) = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+        mrs_natural child_out_observations = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+        mrs_natural child_out_samples = marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+        children_info_[i].buffer.create( child_out_observations, child_out_samples );
 
+        onObservations += child_out_observations;
         oss << marsystems_[i]->getctrl("mrs_string/onObsNames");
         mrs_natural localStabilizingDelay = marsystems_[i]->getctrl("mrs_natural/onStabilizingDelay")->to<mrs_natural>();
         if (highestStabilizingDelay < localStabilizingDelay)
@@ -224,28 +212,22 @@ Fanout::myUpdate(MarControlPtr sender)
     setctrl(ctrl_onObsNames_, oss.str());
     setctrl(ctrl_onStabilizingDelay_, highestStabilizingDelay);
 
+#if 0
     // update buffers between components
-    if (slices_.size() < child_count)
-      slices_.resize(child_count, NULL);
-    for (child_count_t i=0; i< child_count; ++i)
+    mrs_natural max_observations = 0;
+    mrs_natural max_samples = 0;
+    for (mrs_natural i=0; i< child_count; ++i)
     {
-      if (slices_[i] != NULL)
-      {
-        if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>()  ||
-            (slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>())
-        {
-          delete slices_[i];
-          slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
-                                   marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-        }
-      }
-      else
-      {
-        slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
-                                 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-      }
-      (slices_[i])->setval(0.0);
+      mrs_natural child_observation_count =
+          marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+      mrs_natural child_sample_count =
+          marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+      max_observations = std::max(max_observations, child_observation_count);
+      max_samples = std::max(max_samples, child_sample_count);
     }
+
+    buffer_.create(max_observations, max_samples);
+#endif
   }
   else //if composite is empty...
     MarSystem::myUpdate(sender);
@@ -255,10 +237,10 @@ void
 Fanout::myProcess(realvec& in, realvec& out)
 {
   mrs_natural o,t;
-  child_count_t child_count = marsystems_.size();
+  mrs_natural child_count = (mrs_natural) marsystems_.size();
   if (child_count)
   {
-    mrs_natural outIndex = 0;
+    mrs_natural out_observation_offset = 0;
 
     //MarControlAccessor acc(ctrl_enabled_);
     //mrs_realvec& enabled = acc.to<mrs_realvec>();
@@ -266,20 +248,23 @@ Fanout::myProcess(realvec& in, realvec& out)
     MarControlAccessor accMuted(ctrl_muted_);
     mrs_realvec& muted = accMuted.to<mrs_realvec>();
 
-    for (child_count_t i = 0; i < child_count; ++i)
+    for (mrs_natural i = 0; i < child_count; ++i)
     {
-      if (localIndices_(i))//enabled child have a non-zero localIndex
+      mrs_natural child_observation_count = children_info_[i].buffer.getRows();
+      mrs_natural child_sample_count = children_info_[i].buffer.getCols();
+
+      if (children_info_[i].enabled)//enabled child have a non-zero localIndex
       {
         //check if the child is unmuted, otherwise just use the previous output
         if(!muted(i))
         {
-          marsystems_[i]->process(in, *(slices_[i]));
+          marsystems_[i]->process(in, children_info_[i].buffer);
 
-          for (o=0; o < localIndices_(i); o++)
-            for (t=0; t < onSamples_; t++)
-              out(outIndex + o,t) = (*(slices_[i]))(o,t);
+          for (o=0; o < child_observation_count; o++)
+            for (t=0; t < child_sample_count; t++)
+              out(out_observation_offset + o,t) = children_info_[i].buffer(o,t);
         }
-        outIndex += (mrs_natural)localIndices_(i);
+        out_observation_offset += child_observation_count;
       }
     }
   }

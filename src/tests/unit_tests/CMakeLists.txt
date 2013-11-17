@@ -12,6 +12,7 @@ endmacro (marsyas_unit_test)
 
 
 ## ACTUAL UNIT TESTS
+marsyas_unit_test(Fanout Fanout_runner.cpp)
 marsyas_unit_test(NormMaxMin NormMaxMin_runner.cpp)
 marsyas_unit_test(WekaSource WekaSource_runner.cpp)
 marsyas_unit_test(Selector Selector_runner.cpp)
