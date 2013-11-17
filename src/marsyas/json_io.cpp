@@ -2,6 +2,7 @@
 #include <json.hh>
 #include <string>
 #include <iostream>
+#include <sstream>
 
 namespace Marsyas {
 
@@ -17,7 +18,7 @@ static MarSystem *system_from_json( const JSON::Value &json, MarSystemManager & 
   string system_type = object["type"];
   string system_name = object["name"];
 
-  if (system_type.empty() || system_name.empty())
+  if (system_type.empty())
     return 0;
 
   MarSystem *system = manager.create(system_type, system_name);
@@ -41,6 +42,8 @@ static MarSystem *system_from_json( const JSON::Value &json, MarSystemManager & 
       case JSON::STRING:
         system->setControl(string("mrs_string/") + ctl_name, (mrs_string) ctl_value);
         break;
+      // case JSON::OBJECT:
+        // TODO: link controls
       default:
         throw std::runtime_error("Unsupported control value type.");
       }
@@ -48,11 +51,19 @@ static MarSystem *system_from_json( const JSON::Value &json, MarSystemManager & 
   system->update();
 
   JSON::Array children( std::move(object["children"]) );
+  int i = 0;
   for( auto value : children )
   {
+    ++i;
     MarSystem *child = system_from_json(value, manager);
     if (child)
     {
+      if (child->getName().empty())
+      {
+        std::ostringstream name;
+        name << "_" << i << "_";
+        child->setName(name.str());
+      }
       system->addMarSystem(child);
     }
   }
