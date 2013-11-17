@@ -57,6 +57,7 @@ set( Marsyas_SOURCES
   TranscriberExtract.cpp
   vmblock.cpp
   WekaData.cpp
+  json_io.cpp
 )
 
 if(MARSYAS_REALTIME)
@@ -91,6 +92,8 @@ endif()
 ## OTHERLIBS
 
 set( EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/src/otherlibs )
+
+include_directories( ${EXTERNALS_DIR}/json++ )
 
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/libsvm/svm.cpp)
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/linear.cpp)
@@ -185,6 +188,8 @@ endif()
 ## LINK
 
 target_link_libraries(marsyas ${OS_LIBS})
+
+target_link_libraries(marsyas json++)
 
 if(MARSYAS_OSC)
   target_link_libraries(marsyas ${OSCPACK_LIBRARIES})
