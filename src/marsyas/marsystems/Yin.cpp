@@ -113,7 +113,7 @@ double Yin::vec_quadint_min(realvec *x,unsigned int pos, unsigned int span) {
 
 unsigned int Yin::vec_min_elem(realvec *s)
 {
-  size_t i = 0;
+  mrs_natural i = 0;
   int pos=0;
   double tmp = (*s)(0,0);
 //   for (i=0; i < s->channels; ++i)
