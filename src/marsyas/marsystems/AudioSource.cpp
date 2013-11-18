@@ -173,10 +173,10 @@ AudioSource::initRtAudio(
 
   try
   {
-    unsigned int resulting_block_size;
+    unsigned int uint_block_size = *block_size;
     audio_->openStream(NULL, &source_params, source_format, sample_rate,
-                       &resulting_block_size, &recordCallback, (void *)&shared, &options);
-    *block_size = resulting_block_size;
+                       &uint_block_size, &recordCallback, (void *)&shared, &options);
+    *block_size = uint_block_size;
   }
   catch (RtError& e)
   {

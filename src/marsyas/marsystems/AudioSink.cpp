@@ -201,10 +201,10 @@ AudioSink::initRtAudio(mrs_natural sample_rate,
 
   try
   {
-    unsigned int resulting_block_size;
+    unsigned int uint_block_size = *block_size;
     audio_->openStream(&output_params, NULL, format, sample_rate,
-                       &resulting_block_size, &playCallback, (void *)&shared, &options);
-    *block_size = resulting_block_size;
+                       &uint_block_size, &playCallback, (void *)&shared, &options);
+    *block_size = uint_block_size;
   }
   catch (RtError& e)
   {
