@@ -6,7 +6,10 @@
 #include "widgets/stats_widget.h"
 
 #include <marsyas/system/MarSystemManager.h>
-#include <marsyas/json_io.h>
+
+#ifdef MARSYAS_HAS_JSON
+# include <marsyas/json_io.h>
+#endif
 
 #include <QDebug>
 
@@ -242,6 +245,7 @@ void Main::openSystem(const QString & filename)
   }
   else if (filename.endsWith(json_ending))
   {
+#ifdef MARSYAS_HAS_JSON
     try {
       system = system_from_json_file(filename.toStdString());
     }
@@ -249,6 +253,7 @@ void Main::openSystem(const QString & filename)
     {
       qCritical() << "Failed to parse JSON file:" << e.what();
     }
+#endif
   }
 
   if (!system) {

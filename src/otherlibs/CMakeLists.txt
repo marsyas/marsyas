@@ -1,4 +1,6 @@
-add_subdirectory(json++)
+if(MARSYAS_JSON)
+  add_subdirectory(json++)
+endif()
 
 # if(MARSYAS_AUDIOIO)
 #        add_subdirectory(RtAudio)

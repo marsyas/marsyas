@@ -1,3 +1,7 @@
+if(MARSYAS_JSON)
+  add_definitions(-DMARSYAS_HAS_JSON)
+endif()
+
 set( inspector_moc_hdr
   main.h
   debug_controller.h

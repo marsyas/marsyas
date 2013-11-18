@@ -57,7 +57,6 @@ set( Marsyas_SOURCES
   TranscriberExtract.cpp
   vmblock.cpp
   WekaData.cpp
-  json_io.cpp
 )
 
 if(MARSYAS_REALTIME)
@@ -93,7 +92,10 @@ endif()
 
 set( EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/src/otherlibs )
 
-include_directories( ${EXTERNALS_DIR}/json++ )
+if(MARSYAS_JSON)
+  include_directories( ${EXTERNALS_DIR}/json++ )
+  list(APPEND Marsyas_SOURCES json_io.cpp)
+endif()
 
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/libsvm/svm.cpp)
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/linear.cpp)
@@ -189,7 +191,9 @@ endif()
 
 target_link_libraries(marsyas ${OS_LIBS})
 
-target_link_libraries(marsyas json++)
+if(MARSYAS_JSON)
+  target_link_libraries(marsyas json++)
+endif()
 
 if(MARSYAS_OSC)
   target_link_libraries(marsyas ${OSCPACK_LIBRARIES})
@@ -273,6 +277,10 @@ install( FILES
 
   DESTINATION include/marsyas
 )
+
+if(MARSYAS_JSON)
+  install( FILES json_io.h DESTINATION include/marsyas )
+endif()
 
 install( FILES
   system/MarControlAccessor.h
