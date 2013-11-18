@@ -82,10 +82,10 @@ AudioSource::myUpdate(MarControlPtr sender)
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/nChannels"));
 
-  unsigned int source_block_size = getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
-  unsigned int dest_block_size = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-  unsigned int sample_rate = (unsigned int) getctrl("mrs_real/israte")->to<mrs_real>();
-  unsigned int channel_count = getctrl("mrs_natural/nChannels")->to<mrs_natural>();
+  mrs_natural source_block_size = getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
+  mrs_natural dest_block_size = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  mrs_natural sample_rate = (mrs_natural) getctrl("mrs_real/israte")->to<mrs_real>();
+  mrs_natural channel_count = getctrl("mrs_natural/nChannels")->to<mrs_natural>();
   bool realtime = getControl("mrs_bool/realtime")->to<mrs_bool>();
 
   if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
@@ -136,9 +136,9 @@ AudioSource::myUpdate(MarControlPtr sender)
 
 void
 AudioSource::initRtAudio(
-  unsigned int sample_rate,
-  unsigned int *block_size,
-  unsigned int channel_count,
+  mrs_natural sample_rate,
+  mrs_natural *block_size,
+  mrs_natural channel_count,
   bool realtime
 )
 {
@@ -173,8 +173,10 @@ AudioSource::initRtAudio(
 
   try
   {
+    unsigned int resulting_block_size;
     audio_->openStream(NULL, &source_params, source_format, sample_rate,
-                       block_size, &recordCallback, (void *)&shared, &options);
+                       &resulting_block_size, &recordCallback, (void *)&shared, &options);
+    *block_size = resulting_block_size;
   }
   catch (RtError& e)
   {
@@ -227,19 +229,19 @@ void AudioSource::clearBuffer()
   shared.overrun = false;
 }
 
-bool AudioSource::reformatBuffer(size_t source_block_size,
-                                 size_t dest_block_size,
-                                 size_t channel_count,
+bool AudioSource::reformatBuffer(mrs_natural source_block_size,
+                                 mrs_natural dest_block_size,
+                                 mrs_natural channel_count,
                                  bool realtime, bool resize)
 {
-  size_t new_capacity = source_block_size + dest_block_size + 1;
+  mrs_natural new_capacity = source_block_size + dest_block_size + 1;
   if (!realtime)
-    new_capacity = std::max( new_capacity * 4, (size_t) 2000 );
+    new_capacity = std::max( new_capacity * 4, (mrs_natural) 2000 );
 
   if (resize)
   {
     assert(stopped_);
-    size_t size = new_capacity * 2;
+    mrs_natural size = new_capacity * 2;
     if (size != shared.buffer.samples() || channel_count != shared.buffer.observations())
     {
       bool do_clear_buffer = true;
@@ -262,7 +264,7 @@ bool AudioSource::reformatBuffer(size_t source_block_size,
     }
 
     //cout << "Changing capacity: " << new_capacity << "/" << shared.buffer.samples() << endl;
-    size_t new_watermark = realtime ? 0 : new_capacity / 2;;
+    mrs_natural new_watermark = realtime ? 0 : new_capacity / 2;;
     if (new_capacity > shared.buffer.capacity())
     {
       // First increase capacity, then watermark.

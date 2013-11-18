@@ -29,7 +29,6 @@
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
-#include <cstddef>
 
 class RtAudio;
 
@@ -77,7 +76,7 @@ private:
 
     realvec_queue buffer;
 
-    std::atomic<std::size_t> watermark;
+    std::atomic<mrs_natural> watermark;
     bool overrun;
 
     unsigned int sample_rate;
@@ -96,9 +95,9 @@ private:
   void myUpdate(MarControlPtr sender);
 
   void initRtAudio(
-    unsigned int sample_rate,
-    unsigned int *block_size,
-    unsigned int channel_count,
+    mrs_natural sample_rate,
+    mrs_natural *block_size,
+    mrs_natural channel_count,
     bool realtime
   );
 
@@ -108,9 +107,9 @@ private:
   void localActivate(bool state);
 
   void clearBuffer();
-  bool reformatBuffer(size_t sourceBlockSize,
-                      size_t destBlockSize,
-                      size_t channel_count,
+  bool reformatBuffer(mrs_natural sourceBlockSize,
+                      mrs_natural destBlockSize,
+                      mrs_natural channel_count,
                       bool realtime, bool resize);
 
   static int recordCallback(void *outputBuffer, void *inputBuffer,
