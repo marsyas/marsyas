@@ -51,7 +51,7 @@ void WekaData::Clear()
     vector<vector<mrs_real>*>::iterator iter = this->begin();
     while (iter != this->end()) {
       delete (*iter);
-      this->erase(iter);
+      ++iter;
     }
   }
   this->clear();
