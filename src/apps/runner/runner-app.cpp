@@ -2,9 +2,13 @@
 #include <marsyas/system/MarSystemManager.h>
 #include <marsyas/system/MarSystem.h>
 #include <marsyas/realtime/runner.h>
+#ifdef MARSYAS_HAS_JSON
+# include <marsyas/json_io.h>
+#endif
 
 #include <fstream>
 #include <iostream>
+#include <functional>
 
 using namespace Marsyas;
 using namespace std;
@@ -73,11 +77,32 @@ int run( const string system_filename, const CommandLineOptions & opt )
       }
     }
 
-    ifstream system_istream(system_filename);
-    MarSystemManager mng;
-    MarSystem* system = mng.getMarSystem(system_istream);
+    auto string_ends_with =
+        []( const string & str, const string & ending ) -> bool
+    {
+      if (str.length() < ending.length())
+        return false;
+      return str.compare( str.length() - ending.length(), ending.length(), ending ) == 0;
+    };
+
+    MarSystem* system = 0;
+
+    if (string_ends_with(system_filename, ".mpl"))
+    {
+      ifstream system_istream(system_filename);
+      MarSystemManager mng;
+      system = mng.getMarSystem(system_istream);
+    }
+    else if (string_ends_with(system_filename, ".json"))
+    {
+#ifdef MARSYAS_HAS_JSON
+      system = system_from_json_file(system_filename);
+#endif
+    }
+
     if (!system) {
-        cerr << "Could not load filesystem file:" << system;
+        cerr << "Could not load network definition file: "
+             << system_filename << endl;
         return 1;
     }
 
