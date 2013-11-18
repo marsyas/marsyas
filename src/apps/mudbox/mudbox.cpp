@@ -527,7 +527,7 @@ void drumClassify( string drumFile) {
   while(in >> word)
     words.push_back(word);
 
-  for ( size_t i = 0; i < words.size(); ++i)
+  for ( mrs_natural i = 0; i < (mrs_natural) words.size(); ++i)
   {
 
     if ( words[i] == "means" )
@@ -3072,7 +3072,7 @@ toy_with_stereoFeaturesMFCC(string fname0, string fname1)
   l.read(fname0);
 
   total->updControl("Annotator/ann/mrs_natural/label", 0);
-  for (size_t i=0; i < l.size(); ++i)
+  for (mrs_natural i=0; i < l.size(); ++i)
   {
     total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
     /* if (i==0)
@@ -3090,7 +3090,7 @@ toy_with_stereoFeaturesMFCC(string fname0, string fname1)
   total->updControl("Annotator/ann/mrs_natural/label", 1);
 
 
-  for (size_t i=0; i < m.size(); ++i)
+  for (mrs_natural i=0; i < m.size(); ++i)
   {
     total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
     cout << "Processing " << m.entry(i) << endl;
@@ -3105,7 +3105,7 @@ toy_with_stereoFeaturesMFCC(string fname0, string fname1)
   total->updControl("Annotator/ann/mrs_natural/label", 2);
 
 
-  for (size_t i=0; i < n.size(); ++i)
+  for (mrs_natural i=0; i < n.size(); ++i)
   {
     total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", n.entry(i));
     cout << "Processing " << n.entry(i) << endl;
@@ -3175,7 +3175,7 @@ toy_with_stereoMFCC(string fname0, string fname1)
   l.read(fname0);
   total->updControl("Annotator/ann/mrs_natural/label", 0);
 
-  for (size_t i=0; i < l.size(); ++i)
+  for (mrs_natural i=0; i < l.size(); ++i)
   {
     total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
     /* if (i==0)
@@ -3193,7 +3193,7 @@ toy_with_stereoMFCC(string fname0, string fname1)
   total->updControl("Annotator/ann/mrs_natural/label", 1);
 
 
-  for (size_t i=0; i < m.size(); ++i)
+  for (mrs_natural i=0; i < m.size(); ++i)
   {
     total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
     cout << "Processing " << m.entry(i) << endl;
@@ -3207,7 +3207,7 @@ toy_with_stereoMFCC(string fname0, string fname1)
   total->updControl("Annotator/ann/mrs_natural/label", 2);
 
 
-  for (size_t i=0; i < n.size(); ++i)
+  for (mrs_natural i=0; i < n.size(); ++i)
   {
     total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", n.entry(i));
     cout << "Processing " << n.entry(i) << endl;
@@ -3228,7 +3228,7 @@ toy_with_mp3convert(string fname0)
   Collection l;
   l.read(fname0);
 
-  for (size_t  i=0; i < l.size(); ++i)
+  for (mrs_natural  i=0; i < l.size(); ++i)
   {
     convertNet->updControl("SoundFileSource/src/mrs_string/filename", l.entry(i));
     string::size_type pos = l.entry(i).rfind(".", l.entry(i).length());
@@ -3353,7 +3353,7 @@ toy_with_stereoFeatures(string fname0, string fname1)
   l.read(fname0);
 
   total->updControl("Annotator/ann/mrs_natural/label", 0);
-  for (size_t i=0; i < l.size(); ++i)
+  for (mrs_natural i=0; i < l.size(); ++i)
   {
     total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
     /* if (i==0)
@@ -3370,7 +3370,7 @@ toy_with_stereoFeatures(string fname0, string fname1)
 
   total->updControl("Annotator/ann/mrs_natural/label", 1);
 
-  for (size_t i=0; i < n.size(); ++i)
+  for (mrs_natural i=0; i < n.size(); ++i)
   {
     total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", n.entry(i));
     cout << "Processing " << n.entry(i) << endl;
@@ -3385,7 +3385,7 @@ toy_with_stereoFeatures(string fname0, string fname1)
   total->updControl("Annotator/ann/mrs_natural/label", 2);
 
 
-  for (size_t i=0; i < m.size(); ++i)
+  for (mrs_natural i=0; i < m.size(); ++i)
   {
     total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
     cout << "Processing " << m.entry(i) << endl;
@@ -3396,7 +3396,7 @@ toy_with_stereoFeatures(string fname0, string fname1)
   w.read("oj.mf");
   total->updControl("Annotator/ann/mrs_natural/label", 3);
 
-  for (size_t i=0; i < w.size(); ++i)
+  for (mrs_natural i=0; i < w.size(); ++i)
   {
     total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", w.entry(i));
     cout << "Processing " << w.entry(i) << endl;
