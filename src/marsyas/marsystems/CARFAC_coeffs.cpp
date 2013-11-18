@@ -517,7 +517,7 @@ void CF_class::CARFAC_DesignAGC()
 void CF_class::CARFAC_Init(int n_mics)
 {
   std::vector<double> AGC_time_constants = CF_AGC_params.time_constants;
-  int n_AGC_stages = AGC_time_constants.size();
+  int n_AGC_stages = (int) AGC_time_constants.size();
   filter_state_class tmp_filter_state;
   tmp_filter_state.z1_memory.assign(n_ch,0.0);
   tmp_filter_state.z2_memory.assign(n_ch,0.0);
