@@ -132,13 +132,13 @@ operator<<(ostream& o, const Collection& l)
 mrs_natural
 Collection::size()
 {
-  return collectionList_.size();
+  return (mrs_natural) collectionList_.size();
 }
 
 mrs_natural
 Collection::getSize()
 {
-  return collectionList_.size();
+  return (mrs_natural) collectionList_.size();
 }
 
 
@@ -192,7 +192,7 @@ Collection::add(mrs_string entry, mrs_string label)
 mrs_natural
 Collection::getNumLabels()
 {
-  return labelNames_.size();
+  return (mrs_natural) labelNames_.size();
 }
 
 mrs_string
