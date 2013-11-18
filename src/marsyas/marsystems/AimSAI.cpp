@@ -19,6 +19,7 @@
 #include "AimSAI.h"
 #include "../common_source.h"
 #include "../ERBTools.h"
+#include <algorithm>
 
 using std::ostringstream;
 using namespace Marsyas;
