@@ -25,7 +25,6 @@
 #include <fstream>
 #include <sstream>
 #include <marsyas/common_header.h>
-#include <cstddef>
 
 namespace Marsyas
 {
@@ -50,15 +49,15 @@ private:
 public:
   Collection();
   ~Collection();
-  std::size_t size();
+  mrs_natural size();
   void setName(std::string name);
-  std::string entry(std::size_t i);
-  std::string labelEntry(std::size_t i);
-  std::size_t getSize();
-  std::size_t getNumLabels();
+  std::string entry(mrs_natural i);
+  std::string labelEntry(mrs_natural i);
+  mrs_natural getSize();
+  mrs_natural getNumLabels();
   mrs_string getLabelNames();
-  std::size_t labelNum(mrs_string label);
-  mrs_string labelName(std::size_t i);
+  mrs_natural labelNum(mrs_string label);
+  mrs_string labelName(mrs_natural i);
   mrs_bool hasLabels();
   void add(std::string entry);
   void add(std::string entry, std::string label);
@@ -71,7 +70,7 @@ public:
   void concatenate(std::vector<Collection> cls);
   void clear();
   void store_labels(mrs_bool store);
-  mrs_real regression_label(std::size_t cindex);
+  mrs_real regression_label(mrs_natural cindex);
 
   marsyas_EXPORT friend std::ostream& operator<<(std::ostream&, const Collection&);
   marsyas_EXPORT friend std::istream& operator>>(std::istream&, Collection&);

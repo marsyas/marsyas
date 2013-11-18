@@ -32,8 +32,7 @@ using std::ostream_iterator;
 using std::endl;
 using std::ostream;
 using std::istream;
-using std::size_t;
-
+using std::string;
 
 // if the directory doesn't exist, we need to make it a "".
 static std::string marsyas_datadir_ =
@@ -102,12 +101,12 @@ Collection::labelAll(mrs_string label)
   {
     hasLabels_ = true;
     labelList_.reserve(collectionList_.size());
-    for (size_t i = 0; i < collectionList_.size(); ++i)
+    for (mrs_natural i = 0; i < (mrs_natural)collectionList_.size(); ++i)
       labelList_.push_back(label);
   }
   else
   {
-    for (size_t i=0; i < collectionList_.size(); ++i)
+    for (mrs_natural i=0; i < (mrs_natural)collectionList_.size(); ++i)
       labelList_[i] = label;
   }
 }
@@ -117,7 +116,7 @@ operator<<(ostream& o, const Collection& l)
 {
   // o << "# MARSYAS Collection " << endl;
   // o << "# name = " << l.name_ << endl << endl;
-  for (size_t i=0; i < l.collectionList_.size(); ++i)
+  for (mrs_natural i=0; i < (mrs_natural)l.collectionList_.size(); ++i)
   {
     o << l.collectionList_[i];
     if (l.hasLabels_)
@@ -130,13 +129,13 @@ operator<<(ostream& o, const Collection& l)
 
 
 
-size_t
+mrs_natural
 Collection::size()
 {
   return collectionList_.size();
 }
 
-size_t
+mrs_natural
 Collection::getSize()
 {
   return collectionList_.size();
@@ -190,16 +189,16 @@ Collection::add(mrs_string entry, mrs_string label)
 
 
 
-size_t
+mrs_natural
 Collection::getNumLabels()
 {
   return labelNames_.size();
 }
 
 mrs_string
-Collection::labelName(size_t i)
+Collection::labelName(mrs_natural i)
 {
-  if (i < labelNames_.size())
+  if (i >= 0 && i < (mrs_natural)labelNames_.size())
     return labelNames_[i];
 
   return EMPTYSTRING;
@@ -222,11 +221,11 @@ Collection::shuffle()
 {
   // Use a Fisher-Yates shuffle
   // http://en.wikipedia.org/wiki/Fisher-Yates_shuffle
-  size_t n = collectionList_.size();
+  mrs_natural n = (mrs_natural)collectionList_.size();
   while (n > 1)
   {
     // Generate a random index in the range [0, n).
-    size_t k = (size_t)(n * ((mrs_real)rand() / ((mrs_real)(RAND_MAX) + (mrs_real)1)));
+    mrs_natural k = (mrs_natural)(n * ((mrs_real)rand() / ((mrs_real)(RAND_MAX) + (mrs_real)1)));
 
     n--;
     swap(collectionList_[n], collectionList_[k]);
@@ -241,7 +240,7 @@ Collection::toLongString()
   return join(collectionList_, ",");
 }
 
-size_t
+mrs_natural
 Collection::labelNum(mrs_string label)
 {
 
@@ -249,46 +248,47 @@ Collection::labelNum(mrs_string label)
   if (it == labelNames_.end())
     return -1;
 
-  return (size_t) distance(labelNames_.begin(), it);
+  return (mrs_natural) distance(labelNames_.begin(), it);
 
 }
 mrs_real
-Collection::regression_label(size_t cindex)
+Collection::regression_label(mrs_natural i)
 {
-  if (hasLabels_) {
-    return (mrs_real) atof(labelList_[cindex].c_str());
+  if (hasLabels_ && i >= 0 && i < (mrs_natural)labelList_.size()) {
+    return (mrs_real) atof(labelList_[i].c_str());
   }
   return 0.0;
 }
 
 mrs_string
-Collection::labelEntry(size_t i)
+Collection::labelEntry(mrs_natural i)
 {
-  if (hasLabels_) {
-    if (i < labelList_.size()) {
+  if (hasLabels_ && i >= 0 && i < (mrs_natural)labelList_.size())
       return labelList_[i];
-    }
-  }
+
   return "No label";
 }
 
 mrs_string
-Collection::entry(size_t i)
+Collection::entry(mrs_natural i)
 {
-  return collectionList_[i];
+  if (i >= 0 && i < (mrs_natural)collectionList_.size())
+    return collectionList_[i];
+
+  return mrs_string();
 }
 
 
 void
 Collection::concatenate(vector<Collection> cls)
 {
-  for (size_t cj = 0; cj < cls.size(); cj++)
+  for (mrs_natural cj = 0; cj < (mrs_natural)cls.size(); cj++)
   {
     Collection l = cls[cj];
     if (l.hasLabels_)
       hasLabels_ = true;
 
-    for (size_t i = 0; i < l.size(); ++i)
+    for (mrs_natural i = 0; i < l.size(); ++i)
       add(l.entry(i), l.labelEntry(i));
   }
 }
@@ -298,7 +298,7 @@ Collection::concatenate(vector<Collection> cls)
  http://stackoverflow.com/questions/3418231/c-replace-part-of-a-string-with-another-string
  -gp */
 bool replace(std::string& str, const std::string& from, const std::string& to) {
-  size_t start_pos = str.find(from);
+  string::size_type start_pos = str.find(from);
   if(start_pos == std::string::npos)
     return false;
   str.replace(start_pos, from.length(), to);
