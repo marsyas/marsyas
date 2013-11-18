@@ -118,8 +118,9 @@ public:
       {
         for (mrs_natural enable_skewness = 0; enable_skewness < 2; enable_skewness++)
         {
-          _test_flow_settings(enable_mean, enable_stddev,
-                              enable_skewness);
+          _test_flow_settings((bool) enable_mean,
+                              (bool) enable_stddev,
+                              (bool) enable_skewness);
         }
       }
     }
