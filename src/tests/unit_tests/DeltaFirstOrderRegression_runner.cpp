@@ -12,7 +12,7 @@
 #include <cxxtest/ErrorPrinter.h>
 
 int main() {
-  return CxxTest::ErrorPrinter().run();
+ return CxxTest::ErrorPrinter().run();
 }
 #include "TestDeltaFirstOrderRegression.h"
 
@@ -23,32 +23,32 @@ CxxTest::StaticSuiteDescription suiteDescription_DeltaFirstOrderRegression_runne
 
 static class TestDescription_DeltaFirstOrderRegression_runner_test_flow_settings : public CxxTest::RealTestDescription {
 public:
-  TestDescription_DeltaFirstOrderRegression_runner_test_flow_settings() : CxxTest::RealTestDescription( Tests_DeltaFirstOrderRegression_runner, suiteDescription_DeltaFirstOrderRegression_runner, 42, "test_flow_settings" ) {}
-  void runTest() { suite_DeltaFirstOrderRegression_runner.test_flow_settings(); }
+ TestDescription_DeltaFirstOrderRegression_runner_test_flow_settings() : CxxTest::RealTestDescription( Tests_DeltaFirstOrderRegression_runner, suiteDescription_DeltaFirstOrderRegression_runner, 42, "test_flow_settings" ) {}
+ void runTest() { suite_DeltaFirstOrderRegression_runner.test_flow_settings(); }
 } testDescription_DeltaFirstOrderRegression_runner_test_flow_settings;
 
 static class TestDescription_DeltaFirstOrderRegression_runner_test_obsnames : public CxxTest::RealTestDescription {
 public:
-  TestDescription_DeltaFirstOrderRegression_runner_test_obsnames() : CxxTest::RealTestDescription( Tests_DeltaFirstOrderRegression_runner, suiteDescription_DeltaFirstOrderRegression_runner, 59, "test_obsnames" ) {}
-  void runTest() { suite_DeltaFirstOrderRegression_runner.test_obsnames(); }
+ TestDescription_DeltaFirstOrderRegression_runner_test_obsnames() : CxxTest::RealTestDescription( Tests_DeltaFirstOrderRegression_runner, suiteDescription_DeltaFirstOrderRegression_runner, 59, "test_obsnames" ) {}
+ void runTest() { suite_DeltaFirstOrderRegression_runner.test_obsnames(); }
 } testDescription_DeltaFirstOrderRegression_runner_test_obsnames;
 
 static class TestDescription_DeltaFirstOrderRegression_runner_test_process_one_slice : public CxxTest::RealTestDescription {
 public:
-  TestDescription_DeltaFirstOrderRegression_runner_test_process_one_slice() : CxxTest::RealTestDescription( Tests_DeltaFirstOrderRegression_runner, suiteDescription_DeltaFirstOrderRegression_runner, 74, "test_process_one_slice" ) {}
-  void runTest() { suite_DeltaFirstOrderRegression_runner.test_process_one_slice(); }
+ TestDescription_DeltaFirstOrderRegression_runner_test_process_one_slice() : CxxTest::RealTestDescription( Tests_DeltaFirstOrderRegression_runner, suiteDescription_DeltaFirstOrderRegression_runner, 74, "test_process_one_slice" ) {}
+ void runTest() { suite_DeltaFirstOrderRegression_runner.test_process_one_slice(); }
 } testDescription_DeltaFirstOrderRegression_runner_test_process_one_slice;
 
 static class TestDescription_DeltaFirstOrderRegression_runner_test_process_two_slices : public CxxTest::RealTestDescription {
 public:
-  TestDescription_DeltaFirstOrderRegression_runner_test_process_two_slices() : CxxTest::RealTestDescription( Tests_DeltaFirstOrderRegression_runner, suiteDescription_DeltaFirstOrderRegression_runner, 117, "test_process_two_slices" ) {}
-  void runTest() { suite_DeltaFirstOrderRegression_runner.test_process_two_slices(); }
+ TestDescription_DeltaFirstOrderRegression_runner_test_process_two_slices() : CxxTest::RealTestDescription( Tests_DeltaFirstOrderRegression_runner, suiteDescription_DeltaFirstOrderRegression_runner, 117, "test_process_two_slices" ) {}
+ void runTest() { suite_DeltaFirstOrderRegression_runner.test_process_two_slices(); }
 } testDescription_DeltaFirstOrderRegression_runner_test_process_two_slices;
 
 static class TestDescription_DeltaFirstOrderRegression_runner_test_process_single_sample_slices : public CxxTest::RealTestDescription {
 public:
-  TestDescription_DeltaFirstOrderRegression_runner_test_process_single_sample_slices() : CxxTest::RealTestDescription( Tests_DeltaFirstOrderRegression_runner, suiteDescription_DeltaFirstOrderRegression_runner, 166, "test_process_single_sample_slices" ) {}
-  void runTest() { suite_DeltaFirstOrderRegression_runner.test_process_single_sample_slices(); }
+ TestDescription_DeltaFirstOrderRegression_runner_test_process_single_sample_slices() : CxxTest::RealTestDescription( Tests_DeltaFirstOrderRegression_runner, suiteDescription_DeltaFirstOrderRegression_runner, 166, "test_process_single_sample_slices" ) {}
+ void runTest() { suite_DeltaFirstOrderRegression_runner.test_process_single_sample_slices(); }
 } testDescription_DeltaFirstOrderRegression_runner_test_process_single_sample_slices;
 
 #include <cxxtest/Root.cpp>

@@ -12,7 +12,7 @@
 #include <cxxtest/ErrorPrinter.h>
 
 int main() {
-  return CxxTest::ErrorPrinter().run();
+ return CxxTest::ErrorPrinter().run();
 }
 #include "TestCARFAC.h"
 
@@ -23,8 +23,8 @@ CxxTest::StaticSuiteDescription suiteDescription_CARFAC_runner( "TestCARFAC.h", 
 
 static class TestDescription_CARFAC_runner_test_wav_file : public CxxTest::RealTestDescription {
 public:
-  TestDescription_CARFAC_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_CARFAC_runner, suiteDescription_CARFAC_runner, 40, "test_wav_file" ) {}
-  void runTest() { suite_CARFAC_runner.test_wav_file(); }
+ TestDescription_CARFAC_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_CARFAC_runner, suiteDescription_CARFAC_runner, 40, "test_wav_file" ) {}
+ void runTest() { suite_CARFAC_runner.test_wav_file(); }
 } testDescription_CARFAC_runner_test_wav_file;
 
 #include <cxxtest/Root.cpp>

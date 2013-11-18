@@ -12,7 +12,7 @@
 #include <cxxtest/ErrorPrinter.h>
 
 int main() {
-  return CxxTest::ErrorPrinter().run();
+ return CxxTest::ErrorPrinter().run();
 }
 #include "TestAimBoxes.h"
 
@@ -23,8 +23,8 @@ CxxTest::StaticSuiteDescription suiteDescription_AimBoxes_runner( "TestAimBoxes.
 
 static class TestDescription_AimBoxes_runner_test_wav_file : public CxxTest::RealTestDescription {
 public:
-  TestDescription_AimBoxes_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimBoxes_runner, suiteDescription_AimBoxes_runner, 33, "test_wav_file" ) {}
-  void runTest() { suite_AimBoxes_runner.test_wav_file(); }
+ TestDescription_AimBoxes_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimBoxes_runner, suiteDescription_AimBoxes_runner, 33, "test_wav_file" ) {}
+ void runTest() { suite_AimBoxes_runner.test_wav_file(); }
 } testDescription_AimBoxes_runner_test_wav_file;
 
 #include <cxxtest/Root.cpp>
