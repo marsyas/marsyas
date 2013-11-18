@@ -418,7 +418,7 @@ void extract(string inCollectionName)
   mrs_realvec data;
   int numTicks = 0;
   float currentTime;
-  float sampleRate = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+  float sampleRate = (float) net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 
   mrs_string previouslyPlaying, currentlyPlaying;
   MarControlPtr ctrl_previouslyPlaying = net->getctrl("mrs_string/previouslyPlaying");
