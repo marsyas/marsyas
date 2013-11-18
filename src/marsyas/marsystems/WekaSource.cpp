@@ -7,6 +7,7 @@
 */
 #include "WekaSource.h"
 #include "../common_source.h"
+#include <stdexcept>
 
 using namespace std;
 using namespace Marsyas;
@@ -498,24 +499,23 @@ void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &o
 
 void WekaSource::loadFile(const std::string& filename, const std::string& attributesToExtract, WekaData& data)
 {
+  ifstream mis;
 
+  mis.open(filename.c_str());
 
-
-  ifstream *mis = new ifstream;
-
-  mis->open(filename.c_str());
-
-
-  MRSASSERT( mis->is_open() );
+  if (!mis.is_open()) {
+    std::string msg = std::string("WekaSource: could not open file: ") + filename;
+    MRSERR(msg);
+    throw std::runtime_error(msg);
+  }
 
   data_.Clear();
 
-  parseHeader(*mis, filename, attributesToExtract);
+  parseHeader(mis, filename, attributesToExtract);
 
-  parseData(*mis, filename, data);
-  mis->close();
-  delete mis;
+  parseData(mis, filename, data);
 
+  mis.close();
 }//loadFile
 
 void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const std::string& attributesToExtract)
