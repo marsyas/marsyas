@@ -8,6 +8,7 @@
 #include <vector>
 #include <marsyas/system/MarSystemManager.h>
 #include <marsyas/CommandLineOptions.h>
+#include <algorithm>
 
 using namespace std;
 using namespace Marsyas;
@@ -19,7 +20,7 @@ void usage()
 
 void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 {
-  size_t max_size;
+  mrs_natural max_size;
 
   MarSystemManager mng;
 
@@ -52,17 +53,18 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
   sizes.create(2);
 
   // Find the DTW distance between all pairs of files
-  for (size_t i = 0; i < data.size(); i++) {
+  mrs_natural data_size = (mrs_natural) data.size();
+  for (mrs_natural i = 0; i < data_size; i++)
+  {
     tmp_distances.clear();
     cerr << "Processing query " << i << endl;
-    for (size_t j = 0; j < data.size(); j++) {
+    for (mrs_natural j = 0; j < data_size; j++)
+    {
+      mrs_natural data_i_size = (mrs_natural) data[i].size();
+      mrs_natural data_j_size = (mrs_natural) data[j].size();
 
       // Which of the two files is longer?
-      if (data[i].size() > data[j].size()) {
-        max_size = data[i].size();
-      } else {
-        max_size = data[j].size();
-      }
+      max_size = std::max(data_i_size, data_j_size);
 
       // Create a realvec to hold both pairs of data
       realvec input_realvec;
@@ -70,14 +72,15 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 
       // Copy both data[i] and data[j] into input_realvec.  If one
       // file is shorter than the other, pad it with zeros.
-      for(size_t k = 0; k < max_size; k++) {
-        if (k < data[i].size()) {
+      for(mrs_natural k = 0; k < max_size; k++)
+      {
+        if (k < data_i_size) {
           input_realvec(0,k) = data[i][k];
         } else {
           input_realvec(0,k) = 0;
         }
 
-        if (k < data[j].size()) {
+        if (k < data_j_size) {
           input_realvec(1,k) = data[j][k];
         } else {
           input_realvec(1,k) = 0;
@@ -86,8 +89,8 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 
       // Update the SimilarityMatrix with the sizes
       // of the two input vectors
-      sizes(0) = (mrs_real) data[i].size();
-      sizes(1) = (mrs_real) data[j].size();
+      sizes(0) = (mrs_real) data_i_size;
+      sizes(1) = (mrs_real) data_j_size;
       sim->updControl("mrs_realvec/sizes",sizes);
       sim->update();
 
