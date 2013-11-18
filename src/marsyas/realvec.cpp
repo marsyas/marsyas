@@ -1095,7 +1095,7 @@ realvec::operator()(std::string r, std::string c)
 
   realvec matrix;
 
-  matrix.create( r_l , c_l );
+  matrix.create( (mrs_natural) r_l , (mrs_natural) c_l );
 
   for ( c_c = c_a ; c_c <= c_b ; c_c++ )
   {
@@ -1141,7 +1141,7 @@ realvec::operator()(std::string c)
   c_l = c_b - c_a + 1;
 
   realvec matrix;
-  matrix.create( c_l );
+  matrix.create( (mrs_natural) c_l );
 
   for ( c_c = c_a ; c_c <= c_b ; c_c++ )
   {
