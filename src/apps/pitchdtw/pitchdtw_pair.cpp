@@ -8,6 +8,7 @@
 #include <vector>
 #include <marsyas/system/MarSystemManager.h>
 #include <marsyas/CommandLineOptions.h>
+#include <algorithm>
 // #include "pngwriter.h"
 
 using namespace std;
@@ -69,7 +70,6 @@ void read_file_of_floats_into_vector(string name, vector<float> &file) {
 
   int readChars;
   char line[256];
-  double f;
 
   FILE *inFile = fopen(name.c_str(), "r");
 
@@ -77,8 +77,7 @@ void read_file_of_floats_into_vector(string name, vector<float> &file) {
     readChars = fscanf(inFile,"%s", line );
     if (readChars < 0)
       break;
-    f = atof(line);
-    file.push_back(f);
+    file.push_back( (float) atof(line) );
   } while (readChars > 0);
 
 }
@@ -104,25 +103,22 @@ int main(int argc, const char **argv)
   read_file_of_floats_into_vector(inFileName1,file1);
   read_file_of_floats_into_vector(inFileName2,file2);
 
-  unsigned int max_size;
-
-  if (file1.size() > file2.size()) {
-    max_size = file1.size();
-  } else {
-    max_size = file2.size();
-  }
+  mrs_natural file1_size = (mrs_natural) file1.size();
+  mrs_natural file2_size = (mrs_natural) file2.size();
+  mrs_natural max_size = std::max(file1_size, file2_size);
 
   input_realvec.create(2,max_size);
 
   // Copy both file1 and file2 into input_realvec
-  for(unsigned int i = 0; i < max_size; i++) {
-    if (i < file1.size()) {
+  for(mrs_natural i = 0; i < max_size; i++)
+  {
+    if (i < file1_size) {
       input_realvec(0,i) = file1[i];
     } else {
       input_realvec(0,i) = 0;
     }
 
-    if (i < file2.size()) {
+    if (i < file2_size) {
       input_realvec(1,i) = file2[i];
     } else {
       input_realvec(1,i) = 0;
@@ -130,7 +126,7 @@ int main(int argc, const char **argv)
   }
 
 
-  pitchdtw(input_realvec,file1.size(),file2.size());
+  pitchdtw(input_realvec, file1_size, file2_size);
 
   exit(0);
 
