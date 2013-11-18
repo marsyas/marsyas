@@ -33,6 +33,9 @@ static MarSystem *system_from_json( const JSON::Value &json, MarSystemManager & 
       const JSON::Value & ctl_value = control.second;
       switch(ctl_value.type())
       {
+      case JSON::BOOL:
+        system->setControl(string("mrs_bool/") + ctl_name, (bool) ctl_value);
+        break;
       case JSON::INT:
         system->setControl(string("mrs_natural/") + ctl_name, (mrs_natural) (int) ctl_value);
         break;
