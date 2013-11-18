@@ -280,9 +280,9 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
       {
         MarControlAccessor acc_classPerms(ctrl_classPerms_);
         realvec& classPerms = acc_classPerms.to<mrs_realvec>(); // ?
-        classPerms.create(classPerms_.size());
+        classPerms.create((mrs_natural)classPerms_.size());
 
-        for (size_t i=0; i < classPerms_.size(); ++i)
+        for (mrs_natural i=0; i < (mrs_natural)classPerms_.size(); ++i)
         {
           classPerms(i) = classPerms_[i];
         }
