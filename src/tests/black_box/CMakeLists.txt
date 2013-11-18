@@ -45,73 +45,83 @@ black_box_audio (peakClustering nearhou.wav nearhouSep.wav
 	peakClustering "${NEXT_COMMAND}")
 
 macro(bextract_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
-  add_test( ${REG_NAME}-bextract
-	${MARSYAS_SCRIPTS_DIR}/cmake-test-wrapper.py
-		${DIR}
-		${COMMAND_LINE_LIBRARY_ENV}
-		${EXECUTABLE_OUTPUT_PATH}/bextract -fe
-		${EXTRA_BEXTRACT}
-		-w ${REG_NAME}.arff
-		-od ${TEST_TEMPDIR}/
-		${MF_INPUT} )
+  add_test(
+    NAME ${REG_NAME}-bextract
+    COMMAND
+      ${MARSYAS_SCRIPTS_DIR}/cmake-test-wrapper.py
+      ${DIR}
+      ${COMMAND_LINE_LIBRARY_ENV}
+      $<TARGET_FILE:bextract> -fe
+      ${EXTRA_BEXTRACT}
+      -w ${REG_NAME}.arff
+      -od ${TEST_TEMPDIR}/
+      ${MF_INPUT}
+  )
 endmacro(bextract_test)
 
 macro(bextract_kea_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
   bextract_test(${REG_NAME} ${DIR} ${MF_INPUT} ${EXTRA_BEXTRACT} )
   # we don't need the TEST_TEMPDIR for the kea commands
-  add_test( ${REG_NAME}-classify-gs
-	${MARSYAS_SCRIPTS_DIR}/kea-wrapper.py
-		${EXECUTABLE_OUTPUT_PATH}/kea
-		-w ${TEST_TEMPDIR}/${REG_NAME}.arff -cl GS
-		${REG_NAME}-gs.txt
-		${TEST_OUTPUT}/${REG_NAME}-gs.txt
+  add_test(
+    NAME ${REG_NAME}-classify-gs
+    COMMAND
+      ${MARSYAS_SCRIPTS_DIR}/kea-wrapper.py
+      $<TARGET_FILE:kea>
+      -w ${TEST_TEMPDIR}/${REG_NAME}.arff -cl GS
+      ${REG_NAME}-gs.txt
+      ${TEST_OUTPUT}/${REG_NAME}-gs.txt
   )
-  add_test( ${REG_NAME}-classify-svm
-	${MARSYAS_SCRIPTS_DIR}/kea-wrapper.py
-		${EXECUTABLE_OUTPUT_PATH}/kea
-		-w ${TEST_TEMPDIR}/${REG_NAME}.arff -cl SVM
-		${REG_NAME}-svm.txt
-		${TEST_OUTPUT}/${REG_NAME}-svm.txt
+  add_test(
+    NAME ${REG_NAME}-classify-svm
+    COMMAND
+      ${MARSYAS_SCRIPTS_DIR}/kea-wrapper.py
+      $<TARGET_FILE:kea>
+      -w ${TEST_TEMPDIR}/${REG_NAME}.arff -cl SVM
+      ${REG_NAME}-svm.txt
+      ${TEST_OUTPUT}/${REG_NAME}-svm.txt
   )
 endmacro(bextract_kea_test)
 
 macro(tempo_test REG_NAME DIR MF_INPUT)
-  add_test( ${REG_NAME}-tempo
-	${MARSYAS_SCRIPTS_DIR}/tempo-wrapper.py
-		${EXECUTABLE_OUTPUT_PATH}/tempo
-		${DIR}/${MF_INPUT}
-		${TEST_TEMPDIR}/${REG_NAME}-tempo.txt
-		${TEST_OUTPUT}/${REG_NAME}-tempo.txt
-		)
+  add_test(
+    NAME ${REG_NAME}-tempo
+    COMMAND ${MARSYAS_SCRIPTS_DIR}/tempo-wrapper.py
+      $<TARGET_FILE:tempo>
+      ${DIR}/${MF_INPUT}
+      ${TEST_TEMPDIR}/${REG_NAME}-tempo.txt
+      ${TEST_OUTPUT}/${REG_NAME}-tempo.txt
+  )
 endmacro(tempo_test)
 
 macro(timeline_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
-  add_test( ${REG_NAME}-bextract
-	${MARSYAS_SCRIPTS_DIR}/timeline-test-wrapper.py
-		${DIR}
-		${COMMAND_LINE_LIBRARY_ENV}
-		${EXECUTABLE_OUTPUT_PATH}/bextract -fe
-		${EXTRA_BEXTRACT}
-		-w ${TEST_TEMPDIR}/${REG_NAME}.arff
-		-od ${TEST_TEMPDIR}/   
-		${MF_INPUT}
-		${TEST_OUTPUT}/${REG_NAME}.arff
-	)
+  add_test(
+    NAME ${REG_NAME}-bextract
+    COMMAND ${MARSYAS_SCRIPTS_DIR}/timeline-test-wrapper.py
+      ${DIR}
+      ${COMMAND_LINE_LIBRARY_ENV}
+      $<TARGET_FILE:bextract> -fe
+      ${EXTRA_BEXTRACT}
+      -w ${TEST_TEMPDIR}/${REG_NAME}.arff
+      -od ${TEST_TEMPDIR}/
+      ${MF_INPUT}
+      ${TEST_OUTPUT}/${REG_NAME}.arff
+  )
 endmacro(timeline_test)
 
 macro(sfplugin_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT TEST_FILE)
-  add_test( ${REG_NAME}-bextract
-	${MARSYAS_SCRIPTS_DIR}/sfplugin-test-wrapper.py
-		${DIR}
-		${COMMAND_LINE_LIBRARY_ENV}
-		"${EXECUTABLE_OUTPUT_PATH}/bextract"
-		"${EXECUTABLE_OUTPUT_PATH}/sfplugin -pm"
-        ${EXTRA_BEXTRACT}
-		${MF_INPUT}
-        ${TEST_TEMPDIR}/${REG_NAME}.mpl
-        ${TEST_INPUT}/${TEST_FILE}
-        ${TEST_OUTPUT}/${REG_NAME}.txt
-	)
+  add_test(
+    NAME ${REG_NAME}-bextract
+    COMMAND ${MARSYAS_SCRIPTS_DIR}/sfplugin-test-wrapper.py
+      ${DIR}
+      ${COMMAND_LINE_LIBRARY_ENV}
+      $<TARGET_FILE:bextract>
+      $<TARGET_FILE:sfplugin> -pm
+          ${EXTRA_BEXTRACT}
+      ${MF_INPUT}
+          ${TEST_TEMPDIR}/${REG_NAME}.mpl
+          ${TEST_INPUT}/${TEST_FILE}
+          ${TEST_OUTPUT}/${REG_NAME}.txt
+  )
 endmacro(sfplugin_test)
 
 
