@@ -1526,7 +1526,7 @@ MarSystem::toString(marostring& m)
 {
   m.begin_marsystem(isComposite_, getType(), getName());
 
-  m.begin_controls(controls_.size());
+  m.begin_controls((int)controls_.size());
   for (ControlItr ctrlIter_ = controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
   {
     MarControlPtr c = ctrlIter_->second;
@@ -1583,17 +1583,17 @@ MarSystem::toString(marostring& m)
     m.end_control_links_out(j);
     m.end_control(ct, cn, cv.str(), cs);
   }
-  m.end_controls(controls_.size());
+  m.end_controls((int)controls_.size());
 
   child_count_t sz = marsystems_.size();
   if (sz>0)
   {
-    m.begin_children(sz);
+    m.begin_children((int)sz);
     for (child_count_t i=0; i<sz; ++i)
     {
       marsystems_[i]->toString(m);
     }
-    m.end_children(sz);
+    m.end_children((int)sz);
   }
   m.end_marsystem(isComposite_, getType(), getName());
   return m;
