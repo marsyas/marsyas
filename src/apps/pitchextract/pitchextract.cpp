@@ -1271,7 +1271,7 @@ main(int argc, const char **argv)
       int correct_predictions = 0;
       int predictions = 0;
 
-      for (unsigned int i=0; i < l.size(); i++)
+      for (mrs_natural i=0; i < l.size(); i++)
       {
         FileName fn(l.entry(i));
         sfname = l.entry(i);
