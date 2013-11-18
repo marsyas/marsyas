@@ -2956,7 +2956,7 @@ refine(mrs_string sfName, float predicted_tempo)
 mrs_bool
 readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audioFile, mrs_bool startPoint)
 {
-  mrs_natural file = gtBeatsFile.rfind(".", gtBeatsFile.length()-1);
+  mrs_string::size_type file = gtBeatsFile.rfind(".", gtBeatsFile.length()-1);
 
   mrs_bool readFileOK = true;
   mrs_string line;
@@ -2964,7 +2964,7 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
   FileName inputFileGT(audioFile);
 
   //if gtBeatsFile = directory => add extension (.txt or .beats) to the end of filepath
-  if(file == -1)
+  if(file == mrs_string::npos)
   {
     ostringstream oss;
     //FILE* file;
@@ -3692,10 +3692,10 @@ tempo_ibt(mrs_string sfName, float ground_truth_tempo, mrs_string outputTxt, boo
   else
   {
     path.str("");
-    int loc;
+    mrs_string::size_type loc;
     loc = outputTxt.rfind(".txt", outputTxt.length()-1);
 
-    if(loc == -1) //if only output dir defined -> append filename:
+    if(loc == mrs_string::npos) //if only output dir defined -> append filename:
       path << outputTxt << outputFile.nameNoExt();
     else
     {
@@ -4246,7 +4246,7 @@ main(int argc, const char **argv)
 
 
 
-    for (size_t i=0; i < l.size(); ++i)
+    for (mrs_natural i=0; i < l.size(); ++i)
     {
       if (predictedopt_ == EMPTYSTRING)
       {
