@@ -639,7 +639,7 @@ void WekaSource::parseData(ifstream& mis, const mrs_string& filename, WekaData& 
 
   MRSASSERT(!mis.eof());
 
-  data.Create(attributesIncludedList_.size()+1);
+  data.Create((mrs_natural)attributesIncludedList_.size()+1);
 
   char str[1024];
 
