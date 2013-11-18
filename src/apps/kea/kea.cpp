@@ -139,7 +139,7 @@ distance_matrix_MIREX()
   // collection simply for naming the entries
   Collection l;
   l.read(inputdir_ + predictcollectionfname_);
-  for (size_t i=1; i <= l.size(); ++i)
+  for (mrs_natural i=1; i <= l.size(); ++i)
   {
     oss << i << "\t" << l.entry(i-1) << endl;
   }
