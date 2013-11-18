@@ -261,7 +261,7 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
         }
         else
         {
-          tempoVecMedian_.stretch(tempoVec_.size());
+          tempoVecMedian_.stretch((mrs_natural)tempoVec_.size());
           for(mrs_natural s = 0; s < (mrs_natural) tempoVec_.size(); s++)
             tempoVecMedian_(s) = tempoVec_.at(s);
 
