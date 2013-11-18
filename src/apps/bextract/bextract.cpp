@@ -697,7 +697,7 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
       Collection l = cls[cj];
 
       total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)cj);
-      for (size_t i=0; i < l.size(); ++i)
+      for (mrs_natural i=0; i < l.size(); ++i)
       {
         total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
         cout << "Processing" << l.entry(i) << endl;
@@ -716,7 +716,7 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
     total->updControl("WekaSink/wsink/mrs_string/filename", wekafname);
     total->updControl("SVMClassifier/svmcl/mrs_string/mode", "train");
 
-    for (size_t i=0; i < l.size(); ++i)
+    for (mrs_natural i=0; i < l.size(); ++i)
     {
       total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
       total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)l.labelNum(l.labelEntry(i)));
@@ -737,7 +737,7 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
     ofstream prout;
     prout.open(predictCollection.c_str());
 
-    for (size_t i=0; i < m.size(); ++i)//iterate over collection files
+    for (mrs_natural i=0; i < m.size(); ++i)//iterate over collection files
     {
       total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
       total->tick();
@@ -844,7 +844,7 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
     {
       Collection l = cls[cj];
       total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)cj);
-      for (size_t i=0; i < l.size(); ++i)
+      for (mrs_natural i=0; i < l.size(); ++i)
       {
         total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
         cout << "Processing" << l.entry(i) << endl;
@@ -862,7 +862,7 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
     total->updControl("WekaSink/wsink/mrs_string/filename", wekafname);
     total->updControl("SVMClassifier/svmcl/mrs_string/mode", "train");
 
-    for (size_t i=0; i < l.size(); ++i)
+    for (mrs_natural i=0; i < l.size(); ++i)
     {
       total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
       total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)l.labelNum(l.labelEntry(i)));
@@ -882,7 +882,7 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
     ofstream prout;
     prout.open(predictCollection.c_str());
 
-    for (size_t i=0; i < m.size(); ++i)//iterate over collection files
+    for (mrs_natural i=0; i < m.size(); ++i)//iterate over collection files
     {
       total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
       total->tick();
@@ -968,7 +968,7 @@ bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
     {
       Collection l = cls[cj];
       total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)cj);
-      for (size_t i=0; i < l.size(); ++i)
+      for (mrs_natural i=0; i < l.size(); ++i)
       {
         total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
         cout << "Processing" << l.entry(i) << endl;
@@ -986,7 +986,7 @@ bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
     total->updControl("WekaSink/wsink/mrs_string/filename", wekafname);
     total->updControl("SVMClassifier/svmcl/mrs_string/mode", "train");
 
-    for (size_t i=0; i < l.size(); ++i)
+    for (mrs_natural i=0; i < l.size(); ++i)
     {
       total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
       total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)l.labelNum(l.labelEntry(i)));
@@ -1006,7 +1006,7 @@ bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
     ofstream prout;
     prout.open(predictCollection.c_str());
 
-    for (size_t i=0; i < m.size(); ++i)//iterate over collection files
+    for (mrs_natural i=0; i < m.size(); ++i)//iterate over collection files
     {
       total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
       total->tick();
@@ -1091,7 +1091,7 @@ bextract_trainADRessStereoSPS(vector<Collection> cls, string classNames,
       Collection l = cls[cj];
 
       total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)cj);
-      for (size_t i=0; i < l.size(); ++i)
+      for (mrs_natural i=0; i < l.size(); ++i)
       {
         total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
         cout << "Processing" << l.entry(i) << endl;
@@ -1109,7 +1109,7 @@ bextract_trainADRessStereoSPS(vector<Collection> cls, string classNames,
     total->updControl("WekaSink/wsink/mrs_string/labelNames", l.getLabelNames());
     total->updControl("WekaSink/wsink/mrs_string/filename", wekafname);
 
-    for (size_t i=0; i < l.size(); ++i)
+    for (mrs_natural i=0; i < l.size(); ++i)
     {
       total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
       total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)l.labelNum(l.labelEntry(i)));
@@ -1212,7 +1212,7 @@ bextract_trainADRessStereoSPSMFCC(vector<Collection> cls, string classNames,
     {
       Collection l = cls[cj];
       total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)cj);
-      for (size_t i=0; i < l.size(); ++i)
+      for (mrs_natural i=0; i < l.size(); ++i)
       {
         total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
         cout << "Processing" << l.entry(i) << endl;
@@ -1230,7 +1230,7 @@ bextract_trainADRessStereoSPSMFCC(vector<Collection> cls, string classNames,
     total->updControl("WekaSink/wsink/mrs_string/labelNames", l.getLabelNames());
     total->updControl("WekaSink/wsink/mrs_string/filename", wekafname);
 
-    for (size_t i=0; i < l.size(); ++i)
+    for (mrs_natural i=0; i < l.size(); ++i)
     {
       total->updControl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
       total->updControl("Annotator/ann/mrs_natural/label", (mrs_natural)l.labelNum(l.labelEntry(i)));
@@ -1471,7 +1471,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
         wsink->updControl("mrs_string/filename", wekafname);
         cout << "Writing weka .arff file to :" << wekafname << endl;
       }
-      for (size_t i=0; i < l.size(); ++i)//iterate over collection files
+      for (mrs_natural i=0; i < l.size(); ++i)//iterate over collection files
       {
         // cout << beatfeatures << endl;
         total->updControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", l.entry(i));
@@ -1538,7 +1538,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
     // gcl->updControl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());
     gcl->updControl("mrs_string/mode", "train");
 
-    for (size_t i=0; i < l.size(); ++i)//iterate over collection files
+    for (mrs_natural i=0; i < l.size(); ++i)//iterate over collection files
     {
       // cout << beatfeatures << endl;
       total->updControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", l.entry(i));
@@ -1594,7 +1594,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
     ofstream prout;
     prout.open(predictCollection.c_str());
 
-    for (size_t i=0; i < m.size(); ++i)//iterate over collection files
+    for (mrs_natural i=0; i < m.size(); ++i)//iterate over collection files
     {
       // cout << beatfeatures << endl;
       total->updControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", m.entry(i));
@@ -1837,7 +1837,7 @@ bextract_train(vector<Collection> cls, Collection cl,
     featureNetwork->updControl("Confidence/confidence/mrs_bool/print",true);
 
     //iterate over audio files, extract features and label
-    for (size_t i=0; i < l.size(); ++i)
+    for (mrs_natural i=0; i < l.size(); ++i)
     {
       //reset texture analysis stats between files
       // if(memSize != 0)
@@ -2984,7 +2984,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
     featureNetwork->setctrl(memResetPtr, true);
     featureNetwork->setctrl(fluxResetPtr, true);
 
-    for (size_t i=0; i < l.size(); ++i)
+    for (mrs_natural i=0; i < l.size(); ++i)
     {
       featureNetwork->setctrl(memResetPtr, true);
       featureNetwork->setctrl(fluxResetPtr, true);
@@ -3394,7 +3394,7 @@ mirex_bextract()
     total->updControl("WekaSink/wsink/mrs_string/filename", wekafname);
   }
 
-  for (size_t i=0; i < l.size(); ++i)
+  for (mrs_natural i=0; i < l.size(); ++i)
   {
     total->updControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", l.entry(i));
     cout << "Label = " << l.labelEntry(i) << endl;
