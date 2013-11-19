@@ -7,6 +7,10 @@
 
 #include <marsyas/system/MarSystemManager.h>
 
+#ifdef MARSYAS_HAS_SCRIPT
+# include <marsyas/script/script.h>
+#endif
+
 #ifdef MARSYAS_HAS_JSON
 # include <marsyas/json_io.h>
 #endif
@@ -238,7 +242,14 @@ void Main::openSystem(const QString & filename)
 
   MarSystem *system = 0;
 
-  if (filename.endsWith(mpl_ending))
+  if (filename.endsWith(".mars"))
+  {
+#ifdef MARSYAS_HAS_SCRIPT
+    ifstream script_stream( filename.toStdString().c_str() );
+    system = system_from_script(script_stream);
+#endif
+  }
+  else if (filename.endsWith(mpl_ending))
   {
     ifstream plugin_stream( filename.toStdString().c_str() );
     system = m_system_manager.getMarSystem(plugin_stream);
