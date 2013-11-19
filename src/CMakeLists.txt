@@ -53,10 +53,12 @@ endif()
 if(WITH_CPP11)
   set(MARSYAS_REALTIME ON)
   set(MARSYAS_JSON ON)
+  set(MARSYAS_SCRIPT ON)
 else()
   message(STATUS "'Realtime' features and dependent apps disabled, because WITH_CPP11 is disabled")
   set(MARSYAS_REALTIME OFF)
   set(MARSYAS_JSON OFF)
+  set(MARSYAS_SCRIPT OFF)
 endif()
 
 ## detect packages

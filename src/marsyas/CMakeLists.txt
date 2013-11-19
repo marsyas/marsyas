@@ -63,6 +63,14 @@ if(MARSYAS_REALTIME)
   set(MARSYAS_REALTIME_SOURCES realtime/runner.cpp)
 endif()
 
+if(MARSYAS_SCRIPT)
+  list(APPEND Marsyas_SOURCES
+    script/lex.cc
+    script/parse.cc
+    script/script.cpp
+  )
+endif()
+
 if(WITH_CPP11)
   set(MARSYAS_DEBUG_SOURCES
     debug/recorder.cpp
