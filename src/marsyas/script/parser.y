@@ -4,7 +4,7 @@
 %baseclass-preinclude "syntax_tree.hpp"
 
 %stype node
-%token INT REAL STRING BOOL ID CHILD
+%token INT REAL STRING BOOL ID ARROW
 
 %%
 
@@ -56,17 +56,10 @@ actor_def:
 actor_list:
   //empty
 
-| actor_list actor_intro
+| actor_list ARROW actor
   {
-    $1.components.push_back( std::move($2) );
+    $1.components.push_back( std::move($3) );
     $$ = std::move($1);
-  }
-;
-
-actor_intro:
-  CHILD actor
-  {
-    $$ = std::move($2);
   }
 ;
 

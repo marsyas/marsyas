@@ -29,7 +29,7 @@ class Scanner: public ScannerBase
           REAL = Parser::REAL,
           STRING = Parser::STRING,
           ID = Parser::ID,
-          CHILD = Parser::CHILD
+          ARROW = Parser::ARROW
         };
 
         long int_value()

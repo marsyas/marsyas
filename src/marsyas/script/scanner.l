@@ -9,7 +9,7 @@
 ; { return ';'; }
 : { return ':'; }
 
-"->" { return CHILD; }
+"->" { return ARROW; }
 
 true|false { return BOOL; }
 
