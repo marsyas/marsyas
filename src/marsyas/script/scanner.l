@@ -17,6 +17,6 @@ true|false { return BOOL; }
 
 [0-9]+ { return INT; }
 
-[a-zA-Z_]+ { return ID; }
+[a-zA-Z_]+[a-zA-Z0-9_]* { return ID; }
 
 \"([^\"]|[[:space:]])*\" { return STRING; }
