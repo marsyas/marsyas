@@ -1,5 +1,8 @@
 if(MARSYAS_JSON)
   add_definitions(-DMARSYAS_HAS_JSON)
 endif()
+if(MARSYAS_SCRIPT)
+  add_definitions(-DMARSYAS_HAS_SCRIPT)
+endif()
 set(src runner-app.cpp)
 marsyas_app(marsyas-run ${src})

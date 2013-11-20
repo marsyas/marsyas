@@ -2,6 +2,9 @@
 #include <marsyas/system/MarSystemManager.h>
 #include <marsyas/system/MarSystem.h>
 #include <marsyas/realtime/runner.h>
+#ifdef MARSYAS_HAS_SCRIPT
+# include <marsyas/script/script.h>
+#endif
 #ifdef MARSYAS_HAS_JSON
 # include <marsyas/json_io.h>
 #endif
@@ -87,7 +90,14 @@ int run( const string system_filename, const CommandLineOptions & opt )
 
     MarSystem* system = 0;
 
-    if (string_ends_with(system_filename, ".mpl"))
+    if (string_ends_with(system_filename, ".mars"))
+    {
+#ifdef MARSYAS_HAS_SCRIPT
+      ifstream system_istream(system_filename);
+      system = system_from_script(system_istream);
+#endif
+    }
+    else if (string_ends_with(system_filename, ".mpl"))
     {
       ifstream system_istream(system_filename);
       MarSystemManager mng;
