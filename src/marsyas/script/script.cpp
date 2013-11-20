@@ -11,21 +11,16 @@ MarSystem *system_from_node(const node & n, MarSystemManager & manager)
     return 0;
 
   assert(n.components.size() == 3);
-  assert(n.components[0].tag == STRING_NODE);
-  assert(n.components[1].tag == STRING_NODE || n.components[1].tag == GENERIC_NODE);
+  assert(n.components[0].tag == STRING_NODE || n.components[0].tag == GENERIC_NODE);
+  assert(n.components[1].tag == STRING_NODE );
   assert(n.components[2].tag == GENERIC_NODE);
 
   std::string name, type;
 
-  if (n.components[1].tag == STRING_NODE)
-  {
+  if (n.components[0].tag == STRING_NODE)
     name = std::move(n.components[0].s);
-    type = std::move(n.components[1].s);
-  }
-  else
-  {
-    type = std::move(n.components[0].s);
-  }
+
+  type = std::move(n.components[1].s);
 
   MarSystem *system = manager.create(type, name);
 

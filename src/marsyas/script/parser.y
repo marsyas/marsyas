@@ -14,15 +14,11 @@ input:
 ;
 
 actor:
-  actor_id actor_type actor_def
+  actor_decl actor_def
   {
     $$.tag = ACTOR_NODE;
-    $$.components = {
-      std::move($1),
-      std::move($2),
-      std::move($3)
-    };
-#if 0
+    $$.components = { $1.components[0], $1.components[1], $2 };
+#ifdef MARSYAS_DEBUG_SCRIPT
     std::cout
     << "actor:"
     << " '" << $$.components[0].s << "'"
@@ -32,16 +28,12 @@ actor:
   }
 ;
 
-actor_id:
-  id
-  { $$ = std::move($1); }
-;
-
-actor_type:
-  // empty
-
-| ':' id
-  { $$ = std::move($2); }
+actor_decl:
+id
+{ $$.components = {node(), $1}; }
+|
+id ':' id
+{ $$.components = {$1, $3}; }
 ;
 
 actor_def:
@@ -77,7 +69,7 @@ control:
   id '=' control_value {
     $$.tag = CONTROL_NODE;
     $$.components = { std::move($1), std::move($3) };
-#if 0
+#ifdef MARSYAS_DEBUG_SCRIPT
     std::cout << "control:"
     << " '" << $$.components[0].s << "'"
     << " '" << $$.components[1].s << "'"
