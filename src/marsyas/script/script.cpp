@@ -2,6 +2,11 @@
 #include "parser.h"
 #include <marsyas/system/MarSystemManager.h>
 #include <cassert>
+#include <string>
+#include <sstream>
+
+using std::string;
+using std::stringstream;
 
 namespace Marsyas {
 
@@ -63,11 +68,21 @@ MarSystem *system_from_node(const node & n, MarSystemManager & manager)
       }
     }
 
+    int child_idx = 0;
     for( const node & child : children.components )
     {
       MarSystem *child_system = system_from_node(child, manager);
       if (child_system)
+      {
+        if (child_system->getName().empty())
+        {
+          stringstream name;
+          name << "child" << child_idx;
+          child_system->setName(name.str());
+        }
         system->addMarSystem(child_system);
+        child_idx++;
+      }
     }
   }
 
@@ -81,7 +96,10 @@ MarSystem *system_from_script(std::istream & script_stream)
   const node &tree = parser.parsed();
 
   MarSystemManager manager;
-  return system_from_node(tree, manager);
+  MarSystem *system = system_from_node(tree, manager);
+  if (system && system->getName().empty())
+    system->setName("network");
+  return system;
 }
 
 }
