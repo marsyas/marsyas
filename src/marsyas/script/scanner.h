@@ -44,7 +44,7 @@ class Scanner: public ScannerBase
 
         bool bool_value()
         {
-          static const std::string true_string("bool");
+          static const std::string true_string("true");
           return (matched() == true_string);
         }
 
