@@ -51,7 +51,7 @@ MarSystem *system_from_node(const node & n, MarSystemManager & manager)
                            control_value.v.b);
         break;
       case INT_NODE:
-        system->setControl(std::string("mrs_int/") + control_name,
+        system->setControl(std::string("mrs_natural/") + control_name,
                            (mrs_natural) control_value.v.i);
         break;
       case REAL_NODE:
