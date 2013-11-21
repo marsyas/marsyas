@@ -113,14 +113,13 @@ macro(sfplugin_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT TEST_FILE)
     NAME ${REG_NAME}-bextract
     COMMAND ${MARSYAS_SCRIPTS_DIR}/sfplugin-test-wrapper.py
       ${DIR}
-      ${COMMAND_LINE_LIBRARY_ENV}
       $<TARGET_FILE:bextract>
-      $<TARGET_FILE:sfplugin> -pm
-          ${EXTRA_BEXTRACT}
+      "$<TARGET_FILE:sfplugin> -pm"
+      "${EXTRA_BEXTRACT}"
       ${MF_INPUT}
-          ${TEST_TEMPDIR}/${REG_NAME}.mpl
-          ${TEST_INPUT}/${TEST_FILE}
-          ${TEST_OUTPUT}/${REG_NAME}.txt
+      ${TEST_TEMPDIR}/${REG_NAME}.mpl
+      ${TEST_INPUT}/${TEST_FILE}
+      ${TEST_OUTPUT}/${REG_NAME}.txt
   )
 endmacro(sfplugin_test)
 
