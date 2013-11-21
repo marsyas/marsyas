@@ -6,10 +6,8 @@
 #include <sstream>
 #include <map>
 #include <iostream>
+
 using namespace std;
-using std::string;
-using std::stringstream;
-using std::map;
 
 namespace Marsyas {
 
@@ -17,6 +15,7 @@ class script_translator
 {
   MarSystemManager & m_manager;
   std::vector< std::pair<MarSystem*, node> > m_controls;
+  MarSystem *m_root_system;
 
   MarSystem *translate_actor( const node & n )
   {
@@ -82,34 +81,7 @@ class script_translator
         const std::string & control_name = control.components[0].s;
         const node & control_value = control.components[1];
 
-        //cout << "setting: " << system->getAbsPath() << ": " << control_name << endl;
-
-        switch(control_value.tag)
-        {
-        case BOOL_NODE:
-          //cout << "bool" << control_value.v.b << endl;
-          system->setControl(std::string("mrs_bool/") + control_name,
-                             control_value.v.b);
-          break;
-        case INT_NODE:
-          //cout << "int" << endl;
-          system->setControl(std::string("mrs_natural/") + control_name,
-                             (mrs_natural) control_value.v.i);
-          break;
-        case REAL_NODE:
-          //cout << "real" << endl;
-          system->setControl(std::string("mrs_real/") + control_name,
-                             (mrs_real) control_value.v.r);
-          break;
-        case STRING_NODE:
-          //cout << "string" << endl;
-          system->setControl(std::string("mrs_string/") + control_name,
-                             control_value.s);
-          break;
-        default:
-          bool control_value_is_valid = false;
-          assert(control_value_is_valid);
-        }
+        set_control(system, control_name, control_value);
       }
 
       system->update();
@@ -118,19 +90,207 @@ class script_translator
     m_controls.clear();
   }
 
+
+
+  void set_control( MarSystem * system,
+                    const std::string & control_description,
+                    const node & control_value )
+  {
+    assert(!control_description.empty());
+
+    MarControlPtr source_control =
+        translate_control_value(system, control_value);
+
+    if (source_control.isInvalid()) {
+      MRSERR("Can not set control - invalid value or source control not found.");
+      return;
+    }
+
+    string control_name = control_description;
+    bool create = control_name[0] == '+';
+    if (create)
+      control_name = control_name.substr(1);
+
+    bool link = source_control->getMarSystem() != nullptr;
+
+    static const bool do_not_update = false;
+
+    std::string control_path = source_control->getType() + '/' + control_name;
+    MarControlPtr control = system->getControl( control_path );
+
+    if (create)
+    {
+      //cout << "Creating:" << system->getAbsPath() << control_path << endl;
+      if (!control.isInvalid())
+      {
+        MRSERR("ERROR: Can not add control - "
+               << "same control already exists: " << control_path);
+        return;
+      }
+      bool created = system->addControl(control_path, source_control, control);
+      if (!created)
+      {
+        MRSERR("ERROR: Failed to create control: " << control_path);
+        return;
+      }
+      if (link)
+      {
+        //cout << "Linking..." << endl;
+        control->linkTo(source_control, do_not_update);
+      }
+    }
+    else
+    {
+      /*
+      cout << "Setting:" << system->getAbsPath() << control_path
+           << " = " << source_control
+           << endl;
+           */
+      if (control.isInvalid())
+      {
+        MRSERR("ERROR: Can not set control - "
+               << "it does not exist: " << control_path);
+        return;
+      }
+      if (link)
+      {
+        //cout << "Linking..." << endl;
+        control->linkTo(source_control, do_not_update);
+      }
+      else
+      {
+        control->setValue( source_control );
+      }
+    }
+  }
+
+  MarControlPtr translate_control_value( MarSystem * anchor, const node & control_value )
+  {
+    switch(control_value.tag)
+    {
+    case BOOL_NODE:
+      return MarControlPtr(control_value.v.b);
+    case INT_NODE:
+      return MarControlPtr((mrs_natural) control_value.v.i);
+    case REAL_NODE:
+      return MarControlPtr((mrs_real) control_value.v.r);
+    case STRING_NODE:
+    {
+      string text = control_value.s;
+      if (!text.empty() && text[0] == '@')
+      {
+        string other_control_path = text.substr(1);
+        //cout << "Searching for control to link: " << other_control_path << endl;
+        return find_remote_control(anchor, other_control_path);
+      }
+      else
+        return MarControlPtr(text);
+    }
+    default:
+      bool control_value_is_valid = false;
+      assert(control_value_is_valid);
+    }
+    return MarControlPtr();
+  }
+
+  MarControlPtr find_remote_control( MarSystem *anchor, const string & path )
+  {
+    if (path.empty())
+      return MarControlPtr();
+
+    vector<string> path_elements;
+    string control_name;
+    bool absolute;
+    split_control_path(path, path_elements, control_name, absolute);
+
+    if (control_name.empty())
+      return MarControlPtr();
+
+    MarSystem *parent = absolute ? m_root_system : anchor;
+    MarSystem *control_owner = find_child(parent, path_elements);
+    if (!control_owner)
+        return MarControlPtr();
+
+    return find_control(control_owner, control_name);
+  }
+
+  MarControlPtr find_control(MarSystem *owner, const string & control_name)
+  {
+    const map<string, MarControlPtr>& controls = owner->getLocalControls();
+    map<string, MarControlPtr>::const_iterator control_itr;
+    for(const auto & control_mapping : controls)
+    {
+      const MarControlPtr & control = control_mapping.second;
+      string name = control->getName();
+      name = name.substr( name.find('/') + 1 );
+
+      if (name == control_name)
+        return control;
+    }
+    return MarControlPtr();
+  }
+
+  MarSystem * find_child(MarSystem *parent,
+                         const vector<string> & path_elements )
+  {
+    MarSystem *system = parent;
+    bool found = false;
+    for(const auto & path_element : path_elements)
+    {
+      found = false;
+      vector<MarSystem*> children = system->getChildren();
+      for(MarSystem *child : children)
+      {
+        if (child->getName() == path_element)
+        {
+          found = true;
+          system = child;
+        }
+        break;
+      }
+      if (!found)
+        return 0;
+    }
+    return system;
+  }
+
+  void split_control_path(const string & path,
+                          vector<string> & components,
+                          string & last_component,
+                          bool & is_absolute)
+  {
+    is_absolute = !path.empty() && path[0] == '/';
+    string::size_type pos = is_absolute ? 1 : 0;
+
+    while(pos < path.length())
+    {
+      string::size_type separator_pos = path.find('/', pos);
+
+      if (separator_pos == string::npos)
+        break;
+      else
+        components.push_back( path.substr(pos, separator_pos - pos) );
+
+      pos = separator_pos + 1;
+    }
+
+    last_component = path.substr(pos, path.size() - pos);
+  }
+
 public:
 
   script_translator( MarSystemManager & manager ):
-    m_manager(manager)
+    m_manager(manager),
+    m_root_system(0)
   {}
 
   MarSystem *translate( const node & syntax_tree )
   {
-    MarSystem *system = translate_actor(syntax_tree);
+    m_root_system = translate_actor(syntax_tree);
 
-    if (system) apply_controls();
+    if (m_root_system) apply_controls();
 
-    return system;
+    return m_root_system;
   }
 };
 

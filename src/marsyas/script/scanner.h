@@ -29,6 +29,7 @@ class Scanner: public ScannerBase
           REAL = Parser::REAL,
           STRING = Parser::STRING,
           ID = Parser::ID,
+          PATH = Parser::PATH,
           ARROW = Parser::ARROW
         };
 

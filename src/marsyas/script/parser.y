@@ -4,7 +4,7 @@
 %baseclass-preinclude "syntax_tree.hpp"
 
 %stype node
-%token INT REAL STRING BOOL ID ARROW
+%token INT REAL STRING BOOL ID PATH ARROW
 
 %%
 
@@ -66,7 +66,7 @@ control_list:
 ;
 
 control:
-  id '=' control_value {
+  control_name '=' control_value {
     $$.tag = CONTROL_NODE;
     $$.components = { std::move($1), std::move($3) };
 #ifdef MARSYAS_DEBUG_SCRIPT
@@ -78,8 +78,16 @@ control:
   }
 ;
 
+control_name:
+id
+|
+'+' id
+{ $$ = std::string("+") + $2.s; }
+;
+
+
 control_value:
-  bool | int | real | string
+  bool | int | real | string | path
 ;
 
 bool:
@@ -100,4 +108,8 @@ string:
 
 id:
   ID { $$ = d_scanner.matched(); }
+;
+
+path:
+  PATH { $$ = d_scanner.matched(); }
 ;
