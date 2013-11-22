@@ -98,7 +98,11 @@ endif (MARSYAS_WIN32 OR MARSYAS_MINGW OR MARSYAS_CYGWIN)
 
 
 ## OPTIONAL CODE
+option(MARSYAS_REGENERATE_SCRIPT_PARSER
+"Regenerate code for Marsyas scripting language parsing whenever grammar rules are changed." OFF)
+
 option(WITH_ANN "Build the ANN (Approximate Nearest Neighbours) library" OFF)
+
 option(MARSYAS_BUILD_APPS "Build the applications" ON)
 mark_as_advanced (MARSYAS_BUILD_APPS)
 

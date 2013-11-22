@@ -64,6 +64,24 @@ if(MARSYAS_REALTIME)
 endif()
 
 if(MARSYAS_SCRIPT)
+  if(MARSYAS_REGENERATE_SCRIPT_PARSER)
+    add_custom_command(
+      OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/script/lex.cc"
+      COMMAND flexc++ ARGS scanner.l
+      DEPENDS script/scanner.l
+      WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/script"
+      COMMENT "Generating Marsyas script lexer"
+    )
+
+    add_custom_command(
+      OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/script/parse.cc"
+      COMMAND bisonc++ ARGS parser.y
+      DEPENDS script/parser.y
+      WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/script"
+      COMMENT "Generating Marsyas script parser"
+    )
+  endif()
+
   list(APPEND Marsyas_SOURCES
     script/lex.cc
     script/parse.cc
