@@ -180,7 +180,7 @@ FileName::getLastSlashPos ()
   else
     return min(last_slash_pos, last_backslash_pos);
 #else
-  return = filename_.rfind('/');
+  return filename_.rfind('/');
 #endif
 }
 
