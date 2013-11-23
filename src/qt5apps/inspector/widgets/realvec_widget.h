@@ -111,14 +111,14 @@ public:
 
   int row() const { return m_row; }
 
-  virtual size_t 	size () const
+  virtual size_t size () const
   {
-    return m_data->getCols();
+    return (size_t) m_data->getCols();
   }
 
   virtual QPointF sample (size_t i) const
   {
-    return QPointF(i, (*m_data)(m_row,i));
+    return QPointF(i, (*m_data)(m_row, (Marsyas::mrs_natural)i));
   }
 
   virtual QRectF boundingRect () const
