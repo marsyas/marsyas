@@ -20,10 +20,18 @@ separate_arguments(REG_ARGS)
 #add_custom_command( OUTPUT ${REG_NAME}.au
 #	COMMAND "${REG_COMMAND} ${REG_INPUT}"
 #)
-add_test( ${REG_NAME}-creation ${EXECUTABLE_OUTPUT_PATH}/${REG_COMMAND}
-	${REG_ARGS} ${TEST_INPUT}/${REG_INPUT} )
-add_test( ${REG_NAME}-verification ${EXECUTABLE_OUTPUT_PATH}/audioCompare
-	${TEST_OUTPUT}/${REG_OUTPUT} ${REG_OUTPUT} )
+add_test(
+  NAME ${REG_NAME}-creation
+  COMMAND $<TARGET_FILE:${REG_COMMAND}>
+    ${REG_ARGS}
+    "${TEST_INPUT}/${REG_INPUT}"
+)
+add_test(
+  NAME ${REG_NAME}-verification
+  COMMAND $<TARGET_FILE:audioCompare>
+    "${TEST_OUTPUT}/${REG_OUTPUT}"
+    "${REG_OUTPUT}"
+)
 endmacro(black_box_audio)
 
 
