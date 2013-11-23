@@ -27,9 +27,12 @@
 #include <marsyas/FileName.h>
 
 #include <algorithm>
+#include <string>
 
 using std::ostringstream;
 using std::max;
+using std::min;
+using std::string;
 
 using namespace Marsyas;
 
@@ -72,9 +75,9 @@ FileName::name()
   size_t loc = getLastSlashPos ();
 
   if (loc != mrs_string::npos)
-    name = filename_.substr(loc+1, filename_.length()-1);
+    name = filename_.substr(loc+1);
   else
-    name = filename_;			// file in current directory
+    name = filename_; // file in current directory
 
   return name;
 
@@ -84,32 +87,28 @@ mrs_string
 FileName::nameNoExt()
 {
   mrs_string str = name();
-  size_t loc;
-
-  loc = str.rfind(".", str.length()-1);
-  return str.substr(0,loc);
+  size_t dot_position = str.rfind('.');
+  return str.substr(0, dot_position);
 }
 
 mrs_string
 FileName::ext()
 {
   size_t loc;
-  loc = filename_.rfind(".", filename_.length()-1);
-  return filename_.substr(loc+1, filename_.length()-1);
+  loc = filename_.rfind('.');
+  return filename_.substr(loc+1);
 }
 
 mrs_string
 FileName::path()
 {
-
   mrs_string name;
-  size_t loc = getLastSlashPos ();
+  size_t last_slash_pos = getLastSlashPos ();
 
-
-  if (loc != mrs_string::npos)
-    name = filename_.substr(0, loc+1);
+  if (last_slash_pos != mrs_string::npos)
+    name = filename_.substr(0, last_slash_pos+1);
   else
-    name = "";			// file in current directory no path
+    name = ""; // file in current directory no path
 
   return name;
 
@@ -173,26 +172,24 @@ FileName::getFilesInDir (mrs_string wildcard)
 size_t
 FileName::getLastSlashPos ()
 {
-  size_t loc;
-
 #ifdef MARSYAS_WIN32
-  size_t loc2  = filename_.rfind("/", filename_.length()-1);  // you can use the slash in windows, too
-  loc = filename_.rfind("\\", filename_.length()-1);
-  if (loc2 != mrs_string::npos)
-    loc = max (loc, loc2);
+  string::size_type last_slash_pos  = filename_.rfind('/');  // you can use the slash in windows, too
+  string::size_type last_backslash_pos = filename_.rfind('\\');
+  if (last_slash_pos != mrs_string::npos && last_backslash_pos != mrs_string::npos)
+    return max(last_slash_pos, last_backslash_pos);
+  else
+    return min(last_slash_pos, last_backslash_pos);
 #else
-  loc = filename_.rfind("/", filename_.length()-1);
+  return = filename_.rfind('/');
 #endif
-  return loc;
 }
 
 void
 FileName::removeLastSlash ()
 {
-  size_t loc	= getLastSlashPos ();
-
-  if (loc == filename_.length()-1)
-    filename_	= filename_.substr(0, loc);
+  size_t last_slash_pos = getLastSlashPos ();
+  if (last_slash_pos == filename_.length()-1)
+    filename_ = filename_.substr(0, last_slash_pos);
 }
 
 
