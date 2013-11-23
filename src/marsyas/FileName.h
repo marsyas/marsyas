@@ -54,6 +54,7 @@ public:
   std::string nameNoExt(); // returns just the file (no path, no ext)
   std::string path();	// returns the filename path
   std::string ext();				// returns the filename extension
+  bool isAbsolute();
   mrs_bool    isDir (); // true if it is a directory, not a file
   std::vector<mrs_string> getFilesInDir (mrs_string wildcard); //get a list of files in the directory
 };

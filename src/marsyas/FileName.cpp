@@ -192,4 +192,15 @@ FileName::removeLastSlash ()
     filename_ = filename_.substr(0, last_slash_pos);
 }
 
-
+bool FileName::isAbsolute()
+{
+  if (filename_.empty())
+    return false;
+  // Try UNIX style:
+  if (filename_[0] == '/')
+    return true;
+  // Try Windows style:
+  if (filename_.find(':') != string::npos)
+    return true;
+  return false;
+}
