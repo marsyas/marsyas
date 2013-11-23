@@ -4,6 +4,8 @@ set(TEST_OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/output)
 set(TEST_TEMPDIR ${CMAKE_CURRENT_BINARY_DIR})
 set(MARSYAS_SCRIPTS_DIR ${CMAKE_SOURCE_DIR}/scripts/)
 
+find_package(PythonInterp REQUIRED)
+
 if (MARSYAS_MACOSX)
   set(COMMAND_LINE_LIBRARY_ENV DYLD_LIBRARY_PATH=${PROJECT_BINARY_DIR}/lib )
 else (MARSYAS_MACOSX)
@@ -47,7 +49,7 @@ black_box_audio (peakClustering nearhou.wav nearhouSep.wav
 macro(bextract_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
   add_test(
     NAME ${REG_NAME}-bextract
-    COMMAND
+    COMMAND "${PythonInterp_EXECUTABLE}"
       ${MARSYAS_SCRIPTS_DIR}/cmake-test-wrapper.py
       ${DIR}
       ${COMMAND_LINE_LIBRARY_ENV}
@@ -64,7 +66,7 @@ macro(bextract_kea_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
   # we don't need the TEST_TEMPDIR for the kea commands
   add_test(
     NAME ${REG_NAME}-classify-gs
-    COMMAND
+    COMMAND "${PythonInterp_EXECUTABLE}"
       ${MARSYAS_SCRIPTS_DIR}/kea-wrapper.py
       $<TARGET_FILE:kea>
       -w ${TEST_TEMPDIR}/${REG_NAME}.arff -cl GS
@@ -73,7 +75,7 @@ macro(bextract_kea_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
   )
   add_test(
     NAME ${REG_NAME}-classify-svm
-    COMMAND
+    COMMAND "${PythonInterp_EXECUTABLE}"
       ${MARSYAS_SCRIPTS_DIR}/kea-wrapper.py
       $<TARGET_FILE:kea>
       -w ${TEST_TEMPDIR}/${REG_NAME}.arff -cl SVM
@@ -85,7 +87,8 @@ endmacro(bextract_kea_test)
 macro(tempo_test REG_NAME DIR MF_INPUT)
   add_test(
     NAME ${REG_NAME}-tempo
-    COMMAND ${MARSYAS_SCRIPTS_DIR}/tempo-wrapper.py
+    COMMAND "${PythonInterp_EXECUTABLE}"
+      ${MARSYAS_SCRIPTS_DIR}/tempo-wrapper.py
       $<TARGET_FILE:tempo>
       ${DIR}/${MF_INPUT}
       ${TEST_TEMPDIR}/${REG_NAME}-tempo.txt
@@ -96,7 +99,8 @@ endmacro(tempo_test)
 macro(timeline_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
   add_test(
     NAME ${REG_NAME}-bextract
-    COMMAND ${MARSYAS_SCRIPTS_DIR}/timeline-test-wrapper.py
+    COMMAND "${PythonInterp_EXECUTABLE}"
+      ${MARSYAS_SCRIPTS_DIR}/timeline-test-wrapper.py
       ${DIR}
       ${COMMAND_LINE_LIBRARY_ENV}
       $<TARGET_FILE:bextract> -fe
@@ -111,7 +115,8 @@ endmacro(timeline_test)
 macro(sfplugin_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT TEST_FILE)
   add_test(
     NAME ${REG_NAME}-bextract
-    COMMAND ${MARSYAS_SCRIPTS_DIR}/sfplugin-test-wrapper.py
+    COMMAND "${PythonInterp_EXECUTABLE}"
+      ${MARSYAS_SCRIPTS_DIR}/sfplugin-test-wrapper.py
       ${DIR}
       $<TARGET_FILE:bextract>
       "$<TARGET_FILE:sfplugin> -pm"
