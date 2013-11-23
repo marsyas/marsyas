@@ -8,6 +8,11 @@
 // $insert scanner.h
 #include "scanner.h"
 
+// Include header to support the 'not' operator used in parse.cc
+#ifdef _WIN32
+# include <iso646.h>
+#endif
+
 // $insert namespace-open
 namespace Marsyas
 {
