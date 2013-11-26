@@ -527,10 +527,10 @@ void GLWidget::redrawScene() {
   //   float min_y = 3.7;
   //   float max_y = 28.3;
 
-  float min_x = -24.6;
-  float max_x = 24.6;
-  float min_y = 7.1;
-  float max_y = 31.6;
+  float min_x = -24.6f;
+  float max_x = 24.6f;
+  float min_y = 7.1f;
+  float max_y = 31.6f;
 
   float max_z = z_start;
 
