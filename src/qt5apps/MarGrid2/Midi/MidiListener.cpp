@@ -16,7 +16,7 @@ unsigned char MidiListener::_yValue = 0;
  * ----------------------------------------------------------------------------------
  */
 void MidiListener::kaossCallback(double stamp, std::vector<unsigned char> *message, void* midi) {
-  unsigned int bytes = message->size();
+  size_t bytes = message->size();
 
   if ( 3 == bytes ) {
     unsigned char byte0 = message->at(0);

@@ -631,7 +631,7 @@ void Grid::predict() {
   cout << l1.size() <<endl;
 
   QString tempString;
-  for (unsigned int index = 0; index < l1.size(); index++)
+  for (int index = 0; index < l1.size(); index++)
   {
     if(cancel_)
     {
@@ -781,7 +781,7 @@ Grid::openPredictionGrid(QString fname)
   int x_size = 0;
   int y_size = 0;
   int index = 0;
-  int splitIndex = 0;
+  size_t splitIndex = 0;
   QString qFname = "";
   string intBufferStr = "";
   string line = "";
