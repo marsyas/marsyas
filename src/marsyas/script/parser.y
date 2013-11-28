@@ -10,28 +10,35 @@
 
 input:
   //empty
-| actor { d_result = std::move($1); }
+| actor_instance { d_result = $1; }
 ;
 
-actor:
-  actor_decl actor_def
-  {
-    $$.tag = ACTOR_NODE;
-    $$.components = { $1.components[0], $1.components[1], $2 };
-#ifdef MARSYAS_DEBUG_SCRIPT
-    std::cout
-    << "actor:"
-    << " '" << $$.components[0].s << "'"
-    << " '" << $$.components[1].s << "'"
-    << std::endl;
-#endif
-  }
+actor_instance:
+actor_instance_decl actor_def
+{
+  $$.tag = ACTOR_NODE;
+  $$.components = { $1.components[0], $1.components[1], $2 };
+}
 ;
 
-actor_decl:
+actor_prototype:
+actor_prototype_decl actor_def
+{
+  $$.tag = PROTOTYPE_NODE;
+  $$.components = { $1.components[0], $1.components[1], $2 };
+}
+;
+
+actor_instance_decl:
 id
 { $$.components = {node(), $1}; }
 |
+id ':' id
+{ $$.components = {$1, $3}; }
+;
+
+
+actor_prototype_decl:
 id ':' id
 { $$.components = {$1, $3}; }
 ;
@@ -48,11 +55,17 @@ actor_def:
 actor_list:
   //empty
 
-| actor_list ARROW actor
-  {
-    $1.components.push_back( std::move($3) );
-    $$ = std::move($1);
-  }
+| actor_list ARROW actor_instance
+{
+  $1.components.push_back($3);
+  $$ = $1;
+}
+
+| actor_list '~' actor_prototype
+{
+  $1.components.push_back($3);
+  $$ = $1;
+}
 ;
 
 control_list:

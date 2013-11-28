@@ -9,6 +9,7 @@ enum node_tag
 {
   GENERIC_NODE,
   ACTOR_NODE,
+  PROTOTYPE_NODE,
   CONTROL_NODE,
 
   BOOL_NODE,

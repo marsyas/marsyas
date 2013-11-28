@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <map>
+#include <stack>
 #include <iostream>
 
 using namespace std;
@@ -13,13 +14,14 @@ namespace Marsyas {
 
 class script_translator
 {
+  typedef std::vector< std::pair<MarSystem*, node> > control_map_t;
   MarSystemManager & m_manager;
-  std::vector< std::pair<MarSystem*, node> > m_controls;
+  std::stack<control_map_t> m_controls;
   MarSystem *m_root_system;
 
   MarSystem *translate_actor( const node & n )
   {
-    if (n.tag != ACTOR_NODE)
+    if (n.tag != ACTOR_NODE && n.tag != PROTOTYPE_NODE)
       return 0;
 
     assert(n.components.size() == 3);
@@ -34,7 +36,19 @@ class script_translator
 
     type = std::move(n.components[1].s);
 
+    if (n.tag == PROTOTYPE_NODE && name.empty())
+    {
+      MRSERR("Prototype must be given a name!");
+      return 0;
+    }
+
     MarSystem *system = m_manager.create(type, name);
+
+    if (n.tag == PROTOTYPE_NODE)
+      m_controls.emplace();
+
+    assert(m_controls.size());
+    control_map_t & control_map = m_controls.top();
 
     const node & system_def = n.components[2];
     if(system_def.components.size() == 2)
@@ -42,7 +56,7 @@ class script_translator
       const node & controls = system_def.components[0];
       const node & children = system_def.components[1];
 
-      m_controls.push_back( std::make_pair(system, controls) );
+      control_map.emplace_back(system, controls);
 
       int child_idx = 0;
       for( const node & child : children.components )
@@ -62,12 +76,21 @@ class script_translator
       }
     }
 
+    if (n.tag == PROTOTYPE_NODE)
+    {
+      assert(!name.empty());
+      apply_controls(control_map);
+      m_controls.pop();
+      m_manager.registerPrototype(name, system);
+      return 0;
+    }
+
     return system;
   }
 
-  void apply_controls()
+  void apply_controls( const control_map_t & controls )
   {
-    for( const auto & mapping : m_controls )
+    for( const auto & mapping : controls )
     {
       MarSystem * system = mapping.first;
       const node & controls = mapping.second;
@@ -86,8 +109,6 @@ class script_translator
 
       system->update();
     }
-
-    m_controls.clear();
   }
 
 
@@ -286,9 +307,14 @@ public:
 
   MarSystem *translate( const node & syntax_tree )
   {
+    m_controls.emplace();
+
     m_root_system = translate_actor(syntax_tree);
 
-    if (m_root_system) apply_controls();
+    assert(m_controls.size());
+
+    if (m_root_system)
+      apply_controls( m_controls.top() );
 
     return m_root_system;
   }

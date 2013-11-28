@@ -9,6 +9,7 @@
 ; { return ';'; }
 : { return ':'; }
 \+ { return '+'; }
+~ { return '~'; }
 
 "->" { return ARROW; }
 
