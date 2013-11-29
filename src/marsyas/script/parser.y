@@ -16,6 +16,7 @@ input:
 actor_instance:
 actor_instance_decl actor_def
 {
+  $$ = node();
   $$.tag = ACTOR_NODE;
   $$.components = { $1.components[0], $1.components[1], $2 };
 }
@@ -24,6 +25,7 @@ actor_instance_decl actor_def
 actor_prototype:
 actor_prototype_decl actor_def
 {
+  $$ = node();
   $$.tag = PROTOTYPE_NODE;
   $$.components = { $1.components[0], $1.components[1], $2 };
 }
@@ -31,16 +33,16 @@ actor_prototype_decl actor_def
 
 actor_instance_decl:
 id
-{ $$.components = {node(), $1}; }
+{ $$ = node(); $$.components = {node(), $1}; }
 |
 id ':' id
-{ $$.components = {$1, $3}; }
+{ $$ = node(); $$.components = {$1, $3}; }
 ;
 
 
 actor_prototype_decl:
 id ':' id
-{ $$.components = {$1, $3}; }
+{ $$ = node(); $$.components = {$1, $3}; }
 ;
 
 actor_def:
@@ -48,6 +50,7 @@ actor_def:
 
 | '{' control_list actor_list '}'
   {
+    $$ = node();
     $$.components = { std::move($2), std::move($3) };
   }
 ;
@@ -80,6 +83,7 @@ control_list:
 
 control:
   control_name '=' control_value {
+    $$ = node();
     $$.tag = CONTROL_NODE;
     $$.components = { std::move($1), std::move($3) };
 #ifdef MARSYAS_DEBUG_SCRIPT
@@ -100,7 +104,7 @@ id
 
 
 control_value:
-  bool | int | real | string | path
+  bool | int | real | string | path | matrix
 ;
 
 bool:
@@ -125,4 +129,45 @@ id:
 
 path:
   PATH { $$ = d_scanner.matched(); }
+;
+
+matrix:
+'[' matrix_contents ']'
+{
+  $$ = $2;
+  $$.tag = MATRIX_NODE;
+}
+;
+
+matrix_contents:
+  //empty
+
+| matrix_row
+{
+  $$ = node();
+  $$.components.push_back($1);
+}
+
+| matrix_contents ';' matrix_row
+{
+  $$ = $1;
+  $$.components.push_back($3);
+}
+;
+
+matrix_row:
+  matrix_value
+{
+  $$ = node();
+  $$.components.push_back($1);
+}
+
+| matrix_row ',' matrix_value
+{
+  $$ = $1;
+  $$.components.push_back($3);
+}
+;
+
+matrix_value: real | int
 ;

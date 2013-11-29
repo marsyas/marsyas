@@ -123,7 +123,9 @@ class script_translator
         translate_control_value(system, control_value);
 
     if (source_control.isInvalid()) {
-      MRSERR("Can not set control - invalid value or source control not found.");
+      MRSERR("Can not set control - invalid value or link source not found:"
+             << endl
+             << system->getAbsPath() << control_description << endl );
       return;
     }
 
@@ -206,6 +208,36 @@ class script_translator
       }
       else
         return MarControlPtr(text);
+    }
+    case MATRIX_NODE:
+    {
+      mrs_natural row_count = 0, column_count = 0;
+      row_count = (mrs_natural) control_value.components.size();
+      for( const auto & row : control_value.components )
+      {
+        mrs_natural row_column_count = (mrs_natural) row.components.size();
+        column_count = std::max(column_count, row_column_count);
+      }
+      realvec matrix(row_count, column_count);
+      for(mrs_natural r = 0; r < row_count; ++r)
+      {
+        const auto & row = control_value.components[r];
+        mrs_natural row_column_count = (mrs_natural) row.components.size();
+        for(mrs_natural c = 0; c < row_column_count; ++c)
+        {
+          static const bool invalid_matrix_value = false;
+          switch(row.components[c].tag)
+          {
+          case REAL_NODE:
+            matrix(r, c) = row.components[c].v.r; break;
+          case INT_NODE:
+            matrix(r, c) = (mrs_real) row.components[c].v.i; break;
+          default:
+            assert(invalid_matrix_value);
+          }
+        }
+      }
+      return MarControlPtr(matrix);
     }
     default:
       bool control_value_is_valid = false;

@@ -15,7 +15,8 @@ enum node_tag
   BOOL_NODE,
   INT_NODE,
   REAL_NODE,
-  STRING_NODE
+  STRING_NODE,
+  MATRIX_NODE
 };
 
 // This class always treats copying as moving, due to operational semantics
