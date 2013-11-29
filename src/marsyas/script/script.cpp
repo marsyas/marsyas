@@ -149,13 +149,13 @@ class script_translator
       if (!control.isInvalid())
       {
         MRSERR("ERROR: Can not add control - "
-               << "same control already exists: " << control_path);
+               << "same control already exists: " << system->getAbsPath() << control_path);
         return;
       }
       bool created = system->addControl(control_path, source_control, control);
       if (!created)
       {
-        MRSERR("ERROR: Failed to create control: " << control_path);
+        MRSERR("ERROR: Failed to create control: " << system->getAbsPath() << control_path);
         return;
       }
       if (link)
@@ -174,7 +174,7 @@ class script_translator
       if (control.isInvalid())
       {
         MRSERR("ERROR: Can not set control - "
-               << "it does not exist: " << control_path);
+               << "it does not exist: " << system->getAbsPath() << control_path);
         return;
       }
       if (link)
