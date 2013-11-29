@@ -18,9 +18,9 @@
 
 true|false { return BOOL; }
 
-[0-9]+\.[0-9]* { return REAL; }
+(\+|\-)?[0-9]+\.[0-9]* { return REAL; }
 
-[0-9]+ { return INT; }
+(\+|\-)?[0-9]+ { return INT; }
 
 \"([^\"]|[[:space:]])*\" { return STRING; }
 
