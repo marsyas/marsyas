@@ -79,9 +79,11 @@ class script_translator
     if (n.tag == PROTOTYPE_NODE)
     {
       assert(!name.empty());
+      m_root_system = system;
       apply_controls(control_map);
       m_controls.pop();
       m_manager.registerPrototype(name, system);
+      m_root_system = 0;
       return 0;
     }
 
