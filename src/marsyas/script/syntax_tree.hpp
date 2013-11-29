@@ -11,6 +11,7 @@ enum node_tag
   ACTOR_NODE,
   PROTOTYPE_NODE,
   CONTROL_NODE,
+  ID_NODE,
 
   BOOL_NODE,
   INT_NODE,

@@ -25,13 +25,13 @@ class script_translator
       return 0;
 
     assert(n.components.size() == 3);
-    assert(n.components[0].tag == STRING_NODE || n.components[0].tag == GENERIC_NODE);
-    assert(n.components[1].tag == STRING_NODE );
+    assert(n.components[0].tag == ID_NODE || n.components[0].tag == GENERIC_NODE);
+    assert(n.components[1].tag == ID_NODE );
     assert(n.components[2].tag == GENERIC_NODE);
 
     std::string name, type;
 
-    if (n.components[0].tag == STRING_NODE)
+    if (n.components[0].tag == ID_NODE)
       name = std::move(n.components[0].s);
 
     type = std::move(n.components[1].s);
@@ -101,7 +101,7 @@ class script_translator
       {
         assert(control.tag == CONTROL_NODE);
         assert(control.components.size() == 2);
-        assert(control.components[0].tag == STRING_NODE);
+        assert(control.components[0].tag == ID_NODE);
 
         const std::string & control_name = control.components[0].s;
         const node & control_value = control.components[1];
@@ -201,15 +201,7 @@ class script_translator
       return MarControlPtr((mrs_real) control_value.v.r);
     case STRING_NODE:
     {
-      string text = control_value.s;
-      if (!text.empty() && text[0] == '@')
-      {
-        string other_control_path = text.substr(1);
-        //cout << "Searching for control to link: " << other_control_path << endl;
-        return find_remote_control(anchor, other_control_path);
-      }
-      else
-        return MarControlPtr(text);
+      return MarControlPtr(control_value.s);
     }
     case MATRIX_NODE:
     {
@@ -240,6 +232,13 @@ class script_translator
         }
       }
       return MarControlPtr(matrix);
+    }
+    case ID_NODE:
+    {
+      string link_path = control_value.s;
+      assert(!link_path.empty());
+      //cout << "Searching for control to link: " << link_path << endl;
+      return find_remote_control(anchor, link_path);
     }
     default:
       bool control_value_is_valid = false;

@@ -96,10 +96,10 @@ control:
 ;
 
 control_name:
-id
+path
 |
 '+' id
-{ $$ = std::string("+") + $2.s; }
+{ $$ = std::string("+") + $2.s; $$.tag = ID_NODE; }
 ;
 
 
@@ -124,11 +124,12 @@ string:
 ;
 
 id:
-  ID { $$ = d_scanner.matched(); }
+  ID { $$ = d_scanner.matched(); $$.tag = ID_NODE; }
 ;
 
 path:
-  PATH { $$ = d_scanner.matched(); }
+  id
+| PATH { $$ = d_scanner.matched(); $$.tag = ID_NODE; }
 ;
 
 matrix:

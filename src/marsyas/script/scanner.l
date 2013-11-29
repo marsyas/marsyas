@@ -22,8 +22,8 @@ true|false { return BOOL; }
 
 [0-9]+ { return INT; }
 
-[a-zA-Z_]+[a-zA-Z0-9_]* { return ID; }
-
-@\/?[[:alpha:][:digit:]_]+(\/[[:alpha:][:digit:]_]+)* { return PATH; }
-
 \"([^\"]|[[:space:]])*\" { return STRING; }
+
+[[:alpha:]_]+[[:alpha:][:digit:]_]* { return ID; }
+
+\/?[[:alpha:][:digit:]_]+(\/[[:alpha:][:digit:]_]+)* { return PATH; }
