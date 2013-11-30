@@ -278,6 +278,12 @@ MarSystem::~MarSystem()
   {
     delete marsystems_[i];
   }
+
+  child_count_t attached_count = attached_marsystems_.size();
+  for (child_count_t i=0; i < attached_count; ++i)
+  {
+    delete attached_marsystems_[i];
+  }
 }
 
 void
@@ -1999,6 +2005,28 @@ void MarSystem::removeObserver( MarSystemObserver * observer )
 
   if (it != observers_.end())
     observers_.erase(it);
+}
+
+void MarSystem::attachMarSystem( MarSystem * system )
+{
+  if (find(attached_marsystems_.begin(), attached_marsystems_.end(), system)
+      != attached_marsystems_.end())
+    return;
+
+  if (system->getParent())
+  {
+    MRSERR("MarSystem: can not attach a MarSystem with parent.");
+    return;
+  }
+
+  attached_marsystems_.push_back(system);
+}
+
+void MarSystem::detachMarSystem( MarSystem * system )
+{
+  auto iter = std::find(attached_marsystems_.begin(), attached_marsystems_.end(), system);
+  if (iter != attached_marsystems_.end())
+    attached_marsystems_.erase(iter);
 }
 
 namespace Marsyas {

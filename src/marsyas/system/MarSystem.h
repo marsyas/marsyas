@@ -129,6 +129,7 @@ protected:
 
   // children
   std::vector<MarSystem*> marsystems_;
+  std::vector<MarSystem*> attached_marsystems_;
 
   // Controls
   mutable std::map<std::string, MarControlPtr> controls_;
@@ -438,6 +439,13 @@ public:
   void addObserver( MarSystemObserver * observer );
   void removeObserver( MarSystemObserver * observer );
   bool hasObserver( MarSystemObserver * observer ) const;
+
+  //////////////////////////////////////////////////////////////////////////
+  // Attaching
+  //////////////////////////////////////////////////////////////////////////
+
+  void attachMarSystem( MarSystem * system );
+  void detachMarSystem( MarSystem * system );
 
   //////////////////////////////////////////////////////////////////////////
 

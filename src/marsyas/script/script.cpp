@@ -140,7 +140,7 @@ class script_translator
         processor->setOperation(op);
         source_control = find_control(processor, "result");
 
-        // TODO: where to attach processor MarSystem to?
+        system->attachMarSystem(processor);
     }
     else
     {
