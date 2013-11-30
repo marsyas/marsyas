@@ -18,6 +18,10 @@ ScriptOperationProcessor::ScriptOperationProcessor( const ScriptOperationProcess
   initControls();
 }
 
+ScriptOperationProcessor::~ScriptOperationProcessor()
+{
+  delete m_operation;
+}
 
 MarSystem *ScriptOperationProcessor::clone() const
 {
@@ -30,7 +34,12 @@ void ScriptOperationProcessor::initControls()
 
 void ScriptOperationProcessor::setOperation( operation * opn )
 {
+  clearOperation();
+
   m_operation = opn;
+
+  if (!m_operation)
+    return;
 
   prepareOperation(m_operation);
 
@@ -98,6 +107,8 @@ void ScriptOperationProcessor::prepareOperation( operation *opn )
       dst_control->setState(true);
 
       opn->value = dst_control;
+
+      m_dependencies.push_back(dst_name);
     }
   }
 }
@@ -129,6 +140,23 @@ MarControlPtr ScriptOperationProcessor::evaluateOperation( operation *opn )
   }
 
   return opn->value;
+}
+
+void ScriptOperationProcessor::clearOperation()
+{
+  delete m_operation;
+  m_operation = nullptr;
+
+  for (string & name : m_dependencies)
+  {
+    controls_.erase(name);
+  }
+
+  if (!m_result.isInvalid())
+  {
+    controls_.erase( m_result->getName() );
+    m_result = MarControlPtr();
+  }
 }
 
 } // namespace Marsyas

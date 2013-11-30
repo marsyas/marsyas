@@ -32,6 +32,7 @@ public:
 
   ScriptOperationProcessor(const std::string & name);
   ScriptOperationProcessor( const ScriptOperationProcessor & other );
+  virtual ~ScriptOperationProcessor();
 
   MarSystem *clone() const;
   void setOperation( operation * );
@@ -42,9 +43,11 @@ private:
   void initControls();
   void prepareOperation( operation * );
   MarControlPtr evaluateOperation( operation * );
+  void clearOperation();
 
   operation * m_operation;
   MarControlPtr m_result;
+  std::vector<std::string> m_dependencies;
 };
 
 } // namespace Marsyas
