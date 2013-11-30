@@ -153,35 +153,48 @@ class script_translator
     //cout << "Translating state..." << endl;
 
     assert(state_node.tag == STATE_NODE);
-    assert(state_node.components.size() == 2);
+    assert(state_node.components.size() == 3);
 
-    ScriptStateProcessor *state_processor = new ScriptStateProcessor("state_processor");
+    const node & condition_node = state_node.components[0];
+    const node & when_node = state_node.components[1];
+    const node & else_node = state_node.components[2];
 
-    const node & when_node = state_node.components[0];
-    // const node & else_node = state_node.components[1];
-    // FIXME: handle the "else" part?
-
-    // // Translate state condition
-
-    std::vector<node>::const_iterator it = when_node.components.begin();
-    assert(it != when_node.components.end());
-
-    const node & condition_node = *it;
+    if (when_node.components.empty() && else_node.components.empty())
+    {
+      //cout << ".. Both when and else states are empty." << endl;
+      return;
+    }
 
     MarControlPtr condition_control =
-        translate_complex_value(system, condition_node, state_processor);
+        translate_complex_value(system, condition_node, system);
 
-    state_processor->getControl("mrs_bool/condition")->linkTo(condition_control, false);
+    if (!when_node.components.empty())
+    {
+      //cout << ".. Got when state." << endl;
+      ScriptStateProcessor *when_processor = translate_state_definition(system, when_node);
+      when_processor->getControl("mrs_bool/condition")->linkTo(condition_control, false);
+      system->attachMarSystem(when_processor);
+      when_processor->update();
+    }
 
-    // // Translate state definition
+    if (!else_node.components.empty())
+    {
+      //cout << ".. Got else state." << endl;
+      ScriptStateProcessor *else_processor = translate_state_definition(system, else_node);
+      else_processor->getControl("mrs_bool/condition")->linkTo(condition_control, false);
+      else_processor->setControl("mrs_bool/inverse", true);
+      system->attachMarSystem(else_processor);
+      else_processor->update();
+    }
+  }
 
-    while( ++it != when_node.components.end() )
+  ScriptStateProcessor * translate_state_definition( MarSystem *system, const node & state_node  )
+  {
+    ScriptStateProcessor *state_processor = new ScriptStateProcessor("state_processor");
+
+    for ( const node & mapping_node : state_node.components )
     {
       //cout << "Translating a mapping..." << endl;
-
-      const node & mapping_node = *it;
-
-      // FIXME: Shall we handle new control creation here?
 
       assert(mapping_node.tag == CONTROL_NODE);
       assert(mapping_node.components.size() == 2);
@@ -205,9 +218,7 @@ class script_translator
       state_processor->addMapping( dst_control, src_control );
     }
 
-    system->attachMarSystem(state_processor);
-
-    state_processor->update();
+    return state_processor;
   }
 
   void apply_control( MarSystem * system,

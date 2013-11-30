@@ -243,16 +243,16 @@ void ScriptStateProcessor::myUpdate(MarControlPtr)
   if (!active)
     return;
 
-  cout << "State activated." << endl;
+  //cout << "State activated." << endl;
 
   for( const auto & mapping : m_state )
   {
     const MarControlPtr & dst = mapping.first;
     const MarControlPtr & src = mapping.second;
-    cout << "A mapping: " << dst << " <- " << src << endl;
+    //cout << "A mapping: " << dst << " <- " << src << endl;
     if (dst.isInvalid() || src.isInvalid())
       continue;
-    cout << "Applying mapping." << endl;
+    //cout << "Applying mapping." << endl;
     dst->unlinkFromTarget();
     if (src->getMarSystem())
       dst->linkTo(src);

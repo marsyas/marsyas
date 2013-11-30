@@ -108,31 +108,21 @@ bool | int | real | matrix | string | path
 ;
 
 state:
-when_state else_state
+WHEN '(' operation ')' '{' state_def '}' else_state
 {
   $$ = node();
   $$.tag = STATE_NODE;
-  $$.components.push_back($1);
-  $$.components.push_back($2);
-}
-;
-
-when_state:
-WHEN '(' operation ')' '{' state_def '}'
-{
-  $$ = node();
   $$.components.push_back($3);
-  $$.components.insert($$.components.end(), $6.components.begin(), $6.components.end());
+  $$.components.push_back($6);
+  $$.components.push_back($8);
 }
 ;
 
 else_state:
 // empty
-
 | ELSE '{' state_def '}'
 {
-  $$ = node();
-  $$.components = std::move($3.components);
+  $$ = $3;
 }
 ;
 
