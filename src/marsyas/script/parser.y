@@ -51,37 +51,26 @@ id ':' id
 actor_def:
   // empty
 
-| '{' control_list actor_list '}'
-  {
-    $$ = node();
-    $$.components = { std::move($2), std::move($3) };
-  }
+| '{' actor_def_list '}' { $$ = $2; }
 ;
 
-actor_list:
-  //empty
+actor_def_list:
+  // empty
 
-| actor_list ARROW actor_instance
+| actor_def_list actor_def_element
 {
-  $1.components.push_back($3);
-  $$ = $1;
-}
-
-| actor_list '~' actor_prototype
-{
-  $1.components.push_back($3);
+  $1.components.push_back($2);
   $$ = $1;
 }
 ;
 
-control_list:
-  //empty
+actor_def_element:
 
-| control_list control
-  {
-    $1.components.push_back( std::move($2) );
-    $$ = std::move($1);
-  }
+  ARROW actor_instance { $$ = $2; }
+
+| '~' actor_prototype { $$ = $2; }
+
+| control
 ;
 
 control:

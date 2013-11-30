@@ -17,12 +17,28 @@ namespace Marsyas {
 
 class script_translator
 {
-  typedef std::vector< std::pair<MarSystem*, node> > control_map_t;
-  MarSystemManager & m_manager;
-  std::stack<control_map_t> m_controls;
-  MarSystem *m_root_system;
+  typedef std::pair<MarSystem*, std::vector<node>> control_mapping_t;
+  typedef std::vector<control_mapping_t> control_map_t;
 
-  MarSystem *translate_actor( const node & n )
+  struct context
+  {
+    context(MarSystem *system): root_system(system) {}
+    MarSystem *root_system;
+    control_map_t control_map;
+  };
+
+  enum context_policy
+  {
+    own_context,
+    inherit_context
+  };
+
+  MarSystemManager & m_manager;
+  std::stack<context> m_context_stack;
+
+  context & this_context() { return m_context_stack.top(); }
+
+  MarSystem *translate_actor( const node & n, context_policy policy )
   {
     if (n.tag != ACTOR_NODE && n.tag != PROTOTYPE_NODE)
       return 0;
@@ -33,38 +49,30 @@ class script_translator
     assert(n.components[2].tag == GENERIC_NODE);
 
     std::string name, type;
-
     if (n.components[0].tag == ID_NODE)
       name = std::move(n.components[0].s);
-
     type = std::move(n.components[1].s);
-
-    if (n.tag == PROTOTYPE_NODE && name.empty())
-    {
-      MRSERR("Prototype must be given a name!");
-      return 0;
-    }
 
     MarSystem *system = m_manager.create(type, name);
 
-    if (n.tag == PROTOTYPE_NODE)
-      m_controls.emplace();
-
-    assert(m_controls.size());
-    control_map_t & control_map = m_controls.top();
+    if (policy == own_context)
+      m_context_stack.emplace(system);
+    else
+      assert(!m_context_stack.empty());
 
     const node & system_def = n.components[2];
-    if(system_def.components.size() == 2)
+    int child_idx = 0;
+
+    this_context().control_map.emplace_back(system, vector<node>());
+    int control_map_index = this_context().control_map.size() - 1;
+
+    for( const node & system_def_element : system_def.components )
     {
-      const node & controls = system_def.components[0];
-      const node & children = system_def.components[1];
-
-      control_map.emplace_back(system, controls);
-
-      int child_idx = 0;
-      for( const node & child : children.components )
+      switch(system_def_element.tag)
       {
-        MarSystem *child_system = translate_actor(child);
+      case ACTOR_NODE:
+      {
+        MarSystem *child_system = translate_actor(system_def_element, inherit_context);
         if (child_system)
         {
           if (child_system->getName().empty())
@@ -76,31 +84,46 @@ class script_translator
           system->addMarSystem(child_system);
           child_idx++;
         }
+        break;
       }
+      case PROTOTYPE_NODE:
+      {
+        translate_actor(system_def_element, own_context);
+        break;
+      }
+      case CONTROL_NODE:
+        this_context().control_map[control_map_index].second.push_back(system_def_element);
+        break;
+      default:
+        assert(false);
+      }
+    }
+
+    //current_context().control_map.emplace_back(system, std::move(controls));
+
+    if (policy == own_context)
+    {
+      apply_controls(this_context().control_map);
+      m_context_stack.pop();
     }
 
     if (n.tag == PROTOTYPE_NODE)
     {
       assert(!name.empty());
-      m_root_system = system;
-      apply_controls(control_map);
-      m_controls.pop();
       m_manager.registerPrototype(name, system);
-      m_root_system = 0;
-      return 0;
     }
 
     return system;
   }
 
-  void apply_controls( const control_map_t & controls )
+  void apply_controls( const control_map_t & control_map )
   {
-    for( const auto & mapping : controls )
+    for( const auto & mapping : control_map )
     {
       MarSystem * system = mapping.first;
-      const node & controls = mapping.second;
+      const auto & controls = mapping.second;
 
-      for( const node & control : controls.components)
+      for( const node & control : controls)
       {
         assert(control.tag == CONTROL_NODE);
         assert(control.components.size() == 2);
@@ -312,7 +335,7 @@ class script_translator
     cout << "-- Searching for remote control: " << endl
          << "-- -- " << path << endl
          << "-- -- at " << anchor->getAbsPath() << endl
-         << "-- -- under " << m_root_system->getAbsPath() << endl;
+         << "-- -- under " << current_context().root_system->getAbsPath() << endl;
 #endif
     if (path.empty())
       return MarControlPtr();
@@ -325,7 +348,7 @@ class script_translator
     if (control_name.empty())
       return MarControlPtr();
 
-    MarSystem *parent = absolute ? m_root_system : anchor;
+    MarSystem *parent = absolute ? this_context().root_system : anchor;
     MarSystem *control_owner = find_child(parent, path_elements);
     if (!control_owner)
         return MarControlPtr();
@@ -414,22 +437,13 @@ class script_translator
 public:
 
   script_translator( MarSystemManager & manager ):
-    m_manager(manager),
-    m_root_system(0)
+    m_manager(manager)
   {}
 
   MarSystem *translate( const node & syntax_tree )
   {
-    m_controls.emplace();
-
-    m_root_system = translate_actor(syntax_tree);
-
-    assert(m_controls.size());
-
-    if (m_root_system)
-      apply_controls( m_controls.top() );
-
-    return m_root_system;
+    MarSystem *system = translate_actor(syntax_tree, own_context);
+    return system;
   }
 };
 
