@@ -187,17 +187,16 @@ class script_translator
       assert(mapping_node.components.size() == 2);
       assert(mapping_node.components[0].tag == ID_NODE);
 
-      const std::string & dst_name = mapping_node.components[0].s;
+      const std::string & dst_path = mapping_node.components[0].s;
       const node & src_node = mapping_node.components[1];
 
       MarControlPtr src_control = translate_complex_value(system, src_node, state_processor);
       if (src_control.isInvalid()) {
-        MRSERR("Invalid value for control: " << dst_name);
+        MRSERR("Invalid value for control: " << dst_path);
         continue;
       }
 
-      std::string dst_path = src_control->getType() + '/' + dst_name;
-      MarControlPtr dst_control = system->getControl( dst_path );
+      MarControlPtr dst_control = find_remote_control(system, dst_path);
       if (dst_control.isInvalid()) {
         MRSERR("Invalid destination control: " << dst_path);
         continue;
