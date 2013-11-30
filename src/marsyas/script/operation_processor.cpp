@@ -39,7 +39,7 @@ void ScriptOperationProcessor::setOperation( operation * opn )
   if (!value.isInvalid())
   {
     addControl(value->getType() + '/' + "result", *value, m_result);
-    setControlState("mrs_real/result", true);
+    m_result->setState(true);
   }
 }
 
