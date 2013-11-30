@@ -19,7 +19,9 @@ static QVariant variantFromControl ( const MarControlPtr & control )
   else if (type == "mrs_natural")
     value = QString::number( control->to<mrs_natural>() );
   else if (type == "mrs_bool")
-    value = QVariant( control->to<mrs_bool>() ).convert(QVariant::String);
+  {
+    value = control->to<mrs_bool>() ? QString("true") : QString("false");
+  }
   else if (type == "mrs_string")
     value = QString::fromStdString(control->to<mrs_string>());
   else if (type == "mrs_realvec")
