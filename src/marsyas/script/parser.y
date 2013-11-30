@@ -5,8 +5,9 @@
 
 %stype node
 %token INT REAL STRING BOOL ID PATH ARROW
-%left MATH_OPERATOR
-%left BOOLEAN_OPERATOR
+%left '+' '-'
+%left '*' '/'
+%left '&' '|'
 
 %%
 
@@ -157,42 +158,16 @@ matrix_value: real | int
 operation:
 operation_value
 
-| operation math_operator operation %prec MATH_OPERATOR
-{
-$$ = $2;
-$$.components.push_back($1);
-$$.components.push_back($3);
-$$.tag = OPERATION_NODE;
-}
-
-| operation boolean_operator operation %prec BOOLEAN_OPERATOR
-{
-$$ = $2;
-$$.components.push_back($1);
-$$.components.push_back($3);
-$$.tag = OPERATION_NODE;
-}
-
-|
-'(' operation ')'
-{
-$$ = $2;
-}
+| operation '+' operation { $$.set_operation($1, '+', $3); }
+| operation '-' operation { $$.set_operation($1, '-', $3); }
+| operation '*' operation { $$.set_operation($1, '*', $3); }
+| operation '/' operation { $$.set_operation($1, '/', $3); }
+| operation '&' operation { $$.set_operation($1, '&', $3); }
+| operation '|' operation { $$.set_operation($1, '|', $3); }
+| '(' operation ')' { $$ = $2; }
 ;
 
 operation_value: bool | int | real | matrix | string | path;
-
-math_operator:
-  '+' { $$ = std::string("+"); }
-| '-' { $$ = std::string("-"); }
-| '*' { $$ = std::string("*"); }
-| '/' { $$ = std::string("/"); }
-;
-
-boolean_operator:
-  '|' { $$ = std::string("|"); }
-| '&' { $$ = std::string("&"); }
-;
 
 bool:
   BOOL { $$ = d_scanner.bool_value(); }

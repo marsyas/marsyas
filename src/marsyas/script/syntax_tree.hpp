@@ -88,6 +88,18 @@ struct node
     components.clear();
   }
 
+  void set_operation( const node & lhs, char op, const node & rhs )
+  {
+    s.clear();
+    s.push_back(op);
+
+    components.clear();
+    components.push_back(lhs);
+    components.push_back(rhs);
+
+    tag = OPERATION_NODE;
+  }
+
   node_tag tag;
 
   union {
