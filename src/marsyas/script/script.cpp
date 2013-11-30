@@ -171,7 +171,7 @@ class script_translator
     MarControlPtr condition_control =
         translate_complex_value(system, condition_node, state_processor);
 
-    state_processor->setCondition(condition_control);
+    state_processor->getControl("mrs_bool/condition")->linkTo(condition_control, false);
 
     // // Translate state definition
 

@@ -82,7 +82,6 @@ public:
   virtual ~ScriptStateProcessor();
   MarSystem *clone() const;
 
-  void setCondition( MarControlPtr condition );
   void addMapping( MarControlPtr & dst, MarControlPtr & src );
 
 private:
@@ -90,6 +89,7 @@ private:
   void myProcess(realvec&, realvec&);
 
   MarControlPtr m_condition;
+  MarControlPtr m_inverse;
   std::vector< std::pair<MarControlPtr, MarControlPtr> > m_state;
 };
 
