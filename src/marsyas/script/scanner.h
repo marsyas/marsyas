@@ -23,18 +23,6 @@ class Scanner: public ScannerBase
         // $insert lexFunctionDecl
         int lex();
 
-        enum token_type {
-          BOOL = Parser::BOOL,
-          INT = Parser::INT,
-          REAL = Parser::REAL,
-          STRING = Parser::STRING,
-          ID = Parser::ID,
-          PATH = Parser::PATH,
-          ARROW = Parser::ARROW,
-          WHEN = Parser::WHEN,
-          ELSE = Parser::ELSE
-        };
-
         long int_value()
         {
           return std::stol(matched());

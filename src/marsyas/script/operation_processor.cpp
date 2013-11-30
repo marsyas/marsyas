@@ -1,10 +1,39 @@
 #include "operation_processor.hpp"
 
 #include <algorithm>
+#include <vector>
+#include <string>
 
 using namespace std;
 
 namespace Marsyas {
+
+
+ScriptOperationProcessor::operator_type
+ScriptOperationProcessor::operator_for_text(const std::string op_text)
+{
+  static vector<string> op_desc = {
+    "",  // NO_OP,
+    "+", // PLUS_OP,
+    "-", // MINUS_OP,
+    "*", // MULT_OP,
+    "/", // DIV_OP,
+    "==", // EQ_OP,
+    "!=", // NEQ_OP,
+    "<", // LESS_OP,
+    ">", // MORE_OP,
+    "<=", // LESSEQ_OP,
+    ">=" // MOREEQ_OP
+  };
+
+  vector<string>::const_iterator pos = std::find(op_desc.begin(), op_desc.end(), op_text);
+  if (pos == op_desc.end())
+    return NO_OP;
+
+  int idx = (int) (pos - op_desc.begin());
+  return (operator_type) idx;
+}
+
 
 ScriptOperationProcessor::ScriptOperationProcessor(const std::string & name):
   MarSystem("ScriptOperationProcessor", name)
@@ -124,14 +153,28 @@ MarControlPtr ScriptOperationProcessor::evaluateOperation( operation *opn )
 
     switch(opn->op)
     {
-    case '+':
+    case PLUS_OP:
       return a + b;
-    case '-':
+    case MINUS_OP:
       return a - b;
-    case '*':
+    case MULT_OP:
       return a * b;
-    case '/':
+    case DIV_OP:
       return a / b;
+    case EQ_OP:
+      return a == b;
+    case NEQ_OP:
+      return a != b;
+    case LESS_OP:
+      return a < b;
+#if 1
+    case MORE_OP:
+      return !(a == b || a < b);
+    case LESSEQ_OP:
+      return (a == b || a < b);
+    case MOREEQ_OP:
+      return !(a < b);
+#endif
     default:
       MRSERR("Unknown operator: " << opn->op);
     }

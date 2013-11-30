@@ -89,10 +89,9 @@ struct node
     components.clear();
   }
 
-  void set_operation( const node & lhs, char op, const node & rhs )
+  void set_operation( const node & lhs, const std::string & op, const node & rhs )
   {
-    s.clear();
-    s.push_back(op);
+    s = op;
 
     components.clear();
     components.push_back(lhs);

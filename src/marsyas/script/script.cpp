@@ -384,11 +384,18 @@ class script_translator
       if (!left_operand || !right_operand)
         return nullptr;
 
-      auto op = new ScriptOperationProcessor::operation;
-      op->op = op_node.s[0];
-      op->left_operand = left_operand;
-      op->right_operand = right_operand;
-      return op;
+      ScriptOperationProcessor::operator_type op =
+          ScriptOperationProcessor::operator_for_text(op_node.s);
+
+      auto opn = new ScriptOperationProcessor::operation(left_operand, op, right_operand);
+
+      if (!op) {
+        MRSERR("Invalid operator: '" << op_node.s << "'");
+        delete opn;
+        return nullptr;
+      }
+
+      return opn;
     }
     else
     {

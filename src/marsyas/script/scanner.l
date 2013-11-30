@@ -13,28 +13,31 @@
 , { return ','; }
 ; { return ';'; }
 : { return ':'; }
+~ { return '~'; }
 \+ { return '+'; }
 \- { return '-'; }
 \* { return '*'; }
 \/ { return '/'; }
-\| { return '|'; }
-\& { return '&'; }
-~ { return '~'; }
 
-"->" { return ARROW; }
+"==" { return Parser::EQ; }
+"!=" { return Parser::NEQ; }
+"<" { return Parser::LESS; }
+">" { return Parser::MORE; }
 
-"when" { return WHEN; }
+"->" { return Parser::ARROW; }
 
-"else" { return ELSE; }
+"when" { return Parser::WHEN; }
 
-true|false { return BOOL; }
+"else" { return Parser::ELSE; }
 
-(\+|\-)?[0-9]+\.[0-9]* { return REAL; }
+true|false { return Parser::BOOL; }
 
-(\+|\-)?[0-9]+ { return INT; }
+(\+|\-)?[0-9]+\.[0-9]* { return Parser::REAL; }
 
-\"([^\"]|[[:space:]])*\" { return STRING; }
+(\+|\-)?[0-9]+ { return Parser::INT; }
 
-[[:alpha:]_]+[[:alpha:][:digit:]_]* { return ID; }
+\"([^\"]|[[:space:]])*\" { return Parser::STRING; }
 
-\/?[[:alpha:][:digit:]_]+(\/[[:alpha:][:digit:]_]+)* { return PATH; }
+[[:alpha:]_]+[[:alpha:][:digit:]_]* { return Parser::ID; }
+
+\/?[[:alpha:][:digit:]_]+(\/[[:alpha:][:digit:]_]+)* { return Parser::PATH; }

@@ -5,9 +5,12 @@
 
 %stype node
 %token INT REAL STRING BOOL ID PATH ARROW WHEN ELSE
-%left '+' '-'
-%left '*' '/'
-%left '&' '|'
+
+%left '='
+%left EQ NEQ LESS MORE
+%left COMPARE
+%left MATH1
+%left MATH2
 
 %%
 
@@ -186,13 +189,33 @@ matrix_value: real | int
 operation:
 operation_value
 
-| operation '+' operation { $$.set_operation($1, '+', $3); }
-| operation '-' operation { $$.set_operation($1, '-', $3); }
-| operation '*' operation { $$.set_operation($1, '*', $3); }
-| operation '/' operation { $$.set_operation($1, '/', $3); }
-| operation '&' operation { $$.set_operation($1, '&', $3); }
-| operation '|' operation { $$.set_operation($1, '|', $3); }
+| operation compare operation %prec COMPARE
+{ $$.set_operation($1, $2.s, $3); }
+
+| operation math1 operation %prec MATH1
+{ $$.set_operation($1, $2.s, $3); }
+
+| operation math2 operation %prec MATH2
+{ $$.set_operation($1, $2.s, $3); }
+
 | '(' operation ')' { $$ = $2; }
+;
+
+compare:
+EQ { $$ = d_scanner.matched(); } |
+NEQ { $$ = d_scanner.matched(); } |
+LESS { $$ = d_scanner.matched(); } |
+MORE { $$ = d_scanner.matched(); }
+;
+
+math1:
+'+' { $$ = d_scanner.matched(); } |
+'-' { $$ = d_scanner.matched(); }
+;
+
+math2:
+'*' { $$ = d_scanner.matched(); } |
+'/' { $$ = d_scanner.matched(); }
 ;
 
 operation_value: bool | int | real | matrix | string | path;

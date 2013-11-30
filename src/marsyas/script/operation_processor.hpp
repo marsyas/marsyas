@@ -10,12 +10,35 @@ namespace Marsyas {
 class ScriptOperationProcessor : public MarSystem
 {
 public:
+  enum operator_type
+  {
+    NO_OP = 0,
+    PLUS_OP,
+    MINUS_OP,
+    MULT_OP,
+    DIV_OP,
+    EQ_OP,
+    NEQ_OP,
+    LESS_OP,
+    MORE_OP,
+    LESSEQ_OP,
+    MOREEQ_OP
+  };
+
+  static operator_type operator_for_text(const std::string op_text);
+
   struct operation
   {
     operation():
-      op(0),
+      op(NO_OP),
       left_operand(nullptr),
       right_operand(nullptr)
+    {}
+
+    operation(operation *left, operator_type op, operation *right ):
+      op(op),
+      left_operand(left),
+      right_operand(right)
     {}
 
     ~operation()
@@ -25,7 +48,7 @@ public:
     }
 
     MarControlPtr value;
-    char op;
+    operator_type op;
     operation *left_operand;
     operation *right_operand;
   };
