@@ -2,6 +2,7 @@
 #define MARSYAS_SCRIPT_SYNTAX_TREE_INCLUDED
 
 #include <vector>
+#include <string>
 
 namespace Marsyas {
 
@@ -17,7 +18,8 @@ enum node_tag
   INT_NODE,
   REAL_NODE,
   STRING_NODE,
-  MATRIX_NODE
+  MATRIX_NODE,
+  OPERATION_NODE
 };
 
 // This class always treats copying as moving, due to operational semantics

@@ -86,6 +86,7 @@ if(MARSYAS_SCRIPT)
     script/lex.cc
     script/parse.cc
     script/script.cpp
+    script/operation_processor.cpp
   )
 endif()
 

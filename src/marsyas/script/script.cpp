@@ -1,6 +1,8 @@
 #include "script.h"
 #include "parser.h"
+#include "operation_processor.hpp"
 #include <marsyas/system/MarSystemManager.h>
+
 #include <cassert>
 #include <string>
 #include <sstream>
@@ -122,13 +124,34 @@ class script_translator
   {
     assert(!control_description.empty());
 
-    MarControlPtr source_control =
-        translate_control_value(system, control_value);
+    MarControlPtr source_control;
+
+    if (control_value.tag == OPERATION_NODE)
+    {
+        // cout << "Creating operation processor..." << endl;
+
+        ScriptOperationProcessor::operation *op = translate_operation(system, control_value);
+        if (!op)
+          return;
+
+        // cout << "Processor created." << endl;
+
+        ScriptOperationProcessor *processor = new ScriptOperationProcessor("processor");
+        processor->setOperation(op);
+        source_control = find_control(processor, "result");
+
+        // TODO: where to attach processor MarSystem to?
+    }
+    else
+    {
+      // cout << "Translating control value..." << endl;
+
+      source_control = translate_control_value(system, control_value);
+    }
 
     if (source_control.isInvalid()) {
-      MRSERR("Can not set control - invalid value or link source not found:"
-             << endl
-             << system->getAbsPath() << control_description << endl );
+      MRSERR("Can not set control - invalid value: "
+             << system->getAbsPath() << control_description);
       return;
     }
 
@@ -153,7 +176,7 @@ class script_translator
                << "same control already exists: " << system->getAbsPath() << control_path);
         return;
       }
-      bool created = system->addControl(control_path, source_control, control);
+      bool created = system->addControl(control_path, *source_control, control);
       if (!created)
       {
         MRSERR("ERROR: Failed to create control: " << system->getAbsPath() << control_path);
@@ -161,7 +184,6 @@ class script_translator
       }
       if (link)
       {
-        //cout << "Linking..." << endl;
         control->linkTo(source_control, do_not_update);
       }
     }
@@ -180,7 +202,6 @@ class script_translator
       }
       if (link)
       {
-        //cout << "Linking..." << endl;
         control->linkTo(source_control, do_not_update);
       }
       else
@@ -238,7 +259,6 @@ class script_translator
     {
       string link_path = control_value.s;
       assert(!link_path.empty());
-      //cout << "Searching for control to link: " << link_path << endl;
       return find_remote_control(anchor, link_path);
     }
     default:
@@ -248,8 +268,52 @@ class script_translator
     return MarControlPtr();
   }
 
+  ScriptOperationProcessor::operation *translate_operation( MarSystem *anchor, const node & op_node )
+  {
+    if (op_node.tag == OPERATION_NODE)
+    {
+      assert(op_node.s.size());
+      assert(op_node.components.size() == 2);
+
+      //cout << "-- Translating operation: " << op_node.s[0] << endl;
+
+      auto left_operand = translate_operation(anchor, op_node.components[0]);
+      auto right_operand = translate_operation(anchor, op_node.components[1]);
+
+      if (!left_operand || !right_operand)
+        return nullptr;
+
+      auto op = new ScriptOperationProcessor::operation;
+      op->op = op_node.s[0];
+      op->left_operand = left_operand;
+      op->right_operand = right_operand;
+      return op;
+    }
+    else
+    {
+      //cout << "-- Translating value..." << endl;
+      MarControlPtr value = translate_control_value(anchor, op_node);
+      if (value.isInvalid())
+      {
+        MRSERR("Can not parse expression: invalid control value!");
+        return nullptr;
+      }
+      auto op = new ScriptOperationProcessor::operation;
+      op->value = value;
+      return op;
+    }
+
+    return nullptr;
+  }
+
   MarControlPtr find_remote_control( MarSystem *anchor, const string & path )
   {
+#if 0
+    cout << "-- Searching for remote control: " << endl
+         << "-- -- " << path << endl
+         << "-- -- at " << anchor->getAbsPath() << endl
+         << "-- -- under " << m_root_system->getAbsPath() << endl;
+#endif
     if (path.empty())
       return MarControlPtr();
 
@@ -266,17 +330,24 @@ class script_translator
     if (!control_owner)
         return MarControlPtr();
 
+    // cout << "-- Got control owner" << endl;
     return find_control(control_owner, control_name);
   }
 
   MarControlPtr find_control(MarSystem *owner, const string & control_name)
   {
+#if 0
+    cout << "-- Searching for local control: " << endl
+         << "-- -- " << control_name << endl
+         << "-- -- at " << owner->getAbsPath() << endl;
+#endif
     const map<string, MarControlPtr>& controls = owner->getLocalControls();
     map<string, MarControlPtr>::const_iterator control_itr;
     for(const auto & control_mapping : controls)
     {
       const MarControlPtr & control = control_mapping.second;
       string name = control->getName();
+      //cout << "-- Comparing control: " << name << endl;
       name = name.substr( name.find('/') + 1 );
 
       if (name == control_name)
@@ -288,22 +359,30 @@ class script_translator
   MarSystem * find_child(MarSystem *parent,
                          const vector<string> & path_elements )
   {
+#if 0
+    cout << "-- Searching for child:" << endl
+         << "-- -- ";
+    for(const auto & elem : path_elements) cout << (elem + "/");
+    cout << endl;
+    cout << "-- -- " << "under " << parent->getAbsPath() << endl;
+#endif
+
     MarSystem *system = parent;
-    bool found = false;
     for(const auto & path_element : path_elements)
     {
-      found = false;
+      MarSystem *matching_child = 0;
       vector<MarSystem*> children = system->getChildren();
       for(MarSystem *child : children)
       {
         if (child->getName() == path_element)
         {
-          found = true;
-          system = child;
+          matching_child = child;
+          break;
         }
-        break;
       }
-      if (!found)
+      if (matching_child)
+        system = matching_child;
+      else
         return 0;
     }
     return system;
