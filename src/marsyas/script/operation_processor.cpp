@@ -159,4 +159,77 @@ void ScriptOperationProcessor::clearOperation()
   }
 }
 
+
+
+
+ScriptStateProcessor::ScriptStateProcessor(const std::string & name):
+  MarSystem("ScriptStateProcessor", name)
+{
+  addControl("mrs_bool/condition", false, m_condition);
+  m_condition->setState(true);
+}
+
+ScriptStateProcessor::ScriptStateProcessor( const ScriptStateProcessor & other ):
+  MarSystem(other)
+{
+  m_condition = getControl("mrs_bool/condition");
+}
+
+ScriptStateProcessor::~ScriptStateProcessor()
+{}
+
+MarSystem *ScriptStateProcessor::clone() const
+{
+  return new ScriptStateProcessor(*this);
+}
+
+void ScriptStateProcessor::setCondition( MarControlPtr condition )
+{
+  if (condition.isInvalid() || condition->getType() != "mrs_bool")
+  {
+    MRSERR("ScriptStateProcessor: invalid condition control");
+    return;
+  }
+
+  static const bool shall_update = false;
+  m_condition->linkTo(condition, shall_update);
+}
+
+void ScriptStateProcessor::addMapping( MarControlPtr & dst, MarControlPtr & src )
+{
+  m_state.emplace_back( dst, src );
+}
+
+void ScriptStateProcessor::myUpdate(MarControlPtr)
+{
+  if (m_condition.isInvalid())
+    return;
+
+  //cout << "Valid condition." << endl;
+
+  bool active = m_condition->to<bool>();
+  if (!active)
+    return;
+
+  //cout << "Active state." << endl;
+
+  for( const auto & mapping : m_state )
+  {
+    const MarControlPtr & dst = mapping.first;
+    const MarControlPtr & src = mapping.second;
+    //cout << "A mapping: " << dst << " <- " << src << endl;
+    if (dst.isInvalid() || src.isInvalid())
+      continue;
+    //cout << "Applying mapping." << endl;
+    dst->unlinkFromTarget();
+    if (src->getMarSystem())
+      dst->linkTo(src);
+    else
+      *dst = *src;
+  }
+}
+
+void ScriptStateProcessor::myProcess(realvec&, realvec&)
+{}
+
 } // namespace Marsyas

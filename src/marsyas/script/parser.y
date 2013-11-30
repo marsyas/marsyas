@@ -4,7 +4,7 @@
 %baseclass-preinclude "syntax_tree.hpp"
 
 %stype node
-%token INT REAL STRING BOOL ID PATH ARROW
+%token INT REAL STRING BOOL ID PATH ARROW WHEN ELSE
 %left '+' '-'
 %left '*' '/'
 %left '&' '|'
@@ -71,6 +71,8 @@ actor_def_element:
 | '~' actor_prototype { $$ = $2; }
 
 | control
+
+| state
 ;
 
 control:
@@ -100,6 +102,44 @@ bool | int | real | matrix | string | path
 | '(' operation ')'
 {
   $$ = $2;
+}
+;
+
+state:
+when_state else_state
+{
+  $$ = node();
+  $$.tag = STATE_NODE;
+  $$.components.push_back($1);
+  $$.components.push_back($2);
+}
+;
+
+when_state:
+WHEN '(' operation ')' '{' state_def '}'
+{
+  $$ = node();
+  $$.components.push_back($3);
+  $$.components.insert($$.components.end(), $6.components.begin(), $6.components.end());
+}
+;
+
+else_state:
+// empty
+
+| ELSE '{' state_def '}'
+{
+  $$ = node();
+  $$.components = std::move($3.components);
+}
+;
+
+state_def:
+//empty
+| state_def control
+{
+  $1.components.push_back($2);
+  $$ = $1;
 }
 ;
 

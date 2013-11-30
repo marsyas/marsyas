@@ -30,7 +30,9 @@ class Scanner: public ScannerBase
           STRING = Parser::STRING,
           ID = Parser::ID,
           PATH = Parser::PATH,
-          ARROW = Parser::ARROW
+          ARROW = Parser::ARROW,
+          WHEN = Parser::WHEN,
+          ELSE = Parser::ELSE
         };
 
         long int_value()

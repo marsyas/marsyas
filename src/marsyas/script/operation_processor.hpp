@@ -33,13 +33,14 @@ public:
   ScriptOperationProcessor(const std::string & name);
   ScriptOperationProcessor( const ScriptOperationProcessor & other );
   virtual ~ScriptOperationProcessor();
-
   MarSystem *clone() const;
+
   void setOperation( operation * );
+
+private:
   void myUpdate(MarControlPtr sender);
   void myProcess(realvec&, realvec&);
 
-private:
   void initControls();
   void prepareOperation( operation * );
   MarControlPtr evaluateOperation( operation * );
@@ -48,6 +49,25 @@ private:
   operation * m_operation;
   MarControlPtr m_result;
   std::vector<std::string> m_dependencies;
+};
+
+class ScriptStateProcessor : public MarSystem
+{
+public:
+  ScriptStateProcessor(const std::string & name);
+  ScriptStateProcessor( const ScriptStateProcessor & other );
+  virtual ~ScriptStateProcessor();
+  MarSystem *clone() const;
+
+  void setCondition( MarControlPtr condition );
+  void addMapping( MarControlPtr & dst, MarControlPtr & src );
+
+private:
+  void myUpdate(MarControlPtr sender);
+  void myProcess(realvec&, realvec&);
+
+  MarControlPtr m_condition;
+  std::vector< std::pair<MarControlPtr, MarControlPtr> > m_state;
 };
 
 } // namespace Marsyas

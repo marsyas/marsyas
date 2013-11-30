@@ -91,6 +91,11 @@ class script_translator
         translate_actor(system_def_element, own_context);
         break;
       }
+      case STATE_NODE:
+      {
+        this_context().control_map[control_map_index].second.push_back(system_def_element);
+        break;
+      }
       case CONTROL_NODE:
         this_context().control_map[control_map_index].second.push_back(system_def_element);
         break;
@@ -116,6 +121,7 @@ class script_translator
     return system;
   }
 
+
   void apply_controls( const control_map_t & control_map )
   {
     for( const auto & mapping : control_map )
@@ -123,62 +129,107 @@ class script_translator
       MarSystem * system = mapping.first;
       const auto & controls = mapping.second;
 
-      for( const node & control : controls)
+      for( const node & control_node : controls)
       {
-        assert(control.tag == CONTROL_NODE);
-        assert(control.components.size() == 2);
-        assert(control.components[0].tag == ID_NODE);
-
-        const std::string & control_name = control.components[0].s;
-        const node & control_value = control.components[1];
-
-        set_control(system, control_name, control_value);
+        switch(control_node.tag)
+        {
+        case CONTROL_NODE:
+          apply_control(system, control_node);
+          break;
+        case STATE_NODE:
+          translate_state(system, control_node);
+          break;
+        default:
+          assert(false);
+        }
       }
 
       system->update();
     }
   }
 
-
-
-  void set_control( MarSystem * system,
-                    const std::string & control_description,
-                    const node & control_value )
+  void translate_state( MarSystem *system, const node & state_node )
   {
-    assert(!control_description.empty());
+    //cout << "Translating state..." << endl;
 
-    MarControlPtr source_control;
+    assert(state_node.tag == STATE_NODE);
+    assert(state_node.components.size() == 2);
 
-    if (control_value.tag == OPERATION_NODE)
+    ScriptStateProcessor *state_processor = new ScriptStateProcessor("state_processor");
+
+    const node & when_node = state_node.components[0];
+    // const node & else_node = state_node.components[1];
+    // FIXME: handle the "else" part?
+
+    // // Translate state condition
+
+    std::vector<node>::const_iterator it = when_node.components.begin();
+    assert(it != when_node.components.end());
+
+    const node & condition_node = *it;
+
+    MarControlPtr condition_control =
+        translate_complex_value(system, condition_node, state_processor);
+
+    state_processor->setCondition(condition_control);
+
+    // // Translate state definition
+
+    while( ++it != when_node.components.end() )
     {
-        // cout << "Creating operation processor..." << endl;
+      //cout << "Translating a mapping..." << endl;
 
-        ScriptOperationProcessor::operation *op = translate_operation(system, control_value);
-        if (!op)
-          return;
+      const node & mapping_node = *it;
 
-        // cout << "Processor created." << endl;
+      // FIXME: Shall we handle new control creation here?
 
-        ScriptOperationProcessor *processor = new ScriptOperationProcessor("processor");
-        processor->setOperation(op);
-        source_control = find_control(processor, "result");
+      assert(mapping_node.tag == CONTROL_NODE);
+      assert(mapping_node.components.size() == 2);
+      assert(mapping_node.components[0].tag == ID_NODE);
 
-        system->attachMarSystem(processor);
+      const std::string & dst_name = mapping_node.components[0].s;
+      const node & src_node = mapping_node.components[1];
+
+      MarControlPtr src_control = translate_complex_value(system, src_node, state_processor);
+      if (src_control.isInvalid()) {
+        MRSERR("Invalid value for control: " << dst_name);
+        continue;
+      }
+
+      std::string dst_path = src_control->getType() + '/' + dst_name;
+      MarControlPtr dst_control = system->getControl( dst_path );
+      if (dst_control.isInvalid()) {
+        MRSERR("Invalid destination control: " << dst_path);
+        continue;
+      }
+
+      state_processor->addMapping( dst_control, src_control );
     }
-    else
-    {
-      // cout << "Translating control value..." << endl;
 
-      source_control = translate_control_value(system, control_value);
-    }
+    system->attachMarSystem(state_processor);
 
+    state_processor->update();
+  }
+
+  void apply_control( MarSystem * system,
+                      const node & control_node )
+  {
+    assert(control_node.tag == CONTROL_NODE);
+    assert(control_node.components.size() == 2);
+    assert(control_node.components[0].tag == ID_NODE);
+
+    const std::string & dst_description = control_node.components[0].s;
+    assert(!dst_description.empty());
+
+    const node & src_node = control_node.components[1];
+    MarControlPtr source_control = translate_complex_value(system, src_node, system);
     if (source_control.isInvalid()) {
       MRSERR("Can not set control - invalid value: "
-             << system->getAbsPath() << control_description);
+             << system->getAbsPath() << dst_description);
       return;
     }
 
-    string control_name = control_description;
+    string control_name = dst_description;
     bool create = control_name[0] == '+';
     if (create)
       control_name = control_name.substr(1);
@@ -234,7 +285,34 @@ class script_translator
     }
   }
 
-  MarControlPtr translate_control_value( MarSystem * anchor, const node & control_value )
+  MarControlPtr translate_complex_value( MarSystem *anchor,
+                                         const node & value_node,
+                                         MarSystem *owner )
+  {
+    if (value_node.tag == OPERATION_NODE)
+    {
+        // cout << "Translating expression..." << endl;
+
+        ScriptOperationProcessor::operation *op = translate_operation(anchor, value_node);
+        if (!op)
+          return MarControlPtr();
+
+        ScriptOperationProcessor *processor = new ScriptOperationProcessor("processor");
+        processor->setOperation(op);
+        owner->attachMarSystem(processor);
+
+        MarControlPtr src_control = find_control(processor, "result");
+        return src_control;
+    }
+    else
+    {
+      // cout << "Translating control value..." << endl;
+      MarControlPtr src_control = translate_simple_value(anchor, value_node);
+      return src_control;
+    }
+  }
+
+  MarControlPtr translate_simple_value( MarSystem * anchor, const node & control_value )
   {
     switch(control_value.tag)
     {
@@ -315,7 +393,7 @@ class script_translator
     else
     {
       //cout << "-- Translating value..." << endl;
-      MarControlPtr value = translate_control_value(anchor, op_node);
+      MarControlPtr value = translate_simple_value(anchor, op_node);
       if (value.isInvalid())
       {
         MRSERR("Can not parse expression: invalid control value!");

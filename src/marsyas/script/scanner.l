@@ -23,6 +23,10 @@
 
 "->" { return ARROW; }
 
+"when" { return WHEN; }
+
+"else" { return ELSE; }
+
 true|false { return BOOL; }
 
 (\+|\-)?[0-9]+\.[0-9]* { return REAL; }
