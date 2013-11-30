@@ -72,11 +72,17 @@ actor_def_element:
 
 | control
 
+| '+' control
+{
+  $2.components[0].s = std::string("+") + $2.components[0].s;
+  $$ = $2;
+}
+
 | state
 ;
 
 control:
-  control_name '=' control_value {
+  path '=' control_value {
     $$ = node();
     $$.tag = CONTROL_NODE;
     $$.components = { std::move($1), std::move($3) };
@@ -87,13 +93,6 @@ control:
     << std::endl;
 #endif
   }
-;
-
-control_name:
-path
-|
-'+' id
-{ $$ = std::string("+") + $2.s; $$.tag = ID_NODE; }
 ;
 
 control_value:
