@@ -1,4 +1,5 @@
 %filenames = scanner
+%implementation-header = "scanner_impl.h"
 %namespace Marsyas
 
 %%

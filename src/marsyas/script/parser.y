@@ -1,4 +1,5 @@
 %filenames parser
+%implementation-header parser_impl.h
 %scanner scanner.h
 %namespace Marsyas
 %baseclass-preinclude "syntax_tree.hpp"
