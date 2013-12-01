@@ -88,6 +88,22 @@ if(MARSYAS_SCRIPT)
     script/script.cpp
     script/operation_processor.cpp
   )
+
+  set(parser_headers
+    ${CMAKE_CURRENT_SOURCE_DIR}/script/scanner_impl.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/script/scanner.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/script/scannerbase.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/script/parser.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/script/parser_impl.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/script/parserbase.h
+  )
+
+  set_source_files_properties(
+    script/lex.cc
+    script/parse.cc
+    PROPERTIES OBJECT_DEPENDS "${parser_headers}"
+  )
+
 endif()
 
 if(WITH_CPP11)
