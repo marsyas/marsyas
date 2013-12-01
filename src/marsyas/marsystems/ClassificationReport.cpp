@@ -150,13 +150,8 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
         out(1,t) = actual;
       }
     }
-
-
-
-
-  }//if
-
-  if (done)
+  }
+  else if(mode == "report" || done)
   {
     if (getctrl("mrs_bool/regression")->isTrue()) {
 
@@ -249,6 +244,8 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
       }//for y
       cout << (total > 0 ? correct * 100 / total: 0) << "% classified correctly (" << correct << "/" << total << ")" << endl;
     }
+
+    updControl("mrs_bool/done", true);
   }//if done
 }//myProcess
 
