@@ -249,10 +249,19 @@ void ScriptStateProcessor::myUpdate(MarControlPtr)
   {
     const MarControlPtr & dst = mapping.first;
     const MarControlPtr & src = mapping.second;
-    //cout << "A mapping: " << dst << " <- " << src << endl;
+
     if (dst.isInvalid() || src.isInvalid())
       continue;
-    //cout << "Applying mapping." << endl;
+
+#if 0
+    cout << "..Applying: " << endl;
+    cout << "...." << dst->getMarSystem()->getAbsPath() << dst->getName();
+    cout << " <- " << *src;
+    if (src->getMarSystem())
+      cout << " " << src->getMarSystem()->getAbsPath() << src->getName();
+    cout << endl;
+#endif
+
     dst->unlinkFromTarget();
     if (src->getMarSystem())
       dst->linkTo(src);

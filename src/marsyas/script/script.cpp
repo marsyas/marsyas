@@ -129,6 +129,8 @@ class script_translator
       MarSystem * system = mapping.first;
       const auto & controls = mapping.second;
 
+      //cout << "Applying controls for: " << system->getAbsPath() << endl;
+
       for( const node & control_node : controls)
       {
         switch(control_node.tag)
@@ -173,8 +175,8 @@ class script_translator
       //cout << ".. Got when state." << endl;
       ScriptStateProcessor *when_processor = translate_state_definition(system, when_node);
       when_processor->getControl("mrs_bool/condition")->linkTo(condition_control, false);
-      system->attachMarSystem(when_processor);
       when_processor->update();
+      system->attachMarSystem(when_processor);
     }
 
     if (!else_node.components.empty())
@@ -183,8 +185,8 @@ class script_translator
       ScriptStateProcessor *else_processor = translate_state_definition(system, else_node);
       else_processor->getControl("mrs_bool/condition")->linkTo(condition_control, false);
       else_processor->setControl("mrs_bool/inverse", true);
-      system->attachMarSystem(else_processor);
       else_processor->update();
+      system->attachMarSystem(else_processor);
     }
   }
 
