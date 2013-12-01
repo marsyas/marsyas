@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <functional>
 #include <cstring>
 #include <cerrno>
 
@@ -40,7 +41,8 @@ namespace RealTime {
 class RunnerThread
 {
 public:
-  RunnerThread( MarSystem * system, Runner::Shared * shared, bool realtime_priority, unsigned int ticks ):
+  RunnerThread( MarSystem * system, Runner::Shared * shared,
+                bool realtime_priority, unsigned int ticks ):
     m_system(system),
     m_shared(shared),
     m_ticks(ticks > 0 ? ticks : -1),
@@ -314,7 +316,19 @@ void RunnerThread::run()
 
   m_system->updControl("mrs_bool/active", true);
 
-  while(!m_stop && m_ticks)
+  MarControlPtr done_control = m_system->getControl("mrs_bool/done");
+  function<bool()> not_system_done;
+  if (done_control.isInvalid())
+    not_system_done = [](){return true;};
+  else
+    not_system_done = [&done_control](){return !done_control->to<mrs_bool>();};
+
+  int ticks_done = 0;
+  int ticks_left = m_ticks;
+
+  while ( !m_stop &&
+          ticks_left &&
+          not_system_done() )
   {
     //cout << "tick" << endl;
     process_requests();
@@ -324,9 +338,21 @@ void RunnerThread::run()
     for (const auto & mapping : m_shared->controls)
       mapping.second->push();
 
-    if (m_ticks > 0)
-      --m_ticks;
+    if (ticks_left > 0)
+      --ticks_left;
+    ++ticks_done;
   }
+
+#if 0
+  if (done_control->to<mrs_bool>())
+  {
+    cout << "done in " << ticks_done << " ticks " << endl;
+  }
+  else if (ticks_left == 0)
+  {
+    cout << "timeout!" << endl;
+  }
+#endif
 
   m_system->updControl("mrs_bool/active", false);
 
