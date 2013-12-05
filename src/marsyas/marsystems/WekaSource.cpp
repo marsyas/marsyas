@@ -103,212 +103,209 @@ WekaSource::myUpdate(MarControlPtr sender)
 
   // If 'filename' was updated, or the attributes desired from the Weka file has changed,
   // parse the header portion of the file to get the required attribute names and possible output labels (if any)...
+  if (filename_ == getctrl("mrs_string/filename")->to<mrs_string>())
+    return;
 
-  if (filename_ != getctrl("mrs_string/filename")->to<mrs_string>())
+  this->updControl("mrs_bool/done", false);
+  filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
+  attributesToInclude_ = getctrl("mrs_string/attributesToInclude")->to<mrs_string>();
+
+  mrs_bool normMaxMin = getctrl("mrs_bool/normMaxMin")->to<mrs_bool>();
+
+  loadFile(filename_, attributesToInclude_, data_);
+  if (normMaxMin)
   {
+    data_.NormMaxMin();
+  }
 
+  // data_.Dump("org.txt", classesFound_);
 
-    this->updControl("mrs_bool/done", false);
-    filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
-    attributesToInclude_ = getctrl("mrs_string/attributesToInclude")->to<mrs_string>();
+  mrs_string names;
+  bool first = true;
+  for(vector<mrs_string>::const_iterator citer = classesFound_.begin(); citer!= classesFound_.end(); citer++)
+  {
+    if(!first)
+      names += ",";
 
-    mrs_bool normMaxMin = getctrl("mrs_bool/normMaxMin")->to<mrs_bool>();
+    names += (*citer);
+    first = false;
+  }
+  setctrl("mrs_string/classNames", names);
+  setctrl("mrs_natural/nClasses", (mrs_natural)classesFound_.size());
 
-    loadFile(filename_, attributesToInclude_, data_);
-    if (normMaxMin)
-    {
-      data_.NormMaxMin();
-    }
-
-    // data_.Dump("org.txt", classesFound_);
-
-    mrs_string names;
-    bool first = true;
-    for(vector<mrs_string>::const_iterator citer = classesFound_.begin(); citer!= classesFound_.end(); citer++)
+  names = "";
+  first = true;
+  mrs_natural index = 0;
+  for(vector<mrs_string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++,index++)
+  {
+    if(attributesIncluded_[index])
     {
       if(!first)
         names += ",";
 
       names += (*citer);
       first = false;
-    }
-    setctrl("mrs_string/classNames", names);
-    setctrl("mrs_natural/nClasses", (mrs_natural)classesFound_.size());
+    }//if
+  }
+  MRSASSERT(index == (mrs_natural)attributesIncluded_.size());
 
-    names = "";
-    first = true;
-    mrs_natural index = 0;
-    for(vector<mrs_string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++,index++)
+  setctrl("mrs_string/attributeNames", names);
+  ctrl_onObsNames_->setValue(names);
+  setctrl("mrs_natural/onSamples", 1);
+  setctrl("mrs_natural/nAttributes", (mrs_natural)attributesFound_.size());
+  setctrl("mrs_natural/onObservations", (mrs_natural)attributesFound_.size()+1);
+  setctrl("mrs_natural/nInstances", (mrs_natural)data_.getRows());
+
+  const mrs_string & validation_mode_spec = getctrl("mrs_string/validationMode")->to<mrs_string>();
+
+  if (validation_mode_spec.empty())
+  {
+    validationModeEnum_ = None;
+    currentIndex_ = 0;
+    return;
+  }
+
+  if (validation_mode_spec == "OutputInstancePair")
+  {
+    validationModeEnum_ = OutputInstancePair;
+    MarControlAccessor acc(getctrl("mrs_realvec/instanceIndexes"));
+    realvec& instIdxs = acc.to<mrs_realvec>();
+    instIdxs.create(0.0, 1, 2); //init row vector
+    setctrl("mrs_natural/onSamples", 2);
+    return;
+  }
+
+  istringstream v_mode_stream(validation_mode_spec);
+  char v_mode_delim = ',';
+  string v_mode_error_msg("WekaSource: Error in value of control 'validationMode':");
+
+  string validation_mode;
+  {
+    // Extract part before first delimiter, and get rid of spaces.
+    string first_part;
+    std::getline(v_mode_stream, first_part, v_mode_delim);
+    istringstream(first_part) >> validation_mode;
+  }
+
+  if(validation_mode == "kFold")
+  { //Validation mode is Folding, now extract the fold count.
+
+    string fold_type;
     {
-      if(attributesIncluded_[index])
-      {
-        if(!first)
-          names += ",";
-
-        names += (*citer);
-        first = false;
-      }//if
+      string fold_type_part;
+      std::getline(v_mode_stream, fold_type_part, v_mode_delim);
+      istringstream(fold_type_part) >> fold_type;
     }
-    MRSASSERT(index == (mrs_natural)attributesIncluded_.size());
 
-    setctrl("mrs_string/attributeNames", names);
-    ctrl_onObsNames_->setValue(names);
-    setctrl("mrs_natural/onSamples", 1);
-    setctrl("mrs_natural/nAttributes", (mrs_natural)attributesFound_.size());
-    setctrl("mrs_natural/onObservations", (mrs_natural)attributesFound_.size()+1);
-    setctrl("mrs_natural/nInstances", (mrs_natural)data_.getRows());
-
-    const mrs_string & validation_mode_spec = getctrl("mrs_string/validationMode")->to<mrs_string>();
-
-    if (validation_mode_spec.empty())
-    {
+    if(fold_type == "NS")
+      validationModeEnum_ = kFoldNonStratified;
+    else if(fold_type == "S")
+      validationModeEnum_ = kFoldStratified;
+    else {
+      MRSERR(v_mode_error_msg << " Invalid fold type: " << fold_type);
       validationModeEnum_ = None;
       currentIndex_ = 0;
       return;
     }
 
-    if (validation_mode_spec == "OutputInstancePair")
+    mrs_natural fold_count = -1;
+    string fold_count_str;
+    std::getline(v_mode_stream, fold_count_str, v_mode_delim);
+    if ( !(istringstream(fold_count_str) >> fold_count) ||
+         !(fold_count >= 2 && fold_count <= 10) )
     {
-      validationModeEnum_ = OutputInstancePair;
-      MarControlAccessor acc(getctrl("mrs_realvec/instanceIndexes"));
-      realvec& instIdxs = acc.to<mrs_realvec>();
-      instIdxs.create(0.0, 1, 2); //init row vector
-      setctrl("mrs_natural/onSamples", 2);
+      MRSERR(v_mode_error_msg << " Invalid fold count: " << fold_count_str);
+      validationModeEnum_ = None;
+      currentIndex_ = 0;
       return;
     }
+    else
+      foldCount_ = fold_count;
 
-    istringstream v_mode_stream(validation_mode_spec);
-    char v_mode_delim = ',';
-    string v_mode_error_msg("WekaSource: Error in value of control 'validationMode':");
+    data_.Shuffle();
+    // data_.Dump("shuffle.txt", classesFound_);
 
-    string validation_mode;
+    if( validationModeEnum_ != kFoldStratified)
     {
-      // Extract part before first delimiter, and get rid of spaces.
-      string first_part;
-      std::getline(v_mode_stream, first_part, v_mode_delim);
-      istringstream(first_part) >> validation_mode;
+      cout << "=== Non-Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
+
+      //in non-stratified mode we simply use all the available data
+      foldData_.SetupkFoldSections(data_, foldCount_);
     }
-
-    if(validation_mode == "kFold")
-    { //Validation mode is Folding, now extract the fold count.
-
-      string fold_type;
-      {
-        string fold_type_part;
-        std::getline(v_mode_stream, fold_type_part, v_mode_delim);
-        istringstream(fold_type_part) >> fold_type;
-      }
-
-      if(fold_type == "NS")
-        validationModeEnum_ = kFoldNonStratified;
-      else if(fold_type == "S")
-        validationModeEnum_ = kFoldStratified;
-      else {
-        MRSERR(v_mode_error_msg << " Invalid fold type: " << fold_type);
-        validationModeEnum_ = None;
-        currentIndex_ = 0;
-        return;
-      }
-
-      mrs_natural fold_count = -1;
-      string fold_count_str;
-      std::getline(v_mode_stream, fold_count_str, v_mode_delim);
-      if ( !(istringstream(fold_count_str) >> fold_count) ||
-           !(fold_count >= 2 && fold_count <= 10) )
-      {
-        MRSERR(v_mode_error_msg << " Invalid fold count: " << fold_count_str);
-        validationModeEnum_ = None;
-        currentIndex_ = 0;
-        return;
-      }
-      else
-        foldCount_ = fold_count;
-
-      data_.Shuffle();
-      // data_.Dump("shuffle.txt", classesFound_);
-
-      if( validationModeEnum_ != kFoldStratified)
-      {
-        cout << "=== Non-Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
-
-        //in non-stratified mode we simply use all the available data
-        foldData_.SetupkFoldSections(data_, foldCount_);
-      }
-      else
-      {
-        cout << "=== Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
-
-        //in non-stratified we seperate the data according to class
-        foldClassData_.clear();
-        foldClassData_.resize(classesFound_.size());
-
-        //load each dataset with rows for each class
-        for(mrs_natural ii=0; ii<(mrs_natural)classesFound_.size(); ++ii)
-        {
-          WekaFoldData data;
-          data.setFold(true);
-          data.SetupkFoldSections(data_, foldCount_, ii);
-          foldClassData_[ii] = data;
-        }
-        foldClassDataIndex_ = 0;
-      }
-
-    }//if "kFold"
-    else if(validation_mode == "UseTestSet")
-    {
-      validationModeEnum_ = UseTestSet;
-
-      string test_set_filename;
-      std::getline(v_mode_stream, test_set_filename, v_mode_delim);
-
-      if (test_set_filename.empty())
-      {
-        MRSERR(v_mode_error_msg << " Missing test set filename.");
-        validationModeEnum_ = None;
-        currentIndex_ = 0;
-        return;
-      }
-
-      loadFile(test_set_filename, attributesToInclude_, useTestSetData_);
-      MRSASSERT(data_.getCols()==useTestSetData_.getCols());
-
-      cout << "=== Evaluation on test set === (" <<  test_set_filename << ") ===" << endl;
-
-      currentIndex_ = 0;
-
-    }//else if "UseTestSet"
-    else if(validation_mode == "PercentageSplit")
-    {
-      mrs_natural percentage_split = -1;
-      string percentage_split_str;
-      std::getline(v_mode_stream, percentage_split_str, v_mode_delim);
-      if ( !(istringstream(percentage_split_str) >> percentage_split) ||
-           !(percentage_split > 0 && percentage_split < 100) )
-      {
-        MRSERR(v_mode_error_msg << " Invalid percentage split: " << percentage_split_str);
-        validationModeEnum_ = None;
-        currentIndex_ = 0;
-        return;
-      }
-
-      cout << "=== Evaluation on percentage split " << percentage_split << "% ===" << endl;
-
-      data_.Shuffle();
-      data_.Dump("shuffle.txt", classesFound_);
-      validationModeEnum_ = PercentageSplit;
-
-      percentageIndex_ = ((mrs_natural)data_.size() * percentage_split) / 100;
-      percentageIndex_--; //adjust to count from 0
-      if(percentageIndex_ < 1) percentageIndex_ = 1;
-      currentIndex_ = 0;
-    } //else if "PercentageSplit"
     else
     {
-      MRSERR("Invalid validation mode: " << validation_mode);
+      cout << "=== Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
+
+      //in non-stratified we seperate the data according to class
+      foldClassData_.clear();
+      foldClassData_.resize(classesFound_.size());
+
+      //load each dataset with rows for each class
+      for(mrs_natural ii=0; ii<(mrs_natural)classesFound_.size(); ++ii)
+      {
+        WekaFoldData data;
+        data.setFold(true);
+        data.SetupkFoldSections(data_, foldCount_, ii);
+        foldClassData_[ii] = data;
+      }
+      foldClassDataIndex_ = 0;
+    }
+
+  }//if "kFold"
+  else if(validation_mode == "UseTestSet")
+  {
+    validationModeEnum_ = UseTestSet;
+
+    string test_set_filename;
+    std::getline(v_mode_stream, test_set_filename, v_mode_delim);
+
+    if (test_set_filename.empty())
+    {
+      MRSERR(v_mode_error_msg << " Missing test set filename.");
       validationModeEnum_ = None;
       currentIndex_ = 0;
       return;
     }
+
+    loadFile(test_set_filename, attributesToInclude_, useTestSetData_);
+    MRSASSERT(data_.getCols()==useTestSetData_.getCols());
+
+    cout << "=== Evaluation on test set === (" <<  test_set_filename << ") ===" << endl;
+
+    currentIndex_ = 0;
+
+  }//else if "UseTestSet"
+  else if(validation_mode == "PercentageSplit")
+  {
+    mrs_natural percentage_split = -1;
+    string percentage_split_str;
+    std::getline(v_mode_stream, percentage_split_str, v_mode_delim);
+    if ( !(istringstream(percentage_split_str) >> percentage_split) ||
+         !(percentage_split > 0 && percentage_split < 100) )
+    {
+      MRSERR(v_mode_error_msg << " Invalid percentage split: " << percentage_split_str);
+      validationModeEnum_ = None;
+      currentIndex_ = 0;
+      return;
+    }
+
+    cout << "=== Evaluation on percentage split " << percentage_split << "% ===" << endl;
+
+    data_.Shuffle();
+    data_.Dump("shuffle.txt", classesFound_);
+    validationModeEnum_ = PercentageSplit;
+
+    percentageIndex_ = ((mrs_natural)data_.size() * percentage_split) / 100;
+    percentageIndex_--; //adjust to count from 0
+    if(percentageIndex_ < 1) percentageIndex_ = 1;
+    currentIndex_ = 0;
+  } //else if "PercentageSplit"
+  else
+  {
+    MRSERR("Invalid validation mode: " << validation_mode);
+    validationModeEnum_ = None;
+    currentIndex_ = 0;
+    return;
   }
 }//myUpdate
 
