@@ -1,4 +1,8 @@
 
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  message(FATAL_ERROR "CMake initialized in the wrong directory. Please initialize CMake with the top-level Marsyas directory as source directory.")
+endif()
+
 ## basic CMAKE vars
 mark_as_advanced (EXECUTABLE_OUTPUT_PATH)
 mark_as_advanced (LIBRARY_OUTPUT_PATH)
