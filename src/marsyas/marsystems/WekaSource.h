@@ -198,6 +198,8 @@ private:
   //kFold Stratified validation method data members
   mrs_natural foldCount_;
   WekaFoldData foldData_;
+  WekaFoldData::nextMode foldCurrentMode_;
+  WekaFoldData::nextMode foldNextMode_;
 
   //kFold NonStratified validation method data members
   std::vector<WekaFoldData> foldClassData_;

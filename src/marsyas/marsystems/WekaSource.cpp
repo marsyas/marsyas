@@ -251,6 +251,8 @@ WekaSource::myUpdate(MarControlPtr sender)
       foldClassDataIndex_ = 0;
     }
 
+    foldCurrentMode_ = foldNextMode_ = WekaFoldData::Training;
+
   }//if "kFold"
   else if(validation_mode == "UseTestSet")
   {
@@ -344,13 +346,16 @@ WekaSource::handleDefault(bool trainMode, realvec &out)
   //FIXME: Unused parameter
   (void) trainMode;
 
-  vector<mrs_real> *row = NULL;
-  mrs_string fname = data_.GetFilename(currentIndex_);
-  row = data_.at(currentIndex_++);
   if(currentIndex_ >= (mrs_natural)data_.size())
   {
     this->updControl("mrs_bool/done", true);
+    return;
   }
+
+  vector<mrs_real> *row = NULL;
+  mrs_string fname = data_.GetFilename(currentIndex_);
+  row = data_.at(currentIndex_++);
+
   for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
   {
     out(ii, 0) = row->at(ii);
@@ -394,148 +399,143 @@ WekaSource::handleInstancePair(realvec& out)
 void WekaSource::handlePercentageSplit(bool trainMode, realvec &out)
 {
   vector<mrs_real> *row = NULL;
+
   if(trainMode)
   {
-    MRSASSERT(currentIndex_<percentageIndex_);
-    row = data_.at(currentIndex_++);
-
-
-    if(currentIndex_>=percentageIndex_)
+    if (currentIndex_ >= percentageIndex_)
     {
       this->updControl("mrs_string/mode", "predict");
+      trainMode = false;
+    }
+    else
+    {
+      row = data_.at(currentIndex_++);
     }
   }
-  else
+
+  if(!trainMode)
   {
-    row = data_.at(currentIndex_++);
     if(currentIndex_ >= (mrs_natural)data_.size())
     {
       this->updControl("mrs_bool/done", true);
-    }//if
-  }//else
-//  MRSASSERT(row->size()==out.getCols()); //[!]
+      return;
+    }
+    else
+    {
+      row = data_.at(currentIndex_++);
+    }
+  }
+
+  //  MRSASSERT(row->size()==out.getCols()); //[!]
   for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
   {
     out(ii, 0) = row->at(ii);
-  }//for ii
-}//handlePercentageSplit
+  }
+} //handlePercentageSplit
 
 void WekaSource::handleUseTestSet(bool trainMode, realvec &out)
 {
   vector<mrs_real> *row = NULL;
   if(trainMode)
-  { //train mode
-    row = data_.at(currentIndex_++);
-
+  {
     if(currentIndex_ >= (mrs_natural)data_.size())
     {
       this->updControl("mrs_string/mode", "predict");
+      trainMode = false;
       currentIndex_ = 0;
-    }//if
+    }
+    else
+    {
+      row = data_.at(currentIndex_++);
+    }
   }
-  else
-  { //predict mode
-    row = useTestSetData_.at(currentIndex_++);
 
+  if(!trainMode)
+  {
     if(currentIndex_ >= (mrs_natural)useTestSetData_.size())
     {
       this->updControl("mrs_bool/done", true);
       currentIndex_ = 0;
+      return;
     }
-  }//else
+    else
+    {
+      row = useTestSetData_.at(currentIndex_++);
+    }
+  }
+
   MRSASSERT((mrs_natural)row->size() == out.getCols());
   for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
   {
     out(ii, 0 ) = row->at(ii);
-  }//for ii
+  }
 }//handleUseTestSet
 
 void WekaSource::handleFoldingStratifiedValidation(bool trainMode, realvec &out)
 {
-  WekaFoldData::nextMode currentMode = trainMode ? WekaFoldData::Training : WekaFoldData::Predict;
+  (void) trainMode;
 
-  WekaFoldData::nextMode next;
-
-  vector<mrs_real> *row = foldClassData_[foldClassDataIndex_].Next(next);
-
-
-
-  switch(currentMode)
+  if (foldCurrentMode_ != foldNextMode_)
   {
-  case WekaFoldData::Training:
-  {
-    if(next == WekaFoldData::Predict)
+    foldClassDataIndex_++;
+    if(foldClassDataIndex_ >= (mrs_natural)foldClassData_.size())
     {
-      foldClassDataIndex_++;
-      if(foldClassDataIndex_ >= (mrs_natural)foldClassData_.size())
+      foldClassDataIndex_ = 0;
+      foldCurrentMode_ = foldNextMode_;
+      switch(foldCurrentMode_)
       {
-        foldClassDataIndex_ = 0;
-        this->updControl("mrs_string/mode", "predict");
+      case WekaFoldData::Training:
+        updControl("mrs_string/mode", "train");
+        break;
+      case WekaFoldData::Predict:
+        updControl("mrs_string/mode", "predict");
+        break;
+      case WekaFoldData::None:
+        updControl("mrs_bool/done", true);
+        return;
       }
     }
-  } break;
-  case WekaFoldData::Predict:
-  {
-    if(next == WekaFoldData::None)
-    {
-      foldClassDataIndex_++;
-      if(foldClassDataIndex_ >= (mrs_natural)foldClassData_.size())
-      {
-        foldClassDataIndex_ = 0;
-        this->updControl("mrs_bool/done", true);
-      }
-    }
-    else if(next == WekaFoldData::Training)
-    {
-      foldClassDataIndex_++;
-      if(foldClassDataIndex_ >= (mrs_natural)foldClassData_.size())
-      {
-        foldClassDataIndex_ = 0;
-        this->updControl("mrs_string/mode", "train");
-      }
-    }
-  } break;
-  // FIXME There are unhandled cases in this switch;
-  default:
-    (void) 42;
-  }//switch
+  }
 
+  vector<mrs_real> *row = foldClassData_[foldClassDataIndex_].Next(foldNextMode_);
 
   MRSASSERT((mrs_natural)row->size() == out.getRows());
   for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
   {
     out(ii, 0) = row->at(ii);
-  }//for ii
-
+  }
 }
 
 void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &out)
 {
   (void) trainMode;
 
-  //WekaFoldData::nextMode currentMode = trainMode ? WekaFoldData::Training : WekaFoldData::Predict;
+  if( foldCurrentMode_ != foldNextMode_ )
+  {
+    foldCurrentMode_ = foldNextMode_;
+    switch (foldCurrentMode_)
+    {
+    case WekaFoldData::Training:
+      updControl("mrs_string/mode", "train");
+      break;
+    case WekaFoldData::Predict:
+      updControl("mrs_string/mode", "predict");
+      break;
+    case WekaFoldData::None:
+      updControl("mrs_bool/done", true);
+      return;
+    }
+  }
 
-  WekaFoldData::nextMode next;
-
-
-  vector<mrs_real> *row = foldData_.Next(next);
-
-  if(next == WekaFoldData::None)
-    this->updControl("mrs_bool/done", true);
-  // else if(next == WekaFoldData::Training&& !trainMode)
-  else if(next == WekaFoldData::Training)
-    this->updControl("mrs_string/mode", "train");
-  // else if(next == WekaFoldData::Predict && trainMode)
-  else if(next == WekaFoldData::Predict)
-    this->updControl("mrs_string/mode", "predict");
+  vector<mrs_real> *row = foldData_.Next(foldNextMode_);
 
   MRSASSERT((mrs_natural) row->size() == out.getRows());
 
   for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
   {
     out(ii, 0) = row->at(ii);
-  }//for ii
-}//handleFoldingValidation
+  }
+}
 
 void WekaSource::loadFile(const std::string& filename, const std::string& attributesToExtract, WekaData& data)
 {

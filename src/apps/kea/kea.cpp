@@ -826,19 +826,14 @@ train_evaluate()
     net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
   }
 
-  net->linkControl("Classifier/cl/mrs_string/mode", "ClassificationReport/summary/mrs_string/mode");
+  net->linkControl("Classifier/cl/mrs_string/mode", "WekaSource/wsrc/mrs_string/mode");
+  net->linkControl("ClassificationReport/summary/mrs_string/mode", "Classifier/cl/mrs_string/mode");
 
   int i = 0;
   while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
   {
     net->tick();
-
     //  cout << net->getControl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>() << endl;
-
-    string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
-    //cout << "mode = " << mode << endl;
-
-    net->updControl("Classifier/cl/mrs_string/mode", mode);
     ++i;
   }
 
