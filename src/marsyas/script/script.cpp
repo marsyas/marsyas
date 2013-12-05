@@ -38,8 +38,70 @@ class script_translator
 
   context & this_context() { return m_context_stack.top(); }
 
+  bool handle_directive( const node & directive_node )
+  {
+    //cout << "handling directive: " << directive_node.tag << endl;
+
+    switch(directive_node.tag)
+    {
+    case INCLUDE_DIRECTIVE:
+      return handle_include_directive(directive_node);
+    default:
+      MRSERR("Invalid directive: " << directive_node.tag);
+    }
+    return false;
+  }
+
+  bool handle_include_directive( const node & directive_node )
+  {
+    int component_count = (int) directive_node.components.size();
+    assert(component_count == 1 || component_count == 2);
+
+    string filename, id;
+
+    assert(directive_node.components[0].tag == STRING_NODE);
+    filename = directive_node.components[0].s;
+    assert(!filename.empty());
+
+    if (directive_node.components.size() > 1)
+    {
+      assert(directive_node.components[1].tag == ID_NODE);
+      id = directive_node.components[1].s;
+    }
+
+    ifstream file(filename.c_str());
+    if (!file.is_open())
+    {
+      MRSERR("Could not open included file: " << filename);
+      return false;
+    }
+
+    MarSystem *system = system_from_script(file);
+    if (!system)
+    {
+      MRSERR("Error in included file: " << filename);
+      return false;
+    }
+
+    if (id.empty())
+      id = system->getName();
+
+    if (id.empty())
+    {
+      MRSERR("Included network has no name and no alias provided in include statement.");
+      delete system;
+      return false;
+    }
+
+    //cout << "Registering prototype: " << system->getName() << " as " << id << endl;
+    m_manager.registerPrototype(id, system);
+    return true;
+  }
+
   MarSystem *translate_actor( const node & n, context_policy policy )
   {
+    //cout << "handling actor: " << n.tag << endl;
+
     if (n.tag != ACTOR_NODE && n.tag != PROTOTYPE_NODE)
       return 0;
 
@@ -54,6 +116,9 @@ class script_translator
     type = std::move(n.components[1].s);
 
     MarSystem *system = m_manager.create(type, name);
+
+    if (!system)
+      return nullptr;
 
     if (policy == own_context)
       m_context_stack.emplace(system);
@@ -537,6 +602,16 @@ public:
     m_manager(manager)
   {}
 
+  bool handle_directives( const node & directives_node )
+  {
+    for( const node & directive_node : directives_node.components)
+    {
+      if (!handle_directive( directive_node ))
+        return false;
+    }
+    return true;
+  }
+
   MarSystem *translate( const node & syntax_tree )
   {
     MarSystem *system = translate_actor(syntax_tree, own_context);
@@ -548,11 +623,17 @@ MarSystem *system_from_script(std::istream & script_stream)
 {
   Parser parser(script_stream);
   parser.parse();
-  const node &tree = parser.parsed();
+
+  const node &directives = parser.directives();
+  const node &actor = parser.actor();
 
   MarSystemManager manager;
   script_translator translator(manager);
-  MarSystem *system = translator.translate(tree);
+
+  if (!translator.handle_directives(directives))
+    return nullptr;
+
+  MarSystem *system = translator.translate(actor);
 
   if (system && system->getName().empty())
     system->setName("network");

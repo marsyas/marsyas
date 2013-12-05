@@ -9,6 +9,9 @@ namespace Marsyas {
 enum node_tag
 {
   GENERIC_NODE,
+
+  INCLUDE_DIRECTIVE,
+
   ACTOR_NODE,
   PROTOTYPE_NODE,
   CONTROL_NODE,

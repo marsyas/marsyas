@@ -2,7 +2,25 @@
 %implementation-header = "scanner_impl.h"
 %namespace Marsyas
 
+%x directive
+
 %%
+
+# { begin(StartCondition__::directive); return '#'; }
+
+<directive>{
+
+\n {  begin(StartCondition__::INITIAL); return '\n'; }
+
+"include" { return Parser::INCLUDE; }
+
+"as" { return Parser::AS; }
+
+[[:alpha:]_]+[[:alpha:][:digit:]_]* { return Parser::ID; }
+
+[^[:space:]]+ { return Parser::DIRECTIVE_ARG; }
+
+}
 
 \{ { return '{'; }
 \} { return '}'; }

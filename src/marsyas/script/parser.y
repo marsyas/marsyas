@@ -5,7 +5,7 @@
 %baseclass-preinclude "syntax_tree.hpp"
 
 %stype node
-%token INT REAL STRING BOOL ID PATH ARROW WHEN ELSE
+%token INT REAL STRING BOOL ID PATH ARROW WHEN ELSE INCLUDE AS DIRECTIVE_ARG
 
 %left '='
 %left EQ NEQ LESS MORE
@@ -17,8 +17,43 @@
 
 input:
   //empty
-| actor_instance { d_result = $1; }
+| directives actor_instance { d_directives = $1; d_actor = $2; }
 ;
+
+directives:
+  //empty
+| directives directive_line
+{
+  $1.components.push_back($2);
+  $$ = $1;
+}
+;
+
+directive_line:
+'#' directive '\n'
+{
+$$ = $2;
+}
+;
+
+directive:
+include_directive { $$ = $1; $$.tag = INCLUDE_DIRECTIVE; }
+;
+
+include_directive:
+INCLUDE directive_arg
+{
+$$ = node();
+$$.components = {$2};
+}
+|
+INCLUDE directive_arg AS id
+{
+$$ = node();
+$$.components = {$2, $4};
+}
+;
+
 
 actor_instance:
 actor_instance_decl actor_def
@@ -234,4 +269,8 @@ id:
 path:
   id
 | PATH { $$ = d_scanner.matched(); $$.tag = ID_NODE; }
+;
+
+directive_arg:
+  DIRECTIVE_ARG { $$ = d_scanner.matched(); }
 ;

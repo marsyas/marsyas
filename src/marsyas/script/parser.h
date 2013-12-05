@@ -22,7 +22,8 @@ class Parser: public ParserBase
 {
     // $insert scannerobject
     Scanner d_scanner;
-    node d_result;
+    node d_actor;
+    node d_directives;
     std::ostream d_dummy_out;
 
     public:
@@ -34,9 +35,14 @@ class Parser: public ParserBase
 
         int parse();
 
-        const node &parsed()
+        const node &actor()
         {
-          return d_result;
+          return d_actor;
+        }
+
+        const node &directives()
+        {
+          return d_directives;
         }
 
     private:
