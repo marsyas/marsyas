@@ -168,7 +168,6 @@ private:
   //control values
   std::string filename_;						//name of arff file to read
   std::string attributesToInclude_;			//list of attributes to include in dataset
-  std::string validationMode_;				//validation mode to use
 
   //these are the class names froun in the arff file header
   std::vector<std::string>classesFound_;
@@ -205,11 +204,9 @@ private:
   mrs_natural foldClassDataIndex_;
 
   //UseTestSet validation method data members
-  std::string useTestSetFilename_;
   WekaData useTestSetData_;
 
   //PercentageSplit validation method data members
-  mrs_natural percentageSplit_;
   mrs_natural percentageIndex_;
 
   void handleDefault(bool trainMode, realvec& out);
