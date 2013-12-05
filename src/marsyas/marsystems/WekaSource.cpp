@@ -9,6 +9,7 @@
 #include "../common_source.h"
 #include <stdexcept>
 #include <sstream>
+#include <string>
 
 using namespace std;
 using namespace Marsyas;
