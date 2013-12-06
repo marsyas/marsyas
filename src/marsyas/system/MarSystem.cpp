@@ -2024,7 +2024,7 @@ void MarSystem::attachMarSystem( MarSystem * system )
 
 void MarSystem::detachMarSystem( MarSystem * system )
 {
-  auto iter = std::find(attached_marsystems_.begin(), attached_marsystems_.end(), system);
+  std::vector<MarSystem*>::iterator iter = std::find(attached_marsystems_.begin(), attached_marsystems_.end(), system);
   if (iter != attached_marsystems_.end())
     attached_marsystems_.erase(iter);
 }
