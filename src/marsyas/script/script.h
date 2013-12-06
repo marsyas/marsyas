@@ -8,7 +8,11 @@
 namespace Marsyas {
 
 marsyas_EXPORT
-MarSystem *system_from_script(std::istream & script_stream);
+MarSystem *system_from_script(const std::string & filename);
+
+marsyas_EXPORT
+MarSystem *system_from_script(std::istream & script_stream,
+                              const std::string & working_directory = std::string());
 
 } // namespace Marsyas
 

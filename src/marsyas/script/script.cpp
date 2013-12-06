@@ -2,6 +2,7 @@
 #include "parser.h"
 #include "operation_processor.hpp"
 #include <marsyas/system/MarSystemManager.h>
+#include <marsyas/FileName.h>
 
 #include <cassert>
 #include <string>
@@ -33,6 +34,7 @@ class script_translator
     inherit_context
   };
 
+  std::string m_working_dir;
   MarSystemManager & m_manager;
   std::stack<context> m_context_stack;
 
@@ -69,17 +71,17 @@ class script_translator
       id = directive_node.components[1].s;
     }
 
-    ifstream file(filename.c_str());
-    if (!file.is_open())
     {
-      MRSERR("Could not open included file: " << filename);
-      return false;
+      FileName file_info(filename);
+      if (!file_info.isAbsolute() && !m_working_dir.empty())
+        filename = m_working_dir + filename;
     }
 
-    MarSystem *system = system_from_script(file);
+    MarSystem *system = system_from_script(filename);
+
     if (!system)
     {
-      MRSERR("Error in included file: " << filename);
+      MRSERR("Failed to include file: " << filename);
       return false;
     }
 
@@ -598,7 +600,9 @@ class script_translator
 
 public:
 
-  script_translator( MarSystemManager & manager ):
+  script_translator( MarSystemManager & manager,
+                     const string & working_dir = string() ):
+    m_working_dir(working_dir),
     m_manager(manager)
   {}
 
@@ -619,7 +623,8 @@ public:
   }
 };
 
-MarSystem *system_from_script(std::istream & script_stream)
+MarSystem *system_from_script(std::istream & script_stream,
+                              const std::string & working_directory)
 {
   Parser parser(script_stream);
   parser.parse();
@@ -628,7 +633,7 @@ MarSystem *system_from_script(std::istream & script_stream)
   const node &actor = parser.actor();
 
   MarSystemManager manager;
-  script_translator translator(manager);
+  script_translator translator(manager, working_directory);
 
   if (!translator.handle_directives(directives))
     return nullptr;
@@ -639,6 +644,21 @@ MarSystem *system_from_script(std::istream & script_stream)
     system->setName("network");
 
   return system;
+}
+
+MarSystem *system_from_script(const std::string & filename_string)
+{
+  FileName filename(filename_string);
+  string path = filename.path();
+
+  ifstream file(filename_string.c_str());
+  if (!file.is_open())
+  {
+    MRSERR("Could not open file: " << filename_string);
+    return nullptr;
+  }
+
+  return system_from_script(file, path);
 }
 
 }

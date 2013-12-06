@@ -245,8 +245,7 @@ void Main::openSystem(const QString & filename)
   if (filename.endsWith(".mars"))
   {
 #ifdef MARSYAS_HAS_SCRIPT
-    ifstream script_stream( filename.toStdString().c_str() );
-    system = system_from_script(script_stream);
+    system = system_from_script(filename.toStdString());
 #endif
   }
   else if (filename.endsWith(mpl_ending))
