@@ -199,8 +199,14 @@ bool FileName::isAbsolute()
   // Try UNIX style:
   if (filename_[0] == '/')
     return true;
+#if defined(MARSYAS_LINUX) || defined(MARSYAS_MACOSX)
+  if (filename_[0] == '~')
+    return true;
+#endif
+#if defined(MARSYAS_WIN32) || defined(MARSYAS_MINGW) || defined(MARSYAS_CYGWIN)
   // Try Windows style:
   if (filename_.find(':') != string::npos)
     return true;
+#endif
   return false;
 }
