@@ -170,6 +170,7 @@ if (MARSYAS_ANN)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/kd_tree.cpp)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/kd_util.cpp)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/perf.cpp)
+    list(APPEND Marsyas_SOURCES ${ANN_DIR}/ANN.cpp)
 endif (MARSYAS_ANN)
 
 if (MARSYAS_MAD)
