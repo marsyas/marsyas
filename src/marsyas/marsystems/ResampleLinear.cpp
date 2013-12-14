@@ -92,7 +92,7 @@ ResampleLinear::myProcess(realvec& in, realvec& out)
       tp = t / alpha;
       tl= (mrs_natural)tp;
       tr = tl + 1;
-      if (tl<inSamples_)
+      if (tr<inSamples_)  // check tr because tr == inSamples_ might happen
       {
         out(o,t) = (tr-tp) * in(o,tl) + (tp-tl) * in(o,tr);
       }

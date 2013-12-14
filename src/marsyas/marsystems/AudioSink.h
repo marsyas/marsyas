@@ -79,10 +79,12 @@ private:
 
   } shared;
 
-  mrs_natural old_source_block_size_;
+  mrs_natural old_inSamples_;
   mrs_natural old_dest_block_size_;
+  mrs_natural old_israte_;
 
   RtAudio*  audio_;
+  //MarSystem* resampler_;
 
   bool isInitialized_;
   bool stopped_;
@@ -91,7 +93,7 @@ private:
   void myUpdate(MarControlPtr sender);
 
   void initRtAudio(
-    mrs_natural sample_rate,
+    mrs_natural *sample_rate,
     mrs_natural *block_size,
     mrs_natural channel_count,
     bool realtime
@@ -113,6 +115,7 @@ private:
                           unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
   void playCallback_test();
 
+  mrs_natural sample_rate_;
 
 public:
   AudioSink(std::string name);
