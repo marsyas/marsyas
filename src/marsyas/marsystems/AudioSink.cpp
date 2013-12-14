@@ -18,6 +18,7 @@
 
 #include "../common_source.h"
 #include "AudioSink.h"
+//#include "Resample.h"
 
 #include <algorithm>
 #include <cassert>
@@ -32,13 +33,16 @@ using namespace Marsyas;
 
 AudioSink::AudioSink(mrs_string name):
   MarSystem("AudioSink", name),
-  old_source_block_size_(-1),
+  old_inSamples_(-1),
   old_dest_block_size_(-1)
 {
   audio_ = NULL;
 
   isInitialized_ = false;
   stopped_ = true;//lmartins
+
+  //resampler_ = new Resample("resampler");
+  //resampler_->updControl("mrs_string/resamplingMode", "linear");
 
   addControls();
 }
@@ -83,22 +87,30 @@ AudioSink::myUpdate(MarControlPtr sender)
 
   MarSystem::myUpdate(sender);
 
-  mrs_natural source_block_size = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  //resampler_->updControl("mrs_natural/inSamples", inSamples);
   mrs_natural dest_block_size = getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
-  mrs_natural sample_rate = (mrs_natural) getctrl("mrs_real/israte")->to<mrs_real>();
+  mrs_natural israte = (mrs_natural) getctrl("mrs_real/israte")->to<mrs_real>();
   mrs_natural channel_count = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   bool realtime = getControl("mrs_bool/realtime")->to<mrs_bool>();
+  mrs_natural source_block_size;
 
   if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
   {
     stop();
 
-    initRtAudio(sample_rate, &dest_block_size, channel_count, realtime);
 
+    sample_rate_ = israte;
+    initRtAudio(&sample_rate_, &dest_block_size, channel_count, realtime);
+    //resampler_->updControl("mrs_real/israte", (mrs_real) israte);
+    //resampler_->updControl("mrs_real/newSamplingRate", (mrs_real) sample_rate_);
+
+    mrs_real alpha = (mrs_real)(sample_rate_) / (mrs_real)(israte);
+    source_block_size = (mrs_natural) (alpha * inSamples);
     const bool do_resize_buffer = true;
     reformatBuffer(source_block_size, dest_block_size, channel_count, realtime, do_resize_buffer);
 
-    shared.sample_rate = sample_rate;
+    shared.sample_rate = sample_rate_;
     shared.channel_count = channel_count;
     shared.underrun = false;
 
@@ -112,10 +124,12 @@ AudioSink::myUpdate(MarControlPtr sender)
   }
   else if (isInitialized_)
   {
+    mrs_real alpha = (mrs_real)(sample_rate_) / (mrs_real)(israte);
+    source_block_size = (mrs_natural) (alpha * inSamples);
     const bool do_not_resize_buffer = false;
 
     if (dest_block_size != old_dest_block_size_
-        || sample_rate != shared.sample_rate
+        || israte != old_israte_//israte != shared.sample_rate
         || (realtime != (shared.watermark == 0))
         || !reformatBuffer(source_block_size,
                            dest_block_size,
@@ -130,13 +144,17 @@ AudioSink::myUpdate(MarControlPtr sender)
     }
   }
 
-  old_source_block_size_ = source_block_size;
+  ctrl_onSamples_->setValue(source_block_size, NOUPDATE);
+  ctrl_osrate_->setValue((mrs_real) sample_rate_);
+
+  old_inSamples_ = inSamples;
+  old_israte_ = israte;
   old_dest_block_size_ = dest_block_size;
 }
 
 
 void
-AudioSink::initRtAudio(mrs_natural sample_rate,
+AudioSink::initRtAudio(mrs_natural *sample_rate,
   mrs_natural *block_size,
   mrs_natural channel_count,
   bool realtime
@@ -175,6 +193,23 @@ AudioSink::initRtAudio(mrs_natural sample_rate,
     device_id = audio_->getDefaultOutputDevice();
   }
 
+  // probe sample rates
+  std::vector<unsigned int> supported_sample_rates;
+  supported_sample_rates = audio_->getDeviceInfo(device_id).sampleRates;
+  unsigned int target_sample_rate = *(supported_sample_rates.begin());
+  for (std::vector<unsigned int>::iterator i = supported_sample_rates.begin(); i != supported_sample_rates.end(); i++) {
+    if (*i == (unsigned int) *sample_rate) {
+      target_sample_rate = *sample_rate;
+      break;
+    }
+  }
+  if (target_sample_rate != (unsigned int) *sample_rate) {
+    ostringstream msg;
+    msg << "AudioSink: Audio device does not support sample rate " << *sample_rate << "Hz. Resample to " << target_sample_rate << "Hz.";
+    MRSWARN(msg.str());
+  }
+  *sample_rate = (mrs_natural) target_sample_rate;
+
 
 
   // expand mono to stereo
@@ -202,7 +237,7 @@ AudioSink::initRtAudio(mrs_natural sample_rate,
   try
   {
     unsigned int uint_block_size = *block_size;
-    audio_->openStream(&output_params, NULL, format, sample_rate,
+    audio_->openStream(&output_params, NULL, format, *sample_rate,
                        &uint_block_size, &playCallback, (void *)&shared, &options);
     *block_size = uint_block_size;
   }
@@ -310,13 +345,36 @@ bool AudioSink::reformatBuffer(mrs_natural source_block_size,
 void
 AudioSink::myProcess(realvec& in, realvec& out)
 {
-  for (mrs_natural t=0; t < inSamples_; t++)
+  // Copied from ResampleLinear, because resampler_->process(in, out) gives wrong inSamples_ and onSamples_ somehow.
+  // TODO: use a resample library or better resample algorithm. Linear interpolation is not the best solution.
+  mrs_natural o,t;
+  mrs_real tp;
+  mrs_natural tl, tr;
+  mrs_real alpha = (mrs_real)(onSamples_) / (mrs_real)(inSamples_);
+  for (o=0; o < onObservations_; o++)
   {
-    for (mrs_natural o=0; o < inObservations_; o++)
+    for (t = 0; t < onSamples_; t++)
     {
-      out(o,t) = in(o,t);
+      tp = t / alpha;
+      tl= (mrs_natural)tp;
+      tr = tl + 1;
+      if (tr<inSamples_)
+      {
+        out(o,t) = (tr-tp) * in(o,tl) + (tp-tl) * in(o,tr);
+      }
+      else // reflect on boundary
+      {
+        out(o,t) = in(o,inSamples_-1); //  alternative possibilities would include:
+
+        //periodic on boundary:
+        //out(o,t) = in(o,0);
+
+        //zero pad on boundary:
+        //out(o,t) == 0;
+      }
     }
   }
+
 
   //check if RtAudio is initialized
   if (!isInitialized_)
@@ -363,7 +421,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
   for (mrs_natural t=0; t < onSamples_; t++)
   {
     for (mrs_natural o=0; o < onObservations_; o++)
-      producer(o,t) = in(o,t);
+      producer(o,t) = out(o,t);
   }
   //cout << "Pushed " << onSamples_ << endl;
 }
@@ -433,4 +491,3 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 
   return 0;
 }
-
