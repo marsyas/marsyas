@@ -55,21 +55,21 @@ Resample::Resample(const Resample& orig) : MarSystem(orig)
 
   //private:
   //  //Add specific controls needed by this MarSystem.
-  //	void addControls();
-  //	MarControlPtr ctrl_option_;
-  //	MarControlPtr ctrl_samplingRateAdjustmentMode_;
-  //	MarControlPtr ctrl_offStart_;
-  //	MarControlPtr ctrl_offEnd_;
-  //	MarControlPtr ctrl_newSamplingRate_;
-  //	MarControlPtr ctrl_resamplingMode_;
-  //	MarSystem* interpolator_;
-  //	//mrs_string resaModeOld_;
-  //	void myUpdate(MarControlPtr sender);
+  //    void addControls();
+  //    MarControlPtr ctrl_option_;
+  //    MarControlPtr ctrl_samplingRateAdjustmentMode_;
+  //    MarControlPtr ctrl_offStart_;
+  //    MarControlPtr ctrl_offEnd_;
+  //    MarControlPtr ctrl_newSamplingRate_;
+  //    MarControlPtr ctrl_resamplingMode_;
+  //    MarSystem* interpolator_;
+  //    //mrs_string resaModeOld_;
+  //    void myUpdate(MarControlPtr sender);
 
 
   //public:
   //  Resample(std::string name);
-  //	Resample(const Resample& a);
+  //    Resample(const Resample& a);
   //  ~Resample();
   //  MarSystem* clone() const;
   //  //MarSystem* Resample::getInterpolator() const;
@@ -147,7 +147,7 @@ Resample::myUpdate(MarControlPtr sender)
   mrs_string resaMode=ctrl_resamplingMode_->to<mrs_string>();
   //if (resaMode!=resaModeOld_)
   //{
-  //	resaModeOld_=resaMode;
+  //    resaModeOld_=resaMode;
 
 
   delete interpolator_;
@@ -160,7 +160,7 @@ Resample::myUpdate(MarControlPtr sender)
 
       interpolator_->updControl("mrs_bool/windowedMode", ctrl_option_->to<mrs_bool>());
     }
-  else if (resaMode==(mrs_string)	"bezier")
+  else if (resaMode==(mrs_string)       "bezier")
     {
       interpolator_= new ResampleBezier("resa");
       interpolator_->updControl("mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
@@ -168,7 +168,7 @@ Resample::myUpdate(MarControlPtr sender)
 
       interpolator_->updControl("mrs_bool/tangentMode", ctrl_option_);
     }
-  else if (resaMode==(mrs_string)	"near")
+  else if (resaMode==(mrs_string)       "near")
     {
       interpolator_= new ResampleNearestNeighbour("resa");
     }

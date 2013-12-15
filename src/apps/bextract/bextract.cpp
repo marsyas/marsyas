@@ -2114,7 +2114,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   // Add a live audio source for realtime classification
 #ifdef MARSYAS_AUDIOIO
   MarSystem *mic = mng.create("AudioSource", "mic");
-  mic->updControl("mrs_natural/nChannels", 1);	//stereo
+  mic->updControl("mrs_natural/nChannels", 1);  //stereo
   fanout->addMarSystem(mic);
 #endif
 
@@ -2621,18 +2621,18 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
   /*
     if (pluginName != EMPTYSTRING && pluginMute)
-  	{
-  		cout << "PLUGINMUTE" << endl;
-  		featureNetwork->updControl("AudioSink/dest/mrs_bool/mute", true);
-  		featureNetwork->updControl("AudioSink/dest/mrs_bool/initAudio", false);
-  	}
+        {
+                cout << "PLUGINMUTE" << endl;
+                featureNetwork->updControl("AudioSink/dest/mrs_bool/mute", true);
+                featureNetwork->updControl("AudioSink/dest/mrs_bool/initAudio", false);
+        }
   */
 
   // init mic audio ...
   if (mic_)
   {
     bextractNetwork->updControl("mrs_real/israte", 44100.0);   //sampling rate
-    bextractNetwork->updControl("Series/featureNetwork/Fanout/fanout/AudioSource/mic/mrs_natural/nChannels", 1);	//stereo
+    bextractNetwork->updControl("Series/featureNetwork/Fanout/fanout/AudioSource/mic/mrs_natural/nChannels", 1);        //stereo
     bextractNetwork->linkControl( "mrs_bool/initAudio" , "Series/featureNetwork/Fanout/fanout/AudioSource/mic/mrs_bool/initAudio" ); //important link!!!
   }
 
@@ -3008,7 +3008,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 
   if (classifierName == "SMO")
     featureNetwork->updControl("NormMaxMin/norm/mrs_string/mode", "predict");
-  featureNetwork->tick();		// train classifier
+  featureNetwork->tick();               // train classifier
 
   // prepare network for classification
   if (classifierName == "GS")
@@ -3440,7 +3440,7 @@ saivq_train_refactored(string pluginName,  string wekafname,
 
   // Add a live audio source for realtime classification
   MarSystem *mic = mng.create("AudioSource", "mic");
-  mic->updControl("mrs_natural/nChannels", 1);	//stereo
+  mic->updControl("mrs_natural/nChannels", 1);  //stereo
   fanout->addMarSystem(mic);
 
   // Add the fanout to our feature Network ...
@@ -3666,11 +3666,11 @@ saivq_train_refactored(string pluginName,  string wekafname,
   // is used in the feature extraction network
   bextractNetwork->updControl("mrs_natural/inSamples", hopSize);
   // if (stereo_)
-  // 	featureNetwork->updControl("StereoFeatures/stereoFeatures/mrs_natural/winSize",
-  // 							winSize);
+  //    featureNetwork->updControl("StereoFeatures/stereoFeatures/mrs_natural/winSize",
+  //                                                    winSize);
   // else
-  // 	featureNetwork->updControl("TimbreFeatures/featExtractor/mrs_natural/winSize",
-  // 							winSize);
+  //    featureNetwork->updControl("TimbreFeatures/featExtractor/mrs_natural/winSize",
+  //                                                    winSize);
 
   if (start > 0.0)
     offset = (mrs_natural) (start * src->getctrl("mrs_real/israte")->to<mrs_real>());
@@ -3803,7 +3803,7 @@ saivq_train_refactored(string pluginName,  string wekafname,
 
         bextractNetwork->tick();
         // featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset",
-        // 						true);
+        //                                              true);
         fvec = bextractNetwork->getctrl("Annotator/annotator/mrs_realvec/processedData")->to<mrs_realvec>();
 
         bextractNetwork->updControl("mrs_natural/advance", advance);
@@ -3867,7 +3867,7 @@ saivq_train_refactored(string pluginName,  string wekafname,
   if (mic_)
   {
     bextractNetwork->updControl("mrs_real/israte", 44100.0);   //sampling rate
-    bextractNetwork->updControl("Series/featureNetwork/Fanout/fanout/AudioSource/mic/mrs_natural/nChannels", 1);	//stereo
+    bextractNetwork->updControl("Series/featureNetwork/Fanout/fanout/AudioSource/mic/mrs_natural/nChannels", 1);        //stereo
     bextractNetwork->linkControl( "mrs_bool/initAudio" , "Series/featureNetwork/Fanout/fanout/AudioSource/mic/mrs_bool/initAudio" ); //important link!!!
   }
 

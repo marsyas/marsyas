@@ -91,58 +91,58 @@ AudioSink::myUpdate(MarControlPtr sender)
   bool realtime = getControl("mrs_bool/realtime")->to<mrs_bool>();
   
   if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
-  {
-    stop();
-    source_block_size_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-    sample_rate_ = getctrl("mrs_real/israte")->to<mrs_real>();
-    initRtAudio(&sample_rate_, &dest_block_size, 
-		channel_count, realtime);
-
-    mrs_real alpha = (mrs_real)(sample_rate_) / (mrs_real)(israte_);
-    if (alpha != 1)
-      {
-	resampler_ = new Resample("resampler");
-	resampler_->updControl("mrs_natural/inSamples", (mrs_natural)inSamples_);
-	resampler_->updControl("mrs_real/israte", (mrs_real) israte_);
-	resampler_->updControl("mrs_real/newSamplingRate", (mrs_real)sample_rate_);
-      }
-    source_block_size_ = (mrs_natural) (alpha * inSamples_);
-    const bool do_resize_buffer = true;
-    reformatBuffer(source_block_size_, dest_block_size, 
-		   channel_count, realtime, do_resize_buffer);
-
-    shared.sample_rate = sample_rate_;
-    shared.channel_count = channel_count;
-    shared.underrun = false;
-
-    isInitialized_ = true;
-
-    //update bufferSize control which may have been changed
-    //by RtAudio (see RtAudio documentation)
-    setctrl("mrs_natural/bufferSize", (mrs_natural) dest_block_size);
-
-    setctrl("mrs_bool/initAudio", false);
-  }
-  else if (isInitialized_)
-  {
-    const bool do_not_resize_buffer = false;
-
-
-    if (dest_block_size != old_dest_block_size_
-        || sample_rate_ != shared.sample_rate
-        || (realtime != (shared.watermark == 0))
-        || !reformatBuffer(source_block_size_,
-                           dest_block_size,
-                           channel_count,
-                           realtime,
-                           do_not_resize_buffer) )
     {
-      MRSERR("AudioSink: Reinitialization required!");
-      // stop processing until re-initialized;
       stop();
-      isInitialized_ = false;
+      source_block_size_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+      sample_rate_ = getctrl("mrs_real/israte")->to<mrs_real>();
+      initRtAudio(&sample_rate_, &dest_block_size, 
+                  channel_count, realtime);
+      
+      mrs_real alpha = (mrs_real)(sample_rate_) / (mrs_real)(israte_);
+      if (alpha != 1)
+        {
+          resampler_ = new Resample("resampler");
+          resampler_->updControl("mrs_natural/inSamples", (mrs_natural)inSamples_);
+          resampler_->updControl("mrs_real/israte", (mrs_real) israte_);
+          resampler_->updControl("mrs_real/newSamplingRate", (mrs_real)sample_rate_);
+        }
+      source_block_size_ = (mrs_natural) (alpha * inSamples_);
+      const bool do_resize_buffer = true;
+      reformatBuffer(source_block_size_, dest_block_size, 
+                     channel_count, realtime, do_resize_buffer);
+
+      shared.sample_rate = sample_rate_;
+      shared.channel_count = channel_count;
+      shared.underrun = false;
+
+      isInitialized_ = true;
+
+      //update bufferSize control which may have been changed
+      //by RtAudio (see RtAudio documentation)
+      setctrl("mrs_natural/bufferSize", (mrs_natural) dest_block_size);
+
+      setctrl("mrs_bool/initAudio", false);
     }
-  }
+  else if (isInitialized_)
+    {
+      const bool do_not_resize_buffer = false;
+
+
+      if (dest_block_size != old_dest_block_size_
+          || sample_rate_ != shared.sample_rate
+          || (realtime != (shared.watermark == 0))
+          || !reformatBuffer(source_block_size_,
+                             dest_block_size,
+                             channel_count,
+                             realtime,
+                             do_not_resize_buffer) )
+        {
+          MRSERR("AudioSink: Reinitialization required!");
+          // stop processing until re-initialized;
+          stop();
+          isInitialized_ = false;
+        }
+    }
 
 
   ctrl_onSamples_->setValue(source_block_size_, NOUPDATE);
@@ -155,11 +155,11 @@ AudioSink::myUpdate(MarControlPtr sender)
 
 void
 AudioSink::initRtAudio(
-  unsigned int *sample_rate,
-  unsigned int *block_size,
-  unsigned int channel_count,
-  bool realtime
-)
+                       unsigned int *sample_rate,
+                       unsigned int *block_size,
+                       unsigned int channel_count,
+                       bool realtime
+                       )
 {
   mrs_string backend = getControl("mrs_string/backend")->to<mrs_string>();
 
@@ -190,9 +190,9 @@ AudioSink::initRtAudio(
 
   int device_id = (int) getctrl("mrs_natural/device")->to<mrs_natural>();
   if (device_id == 0)
-  {
-    device_id = audio_->getDefaultOutputDevice();
-  }
+    {
+      device_id = audio_->getDefaultOutputDevice();
+    }
 
   std::vector<unsigned int> supported_sample_rates;
   supported_sample_rates = audio_->getDeviceInfo(device_id).sampleRates;
@@ -206,8 +206,8 @@ AudioSink::initRtAudio(
       msg << *i << "-" << *sample_rate; 
       
       if (*i == (unsigned int) *sample_rate) {
-	target_sample_rate = *sample_rate;
-	break;
+        target_sample_rate = *sample_rate;
+        break;
       }
     }
 
@@ -242,16 +242,16 @@ AudioSink::initRtAudio(
   audio_->showWarnings(false);
 
   try
-  {
-    audio_->openStream(&output_params, NULL, format, *sample_rate,
-                       block_size, &playCallback, (void *)&shared, &options);
-  }
+    {
+      audio_->openStream(&output_params, NULL, format, *sample_rate,
+                         block_size, &playCallback, (void *)&shared, &options);
+    }
   catch (RtError& e)
-  {
-    MRSERR("AudioSink: RtAudio error:");
-    e.printMessage();
-    exit(0);
-  }
+    {
+      MRSERR("AudioSink: RtAudio error:");
+      e.printMessage();
+      exit(0);
+    }
 
   audio_->showWarnings(true);
 }
@@ -260,11 +260,11 @@ void
 AudioSink::start()
 {
   if ( stopped_ && isInitialized_ )
-  {
-    clearBuffer();
-    audio_->startStream();
-    stopped_ = false;
-  }
+    {
+      clearBuffer();
+      audio_->startStream();
+      stopped_ = false;
+    }
 }
 
 void
@@ -305,45 +305,45 @@ bool AudioSink::reformatBuffer(size_t source_block_size,
     new_capacity = std::max( new_capacity * 4, (size_t) 2000 );
 
   if (resize)
-  {
-    assert(stopped_);
-    size_t size = new_capacity * 2;
-    if (size != shared.buffer.samples() || channel_count != shared.buffer.observations())
     {
-      bool do_clear_buffer = true;
-      shared.buffer.resize(channel_count, size, new_capacity, do_clear_buffer);
+      assert(stopped_);
+      size_t size = new_capacity * 2;
+      if (size != shared.buffer.samples() || channel_count != shared.buffer.observations())
+        {
+          bool do_clear_buffer = true;
+          shared.buffer.resize(channel_count, size, new_capacity, do_clear_buffer);
+        }
+      else
+        {
+          shared.buffer.set_capacity(new_capacity);
+        }
+      shared.watermark = realtime ? 0 : new_capacity / 2;
     }
-    else
-    {
-      shared.buffer.set_capacity(new_capacity);
-    }
-    shared.watermark = realtime ? 0 : new_capacity / 2;
-  }
   else
-  {
-    if (channel_count != shared.buffer.observations()
-        || new_capacity > shared.buffer.samples())
     {
-      MRSERR("AudioSink: Can not set requested buffer capacity or channel count without"
-             " resizing the buffer!");
-      return false;
-    }
+      if (channel_count != shared.buffer.observations()
+          || new_capacity > shared.buffer.samples())
+        {
+          MRSERR("AudioSink: Can not set requested buffer capacity or channel count without"
+                 " resizing the buffer!");
+          return false;
+        }
 
-    //cout << "Changing capacity: " << new_capacity << "/" << shared.buffer.samples() << endl;
-    unsigned int new_watermark = realtime ? 0 : new_capacity / 2;;
-    if (new_capacity > shared.buffer.capacity())
-    {
-      // First increase capacity, then watermark.
-      shared.buffer.set_capacity(new_capacity);
-      shared.watermark = new_watermark;
+      //cout << "Changing capacity: " << new_capacity << "/" << shared.buffer.samples() << endl;
+      unsigned int new_watermark = realtime ? 0 : new_capacity / 2;;
+      if (new_capacity > shared.buffer.capacity())
+        {
+          // First increase capacity, then watermark.
+          shared.buffer.set_capacity(new_capacity);
+          shared.watermark = new_watermark;
+        }
+      else
+        {
+          // First decrease watermark, then capacity.
+          shared.watermark = new_watermark;
+          shared.buffer.set_capacity(new_capacity);
+        }
     }
-    else
-    {
-      // First decrease watermark, then capacity.
-      shared.watermark = new_watermark;
-      shared.buffer.set_capacity(new_capacity);
-    }
-  }
 
   return true;
 }
@@ -398,45 +398,45 @@ AudioSink::myProcess(realvec& in, realvec& out)
   // (this may be needed by if an explicit call to start()
   // is not done before ticking or calling process() )
   if ( stopped_ )
-  {
-    start();
-  }
+    {
+      start();
+    }
 
   //check MUTE
   if(ctrl_mute_->isTrue())
-  {
-    return;
-  }
+    {
+      return;
+    }
 
   realvec_queue_producer producer(shared.buffer, onSamples_);
 
   if ((mrs_natural) producer.capacity() < onSamples_)
-  {
-    //        cout << "Producer waiting..." << endl;
-    std::unique_lock<std::mutex> locker(shared.mutex);
-
-    shared.condition.wait (
-      locker,
-      [&producer, this]()
     {
-      //          cout << "Producer awake..." << endl;
-      bool ok = producer.reserve(onSamples_);
-      if (shared.watermark > 0)
-        ok = ok && shared.buffer.write_capacity() >= shared.watermark;
-      return ok;
-    }
-    );
+      //        cout << "Producer waiting..." << endl;
+      std::unique_lock<std::mutex> locker(shared.mutex);
 
-    locker.unlock();
-    //cout << "Producer continuing..." << endl;
-  }
+      shared.condition.wait (
+                             locker,
+                             [&producer, this]()
+                             {
+                               //          cout << "Producer awake..." << endl;
+                               bool ok = producer.reserve(onSamples_);
+                               if (shared.watermark > 0)
+                                 ok = ok && shared.buffer.write_capacity() >= shared.watermark;
+                               return ok;
+                             }
+                             );
+
+      locker.unlock();
+      //cout << "Producer continuing..." << endl;
+    }
 
 
   for (mrs_natural t=0; t < onSamples_; t++)
-  {
-    for (mrs_natural o=0; o < onObservations_; o++)
-      producer(o,t) = out(o,t);
-  }
+    {
+      for (mrs_natural o=0; o < onObservations_; o++)
+        producer(o,t) = out(o,t);
+    }
 }
 
 
@@ -460,43 +460,43 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
     shared.underrun = shared.buffer.read_capacity() <= shared.watermark;
 
   if (!shared.underrun)
-  {
-    // Limit scope of realvec_queue_consumer!
-    realvec_queue_consumer consumer(shared.buffer, nFrames);
+    {
+      // Limit scope of realvec_queue_consumer!
+      realvec_queue_consumer consumer(shared.buffer, nFrames);
 
-    if (consumer.capacity() >= nFrames)
-    {
-      for (unsigned int t=0; t < nFrames; t++)
-      {
-        unsigned int t2 = t * 2;
-        if (nChannels == 1)
+      if (consumer.capacity() >= nFrames)
         {
-          mrs_real val = consumer(0, t);
-          data[t2] = val;
-          data[t2+1] = val;
+          for (unsigned int t=0; t < nFrames; t++)
+            {
+              unsigned int t2 = t * 2;
+              if (nChannels == 1)
+                {
+                  mrs_real val = consumer(0, t);
+                  data[t2] = val;
+                  data[t2+1] = val;
+                }
+              else
+                {
+                  for (unsigned int ch=0; ch < nChannels; ch++) {
+                    data[nChannels*t+ch] = consumer(ch, t);
+                  }
+                }
+            }
+          //cout << "-- Consumed." << endl;
         }
-        else
+      else
         {
-          for (unsigned int ch=0; ch < nChannels; ch++) {
-            data[nChannels*t+ch] = consumer(ch, t);
-          }
+          shared.underrun = true;
+          MRSWARN("AudioSink: buffer underrun!");
         }
-     }
-      //cout << "-- Consumed." << endl;
     }
-    else
-    {
-      shared.underrun = true;
-      MRSWARN("AudioSink: buffer underrun!");
-    }
-  }
 
   if (shared.underrun)
-  {
-    // write silence:
-    nChannels = std::max(nChannels, (unsigned int) 2);
-    std::memset(outputBuffer, 0, nChannels * nFrames * sizeof(mrs_real));
-  }
+    {
+      // write silence:
+      nChannels = std::max(nChannels, (unsigned int) 2);
+      std::memset(outputBuffer, 0, nChannels * nFrames * sizeof(mrs_real));
+    }
 
   shared.mutex.lock();
   shared.condition.notify_all();

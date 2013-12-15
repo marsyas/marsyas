@@ -49,14 +49,14 @@ void sfplay(const CommandLineOptions & options)
 
   // Output destination is either audio or soundfile
   MarSystem* dest;
-  if (output_filename.empty())	// audio output
+  if (output_filename.empty())  // audio output
   {
     dest = mng.create("AudioSink", "dest");
     string backend = options.value<string>("audio-backend");
     if (!backend.empty())
       dest->setControl("mrs_string/backend", backend);
   }
-  else 				// filename output
+  else                          // filename output
   {
     dest = mng.create("SoundFileSink", "dest");
   }
