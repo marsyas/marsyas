@@ -1,0 +1,84 @@
+kea : Series {
+
+  inSamples = 1
+
+  + weka_file = ""
+
+  + classification = "svm"
+
+  + svm_svm = classifier/svm/svm
+  + svm_kernel = classifier/svm/kernel
+  + svm_gamma = 4
+  + svm_c = 1.0
+
+  + done = report/done
+
+  ~ GenericClassifier : Fanout
+  {
+    + nClasses = 1
+    + mode = "train"
+    disableChild = "all"
+
+    -> zero_r : ZeroRClassifier
+    {
+      nClasses = /nClasses
+      mode = /mode
+    }
+
+    -> gaussian : GaussianClassifier
+    {
+      nClasses = /nClasses
+      mode = /mode
+    }
+
+    -> svm : SVMClassifier
+    {
+      nClasses = /nClasses
+      mode = /mode
+    }
+  }
+
+  -> weka: WekaSource
+  {
+    validationMode = "kFold,NS,10"
+    filename = /weka_file
+  }
+
+  -> classifier: GenericClassifier { mode = /weka/mode }
+
+  -> report: ClassificationReport { mode = /classifier/mode }
+
+  when (classification == "svm")
+  {
+    classifier/enableChild = "SVMClassifier/svm"
+    classifier/svm/gamma = /svm_gamma
+    classifier/svm/C = /svm_c
+  }
+  when (classification == "gaussian")
+  {
+    classifier/enableChild = "GaussianClassifier/gaussian"
+  }
+  when (classification == "zero-r")
+  {
+    classifier/enableChild = "ZeroRClassifier/zero_r"
+  }
+
+  when (weka/regression)
+  {
+    classifier/svm/output_classPerms = false
+    classifier/nClasses = 1
+    report/nClasses = 1
+    report/regression = true
+  }
+  else
+  {
+    classifier/nClasses = weka/nClasses
+    report/nClasses = weka/nClasses
+    report/classNames = weka/classNames
+  }
+
+  when (weka/done)
+  {
+    report/mode = "report"
+  }
+}
