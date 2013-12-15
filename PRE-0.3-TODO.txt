@@ -1,4 +1,10 @@
+We should check this and get rid of it
+
+
 GENERAL
+
+
+
 - Figure out CPACK for distribution packaging (maybe we really need
 to start distributing binaries)
 
