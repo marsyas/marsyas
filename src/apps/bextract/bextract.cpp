@@ -94,7 +94,7 @@ mrs_bool mic_;
 #define DEFAULT_EXTRACTOR "STFT"
 #define DEFAULT_CLASSIFIER  "SVM"
 
-string workspaceDir = EMPTYSTRING;
+string workspaceDir = "./";
 string pluginName = EMPTYSTRING;
 string wekafname = EMPTYSTRING;
 string extractorName = "REFACTORED";
@@ -2094,6 +2094,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 {
   MRSDIAG("bextract.cpp - bextract_train_refactored");
   MarSystemManager mng;
+
+  cout << "wekafname = " << wekafname << endl;
+
 
   // Overall extraction and classification network
   MarSystem* bextractNetwork = mng.create("Series", "bextractNetwork");

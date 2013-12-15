@@ -29,6 +29,7 @@
 #include <condition_variable>
 #include <atomic>
 
+
 class RtAudio;
 class Thread;
 
@@ -71,20 +72,19 @@ private:
 
     realvec_queue buffer;
 
-    std::atomic<mrs_natural> watermark;
+    std::atomic<unsigned int> watermark;
     bool underrun;
 
-    mrs_natural channel_count;
-    mrs_natural sample_rate;
+    unsigned int channel_count;
+    unsigned int sample_rate;
 
   } shared;
-
-  mrs_natural old_inSamples_;
+  mrs_natural source_block_size_;
+  mrs_natural old_source_block_size_;
   mrs_natural old_dest_block_size_;
-  mrs_natural old_israte_;
-
+  unsigned int sample_rate_;
   RtAudio*  audio_;
-  //MarSystem* resampler_;
+  MarSystem* resampler_;
 
   bool isInitialized_;
   bool stopped_;
@@ -93,9 +93,9 @@ private:
   void myUpdate(MarControlPtr sender);
 
   void initRtAudio(
-    mrs_natural *sample_rate,
-    mrs_natural *block_size,
-    mrs_natural channel_count,
+    unsigned int* sample_rate,
+    unsigned int* block_size,
+    unsigned int channel_count,
     bool realtime
   );
 
@@ -105,9 +105,9 @@ private:
   void localActivate(bool state);
 
   void clearBuffer();
-  bool reformatBuffer(mrs_natural sourceBlockSize,
-                      mrs_natural destBlockSize,
-                      mrs_natural channel_count,
+  bool reformatBuffer(size_t sourceBlockSize,
+                      size_t destBlockSize,
+                      size_t channel_count,
                       bool realtime, bool resize);
 
 
@@ -115,11 +115,12 @@ private:
                           unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
   void playCallback_test();
 
-  mrs_natural sample_rate_;
 
 public:
   AudioSink(std::string name);
   ~AudioSink();
+  AudioSink(const AudioSink& a);
+
   MarSystem* clone() const;
 
   void myProcess(realvec& in, realvec& out);

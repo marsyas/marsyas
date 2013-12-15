@@ -116,9 +116,7 @@ Resample::addControls()
   addctrl("mrs_string/resamplingMode", "linear" , ctrl_resamplingMode_);
   addctrl("mrs_bool/option", (mrs_bool)false , ctrl_option_);
   addctrl("mrs_real/newSamplingRate", 22050.0 , ctrl_newSamplingRate_);
-
-
-
+  
   setctrlState("mrs_bool/samplingRateAdjustmentMode",(mrs_bool)true);
   setctrlState("mrs_real/newSamplingRate",(mrs_bool)true);
   setctrlState("mrs_string/resamplingMode",(mrs_bool)true);
@@ -153,44 +151,39 @@ Resample::myUpdate(MarControlPtr sender)
 
 
   delete interpolator_;
+  interpolator_ = NULL;
   if (resaMode==(mrs_string)"sincip")
-  {
-    interpolator_= new ResampleSinc("resa");
-    interpolator_->updControl("mrs_bool/windowedMode", ctrl_option_->to<mrs_bool>());
-    interpolator_->updControl("mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
-    interpolator_->updControl("mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
-    interpolator_->updControl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
-    interpolator_->updControl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
-  }
+    {
+      interpolator_= new ResampleSinc("resa");
+      interpolator_->updControl("mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
+      interpolator_->updControl("mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
+
+      interpolator_->updControl("mrs_bool/windowedMode", ctrl_option_->to<mrs_bool>());
+    }
   else if (resaMode==(mrs_string)	"bezier")
-  {
-    interpolator_= new ResampleBezier("resa");
-    interpolator_->updControl("mrs_bool/tangentMode", ctrl_option_);
-    interpolator_->updControl("mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
-    interpolator_->updControl("mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
-    interpolator_->updControl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
-    interpolator_->updControl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
-  }
+    {
+      interpolator_= new ResampleBezier("resa");
+      interpolator_->updControl("mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
+      interpolator_->updControl("mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
+
+      interpolator_->updControl("mrs_bool/tangentMode", ctrl_option_);
+    }
   else if (resaMode==(mrs_string)	"near")
-  {
-    interpolator_= new ResampleNearestNeighbour("resa");
-    //interpolator_->updControl("mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
-    //interpolator_->updControl("mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
-    interpolator_->updControl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
-    interpolator_->updControl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
-  }
+    {
+      interpolator_= new ResampleNearestNeighbour("resa");
+    }
   else
-  {
-    interpolator_= new ResampleLinear("resa");
-    //interpolator_->updControl("ResampleSinc/resa/mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
-    //interpolator_->updControl("ResampleSinc/resa/mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
-    interpolator_->updControl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
-    interpolator_->updControl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
-  }
-
-  //}
-
-
+    {
+      interpolator_= new ResampleLinear("resa");
+    }
+  
+  if (interpolator_ != NULL)
+    {
+      interpolator_->updControl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
+      interpolator_->updControl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
+      interpolator_->updControl("mrs_natural/inSamples", inSamples_);
+      interpolator_->updControl("mrs_natural/inObservations", inObservations_);
+    }
 }
 
 

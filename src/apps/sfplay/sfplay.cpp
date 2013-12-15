@@ -52,7 +52,6 @@ void sfplay(const CommandLineOptions & options)
   if (output_filename.empty())	// audio output
   {
     dest = mng.create("AudioSink", "dest");
-
     string backend = options.value<string>("audio-backend");
     if (!backend.empty())
       dest->setControl("mrs_string/backend", backend);
@@ -64,13 +63,11 @@ void sfplay(const CommandLineOptions & options)
 
   // create playback network with source-gain-dest
   MarSystem* playbacknet = mng.create("Series", "playbacknet");
-
   playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
   playbacknet->addMarSystem(mng.create("Gain", "gt"));
   playbacknet->addMarSystem(dest);
 
   // playback offset
-
 
   // update controls
   playbacknet->updControl("mrs_natural/inSamples", windowsize);
@@ -82,7 +79,6 @@ void sfplay(const CommandLineOptions & options)
   playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
   playbacknet->linkControl("mrs_natural/loopPos", "SoundFileSource/src/mrs_natural/loopPos");
   playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
-
 
   if (output_filename.empty()) // audio output
     playbacknet->linkControl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
@@ -201,6 +197,7 @@ main(int argc, const char **argv)
     printUsage(program_name);
     return 0;
   }
+
 
   // play the soundfiles/collections
   sfplay(options);

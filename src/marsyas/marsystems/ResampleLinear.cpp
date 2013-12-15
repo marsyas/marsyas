@@ -84,7 +84,6 @@ ResampleLinear::myProcess(realvec& in, realvec& out)
   mrs_real alpha = ctrl_stretch_->to<mrs_real>();
   mrs_natural o,t;
 
-
   for (o=0; o < onObservations_; o++)
   {
     for (t = 0; t < onSamples_; t++)
