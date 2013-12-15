@@ -47,6 +47,7 @@
 @ifnothtml
 ``\TEXT\''
 @end ifnothtml
+
 @end macro
 
 @macro userref{TEXT}
@@ -84,6 +85,3 @@
 @end cartouche
 @end quotation
 @end macro
-
-
-
