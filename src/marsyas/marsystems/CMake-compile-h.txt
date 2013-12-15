@@ -254,6 +254,7 @@ StretchLinear.h
 Subtract.h
 SubtractMean.h
 Sum.h
+SVFilter.h
 SVMClassifier.h
 TempoHypotheses.h
 TimeFreqPeakConnectivity.h

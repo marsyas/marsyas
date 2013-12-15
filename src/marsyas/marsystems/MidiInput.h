@@ -20,6 +20,7 @@
 #define MARSYAS_MIDIINPUT_H
 
 #include <marsyas/system/MarSystem.h>
+#include <queue>
 
 
 class RtMidiIn;
@@ -47,9 +48,9 @@ private:
 
   RtMidiIn* midiin;
 
-  int byte3, byte2, byte1;
   bool initMidi;
   bool virtualPort;
+  std::queue<std::vector<int>> msgQueue;
   MarControlPtr ctrl_byte1_;
   MarControlPtr ctrl_byte2_;
   MarControlPtr ctrl_byte3_;

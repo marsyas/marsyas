@@ -72,7 +72,7 @@ void BlitOsc::myUpdate(MarControlPtr sender)
   switch (type_)
   {
   case 0: // Saw
-    std::cout << frequency_ << std::endl;
+    //std::cout << frequency_ << std::endl;
     dc_ = frequency_/israte_;
     break;
   case 1: // Square

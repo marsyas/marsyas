@@ -237,6 +237,7 @@
 #include <marsyas/marsystems/Subtract.h>
 #include <marsyas/marsystems/SubtractMean.h>
 #include <marsyas/marsystems/Sum.h>
+#include <marsyas/marsystems/SVFilter.h>
 #include <marsyas/marsystems/TempoHypotheses.h>
 #include <marsyas/marsystems/TimeFreqPeakConnectivity.h>
 #include <marsyas/marsystems/TimeStretch.h>
@@ -522,6 +523,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("Subtract", new Subtract("subtract"));
   registerPrototype("SubtractMean", new SubtractMean("subtractmean"));
   registerPrototype("Sum", new Sum("sum"));
+  registerPrototype("SVFilter", new SVFilter("svfilter"));
   registerPrototype("TempoHypotheses", new TempoHypotheses("tempohyp"));
   registerPrototype("TimeFreqPeakConnectivity", new TimeFreqPeakConnectivity("tfpeakconn"));
   registerPrototype("TimeStretch", new TimeStretch("tscp"));
