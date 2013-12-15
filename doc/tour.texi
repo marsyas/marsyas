@@ -41,7 +41,7 @@ of Marsyas the following audio track is available:
 @end menu
 
 @node Command-line tools , User interfaces, Tour, Tour
-@subsection Command-line tools
+@section Command-line tools
 
 In this section a few examples of how Marsyas can be used for 
 various audio processing tasks are provided. Detailed documentation 
@@ -145,7 +145,7 @@ sfplay nearhouSep.wav
 
 
 @node User interfaces, Web information, Command-line tools , Tour
-@subsection User interfaces 
+@section User interfaces 
 
 A variety of graphical user interfaces are provided with the Marsyas
 source distribution. Although it is possible to write a user interface 
@@ -222,7 +222,7 @@ load it without requiring the time consuming stages of feature
 extraction and training. 
  
 @node Web information,  , User interfaces, Tour
-@subsection Web information
+@section Web information
 
 Marsyas has been used for a variety of projects in both academia and
 industry. In addition there are several web-interfaces that use 
