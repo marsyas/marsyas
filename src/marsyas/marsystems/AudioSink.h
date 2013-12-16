@@ -72,7 +72,7 @@ private:
 
     realvec_queue buffer;
 
-    std::atomic<unsigned int> watermark;
+    std::atomic<mrs_natural> watermark;
     bool underrun;
 
     unsigned int channel_count;
@@ -80,7 +80,7 @@ private:
 
   } shared;
 
-  mrs_natural old_source_sample_rate_;
+  mrs_real old_source_sample_rate_;
   mrs_natural old_dest_block_size_;
 
   realvec resampler_output_;
@@ -116,9 +116,9 @@ private:
                                 mrs_natural channel_count);
 
   void clearBuffer();
-  bool reformatBuffer(size_t sourceBlockSize,
-                      size_t destBlockSize,
-                      size_t channel_count,
+  bool reformatBuffer(mrs_natural sourceBlockSize,
+                      mrs_natural destBlockSize,
+                      mrs_natural channel_count,
                       bool realtime, bool resize);
 
 

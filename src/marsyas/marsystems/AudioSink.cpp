@@ -119,7 +119,7 @@ AudioSink::myUpdate(MarControlPtr sender)
                    channel_count, realtime, do_resize_buffer);
 
     shared.sample_rate = dest_sample_rate;
-    shared.channel_count = channel_count;
+    shared.channel_count = (unsigned int) channel_count;
     shared.underrun = false;
 
     isInitialized_ = true;
@@ -369,56 +369,56 @@ void AudioSink::clearBuffer()
   shared.underrun = false;
 }
 
-bool AudioSink::reformatBuffer(size_t source_block_size,
-                               size_t dest_block_size,
-                               size_t channel_count,
+bool AudioSink::reformatBuffer(mrs_natural source_block_size,
+                               mrs_natural dest_block_size,
+                               mrs_natural channel_count,
                                bool realtime, bool resize)
 {
 
-  size_t new_capacity = source_block_size + dest_block_size + 1;
+  mrs_natural new_capacity = source_block_size + dest_block_size + 1;
   if (!realtime)
-    new_capacity = std::max( new_capacity * 4, (size_t) 2000 );
+    new_capacity = std::max( new_capacity * 4, (mrs_natural) 2000 );
 
   if (resize)
+  {
+    assert(stopped_);
+    mrs_natural size = new_capacity * 2;
+    if (size != shared.buffer.samples() || channel_count != shared.buffer.observations())
     {
-      assert(stopped_);
-      size_t size = new_capacity * 2;
-      if (size != shared.buffer.samples() || channel_count != shared.buffer.observations())
-        {
-          bool do_clear_buffer = true;
-          shared.buffer.resize(channel_count, size, new_capacity, do_clear_buffer);
-        }
-      else
-        {
-          shared.buffer.set_capacity(new_capacity);
-        }
-      shared.watermark = realtime ? 0 : new_capacity / 2;
+      bool do_clear_buffer = true;
+      shared.buffer.resize(channel_count, size, new_capacity, do_clear_buffer);
     }
+    else
+    {
+      shared.buffer.set_capacity(new_capacity);
+    }
+    shared.watermark = realtime ? 0 : new_capacity / 2;
+  }
   else
+  {
+    if (channel_count != shared.buffer.observations()
+        || new_capacity > shared.buffer.samples())
     {
-      if (channel_count != shared.buffer.observations()
-          || new_capacity > shared.buffer.samples())
-        {
-          MRSERR("AudioSink: Can not set requested buffer capacity or channel count without"
-                 " resizing the buffer!");
-          return false;
-        }
-
-      //cout << "Changing capacity: " << new_capacity << "/" << shared.buffer.samples() << endl;
-      unsigned int new_watermark = realtime ? 0 : new_capacity / 2;;
-      if (new_capacity > shared.buffer.capacity())
-        {
-          // First increase capacity, then watermark.
-          shared.buffer.set_capacity(new_capacity);
-          shared.watermark = new_watermark;
-        }
-      else
-        {
-          // First decrease watermark, then capacity.
-          shared.watermark = new_watermark;
-          shared.buffer.set_capacity(new_capacity);
-        }
+      MRSERR("AudioSink: Can not set requested buffer capacity or channel count without"
+             " resizing the buffer!");
+      return false;
     }
+
+    //cout << "Changing capacity: " << new_capacity << "/" << shared.buffer.samples() << endl;
+    unsigned int new_watermark = realtime ? 0 : new_capacity / 2;;
+    if (new_capacity > shared.buffer.capacity())
+    {
+      // First increase capacity, then watermark.
+      shared.buffer.set_capacity(new_capacity);
+      shared.watermark = new_watermark;
+    }
+    else
+    {
+      // First decrease watermark, then capacity.
+      shared.watermark = new_watermark;
+      shared.buffer.set_capacity(new_capacity);
+    }
+  }
 
   return true;
 }
