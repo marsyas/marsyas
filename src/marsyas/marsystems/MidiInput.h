@@ -50,7 +50,7 @@ private:
 
   bool initMidi;
   bool virtualPort;
-  std::queue<std::vector<int>> msgQueue;
+  std::queue< std::vector<int> > msgQueue;
   MarControlPtr ctrl_byte1_;
   MarControlPtr ctrl_byte2_;
   MarControlPtr ctrl_byte3_;
