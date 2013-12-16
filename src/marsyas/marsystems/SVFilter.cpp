@@ -23,11 +23,27 @@
 using namespace Marsyas;
 
 
-SVFilter::SVFilter(mrs_string name):MarSystem("SVFilter", name)
+SVFilter::SVFilter(mrs_string name):
+  MarSystem("SVFilter", name),
+  type_(0),
+  res_(0.1),
+  notch(0.0),
+  low (0.0),
+  high(0.0),
+  band(0.0)
 {
   addControls();
-  type_ = 0;
 }
+
+SVFilter::SVFilter( const SVFilter & other ):
+  MarSystem(other),
+  type_(0),
+  res_(0.1),
+  notch(0.0),
+  low (0.0),
+  high(0.0),
+  band(0.0)
+{}
 
 SVFilter::~SVFilter()
 {

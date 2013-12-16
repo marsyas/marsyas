@@ -49,15 +49,16 @@ private:
 
   mrs_real israte_;
   mrs_real frequency_;
-  mrs_real res_ = 0.1;
+  mrs_real res_;
 
-	mrs_real notch = 0.0;
-	mrs_real low = 0.0;
-	mrs_real high = 0.0;
-	mrs_real band = 0.0;
+  mrs_real notch;
+  mrs_real low;
+  mrs_real high;
+  mrs_real band;
 
 public:
   SVFilter(std::string name);
+  SVFilter( const SVFilter & other );
   ~SVFilter();
   MarSystem* clone() const;
 
