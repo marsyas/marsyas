@@ -79,15 +79,18 @@ private:
     unsigned int sample_rate;
 
   } shared;
-  mrs_natural source_block_size_;
-  mrs_natural old_source_block_size_;
+
+  mrs_natural old_source_sample_rate_;
   mrs_natural old_dest_block_size_;
-  unsigned int sample_rate_;
-  RtAudio*  audio_;
+
+  realvec resampler_output_;
   MarSystem* resampler_;
+
+  RtAudio*  audio_;
 
   bool isInitialized_;
   bool stopped_;
+  bool is_resampling_;
 
   void addControls();
   void myUpdate(MarControlPtr sender);
@@ -103,6 +106,14 @@ private:
   void stop();
 
   void localActivate(bool state);
+
+  void configureResampler(mrs_real in_sample_rate, mrs_natural in_block_size,
+                          mrs_real out_sample_rate, mrs_natural *out_block_size,
+                          mrs_natural channel_count);
+
+  void updateResamplerBlockSize(mrs_natural in_block_size,
+                                mrs_natural *out_block_size,
+                                mrs_natural channel_count);
 
   void clearBuffer();
   bool reformatBuffer(size_t sourceBlockSize,

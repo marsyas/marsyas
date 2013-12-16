@@ -32,26 +32,29 @@ using namespace Marsyas;
 
 AudioSink::AudioSink(mrs_string name):
   MarSystem("AudioSink", name),
-  old_source_block_size_(-1),
-  old_dest_block_size_(-1)
+  old_source_sample_rate_(-1),
+  old_dest_block_size_(-1),
+  resampler_(NULL),
+  audio_ (NULL),
+  isInitialized_(false),
+  stopped_(true),
+  is_resampling_(false)
 {
-  audio_ = NULL;
-  resampler_ = NULL;
-  isInitialized_ = false;
-  stopped_ = true;//lmartins
-
   addControls();
 }
 
 
 
-AudioSink::AudioSink(const AudioSink& a):MarSystem(a)
-{
-  resampler_ = NULL;
-  audio_ = NULL;
-  isInitialized_ = false;
-  stopped_ = true;
-}
+AudioSink::AudioSink(const AudioSink& a):
+  MarSystem(a),
+  old_source_sample_rate_(-1),
+  old_dest_block_size_(-1),
+  resampler_(NULL),
+  audio_ (NULL),
+  isInitialized_(false),
+  stopped_(true),
+  is_resampling_(false)
+{}
 
 AudioSink::~AudioSink()
 {
@@ -85,73 +88,145 @@ AudioSink::myUpdate(MarControlPtr sender)
 
   MarSystem::myUpdate(sender);
 
-
-  unsigned int dest_block_size = getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
+  // get input format params
+  mrs_natural source_block_size = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  mrs_real source_sample_rate  = getctrl("mrs_real/israte")->to<mrs_real>();
   mrs_natural channel_count = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+
+  // get output format params
+  mrs_natural requested_dest_block_size = getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
+
+  // get other params
   bool realtime = getControl("mrs_bool/realtime")->to<mrs_bool>();
-  
+
+  // If user requests audio device initialization:
   if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
-    {
-      stop();
-      source_block_size_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-      sample_rate_ = getctrl("mrs_real/israte")->to<mrs_real>();
-      initRtAudio(&sample_rate_, &dest_block_size, 
-                  channel_count, realtime);
-      
-      mrs_real alpha = (mrs_real)(sample_rate_) / (mrs_real)(israte_);
-      if (alpha != 1)
-        {
-          resampler_ = new Resample("resampler");
-          resampler_->updControl("mrs_natural/inSamples", (mrs_natural)inSamples_);
-          resampler_->updControl("mrs_real/israte", (mrs_real) israte_);
-          resampler_->updControl("mrs_real/newSamplingRate", (mrs_real)sample_rate_);
-        }
-      source_block_size_ = (mrs_natural) (alpha * inSamples_);
-      const bool do_resize_buffer = true;
-      reformatBuffer(source_block_size_, dest_block_size, 
-                     channel_count, realtime, do_resize_buffer);
+  {
+    stop();
 
-      shared.sample_rate = sample_rate_;
-      shared.channel_count = channel_count;
-      shared.underrun = false;
+    unsigned int dest_sample_rate = (unsigned int) source_sample_rate;
+    unsigned int dest_block_size = (unsigned int) requested_dest_block_size;
+    initRtAudio(&dest_sample_rate, &dest_block_size,
+                channel_count, realtime);
 
-      isInitialized_ = true;
+    mrs_natural resampled_block_size;
+    configureResampler(source_sample_rate, source_block_size,
+                       (mrs_real) dest_sample_rate, &resampled_block_size,
+                       channel_count);
 
-      //update bufferSize control which may have been changed
-      //by RtAudio (see RtAudio documentation)
-      setctrl("mrs_natural/bufferSize", (mrs_natural) dest_block_size);
+    const bool do_resize_buffer = true;
+    reformatBuffer(resampled_block_size, (mrs_natural) dest_block_size,
+                   channel_count, realtime, do_resize_buffer);
 
-      setctrl("mrs_bool/initAudio", false);
-    }
+    shared.sample_rate = dest_sample_rate;
+    shared.channel_count = channel_count;
+    shared.underrun = false;
+
+    isInitialized_ = true;
+
+    // update control to reflect block size forced by audio device:
+    setctrl("mrs_natural/bufferSize", requested_dest_block_size);
+    // disable handled request flag
+    setctrl("mrs_bool/initAudio", false);
+  }
+  // If no request for audio device initialization this time,
+  // but it has previously been initialized:
   else if (isInitialized_)
+  {
+    bool can_continue =
+        (source_sample_rate == old_source_sample_rate_) &&
+        (requested_dest_block_size == old_dest_block_size_) &&
+        (realtime == (shared.watermark == 0));
+
+    if (can_continue)
     {
+      mrs_natural resampled_block_size;
+      updateResamplerBlockSize(source_block_size, &resampled_block_size,
+                               channel_count);
+
       const bool do_not_resize_buffer = false;
 
-
-      if (dest_block_size != old_dest_block_size_
-          || sample_rate_ != shared.sample_rate
-          || (realtime != (shared.watermark == 0))
-          || !reformatBuffer(source_block_size_,
-                             dest_block_size,
-                             channel_count,
-                             realtime,
-                             do_not_resize_buffer) )
-        {
-          MRSERR("AudioSink: Reinitialization required!");
-          // stop processing until re-initialized;
-          stop();
-          isInitialized_ = false;
-        }
+      can_continue = reformatBuffer(resampled_block_size,
+                                    requested_dest_block_size,
+                                    channel_count,
+                                    realtime,
+                                    do_not_resize_buffer);
     }
 
+    if (!can_continue)
+    {
+      MRSERR("AudioSink: Reinitialization required!");
+      // stop processing until re-initialized;
+      stop();
+      isInitialized_ = false;
+    }
+  }
 
-  ctrl_onSamples_->setValue(source_block_size_, NOUPDATE);
-  ctrl_osrate_->setValue((mrs_real)sample_rate_);
+  // We will always pass input to output unchanged:
+  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
-  old_source_block_size_ = source_block_size_;
-  old_dest_block_size_ = dest_block_size;
+  // Cache current parameters,
+  // just so they can be compared for change next time
+  old_source_sample_rate_ = source_sample_rate;
+  old_dest_block_size_ = requested_dest_block_size;
 }
 
+
+void AudioSink::configureResampler(mrs_real in_sample_rate, mrs_natural in_block_size,
+                                   mrs_real out_sample_rate, mrs_natural *out_block_size,
+                                   mrs_natural channel_count)
+{
+    is_resampling_ = out_sample_rate != in_sample_rate;
+
+    mrs_natural resampled_block_size;
+
+    if (is_resampling_)
+    {
+        if (!resampler_)
+            resampler_ = new Resample("resampler");
+
+        resampler_->updControl("mrs_natural/inSamples", in_block_size);
+        resampler_->updControl("mrs_natural/inObservations", channel_count);
+        resampler_->updControl("mrs_real/israte", in_sample_rate);
+        resampler_->updControl("mrs_real/newSamplingRate", out_sample_rate);
+
+        resampled_block_size = resampler_->getControl("mrs_natural/onSamples")->to<mrs_natural>();
+
+        resampler_output_.create(channel_count, resampled_block_size);
+    }
+    else
+    {
+       resampled_block_size =  in_block_size;
+    }
+
+    if (out_block_size)
+    {
+        *out_block_size = resampled_block_size;
+    }
+}
+
+void AudioSink::updateResamplerBlockSize(mrs_natural in_block_size,
+                                         mrs_natural *out_block_size,
+                                         mrs_natural channel_count)
+{
+    mrs_natural resampled_block_size;
+
+    if (resampler_)
+    {
+        resampler_->updControl("mrs_natural/inSamples", in_block_size);
+        resampled_block_size = resampler_->getControl("mrs_natural/onSamples")->to<mrs_natural>();
+        resampler_output_.create(channel_count, resampled_block_size);
+    }
+    else
+    {
+        resampled_block_size =  in_block_size;
+    }
+
+    if (out_block_size)
+        *out_block_size = resampled_block_size;
+}
 
 void
 AudioSink::initRtAudio(
@@ -351,44 +426,8 @@ bool AudioSink::reformatBuffer(size_t source_block_size,
 void
 AudioSink::myProcess(realvec& in, realvec& out)
 {
-  mrs_real alpha = (mrs_real)(onSamples_) / (mrs_real)(inSamples_);
-  if (alpha != 1) 
-    {
-      resampler_->process(in,out);
-    }
-  else 
-    {
-      out = in;
-    }
-
-
-  // mrs_real tp;
-  // mrs_natural tl, tr;
-
-
-  // for (mrs_natural o=0; o < onObservations_; o++)
-  // {
-  //   for (mrs_natural t = 0; t < onSamples_; t++)
-  //   {
-  //     tp = t / alpha;
-  //     tl= (mrs_natural)tp;
-  //     tr = tl + 1;
-  //     if (tr<inSamples_)
-  //     {
-  //       out(o,t) = (tr-tp) * in(o,tl) + (tp-tl) * in(o,tr);
-  //     }
-  //     else // reflect on boundary
-  //     {
-  //       out(o,t) = in(o,inSamples_-1); //  alternative possibilities would include:
-
-  //       //periodic on boundary:
-  //       //out(o,t) = in(o,0);
-
-  //       //zero pad on boundary:
-  //       //out(o,t) == 0;
-  //     }
-  //   }
-  // }
+  // always pass input unchanged
+  out = in;
 
   //check if RtAudio is initialized
   if (!isInitialized_)
@@ -398,45 +437,51 @@ AudioSink::myProcess(realvec& in, realvec& out)
   // (this may be needed by if an explicit call to start()
   // is not done before ticking or calling process() )
   if ( stopped_ )
-    {
+  {
       start();
-    }
+  }
 
   //check MUTE
   if(ctrl_mute_->isTrue())
-    {
+  {
       return;
-    }
+  }
 
-  realvec_queue_producer producer(shared.buffer, onSamples_);
+  if (is_resampling_)
+      resampler_->process(in, resampler_output_);
 
-  if ((mrs_natural) producer.capacity() < onSamples_)
+  const realvec & source = is_resampling_ ? resampler_output_ : in;
+  mrs_natural out_samples = source.getCols();
+  mrs_natural out_observations = source.getRows();
+
+  realvec_queue_producer producer(shared.buffer, out_samples);
+
+  if ((mrs_natural) producer.capacity() < out_samples)
+  {
+    //        cout << "Producer waiting..." << endl;
+
+    auto resume_condition = [&]()
     {
-      //        cout << "Producer waiting..." << endl;
-      std::unique_lock<std::mutex> locker(shared.mutex);
+      //          cout << "Producer awake..." << endl;
+      bool ok = producer.reserve(out_samples);
+      if (shared.watermark > 0)
+        ok = ok && shared.buffer.write_capacity() >= shared.watermark;
+      return ok;
+    };
 
-      shared.condition.wait (
-                             locker,
-                             [&producer, this]()
-                             {
-                               //          cout << "Producer awake..." << endl;
-                               bool ok = producer.reserve(onSamples_);
-                               if (shared.watermark > 0)
-                                 ok = ok && shared.buffer.write_capacity() >= shared.watermark;
-                               return ok;
-                             }
-                             );
+    std::unique_lock<std::mutex> locker(shared.mutex);
 
-      locker.unlock();
-      //cout << "Producer continuing..." << endl;
-    }
+    shared.condition.wait ( locker, resume_condition );
 
+    locker.unlock();
+    //cout << "Producer continuing..." << endl;
+  }
 
-  for (mrs_natural t=0; t < onSamples_; t++)
-    {
-      for (mrs_natural o=0; o < onObservations_; o++)
-        producer(o,t) = out(o,t);
-    }
+  for (mrs_natural t=0; t < out_samples; t++)
+  {
+    for (mrs_natural o=0; o < out_observations; o++)
+      producer(o,t) = source(o,t);
+  }
 }
 
 
