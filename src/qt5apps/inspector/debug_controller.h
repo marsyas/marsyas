@@ -31,7 +31,7 @@ public:
   }
 
 public slots:
-  void tick();
+  void tick( int count = 1 );
   void rewind();
 
 signals:

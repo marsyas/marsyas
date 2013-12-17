@@ -49,8 +49,14 @@ bool DebugController::setRecording(const QString &filename)
   return true;
 }
 
-void DebugController::tick()
+void DebugController::tick( int count )
 {
+  if (count < 1)
+  {
+    qWarning() << "*** Warning: tick count less than 1.";
+    return;
+  }
+
   m_report.clear();
 
   if (m_system)
@@ -58,7 +64,12 @@ void DebugController::tick()
     Q_ASSERT(m_recorder);
 
     m_recorder->clear();
-    m_system->tick();
+
+    for (int i = 0; i < count; ++i)
+      m_system->tick();
+
+    m_tick_count += count;
+
     m_recorder->commit();
 
     if (m_reader && !m_reader->eof())
@@ -68,10 +79,10 @@ void DebugController::tick()
       if (ok)
         Debug::compare(m_recorder->record(), file_record, m_report);
     }
+
+    emit ticked();
+    emit tickCountChanged(m_tick_count);
   }
-  ++m_tick_count;
-  emit ticked();
-  emit tickCountChanged(m_tick_count);
 }
 
 void DebugController::rewind()

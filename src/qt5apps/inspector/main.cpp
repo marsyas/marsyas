@@ -176,7 +176,7 @@ void Main::createActions()
   connect(a, SIGNAL(triggered()), this, SLOT(openRecording()));
 
   a = action(ActionManager::Tick) = new QAction(tr("Tick"), this);
-  connect(a, SIGNAL(triggered()), m_debugger, SLOT(tick()));
+  connect(a, SIGNAL(triggered()), this, SLOT(tick()));
 
   a = action(ActionManager::Rewind) = new QAction(tr("Rewind"), this);
   connect(a, SIGNAL(triggered()), this, SLOT(rewind()));
@@ -213,10 +213,18 @@ void Main::createMenu()
 
 void Main::createToolbar()
 {
+  m_step_control = new QSpinBox();
+  m_step_control->setRange(1, 1000);
+  m_step_control->setValue(1);
+
   QToolBar *toolbar = m_main_window->addToolBar("Actions");
+
   toolbar->addAction(action(ActionManager::OpenSystem));
   toolbar->addAction(action(ActionManager::OpenRecording));
+
   toolbar->addSeparator();
+
+  toolbar->addWidget(m_step_control);
   toolbar->addAction(action(ActionManager::Tick));
   toolbar->addAction(action(ActionManager::Rewind));
 }
@@ -323,7 +331,7 @@ void Main::openRecording()
 
 void Main::tick()
 {
-  m_debugger->tick();
+  m_debugger->tick( m_step_control->value() );
 }
 
 void Main::rewind()

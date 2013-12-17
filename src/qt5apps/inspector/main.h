@@ -10,6 +10,7 @@
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QLabel>
+#include <QSpinBox>
 
 #include <QQmlEngine>
 
@@ -76,7 +77,7 @@ private:
   void createMenu();
   void createToolbar();
 
-private slots:
+private slots:  
   void addRealvecWidget();
   void onReferenceChanged(const QString &filename);
   void onTickCountChanged(int count);
@@ -109,6 +110,7 @@ private:
   QMainWindow *m_main_window;
   QLabel *m_reference_label;
   QLabel *m_step_label;
+  QSpinBox *m_step_control;
   QQuickView *m_graph;
   RealvecWidget *m_realvec_widget;
   ControlsWidget *m_controls_widget;
