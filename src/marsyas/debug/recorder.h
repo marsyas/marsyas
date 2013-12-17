@@ -44,7 +44,7 @@ public:
       commit_observer(observer);
   }
 
-  void clear() { m_record.clear(); }
+  void clear();
 
 private:
   struct Observer;

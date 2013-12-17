@@ -28,10 +28,14 @@ struct Recorder::Observer : public MarSystemObserver
   Timer timer;
   realvec input;
   realvec output;
+  double m_cpu_time;
+  double m_real_time;
 
   Observer( MarSystem *system ):
     system(system),
-    path(system->getAbsPath())
+    path(system->getAbsPath()),
+    m_cpu_time(0),
+    m_real_time(0)
   {
     system->addObserver(this);
   }
@@ -51,12 +55,20 @@ struct Recorder::Observer : public MarSystemObserver
   {
     timer.measure();
     output = out;
+    m_cpu_time += timer.cpuTime();
+    m_real_time += timer.realTime();
+  }
+
+  void reset()
+  {
+    m_cpu_time = 0;
+    m_real_time = 0;
   }
 
   Record::Entry record()
   {
     return Record::Entry(input, output,
-                         timer.cpuTime(), timer.realTime());
+                         m_cpu_time, m_real_time);
   }
 };
 
@@ -72,6 +84,14 @@ Recorder::~Recorder()
   {
     delete observer;
   }
+}
+
+void Recorder::clear()
+{
+  m_record.clear();
+
+  for (Observer *observer : m_observers)
+    observer->reset();
 }
 
 void Recorder::recursive_add_observer(MarSystem *system)
