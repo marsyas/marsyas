@@ -85,6 +85,9 @@ id ':' id
 actor_prototype_decl:
 id ':' id
 { $$ = node(); $$.components = {$1, $3}; }
+|
+id ':' string
+{ $$ = node(); $$.components = {$1, $3}; }
 ;
 
 actor_def:

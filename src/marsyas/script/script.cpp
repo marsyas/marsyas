@@ -71,13 +71,7 @@ class script_translator
       id = directive_node.components[1].s;
     }
 
-    {
-      FileName file_info(filename);
-      if (!file_info.isAbsolute() && !m_working_dir.empty())
-        filename = m_working_dir + filename;
-    }
-
-    MarSystem *system = system_from_script(filename);
+    MarSystem *system = translate_script(filename);
 
     if (!system)
     {
@@ -100,6 +94,21 @@ class script_translator
     return true;
   }
 
+  string absolute_filename( const string & filename )
+  {
+    string abs_filename(filename);
+    FileName file_info(abs_filename);
+    if (!file_info.isAbsolute() && !m_working_dir.empty())
+      abs_filename = m_working_dir + abs_filename;
+    return abs_filename;
+  }
+
+  MarSystem *translate_script( const string & filename )
+  {
+    MarSystem *system = system_from_script( absolute_filename(filename) );
+    return system;
+  }
+
   MarSystem *translate_actor( const node & n, context_policy policy )
   {
     //cout << "handling actor: " << n.tag << endl;
@@ -108,16 +117,37 @@ class script_translator
       return 0;
 
     assert(n.components.size() == 3);
-    assert(n.components[0].tag == ID_NODE || n.components[0].tag == GENERIC_NODE);
-    assert(n.components[1].tag == ID_NODE );
-    assert(n.components[2].tag == GENERIC_NODE);
+
+    const node & name_node = n.components[0];
+    const node & type_node = n.components[1];
+    const node & def_node = n.components[2];
+
+    assert(name_node.tag == ID_NODE || name_node.tag == GENERIC_NODE);
+    assert(type_node.tag == ID_NODE || type_node.tag == STRING_NODE);
+    assert(def_node.tag == GENERIC_NODE);
 
     std::string name, type;
-    if (n.components[0].tag == ID_NODE)
-      name = std::move(n.components[0].s);
-    type = std::move(n.components[1].s);
 
-    MarSystem *system = m_manager.create(type, name);
+    if (name_node.tag == ID_NODE)
+      name = std::move(n.components[0].s);
+
+    type = std::move(type_node.s);
+
+    MarSystem *system;
+
+    switch (type_node.tag)
+    {
+    case ID_NODE:
+      system = m_manager.create(type, name);
+      break;
+    case STRING_NODE:
+      // represents a filename
+      system = translate_script(type);
+      break;
+    default:
+      assert(false);
+      system = nullptr;
+    }
 
     if (!system)
       return nullptr;
