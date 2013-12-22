@@ -4182,7 +4182,10 @@ main(int argc, const char **argv)
   }
 
   initOptions();
-  cmd_options.readOptions(argc,argv);
+  if (! cmd_options.readOptions(argc,argv) )
+  {
+    return printUsage(progName);
+  }
   loadOptions();
 
   if (helpopt)
