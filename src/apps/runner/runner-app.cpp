@@ -178,7 +178,7 @@ static MarSystem *load_network( const string system_filename )
 
   MarSystem* system = 0;
 
-  if (string_ends_with(system_filename, ".mars"))
+  if (string_ends_with(system_filename, ".mrs"))
   {
 #ifdef MARSYAS_HAS_SCRIPT
     system = system_from_script(system_filename);

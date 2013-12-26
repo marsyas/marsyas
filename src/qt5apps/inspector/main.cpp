@@ -250,7 +250,7 @@ void Main::openSystem(const QString & filename)
 
   MarSystem *system = 0;
 
-  if (filename.endsWith(".mars"))
+  if (filename.endsWith(".mrs"))
   {
 #ifdef MARSYAS_HAS_SCRIPT
     system = system_from_script(filename.toStdString());
