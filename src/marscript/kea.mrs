@@ -1,6 +1,6 @@
 kea : Series {
 
-  inSamples = 1
+  ~ GenericClassifier : "classifier.mrs"
 
   + weka_file = ""
 
@@ -13,30 +13,7 @@ kea : Series {
 
   + done = report/done
 
-  ~ GenericClassifier : Fanout
-  {
-    + nClasses = 1
-    + mode = "train"
-    disableChild = "all"
-
-    -> zero_r : ZeroRClassifier
-    {
-      nClasses = /nClasses
-      mode = /mode
-    }
-
-    -> gaussian : GaussianClassifier
-    {
-      nClasses = /nClasses
-      mode = /mode
-    }
-
-    -> svm : SVMClassifier
-    {
-      nClasses = /nClasses
-      mode = /mode
-    }
-  }
+  inSamples = 1
 
   -> weka: WekaSource
   {

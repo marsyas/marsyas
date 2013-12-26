@@ -1,0 +1,24 @@
+Fanout
+{
+  + nClasses = 1
+  + mode = "train"
+  disableChild = "all"
+
+  -> zero_r : ZeroRClassifier
+  {
+    nClasses = /nClasses
+    mode = /mode
+  }
+
+  -> gaussian : GaussianClassifier
+  {
+    nClasses = /nClasses
+    mode = /mode
+  }
+
+  -> svm : SVMClassifier
+  {
+    nClasses = /nClasses
+    mode = /mode
+  }
+}
