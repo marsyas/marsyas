@@ -334,6 +334,9 @@ realvec::stretch(mrs_natural rows, mrs_natural cols)
     return;
   }
 
+	/*lgmartins: this messes up the internal data of the realvec!!
+	//FIXME: for this optimization to work on 2D realvecs, data has to be
+	//reorganized inside the realvec...
   if (size < allocatedSize_)
   {
     size_ = size;
@@ -341,7 +344,7 @@ realvec::stretch(mrs_natural rows, mrs_natural cols)
     cols_ = cols;
     return; //no need for more memory allocation
   }
-
+	 */
 
   mrs_real *ndata = new mrs_real[size];
 
