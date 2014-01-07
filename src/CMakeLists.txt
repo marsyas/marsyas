@@ -139,5 +139,16 @@ if (MARSYAS_TESTS)
   add_subdirectory (tests)
 endif (MARSYAS_TESTS)
 
+## bundling
+if(WIN32)
+  ## 'fixup_bundle' only needs one executable in a directory to fix up all the siblings.
+  add_custom_target(bundle
+    COMMAND ${CMAKE_COMMAND}
+    -DMARSYAS_BUNDLE_EXECUTABLES=${CMAKE_INSTALL_PREFIX}/bin/bextract.exe
+    -DMARSYAS_BUNDLE_DIRS=${CMAKE_LIBRARY_PATH}
+    -P ${CMAKE_SOURCE_DIR}/cmake-modules/marsyas-bundle.cmake
+  )
+endif()
+
 ## packaging
 include(marsyas-package)
