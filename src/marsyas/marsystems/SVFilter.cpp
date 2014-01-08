@@ -18,8 +18,10 @@
 
 #include "SVFilter.h"
 #include "../common_source.h"
+#include <algorithm>
 
-
+using std::min;
+using std::max;
 using namespace Marsyas;
 
 
@@ -90,14 +92,14 @@ SVFilter::myProcess(realvec& in, realvec& out)
 	mrs_real fs = 44100.0;
 
 	mrs_real drive = 0.02; // keep between 0.0 and 0.1
-	mrs_real freq = 2.0*sin(PI*fmin(0.25, fc/(fs*2)));  // the fs*2 is because it's double sampled
-	mrs_real damp = fmin(2.0*(1.0 - pow(res_, 0.25)), fmin(2.0, 2.0/freq - freq*0.5));
+	mrs_real freq = 2.0*sin(PI*min(0.25, fc/(fs*2)));  // the fs*2 is because it's double sampled
+	mrs_real damp = min(2.0*(1.0 - pow(res_, 0.25)), min(2.0, 2.0/freq - freq*0.5));
 
   for (t = 0; t < inSamples_; t++)
   {
 		// the fs*2 is because it's double sampled
-		freq = 2.0*sin(PI*fmin(0.25, (freqIn_ ? in(1, t)*israte_: fc)/(israte_*2)));
-		damp = fmin(2.0*(1.0 - pow(res_, 0.25)), fmin(2.0, 2.0/freq - freq*0.5));
+		freq = 2.0*sin(PI*min(0.25, (freqIn_ ? in(1, t)*israte_: fc)/(israte_*2)));
+		damp = min(2.0*(1.0 - pow(res_, 0.25)), min(2.0, 2.0/freq - freq*0.5));
 
     notch = in(0, t) - damp*band;
     low = low + freq*band;
