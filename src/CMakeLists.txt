@@ -141,6 +141,8 @@ endif (MARSYAS_TESTS)
 
 ## bundling
 if(WIN32)
+  include(InstallRequiredSystemLibraries)
+
   ## 'fixup_bundle' only needs one executable in a directory to fix up all the siblings.
   add_custom_target(bundle
     COMMAND ${CMAKE_COMMAND}
