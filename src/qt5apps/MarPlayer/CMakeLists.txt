@@ -25,10 +25,8 @@ qt5_wrap_cpp( APP_MOC_SRC ${APP_HEADERS} )
 qt5_wrap_ui( APP_UI_HDR ${APP_UI} )
 qt5_add_resources( APP_RESOURCES_SRC ${APP_RESOURCES} )
 
-add_executable( ${APP} ${APP_SOURCES} ${APP_MOC_SRC} ${APP_RESOURCES_SRC} ${APP_UI_HDR} )
+marsyas_qt5_app( ${APP} ${APP_SOURCES} ${APP_MOC_SRC} ${APP_RESOURCES_SRC} ${APP_UI_HDR} )
 
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} ) # for UI headers
-target_link_libraries( ${APP} marsyas marsyasqt5 )
-qt5_use_modules( ${APP} Widgets )
 
-install(TARGETS ${APP} DESTINATION bin)
+qt5_use_modules( ${APP} Widgets )

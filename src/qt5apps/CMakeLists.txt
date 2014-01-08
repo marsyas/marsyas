@@ -10,6 +10,13 @@ endif()
 
 add_subdirectory(common)
 
+macro(marsyas_qt5_app APP)
+  add_executable(${APP} ${ARGN})
+  target_link_libraries(${APP} marsyas marsyasqt5)
+  set_property( TARGET ${APP} APPEND PROPERTY LINK_FLAGS "/SUBSYSTEM:windows /ENTRY:mainCRTStartup" )
+  install(TARGETS ${APP} DESTINATION bin)
+endmacro()
+
 if(WITH_CPP11)
   add_subdirectory(inspector)
 endif()

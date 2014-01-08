@@ -55,9 +55,6 @@ set(APP_RESOURCES
 qt5_wrap_cpp( APP_MOC_SRC ${APP_HEADERS} )
 qt5_add_resources( APP_RESOURCES_SRC ${APP_RESOURCES} )
 
-add_executable( ${APP} ${APP_SOURCES} ${APP_MOC_SRC} ${APP_RESOURCES_SRC} )
+marsyas_qt5_app( ${APP} ${APP_SOURCES} ${APP_MOC_SRC} ${APP_RESOURCES_SRC} )
 
 qt5_use_modules( ${APP} Widgets Xml )
-target_link_libraries( ${APP} marsyas marsyasqt5 )
-
-install(TARGETS ${APP} DESTINATION bin)
