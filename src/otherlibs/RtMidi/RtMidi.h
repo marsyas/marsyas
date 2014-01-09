@@ -327,7 +327,7 @@ class marsyas_EXPORT RtMidiOut : public RtMidi
 //
 // **************************************************************** //
 
-class MidiInApi
+class marsyas_EXPORT MidiInApi
 {
  public:
 
