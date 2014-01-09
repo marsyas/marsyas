@@ -22,4 +22,6 @@ qt5_wrap_cpp( moc_src ${moc_hdr})
 
 add_library( marsyasqt5 STATIC ${src} ${moc_src} )
 
+target_link_libraries( marsyasqt5 marsyas )
+
 qt5_use_modules( marsyasqt5 Core Widgets )
