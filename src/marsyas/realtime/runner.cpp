@@ -27,9 +27,9 @@
 #include <cstring>
 #include <cerrno>
 
-#if defined(MARSYAS_MACOSX) || defined(MARSYAS_LINUX)
+#if defined(MARSYAS_MACOSX) || defined(MARSYAS_LINUX) || defined(MARSYAS_MINGW)
 #  include <pthread.h>
-#elif defined(MARSYAS_WIN32) || defined(MARSYAS_MINGW)
+#elif defined(MARSYAS_WIN32)
 #  include <windows.h>
 #endif
 
@@ -49,7 +49,7 @@ public:
     m_stop(false),
     m_thread(&Marsyas::RealTime::RunnerThread::run, this)
   {
-#if defined(MARSYAS_MACOSX) || defined(MARSYAS_LINUX)
+#if defined(MARSYAS_MACOSX) || defined(MARSYAS_LINUX) || defined(MARSYAS_MINGW)
     int policy;
     sched_param param;
     pthread_getschedparam( m_thread.native_handle(), &policy, &param );
@@ -66,7 +66,7 @@ public:
       MRSWARN("RunnerThread: Failed to set thread scheduling policy and priority: "
               << std::strerror(errno));
     }
-#elif defined(MARSYAS_WIN32) || defined(MARSYAS_MINGW)
+#elif defined(MARSYAS_WIN32)
     if (!SetThreadPriority( m_thread.native_handle(), THREAD_PRIORITY_HIGHEST ))
     {
       MRSWARN("RunnerThread: Failed to set thread priority.");
