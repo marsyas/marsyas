@@ -15,11 +15,18 @@ get_filename_component(qt5_dir ${qt5_core_dir}/.. ABSOLUTE)
 add_subdirectory(common)
 
 macro(marsyas_qt5_app APP)
-  add_executable(${APP} ${ARGN})
+  if(WIN32 AND NOT MSVC)
+    add_executable(${APP} WIN32 ${ARGN})
+  else()
+    add_executable(${APP} ${ARGN})
+  endif()
+
   target_link_libraries(${APP} marsyas marsyasqt5)
+
   if(MSVC)
     set_property( TARGET ${APP} APPEND PROPERTY LINK_FLAGS "/SUBSYSTEM:windows /ENTRY:mainCRTStartup" )
   endif()
+
   install(TARGETS ${APP} DESTINATION bin)
 endmacro()
 
