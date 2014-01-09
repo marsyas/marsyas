@@ -106,7 +106,7 @@ loadOptions()
 
 
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <dirent.h>
 
 #define SEPERATOR_CHAR	'/'
