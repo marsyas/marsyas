@@ -16,12 +16,14 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
-
 #include <marsyas/common_source.h>
 
-#ifdef MARSYAS_WIN32
-#include <io.h>
+#ifdef _WIN32
+# define MARSYAS_WINDOWS
+#endif
+
+#ifdef MARSYAS_WINDOWS
+# include <windows.h>
 #endif
 
 #include <marsyas/FileName.h>
@@ -46,7 +48,7 @@ FileName::FileName(mrs_string filename)
 
 
 
-#if (defined(MARSYAS_WIN32))
+#ifdef MARSYAS_WINDOWS
   if (isDir	())
     removeLastSlash ();
 #endif
@@ -118,7 +120,7 @@ mrs_bool
 FileName::isDir ()
 {
 
-#if (defined(MARSYAS_WIN32))
+#ifdef MARSYAS_WINDOWS
   const DWORD attr = GetFileAttributes (filename_.c_str ());
 
   return (attr != 0xffffffff)
@@ -138,7 +140,7 @@ FileName::getFilesInDir (mrs_string wildcard)
 {
   std::vector<mrs_string>		result;
 
-#ifdef MARSYAS_WIN32
+#ifdef MARSYAS_WINDOWS
   struct _finddata_t          CurrentFile;
   long                        hFile;
   mrs_string                  search4;
@@ -172,7 +174,7 @@ FileName::getFilesInDir (mrs_string wildcard)
 size_t
 FileName::getLastSlashPos ()
 {
-#ifdef MARSYAS_WIN32
+#ifdef MARSYAS_WINDOWS
   string::size_type last_slash_pos  = filename_.rfind('/');  // you can use the slash in windows, too
   string::size_type last_backslash_pos = filename_.rfind('\\');
   if (last_slash_pos != mrs_string::npos && last_backslash_pos != mrs_string::npos)
@@ -203,7 +205,7 @@ bool FileName::isAbsolute()
   if (filename_[0] == '~')
     return true;
 #endif
-#if defined(MARSYAS_WIN32) || defined(MARSYAS_MINGW) || defined(MARSYAS_CYGWIN)
+#ifdef MARSYAS_WINDOWS
   // Try Windows style:
   if (filename_.find(':') != string::npos)
     return true;
