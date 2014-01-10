@@ -1319,12 +1319,8 @@ main(int argc, const char **argv)
   if (usageopt)
     return printUsage("ibt");
 
-  execPath = string(argv[0]);
-#ifdef MARSYAS_WIN32
-  execPath = execPath.substr(0, execPath.rfind('\\')+1);
-#else
-  execPath = execPath.substr(0, execPath.rfind('/')+1);
-#endif
+  FileName execFileName(argv[0]);
+  execPath = execFileName.path();
 
   vector<string> soundfiles = cmd_options.getRemaining();
   mrs_string sfName = "";
