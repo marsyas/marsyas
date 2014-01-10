@@ -7512,15 +7512,12 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
   beattracker->updControl("BeatReferee/br/mrs_natural/eqPhase", eq_phase);
 
   FileName outputFile(sfName);
-  ostringstream path;
 
-#ifdef MARSYAS_WIN32
-  progName = progName.substr(0, progName.rfind('\\'));
-  path << progName << "\\" << outputFile.nameNoExt();
-#else
-  progName = progName.substr(0, progName.rfind('/'));
+  FileName progFileName(progName);
+  progName =  progFileName.path();
+
+  ostringstream path;
   path << progName << "/" << outputFile.nameNoExt();
-#endif
 
   beattracker->updControl("BeatTimesSink/sink/mrs_string/destFileName", path.str());
   //beattracker->updControl("BeatTimesSink/sink/mrs_string/mode", "medianTempo");
