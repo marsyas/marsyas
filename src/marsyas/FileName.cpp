@@ -46,22 +46,17 @@ FileName::FileName(mrs_string filename)
 {
   filename_ = filename;
 
-
-
 #ifdef MARSYAS_WINDOWS
+  std::replace(filename_.begin(), filename_.end(), '\\', '/');
+
   if (isDir	())
     removeLastSlash ();
 #endif
 }
 
-
 FileName::~FileName()
 {
 }
-
-
-
-
 
 mrs_string
 FileName::fullname()
@@ -174,16 +169,7 @@ FileName::getFilesInDir (mrs_string wildcard)
 size_t
 FileName::getLastSlashPos ()
 {
-#ifdef MARSYAS_WINDOWS
-  string::size_type last_slash_pos  = filename_.rfind('/');  // you can use the slash in windows, too
-  string::size_type last_backslash_pos = filename_.rfind('\\');
-  if (last_slash_pos != mrs_string::npos && last_backslash_pos != mrs_string::npos)
-    return max(last_slash_pos, last_backslash_pos);
-  else
-    return min(last_slash_pos, last_backslash_pos);
-#else
   return filename_.rfind('/');
-#endif
 }
 
 void
