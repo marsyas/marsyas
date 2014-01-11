@@ -8,6 +8,9 @@
 #include <QStackedLayout>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QToolButton>
+#include <QMenu>
+#include <QAction>
 
 using namespace Marsyas;
 using namespace MarsyasQt;
@@ -42,7 +45,8 @@ RealvecWidget::RealvecWidget( DebugController *debugger, QWidget * parent ):
                                      << "Line" << "Curve" << "Spectrogram" );
 
   m_auto_scale_btn = new QToolButton;
-  m_auto_scale_btn->setText(tr("AutoScale"));
+  m_auto_scale_btn->setText("S");
+  m_auto_scale_btn->setToolTip("Auto Scale");
 
   m_table = new MarsyasQt::RealvecTableWidget;
   m_table->setEditable(false);
@@ -62,18 +66,45 @@ RealvecWidget::RealvecWidget( DebugController *debugger, QWidget * parent ):
   m_stack->addWidget(m_table);
   m_stack->addWidget(m_plotter);
 
-  QHBoxLayout *tool_row = new QHBoxLayout();
-  tool_row->addWidget(m_display_type_selector);
-  tool_row->addWidget(m_auto_scale_btn);
+  // Toolbar
 
-  QVBoxLayout *column = new QVBoxLayout();
-  column->setContentsMargins(0,0,0,0);
-  column->setSpacing(0);
-  column->addWidget(m_label);
-  column->addLayout(tool_row);
-  column->addLayout(m_stack);
+  QStringList style_names;
+  style_names << "Table" << "Points" << "Sticks"
+              << "Line" << "Curve" << "Spectrogram";
 
-  setLayout(column);
+  QMenu *style_menu = new QMenu(this);
+  int style_idx = 0;
+  foreach (const QString & style_name, style_names)
+  {
+    QAction * action = style_menu->addAction(style_name);
+    m_style_menu_mapper.setMapping(action, style_idx);
+    connect(action, SIGNAL(triggered()), &m_style_menu_mapper, SLOT(map()));
+    style_idx++;
+  }
+
+  connect(&m_style_menu_mapper, SIGNAL(mapped(int)),
+          this, SLOT(setDisplayType(int)));
+
+  QToolButton *style_btn = new QToolButton;
+  style_btn->setText("D");
+  style_btn->setToolTip("Display Mode");
+  style_btn->setMenu(style_menu);
+  style_btn->setPopupMode(QToolButton::InstantPopup);
+
+  // Layout
+
+  QVBoxLayout *tool_layout = new QVBoxLayout();
+  tool_layout->addWidget(style_btn);
+  tool_layout->addWidget(m_auto_scale_btn);
+  tool_layout->addStretch();
+
+  QHBoxLayout *layout = new QHBoxLayout();
+  layout->setContentsMargins(0,0,0,0);
+  layout->setSpacing(0);
+  layout->addLayout(m_stack);
+  layout->addLayout(tool_layout);
+
+  setLayout(layout);
 
   connect( m_display_type_selector, SIGNAL(activated(int)), this, SLOT(setDisplayType(int)) );
   connect( m_auto_scale_btn, SIGNAL(clicked()), this, SLOT(autoScale()) );
