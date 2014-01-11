@@ -74,6 +74,9 @@ public slots:
   void tick();
   void rewind();
 
+signals:
+  void systemChanged();
+
 private:
   Main();
   void createActions();

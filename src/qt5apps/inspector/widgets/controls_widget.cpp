@@ -49,6 +49,8 @@ ControlsWidget::ControlsWidget( QWidget * parent):
     m_label->setReadOnly(true);
     m_label->setFrame(false);
     m_label->setPalette(palette);
+    // Let's try without it
+    m_label->hide();
   }
 
   QVBoxLayout *column = new QVBoxLayout;
@@ -61,6 +63,8 @@ ControlsWidget::ControlsWidget( QWidget * parent):
 
   connect(m_tree, SIGNAL(itemClicked(QTreeWidgetItem*,int)),
           this, SLOT(onItemClicked(QTreeWidgetItem*,int)));
+  connect(m_label, SIGNAL(textChanged(QString)),
+          this, SIGNAL(labelTextChanged(QString)) );
 }
 
 void ControlsWidget::setSystem( Marsyas::MarSystem * system )

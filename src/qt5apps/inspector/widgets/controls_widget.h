@@ -38,6 +38,7 @@ public slots:
 
 signals:
   void controlClicked( const QString & path );
+  void labelTextChanged( const QString & );
 
 private slots:
   void onItemClicked( QTreeWidgetItem *, int column );

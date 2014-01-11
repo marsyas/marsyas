@@ -74,6 +74,9 @@ public slots:
   void clear();
   void autoScale();
 
+signals:
+  void labelTextChanged(const QString &);
+
 private:
   void refreshFromControl();
   void refreshFromPort();

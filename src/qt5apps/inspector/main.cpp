@@ -77,8 +77,21 @@ SignalDockWidget::SignalDockWidget(DebugController* debugger):
   m_signal_widget(new RealvecWidget(debugger))
 {
   setWidget(m_signal_widget);
+
+  setWindowTitle("Empty Signal View");
+
   connect( debugger, SIGNAL(ticked()),
            m_signal_widget, SLOT(refresh()) );
+
+  connect( m_signal_widget, &RealvecWidget::labelTextChanged,
+           [this](const QString & title)
+
+  {
+    if (!title.isEmpty())
+      setWindowTitle(title);
+    else
+      setWindowTitle("Empty Signal View");
+  });
 }
 
 void SignalDockWidget::mousePressEvent(QMouseEvent *)
@@ -155,6 +168,8 @@ Main::Main():
   dock_controls_widget->setWidget(m_controls_widget);
   dock_controls_widget->setWindowTitle("Control Data");
   m_main_window->addDockWidget(Qt::RightDockWidgetArea, dock_controls_widget);
+  connect(m_controls_widget, SIGNAL(labelTextChanged(QString)),
+          dock_controls_widget, SLOT(setWindowTitle(QString)) );
 
   addRealvecWidget();
 
@@ -340,11 +355,12 @@ void Main::openSystem(const QString & filename)
   m_debugger->setSystem(system);
   m_stats_widget->setSystem(system);
   m_controls_widget->setSystem(system);
-  m_current_signal_widget->clear();
   m_system_filename = filename;
 
   delete old_system_adaptor;
   delete old_system;
+
+  emit systemChanged();
 }
 
 void Main::openRecording()
@@ -372,10 +388,12 @@ void Main::rewind()
 void Main::addRealvecWidget()
 {
   SignalDockWidget * dock_widget = new SignalDockWidget(m_debugger);
-  dock_widget->setWindowTitle("Realvec Data");
 
   connect(dock_widget, &SignalDockWidget::clicked,
           [this](RealvecWidget* widget){ m_current_signal_widget = widget; });
+
+  connect(this, SIGNAL(systemChanged()),
+          dock_widget->widget(), SLOT(clear()));
 
   m_main_window->addDockWidget(Qt::RightDockWidgetArea, dock_widget);
 
