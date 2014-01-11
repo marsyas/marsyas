@@ -72,6 +72,27 @@ int main(int argc, char *argv[])
   return result;
 }
 
+
+SignalDockWidget::SignalDockWidget(DebugController* debugger):
+  m_signal_widget(new RealvecWidget(debugger))
+{
+  setWidget(m_signal_widget);
+  connect( debugger, SIGNAL(ticked()),
+           m_signal_widget, SLOT(refresh()) );
+}
+
+void SignalDockWidget::mousePressEvent(QMouseEvent *)
+{
+  emit clicked(m_signal_widget);
+}
+
+void SignalDockWidget::closeEvent(QCloseEvent *event)
+{
+  event->ignore();
+  deleteLater();
+}
+
+
 Main::Main():
   m_root_system(0)
 {
@@ -86,8 +107,6 @@ Main::Main():
   m_main_window->setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
   createActions();
-  createMenu();
-  createToolbar();
 
   ///////////////////
 
@@ -140,15 +159,14 @@ Main::Main():
   addRealvecWidget();
 
   m_stats_widget = new StatisticsWidget(&m_action_manager, m_debugger);
-  QDockWidget *dock_debug_widget = new QDockWidget;
-  dock_debug_widget->setWidget(m_stats_widget);
-  dock_debug_widget->setWindowTitle("Statistics");
-  m_main_window->addDockWidget(Qt::BottomDockWidgetArea, dock_debug_widget);
+  m_dock_stats_widget = new QDockWidget;
+  m_dock_stats_widget->setWidget(m_stats_widget);
+  m_dock_stats_widget->setWindowTitle("Statistics");
+  m_dock_stats_widget->setVisible(false);
+  m_main_window->addDockWidget(Qt::BottomDockWidgetArea, m_dock_stats_widget);
 
   connect( m_debugger, SIGNAL(ticked()),
            m_controls_widget, SLOT(refresh()) );
-  connect( m_debugger, SIGNAL(ticked()),
-           m_realvec_widget, SLOT(refresh()) );
   connect( m_debugger, SIGNAL(ticked()),
            this, SLOT(updateGraphBugs()) );
   connect( m_debugger, SIGNAL(recordingChanged(QString)),
@@ -159,6 +177,9 @@ Main::Main():
            this, SLOT(controlClicked(QString)) );
   connect( m_stats_widget, SIGNAL(pathClicked(QString)),
            this, SLOT(bugClicked(QString)) );
+
+  createMenu();
+  createToolbar();
 
   m_main_window->resize(1000, 600);
   m_main_window->showMaximized();
@@ -184,6 +205,9 @@ void Main::createActions()
   a = action(ActionManager::Quit) = new QAction(tr("Quit"), this);
   a->setShortcut(QKeySequence::Quit);
   connect(a, SIGNAL(triggered()), qApp, SLOT(quit()));
+
+  a = action(ActionManager::AddRealvecWidget) = new QAction(tr("Add Signal View"), this);
+  connect(a, SIGNAL(triggered()), this, SLOT(addRealvecWidget()));
 }
 
 void Main::createMenu()
@@ -208,6 +232,11 @@ void Main::createMenu()
   menu = menuBar->addMenu(tr("&Debug"));
   menu->addAction(action(ActionManager::Tick));
   menu->addAction(action(ActionManager::Rewind));
+  menuBar->addMenu(menu);
+
+  menu = menuBar->addMenu(tr("&View"));
+  menu->addAction(m_dock_stats_widget->toggleViewAction());
+  menu->addAction(action(ActionManager::AddRealvecWidget));
   menuBar->addMenu(menu);
 }
 
@@ -311,7 +340,7 @@ void Main::openSystem(const QString & filename)
   m_debugger->setSystem(system);
   m_stats_widget->setSystem(system);
   m_controls_widget->setSystem(system);
-  m_realvec_widget->clear();
+  m_current_signal_widget->clear();
   m_system_filename = filename;
 
   delete old_system_adaptor;
@@ -342,14 +371,15 @@ void Main::rewind()
 
 void Main::addRealvecWidget()
 {
-  RealvecWidget * realvec_widget = new RealvecWidget(m_debugger);
-
-  QDockWidget * dock_widget = new QDockWidget;
-  dock_widget->setWidget(realvec_widget);
+  SignalDockWidget * dock_widget = new SignalDockWidget(m_debugger);
   dock_widget->setWindowTitle("Realvec Data");
+
+  connect(dock_widget, &SignalDockWidget::clicked,
+          [this](RealvecWidget* widget){ m_current_signal_widget = widget; });
+
   m_main_window->addDockWidget(Qt::RightDockWidgetArea, dock_widget);
 
-  m_realvec_widget = realvec_widget;
+  m_current_signal_widget = dock_widget->widget();
 }
 
 void Main::onReferenceChanged(const QString &filename)
@@ -379,7 +409,6 @@ void Main::systemClicked( const QString & path )
   }
 
   m_controls_widget->setSystem(system);
-  m_realvec_widget->clear();
 }
 
 void Main::systemInputClicked( const QString & path )
@@ -389,9 +418,12 @@ void Main::systemInputClicked( const QString & path )
     qWarning() << "Main: System not found for path:" << path;
     return;
   }
+
   m_controls_widget->setSystem(system);
-  m_realvec_widget->displayPort
-      (QString::fromStdString(system->getAbsPath()), Input);
+
+  if (m_current_signal_widget)
+    m_current_signal_widget->displayPort
+        (QString::fromStdString(system->getAbsPath()), Input);
 }
 
 void Main::systemOutputClicked( const QString & path )
@@ -401,15 +433,20 @@ void Main::systemOutputClicked( const QString & path )
     qWarning() << "Main: System not found for path:" << path;
     return;
   }
+
   m_controls_widget->setSystem(system);
-  m_realvec_widget->displayPort
-      (QString::fromStdString(system->getAbsPath()), Output);
+
+  if (m_current_signal_widget)
+    m_current_signal_widget->displayPort
+        (QString::fromStdString(system->getAbsPath()), Output);
 }
 
 void Main::controlClicked( const QString & path )
 {
   MarSystem *system = m_controls_widget->system();
-  m_realvec_widget->displayControl(system, path);
+
+  if (m_current_signal_widget)
+    m_current_signal_widget->displayControl(system, path);
 }
 
 void Main::updateGraphBugs()

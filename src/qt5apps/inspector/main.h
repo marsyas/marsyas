@@ -11,6 +11,7 @@
 #include <QDockWidget>
 #include <QLabel>
 #include <QSpinBox>
+#include <QPointer>
 
 #include <QQmlEngine>
 
@@ -31,6 +32,8 @@ public:
     Tick,
     Rewind,
     Quit,
+
+    AddRealvecWidget,
 
     ActionCount
   };
@@ -112,9 +115,30 @@ private:
   QLabel *m_step_label;
   QSpinBox *m_step_control;
   QQuickView *m_graph;
-  RealvecWidget *m_realvec_widget;
   ControlsWidget *m_controls_widget;
   StatisticsWidget *m_stats_widget;
+  QPointer<RealvecWidget> m_current_signal_widget;
+
+  QDockWidget *m_dock_stats_widget;
+};
+
+class SignalDockWidget : public QDockWidget
+{
+  Q_OBJECT
+
+private:
+  RealvecWidget *m_signal_widget;
+
+public:
+  SignalDockWidget(DebugController* debugger);
+
+  RealvecWidget * widget() { return m_signal_widget; }
+
+  virtual void mousePressEvent(QMouseEvent *);
+  virtual void closeEvent(QCloseEvent *);
+
+signals:
+  void clicked(RealvecWidget*);
 };
 
 #endif // INSPECTOR_MAIN_CONTROLLER_INCLUDED
