@@ -32,6 +32,8 @@ RealvecWidget::RealvecWidget( DebugController *debugger, QWidget * parent ):
     m_label->setReadOnly(true);
     m_label->setFrame(false);
     m_label->setPalette(palette);
+    // Let's try without it
+    m_label->hide();
   }
 
   m_display_type_selector = new QComboBox;
@@ -75,6 +77,7 @@ RealvecWidget::RealvecWidget( DebugController *debugger, QWidget * parent ):
 
   connect( m_display_type_selector, SIGNAL(activated(int)), this, SLOT(setDisplayType(int)) );
   connect( m_auto_scale_btn, SIGNAL(clicked()), this, SLOT(autoScale()) );
+  connect( m_label, SIGNAL(textChanged(QString)), this, SIGNAL(labelTextChanged(QString)) );
 
   m_display_type_selector->setCurrentIndex(Line);
   setDisplayType(Line);
@@ -136,7 +139,12 @@ void RealvecWidget::displayPort(const QString & path,
   m_system = 0;
   m_path = path;
 
-  m_label->setText(path);
+  QString label_text(path);
+  if (port == Input)
+    label_text += " - input";
+  else
+    label_text += " - output";
+  m_label->setText(label_text);
 
   refresh(true);
 }
