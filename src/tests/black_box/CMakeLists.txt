@@ -54,6 +54,14 @@ set( NEXT_COMMAND
 black_box_audio (peakClustering nearhou.wav nearhouSep.wav
 	peakClustering "${NEXT_COMMAND}")
 
+add_test(NAME peakClustering-peaks
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  COMMAND cmake
+  -DPEAKCLUSTERING_EXECUTABLE=$<TARGET_FILE:peakClustering>
+  -DPEAKCLUSTERING_OUTPUT_DIR=${CMAKE_CURRENT_BINARY_DIR}
+  -P ${CMAKE_CURRENT_SOURCE_DIR}/test-peakClustering-peaks.cmake
+)
+
 macro(bextract_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
   add_test(
     NAME ${REG_NAME}-bextract
@@ -179,12 +187,3 @@ if (EXISTS ${TEST_MINI_GENRES_DIR})
     ${TEST_MINI_GENRES_DIR}/mini-genres/ mini-genres-tempos.mf
   )
 endif (EXISTS ${TEST_MINI_GENRES_DIR})
-
-add_test(NAME peakClustering-PeakFile WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	COMMAND cmake
-	-DPEAKCLUSTERING_OUTPUT_DIR=${CMAKE_CURRENT_BINARY_DIR}
-	-P ${CMAKE_CURRENT_SOURCE_DIR}/peakClustering-PeakFile.cmake
-) 
-
-
-
