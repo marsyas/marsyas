@@ -104,7 +104,7 @@ Main::Main():
   m_step_label->setAutoFillBackground(true);
 
   m_graph = new QQuickView(m_qml_engine, 0);
-  m_graph->setColor( QApplication::palette().color(QPalette::Window) );
+  m_graph->setColor( "black" );
   m_graph->setResizeMode(QQuickView::SizeRootObjectToView);
 
   // Central widget
