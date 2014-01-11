@@ -15,13 +15,13 @@ Item {
         spacing: 20
 
         Repeater {
+            id: child_items
             model: parent_system.children
             Item {
-                Layout.fillWidth: true
-                implicitWidth: 1
+                Layout.alignment: Qt.AlignHCenter
+                implicitWidth: child.implicitWidth;
                 implicitHeight: child.implicitHeight;
                 MarSystemItem {
-                    anchors.fill: parent
                     id: child
                     property var system: modelData
                     onParentShouldExpand: parent_system_item.setExpanded(true)

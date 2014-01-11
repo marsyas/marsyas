@@ -48,22 +48,45 @@ ColumnLayout {
     ]
 
     FlowIndicator {
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
+
         controls: system.defaultControls;
         output: false;
-        color: input_area.containsMouse ? Qt.lighter(color_code, 1.2) : color_code
+        onClicked: the_root.inputClicked(system.path);
+
         MouseArea {
-            id: input_area
-            anchors.fill: parent
-            onClicked: the_root.inputClicked(system.path);
-            hoverEnabled: true;
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 3
+            width: 11
+            height: 11
+            Rectangle {
+                x: 5
+                y: 0
+                width: 1
+                height: 11
+                color: "white"
+                visible: !privateData.expanded
+            }
+            Rectangle {
+                x: 0
+                y: 5
+                width: 11
+                height: 1
+                color: "white"
+            }
+            visible: system.hasChildren
+            onClicked: setExpanded(!privateData.expanded)
         }
     }
     Rectangle {
         id: frame
-        color: Qt.darker(color_code, 1.3)//Qt.rgba( color_code.r, color_code.g, color_code.b, 0.6 )
+        color: "transparent"
         border {
-            color: color_code
+            color: Qt.rgba(0,0,0.6)
             width: 1
         }
         anchors {
@@ -81,10 +104,12 @@ ColumnLayout {
 
             Rectangle {
                 Layout.fillWidth: true
-                implicitHeight: label.implicitHeight
-                color: titleArea.containsMouse ? Qt.lighter(color_code, 1.2) : color_code
+                implicitWidth: label.implicitWidth + 60
+                implicitHeight: label.implicitHeight + 10
+                color: titleArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
 
                 Text {
+                    color: "white"
                     anchors.centerIn: parent
                     id: label
                     text: system.name
@@ -104,10 +129,11 @@ ColumnLayout {
 
             Item {
                 id: children
+                visible: privateData.expanded
+                implicitWidth:  children_layout.implicitWidth
                 Layout.fillWidth: true
                 Loader {
                     id: children_layout
-                    visible: privateData.expanded
                     anchors {
                         left: parent.left
                         right: parent.right
@@ -116,34 +142,17 @@ ColumnLayout {
                     property var parent_system: system
                     property var parent_system_item: root
                 }
-                Row {
-                    id: dotdotdot
-                    visible: !privateData.expanded && system.hasChildren
-                    anchors.centerIn: parent
-                    spacing: 5
-                    Repeater {
-                        model: 3
-                        Rectangle { width: 4; height: 4; color: Qt.lighter(color_code, 1.5) }
-                    }
-                }
             }
         }
     }
     FlowIndicator {
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
+
         controls: system.defaultControls;
         output: true;
-        color: {
-            var c = privateData.hasError ? Qt.hsla(0, 0.85, 0.55) : color_code;
-            if (output_area.containsMouse)
-                c = Qt.lighter(c, 1.2);
-            c;
-        }
-        MouseArea {
-            id: output_area
-            anchors.fill: parent
-            onClicked: the_root.outputClicked(system.path);
-            hoverEnabled: true;
-        }
+        onClicked: the_root.outputClicked(system.path);
     }
 }
