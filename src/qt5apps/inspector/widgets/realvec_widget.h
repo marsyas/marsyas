@@ -34,6 +34,7 @@
 #include <QStackedLayout>
 #include <QComboBox>
 #include <QToolButton>
+#include <QSignalMapper>
 
 namespace MarsyasQt {
 class RealvecTableWidget;
@@ -98,6 +99,8 @@ private:
   QwtPlot *m_plotter;
   RealvecPlot *m_plot;
   Marsyas::realvec m_data;
+
+  QSignalMapper m_style_menu_mapper;
 };
 
 class RealvecRow : public QwtSeriesData<QPointF>
