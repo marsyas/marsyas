@@ -122,9 +122,6 @@ void RealvecWidget::displayControl( MarSystem * system, const QString & path )
   m_path = path;
   m_system = system;
 
-  QString abs_path = QString::fromStdString(system->getAbsPath()) + path;
-  m_label->setText(abs_path);
-
   refresh(true);
 }
 
@@ -196,7 +193,7 @@ void RealvecWidget::refreshFromControl()
 
   if (control->getType() != "mrs_realvec") {
     //qWarning() << "RealvecWidget: control type not 'mrs_realvec':" << m_control_path;
-    clearPlot();
+    //clearPlot();
     return;
   }
 
@@ -206,6 +203,9 @@ void RealvecWidget::refreshFromControl()
   m_data = data;
   if (m_plot)
     m_plot->setData(&m_data);
+
+  QString abs_path = QString::fromStdString(m_system->getAbsPath()) + m_path;
+  m_label->setText(abs_path);
 }
 
 void RealvecWidget::refreshFromPort()
