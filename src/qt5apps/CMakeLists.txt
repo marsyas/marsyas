@@ -9,7 +9,7 @@ if(MARSYAS_OPENGL)
 endif()
 
 get_target_property(qt5_core_filename Qt5::Core LOCATION)
-get_filename_component(qt5_core_dir ${qt5_core_filename} DIRECTORY)
+get_filename_component(qt5_core_dir ${qt5_core_filename} PATH)
 get_filename_component(qt5_dir ${qt5_core_dir}/.. ABSOLUTE)
 
 add_subdirectory(common)
