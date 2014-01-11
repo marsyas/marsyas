@@ -32,6 +32,8 @@ public:
   void setSystem( Marsyas::MarSystem * system );
   Marsyas::MarSystem * system() const { return m_system; }
 
+  QSize sizeHint() const { return QSize(500,300); }
+
 public slots:
   void rebuild();
   void refresh();
