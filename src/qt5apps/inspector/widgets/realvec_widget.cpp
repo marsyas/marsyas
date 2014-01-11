@@ -25,20 +25,6 @@ RealvecWidget::RealvecWidget( DebugController *debugger, QWidget * parent ):
 {
   setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-
-  {
-    QPalette palette;
-    palette.setColor(QPalette::Base, Qt::black);
-    palette.setColor(QPalette::Text, Qt::white);
-
-    m_label = new QLineEdit;
-    m_label->setReadOnly(true);
-    m_label->setFrame(false);
-    m_label->setPalette(palette);
-    // Let's try without it
-    m_label->hide();
-  }
-
   m_display_type_selector = new QComboBox;
   m_display_type_selector->addItems( QStringList()
                                      << "Table" << "Points" << "Sticks"
@@ -108,7 +94,6 @@ RealvecWidget::RealvecWidget( DebugController *debugger, QWidget * parent ):
 
   connect( m_display_type_selector, SIGNAL(activated(int)), this, SLOT(setDisplayType(int)) );
   connect( m_auto_scale_btn, SIGNAL(clicked()), this, SLOT(autoScale()) );
-  connect( m_label, SIGNAL(textChanged(QString)), this, SIGNAL(labelTextChanged(QString)) );
 
   m_display_type_selector->setCurrentIndex(Line);
   setDisplayType(Line);
@@ -167,14 +152,15 @@ void RealvecWidget::displayPort(const QString & path,
   m_system = 0;
   m_path = path;
 
-  QString label_text(path);
-  if (port == Input)
-    label_text += " - input";
-  else
-    label_text += " - output";
-  m_label->setText(label_text);
-
   refresh(true);
+
+  QString display_path(path);
+  if (port == Input)
+    display_path += " - input";
+  else
+    display_path += " - output";
+
+  emit pathChanged(display_path);
 }
 
 void RealvecWidget::refresh(bool doAutoScale)
@@ -207,7 +193,7 @@ void RealvecWidget::clear()
   m_system = 0;
   clearPlot();
   m_plotter->replot();
-  m_label->clear();
+  emit pathChanged(QString());
 }
 
 void RealvecWidget::refreshFromControl()
@@ -236,7 +222,7 @@ void RealvecWidget::refreshFromControl()
     m_plot->setData(&m_data);
 
   QString abs_path = QString::fromStdString(m_system->getAbsPath()) + m_path;
-  m_label->setText(abs_path);
+  emit pathChanged(abs_path);
 }
 
 void RealvecWidget::refreshFromPort()

@@ -83,7 +83,7 @@ SignalDockWidget::SignalDockWidget(DebugController* debugger):
   connect( debugger, SIGNAL(ticked()),
            m_signal_widget, SLOT(refresh()) );
 
-  connect( m_signal_widget, &RealvecWidget::labelTextChanged,
+  connect( m_signal_widget, &RealvecWidget::pathChanged,
            [this](const QString & title)
 
   {
