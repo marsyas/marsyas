@@ -80,6 +80,12 @@ RealvecWidget::RealvecWidget( DebugController *debugger, QWidget * parent ):
   setDisplayType(Line);
 }
 
+RealvecWidget::~RealvecWidget()
+{
+  // must manually delete m_plot because it's destructor accesses m_plotter
+  delete m_plot;
+}
+
 void RealvecWidget::setDisplayType( int type )
 {
   if (type == Table)

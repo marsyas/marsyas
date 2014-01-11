@@ -62,6 +62,7 @@ public:
   };
 
   RealvecWidget( DebugController *debugger, QWidget * parent = 0 );
+  ~RealvecWidget();
   QSize sizeHint() const { return QSize(500,300); }
   QSize minimumSizeHint() const { return QSize(50,50); }
 
@@ -192,7 +193,6 @@ class RealvecPlot : public QObject
   Q_OBJECT
 public:
   RealvecPlot( QwtPlot *plotter ):
-    QObject(plotter),
     m_plotter(plotter)
   {}
   virtual ~RealvecPlot() {}
