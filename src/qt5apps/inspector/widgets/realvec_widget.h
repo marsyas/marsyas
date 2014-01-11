@@ -76,7 +76,7 @@ public slots:
   void autoScale();
 
 signals:
-  void labelTextChanged(const QString &);
+  void pathChanged(const QString &);
 
 private:
   void refreshFromControl();
@@ -94,7 +94,6 @@ private:
   QComboBox * m_display_type_selector;
   QToolButton * m_auto_scale_btn;
 
-  QLineEdit *m_label;
   MarsyasQt::RealvecTableWidget *m_table;
   QwtPlot *m_plotter;
   RealvecPlot *m_plot;
