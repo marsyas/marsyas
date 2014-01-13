@@ -10,7 +10,11 @@ endif()
 
 get_target_property(qt5_core_filename Qt5::Core LOCATION)
 get_filename_component(qt5_core_dir ${qt5_core_filename} PATH)
-get_filename_component(qt5_dir ${qt5_core_dir}/.. ABSOLUTE)
+if(APPLE)
+  get_filename_component(qt5_dir ${qt5_core_dir}/../.. ABSOLUTE)
+else()
+  get_filename_component(qt5_dir ${qt5_core_dir}/.. ABSOLUTE)
+endif()
 
 add_subdirectory(common)
 
