@@ -24,6 +24,7 @@
 
 #ifdef MARSYAS_WINDOWS
 # include <windows.h>
+# include <io.h>
 #endif
 
 #include <marsyas/FileName.h>
