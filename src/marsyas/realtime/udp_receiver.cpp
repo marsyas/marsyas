@@ -18,12 +18,15 @@
 
 #include "udp_receiver.h"
 #include "packet_queue.h"
+#include <marsyas/common_source.h>
 
 #include <oscpack/ip/UdpSocket.h>
 #include <oscpack/ip/PacketListener.h>
 
+#include <memory>
 #include <cassert>
 #include <iostream>
+
 using namespace std;
 
 namespace Marsyas {
@@ -42,11 +45,20 @@ public:
 
   void run( const std::string & address, int port )
   {
-    UdpSocket socket;
-    socket.Bind( IpEndpointName( address.c_str(), port ) );
-    m_mux.AttachSocketListener( &socket, this );
+    std::unique_ptr<UdpSocket> socket;
+    try {
+      socket.reset(new UdpSocket);
+      socket->Bind( IpEndpointName( address.c_str(), port ) );
+    }
+    catch (std::exception & e)
+    {
+      MRSERR("UDP receiver: Failed to set up UDP socket. Port already in use?");
+      return;
+    }
+
+    m_mux.AttachSocketListener( socket.get(), this );
     m_mux.Run();
-    m_mux.DetachSocketListener( &socket, this );
+    m_mux.DetachSocketListener( socket.get(), this );
   }
 
   void stop()
