@@ -166,7 +166,6 @@ option(WITH_QT5 "Build the Qt5 applications" OFF)
 option(WITH_VAMP "Build plugins for Vamp" OFF)
 option(WITH_MAX/MSP "Build externals for Max/MSP" OFF)
 option(WITH_PD "Build externals for Pd" OFF)
-option(WITH_OSC  "Build osc support" OFF)
 option(WITH_PNG  "Build png writer" OFF)
 option(WITH_OPENGL "Build programs that require OpenGL" OFF)
 option(WITH_OPENGLUT "Build programs that require OpenGL Utility Toolkit" OFF)
@@ -174,6 +173,8 @@ option(WITH_GSTREAMER "Enable use of GStreamer as audio source" OFF)
 #option(WITH_QGL "Enable qglviewer (Qt-based OpenGL viewer)" OFF)
 #option(WITH_READLINE "Readline functionality for Marsyas Scripting
 #Language (MSL)" OFF)
+
+set(WITH_OSC ON)
 
 ## SWIG sub-options
 if (WITH_SWIG)

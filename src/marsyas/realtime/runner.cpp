@@ -18,12 +18,23 @@
 
 #include <marsyas/realtime/runner.h>
 #include <marsyas/realtime/atomic_control.h>
+#include <marsyas/realtime/packet_queue.h>
+#include <marsyas/realtime/udp_receiver.h>
 #include <marsyas/common_header.h>
+
 #include "../common_source.h"
+
+#include <oscpack/ip/IpEndpointName.h>
+#include <oscpack/ip/UdpSocket.h>
+#include <oscpack/osc/OscPacketListener.h>
+#include <oscpack/osc/OscOutboundPacketStream.h>
 
 #include <iostream>
 #include <algorithm>
 #include <functional>
+#include <memory>
+#include <map>
+#include <vector>
 #include <cstring>
 #include <cerrno>
 
@@ -99,6 +110,290 @@ private:
   std::thread m_thread;
 };
 
+class OscReceiverThread
+{
+  UdpReceiver m_udp_receiver;
+
+public:
+  OscReceiverThread( const string & address, int port, packet_queue * queue ):
+    m_udp_receiver(address, port, queue),
+    m_thread( &UdpReceiver::run, &m_udp_receiver )
+  {
+  }
+
+  void stop()
+  {
+    m_udp_receiver.stop();
+    m_thread.join();
+  }
+
+private:
+  std::thread m_thread;
+};
+
+class OscDispatcher : private osc::OscPacketListener
+{
+  MarSystem *m_system;
+  packet_queue * m_queue;
+  IpEndpointName m_endpoint;
+  static const size_t m_buffer_size = 4096;
+  alignas(64) char m_buffer[m_buffer_size];
+
+public:
+  OscDispatcher( MarSystem * system, packet_queue * queue ):
+    m_system(system),
+    m_queue(queue)
+  {}
+
+  void run()
+  {
+    size_t packet_size;
+
+    while( (packet_size = m_queue->pop(m_buffer, m_buffer_size)) )
+    {
+      if (packet_size > m_buffer_size)
+      {
+        MRSWARN("Dropped too large OSC packet.");
+        continue;
+      }
+      ProcessPacket(m_buffer, packet_size, m_endpoint);
+    }
+  }
+
+private:
+  void ProcessMessage( const osc::ReceivedMessage& message,
+                       const IpEndpointName& )
+  {
+    const char * path = message.AddressPattern();
+    if (path[0] == '/') ++path;
+
+    // FIXME: Constructing std::string is not real-time-safe.
+    MarControlPtr control = m_system->getControl(string(path));
+    if (control.isInvalid())
+    {
+      MRSWARN("OSC dispatcher: no control for path: " << path);
+      return;
+    }
+
+    try
+    {
+      osc::ReceivedMessage::const_iterator it = message.ArgumentsBegin();
+      if (it == message.ArgumentsEnd())
+        throw std::runtime_error("Message has no arguments.");
+
+      char tag = it->TypeTag();
+      switch(tag)
+      {
+      case osc::TRUE_TYPE_TAG:
+      case osc::FALSE_TYPE_TAG:
+        control->setValue(it->AsBoolUnchecked());
+        break;
+      case osc::INT32_TYPE_TAG:
+        control->setValue(it->AsInt32Unchecked());
+        break;
+      case osc::FLOAT_TYPE_TAG:
+        control->setValue((mrs_real) it->AsFloatUnchecked());
+        break;
+      case osc::DOUBLE_TYPE_TAG:
+        control->setValue((mrs_real) it->AsDoubleUnchecked());
+        break;
+      case osc::STRING_TYPE_TAG:
+        control->setValue(it->AsStringUnchecked());
+        break;
+      default:
+        throw std::runtime_error("Unsupported message argument type.");
+      }
+    }
+    catch ( std::exception & e )
+    {
+      MRSWARN("OSC dispatcher: error while parsing message: " << e.what());
+    }
+  }
+};
+
+class OscSender : public MarSystem
+{
+  MarSystem * m_system;
+  UdpSocket m_socket;
+  static const size_t m_buffer_size = 4096;
+  alignas(64) char m_buffer[m_buffer_size];
+  map<string, vector<IpEndpointName>> m_subscribers;
+
+public:
+  OscSender( MarSystem * system ):
+    MarSystem("OscSender", "OscSender"),
+    m_system(system)
+  {
+  }
+
+  MarSystem *clone() const
+  {
+    // no-op
+    return 0;
+  }
+
+  bool subscribe( const std::string & path, const char * address, int port )
+  {
+    MarControlPtr control = m_system->getControl(path);
+    return subscribe(control, address, port);
+  }
+
+  bool subscribe( MarControlPtr control, const char * address, int port )
+  {
+    if (control.isInvalid())
+      return false;
+
+    string key = path_of_control(control, '.');
+
+    string handler_path = control->getType() + '/' + key;
+    MarControlPtr handler = getControl(handler_path);
+    if (handler.isInvalid())
+    {
+      addControl(control->getType() + '/' + key, *control, handler);
+      handler->setState(true);
+      handler->linkTo(control, false);
+    }
+
+    IpEndpointName endpoint(address, port);
+    vector<IpEndpointName> & subscriber_group = m_subscribers[key];
+    if (find(subscriber_group.begin(), subscriber_group.end(), endpoint) == subscriber_group.end())
+      subscriber_group.push_back(endpoint);
+
+    return true;
+  }
+
+  void unsubscribe( const std::string & path, const char * address, int port )
+  {
+    MarControlPtr control = m_system->getControl(path);
+    return unsubscribe(control, address, port);
+  }
+
+  void unsubscribe( MarControlPtr control, const char * address, int port )
+  {
+    if (control.isInvalid())
+      return;
+
+    string key = path_of_control(control, '.');
+
+    // Find subscribers for control:
+    auto subscribers_it = m_subscribers.find(key);
+    if (subscribers_it != m_subscribers.end())
+    {
+      // Find subscriber for address & port:
+      IpEndpointName endpoint(address, port);
+      auto & subscribers = subscribers_it->second;
+      auto subscriber_it = find(subscribers.begin(), subscribers.end(), endpoint);
+      if (subscriber_it != subscribers.end())
+        subscribers.erase(subscriber_it);
+
+      if (subscribers.empty())
+      {
+        // No subscriber for control left.
+
+        // Delete the map entry:
+        m_subscribers.erase(subscribers_it);
+
+        // Unlink the handler control:
+        string handler_path = control->getType() + '/' + key;
+        MarControlPtr handler = getControl(handler_path);
+        if (!handler.isInvalid())
+          handler->unlinkFromAll();
+        // TODO: Delete the handler control.
+      }
+    }
+  }
+
+  string path_of_control( MarControlPtr control, char separator = '/' )
+  {
+    string path(control->getName());
+    if (separator != '/')
+      std::replace(path.begin(), path.end(), '/', separator);
+
+    MarSystem *system = control->getMarSystem();
+    while(system && system != m_system)
+    {
+      path = string(system->getType() + separator + system->getName() + separator) + path;
+      system = system->getParent();
+    }
+    return path;
+  }
+
+  string path_for_handler( MarControlPtr handler )
+  {
+    string path = handler->getName();
+    string::size_type idx = path.find('/');
+    path = path.substr(idx);
+    std::replace(path.begin(), path.end(), '.', '/');
+    return path;
+  }
+
+  string key_for_handler( MarControlPtr handler )
+  {
+    string key = handler->getName();
+    string::size_type idx = key.find('/');
+    if (idx != string::npos)
+      key = key.substr(idx+1);
+    return key;
+  }
+
+  void myProcess(realvec &, realvec &)
+  {
+    // no-op
+  }
+
+  void myUpdate( MarControlPtr handler )
+  {
+    if (handler.isInvalid())
+      return;
+
+    string key = key_for_handler(handler);
+
+    auto subscribers_it = m_subscribers.find(key);
+    if (subscribers_it == m_subscribers.end())
+      return;
+
+    auto & subscribers = subscribers_it->second;
+    if (subscribers.empty())
+      return;
+
+    string path = path_for_handler(handler);
+    string type = handler->getType();
+
+    osc::OutboundPacketStream packet( m_buffer, m_buffer_size );
+    try
+    {
+      packet << osc::BeginMessage( path.c_str() );
+      if (type == "mrs_bool")
+        packet << handler->to<bool>();
+      else if (type == "mrs_natural")
+        packet << ((int) handler->to<mrs_natural>());
+      else if (type == "mrs_real")
+        packet << ((float) handler->to<mrs_real>());
+      else if (type == "mrs_string")
+        packet << handler->to<mrs_string>().c_str();
+      else
+        throw std::runtime_error(string("Unsupported control type: ") + type);
+      packet << osc::EndMessage;
+    }
+    catch ( std::exception & e )
+    {
+      MRSWARN("OSC sender: " << e.what());
+    }
+
+    for( const auto & endpoint : subscribers )
+    {
+      try
+      {
+        m_socket.SendTo( endpoint, packet.Data(), packet.Size() );
+      }
+      catch ( std::exception & e )
+      {
+        MRSWARN("OSC sender: " << e.what());
+      }
+    }
+  }
+};
+
 #if 1
 template <typename T>
 static void set_control_value( MarControlPtr & control, const any & value, bool update = true )
@@ -160,22 +455,44 @@ static any get_control_value( const MarControlPtr & control )
 Runner::Runner(Marsyas::MarSystem * system):
   m_system(system),
   m_realtime_priority(false),
+  m_osc_receiver_port(0),
   m_thread(0),
   m_set_controls_event(0),
   m_shared(new Shared)
-{}
+{
+  m_osc_sender = new OscSender(m_system);
+}
+
+Runner::~Runner()
+{
+  stop();
+
+  delete m_osc_sender;
+  delete m_shared;
+}
 
 void Runner::start(unsigned int ticks)
 {
-  if (!m_thread) {
+  if (!m_thread)
+  {
+    assert (!m_osc_receiver_thread);
+
     refit_realvec_controls();
+
     m_thread = new RunnerThread(m_system, m_shared, m_realtime_priority, ticks);
+
+    if (m_osc_receiver_port != 0)
+    {
+      m_osc_receiver_thread =
+          new OscReceiverThread("localhost", m_osc_receiver_port, &m_shared->osc_queue);
+    }
   }
 }
 
 void Runner::stop()
 {
-  if (m_thread) {
+  if (m_thread)
+  {
     m_thread->stop();
     m_thread->join();
 
@@ -184,20 +501,56 @@ void Runner::stop()
 
     delete m_set_controls_event;
     m_set_controls_event = 0;
+
+    if (m_osc_receiver_thread)
+    {
+      m_osc_receiver_thread->stop();
+      delete m_osc_receiver_thread;
+      m_osc_receiver_thread = 0;
+    }
+    m_shared->osc_queue.clear();
   }
 }
 
 void Runner::wait()
 {
-  if (m_thread) {
+  if (m_thread)
+  {
     m_thread->join();
+    m_osc_receiver_thread->stop();
 
     delete m_thread;
     m_thread = 0;
 
     delete m_set_controls_event;
     m_set_controls_event = 0;
+
+    delete m_osc_receiver_thread;
+    m_osc_receiver_thread = 0;
+    m_shared->osc_queue.clear();
   }
+}
+
+bool Runner::subscribeOsc( const std::string & path, const char * address, int port )
+{
+  if (isRunning())
+  {
+    MRSERR("Runner: can not add OSC subscriptions while running.");
+    return false;
+  }
+
+  return m_osc_sender->subscribe( path, address, port );
+}
+
+void Runner::unsubscribeOsc( const std::string & path,  const char * address, int port )
+{
+  if (isRunning())
+  {
+    MRSERR("Runner: can not remove OSC subscriptions while running.");
+    return;
+  }
+
+  m_osc_sender->unsubscribe( path, address, port );
 }
 
 Control * Runner::control( const std::string & path )
@@ -314,6 +667,8 @@ void RunnerThread::run()
 {
   //cout << "MarSystemThread: running" << endl;
 
+  OscDispatcher osc_dispatcher(m_system, &m_shared->osc_queue);
+
   m_system->updControl("mrs_bool/active", true);
 
   MarControlPtr done_control = m_system->getControl("mrs_bool/done");
@@ -332,6 +687,8 @@ void RunnerThread::run()
   {
     //cout << "tick" << endl;
     process_requests();
+
+    osc_dispatcher.run();
 
     m_system->tick();
 
