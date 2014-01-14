@@ -2,6 +2,8 @@
 #include <marsyas/system/MarSystemManager.h>
 #include <marsyas/system/MarSystem.h>
 #include <marsyas/realtime/runner.h>
+#include <marsyas/common_source.h>
+
 #ifdef MARSYAS_HAS_SCRIPT
 # include <marsyas/script/script.h>
 #endif
@@ -13,6 +15,7 @@
 #include <iostream>
 #include <functional>
 #include <sstream>
+#include <string>
 
 using namespace Marsyas;
 using namespace std;
@@ -165,6 +168,71 @@ static int apply_control_options( MarSystem * system,
   return 0;
 }
 
+struct osc_endpoint
+{
+  string host;
+  int ip;
+};
+
+static void parse_osc_subscriptions( const string & text,
+                                     vector< pair<osc_endpoint, vector<string> > > & subscriptions )
+{
+  istringstream stream(text);
+  string host_text;
+  while(getline(stream, host_text, ';'))
+  {
+    osc_endpoint endpoint;
+
+    istringstream host_stream(host_text);
+    if (!getline(host_stream, endpoint.host, ':'))
+      continue;
+
+    string ip_text;
+    if (!getline(host_stream, ip_text, ':'))
+      continue;
+    size_t len = 0;
+    try {
+      endpoint.ip = stoi(ip_text, &len);
+    } catch (...) {}
+    if (len != ip_text.size())
+      continue;
+
+    vector<string> paths;
+    string path;
+    while(getline(host_stream, path, ','))
+    {
+      paths.push_back(path);
+    }
+
+    if (!paths.empty())
+      subscriptions.emplace_back( endpoint, std::move(paths) );
+  }
+}
+
+static void apply_osc_subscriptions( RealTime::Runner & runner,
+                                     const CommandLineOptions & opt )
+{
+  vector< pair<osc_endpoint, vector<string> > > subscriptions;
+  parse_osc_subscriptions(opt.value<string>("OSC-send"), subscriptions);
+
+  for ( const auto & host : subscriptions )
+  {
+    const osc_endpoint & endpoint = host.first;
+    for ( const string & path : host.second )
+    {
+      bool ok = runner.subscribeOsc(path, endpoint.host.c_str(), endpoint.ip);
+      if (ok)
+      {
+        MRSDEBUG("OSC subscription: " << path << " -> " << endpoint.host << ":" << endpoint.ip);
+      }
+      else
+      {
+        MRSERR("Failed OSC subscription: " << path << " -> " << endpoint.host << ":" << endpoint.ip);
+      }
+    }
+  }
+}
+
 static MarSystem *load_network( const string system_filename )
 {
 
@@ -216,7 +284,14 @@ int run( MarSystem *system, const CommandLineOptions & opt )
     bool realtime = opt.value<bool>("realtime");
 
     RealTime::Runner runner(system);
+
     runner.setRtPriorityEnabled(realtime);
+
+    if (opt.has("OSC-receive"))
+      runner.receiveOsc(opt.value<int>("OSC-receive"));
+
+    if (opt.has("OSC-send"))
+      apply_osc_subscriptions(runner, opt);
 
     runner.start((unsigned int)ticks);
     runner.wait();
@@ -245,7 +320,12 @@ int main( int argc, const char *argv[] )
     opt.define<int>("count", 'N', "<number>", "Perform <number> amount of ticks.");
     opt.define<mrs_real>("samplerate", 's', "<number>", "Override sampling rate.");
     opt.define<mrs_natural>("block", 'b', "<samples>", "Block size in samples.");
-    opt.define<mrs_string>("controls", 'c', "", "A series of control definitions of form \"name=value:name=value:...\"");
+    opt.define<mrs_string>("controls", 'c', "definitions",
+                           "A series of control definitions of form \"name=value:name=value:...\"");
+    opt.define<int>("OSC-receive", "<port>", "UDP port on which to receive OSC control messages.");
+    opt.define<mrs_string>("OSC-send", "<subscriptions>",
+                           "Subscriptions for OSC control change notifications, of form: "
+                           "\"host:port:control,control,...;host...\".");
 
     if (!opt.readOptions(argc, argv))
       return 1;
