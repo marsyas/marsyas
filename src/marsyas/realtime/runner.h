@@ -22,6 +22,7 @@
 #include <marsyas/realtime/event_queue.h>
 #include <marsyas/realtime/atomic_control.h>
 #include <marsyas/realtime/any.h>
+#include <marsyas/realtime/packet_queue.h>
 #include <marsyas/system/MarSystem.h>
 
 #include <thread>
@@ -35,6 +36,8 @@ namespace RealTime {
 
 class Control;
 class RunnerThread;
+class OscReceiverThread;
+class OscSender;
 
 /**
  * @brief Interaction with MarSystem running in real time.
@@ -46,6 +49,7 @@ class marsyas_EXPORT Runner
 public:
 
   Runner( MarSystem * system );
+  ~Runner();
 
   MarSystem * system() { return m_system; }
 
@@ -58,6 +62,19 @@ public:
   {
     return m_thread != 0;
   }
+
+  void receiveOsc( int port )
+  {
+    m_osc_receiver_port = port;
+  }
+
+  void stopReceiveOsc()
+  {
+    m_osc_receiver_port = 0;
+  }
+
+  bool subscribeOsc( const std::string & path, const char * address, int port );
+  void unsubscribeOsc( const std::string & path,  const char * address, int port );
 
   Control * control( const std::string & path );
 
@@ -107,14 +124,21 @@ private:
 
 private:
   MarSystem * m_system;
+
   bool m_realtime_priority;
+  int m_osc_receiver_port;
+
   RunnerThread *m_thread;
+  OscReceiverThread *m_osc_receiver_thread;
+  OscSender *m_osc_sender;
+
   SetControlsEvent *m_set_controls_event;
 
   struct Shared {
-    Shared(): request_queue(1000) {}
+    Shared(): request_queue(1000), osc_queue(1000 * 128) {}
     EventQueue request_queue;
     std::map<std::string, Control*> controls;
+    packet_queue osc_queue;
   };
 
   Shared * m_shared;

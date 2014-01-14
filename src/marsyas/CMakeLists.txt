@@ -60,7 +60,10 @@ set( Marsyas_SOURCES
 )
 
 if(MARSYAS_REALTIME)
-  set(MARSYAS_REALTIME_SOURCES realtime/runner.cpp)
+  set(MARSYAS_REALTIME_SOURCES
+    realtime/runner.cpp
+    realtime/udp_receiver.cpp
+  )
 endif()
 
 if(MARSYAS_SCRIPT)
