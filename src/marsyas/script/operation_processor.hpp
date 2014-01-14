@@ -64,7 +64,6 @@ private:
   void myUpdate(MarControlPtr sender);
   void myProcess(realvec&, realvec&);
 
-  void initControls();
   void prepareOperation( operation * );
   MarControlPtr evaluateOperation( operation * );
   void clearOperation();
