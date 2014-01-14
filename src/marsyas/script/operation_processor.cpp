@@ -36,15 +36,15 @@ ScriptOperationProcessor::operator_for_text(const std::string op_text)
 
 
 ScriptOperationProcessor::ScriptOperationProcessor(const std::string & name):
-  MarSystem("ScriptOperationProcessor", name)
+  MarSystem("ScriptOperationProcessor", name),
+  m_operation(nullptr)
 {
-  initControls();
 }
 
 ScriptOperationProcessor::ScriptOperationProcessor( const ScriptOperationProcessor & other ):
-  MarSystem(other)
+  MarSystem(other),
+  m_operation(nullptr)
 {
-  initControls();
 }
 
 ScriptOperationProcessor::~ScriptOperationProcessor()
@@ -55,10 +55,6 @@ ScriptOperationProcessor::~ScriptOperationProcessor()
 MarSystem *ScriptOperationProcessor::clone() const
 {
   return new ScriptOperationProcessor( *this );
-}
-
-void ScriptOperationProcessor::initControls()
-{
 }
 
 void ScriptOperationProcessor::setOperation( operation * opn )
