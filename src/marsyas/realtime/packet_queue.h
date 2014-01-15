@@ -21,14 +21,16 @@
 
 #include "queue.h"
 #include <iostream>
+#include <algorithm>
 
 namespace Marsyas {
 namespace RealTime {
 
-using namespace std;
+using std::size_t;
 
 class packet_queue
 {
+
   queue<char> m_byte_queue;
 
 public:
