@@ -27,7 +27,9 @@ class OscDispatcher : private osc::OscPacketListener
   packet_queue * m_queue;
   IpEndpointName m_endpoint;
   static const size_t m_buffer_size = 4096;
-#ifndef _MSC_VER
+#ifdef _MSC_VER
+  __declspec(align(8))
+#else
   alignas(8)
 #endif
   char m_buffer[m_buffer_size];
