@@ -116,6 +116,7 @@ private:
 class OscReceiverThread
 {
   UdpReceiver m_udp_receiver;
+  std::thread m_thread;
 
 public:
   OscReceiverThread( const string & address, int port, packet_queue * queue ):
@@ -129,9 +130,6 @@ public:
     m_udp_receiver.stop();
     m_thread.join();
   }
-
-private:
-  std::thread m_thread;
 };
 
 
@@ -200,6 +198,7 @@ Runner::Runner(Marsyas::MarSystem * system):
   m_realtime_priority(false),
   m_osc_receiver_port(0),
   m_thread(0),
+  m_osc_receiver_thread(0),
   m_set_controls_event(0),
   m_shared(new Shared)
 {
@@ -260,7 +259,6 @@ void Runner::wait()
   if (m_thread)
   {
     m_thread->join();
-    m_osc_receiver_thread->stop();
 
     delete m_thread;
     m_thread = 0;
@@ -268,8 +266,12 @@ void Runner::wait()
     delete m_set_controls_event;
     m_set_controls_event = 0;
 
-    delete m_osc_receiver_thread;
-    m_osc_receiver_thread = 0;
+    if (m_osc_receiver_thread)
+    {
+      m_osc_receiver_thread->stop();
+      delete m_osc_receiver_thread;
+      m_osc_receiver_thread = 0;
+    }
     m_shared->osc_queue.clear();
   }
 }
