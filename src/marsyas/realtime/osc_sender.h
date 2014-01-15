@@ -52,7 +52,9 @@ class OscSender : public MarSystem
   UdpSocket m_socket;
   static const size_t m_buffer_size = 4096;
   static const size_t max_key_length = 512;
-#ifndef _MSC_VER
+#ifdef _MSC_VER
+  __declspec(align(8))
+#else
   alignas(8)
 #endif
   char m_buffer[m_buffer_size];
