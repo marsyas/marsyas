@@ -52,7 +52,10 @@ class OscSender : public MarSystem
   UdpSocket m_socket;
   static const size_t m_buffer_size = 4096;
   static const size_t max_key_length = 512;
-  alignas(64) char m_buffer[m_buffer_size];
+#ifndef _MSC_VER
+  alignas(64)
+#endif
+  char m_buffer[m_buffer_size];
   std::map<MarControl*, subscription> m_subscribers;
 
 public:
