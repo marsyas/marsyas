@@ -56,8 +56,8 @@ class script_translator
 
   bool handle_include_directive( const node & directive_node )
   {
-    int component_count = (int) directive_node.components.size();
-    assert(component_count == 1 || component_count == 2);
+    assert(directive_node.components.size() == 1 ||
+           directive_node.components.size() == 2);
 
     string filename, id;
 
@@ -129,7 +129,7 @@ class script_translator
     std::string name, type;
 
     if (name_node.tag == ID_NODE)
-      name = std::move(n.components[0].s);
+      name = std::move(name_node.s);
 
     type = std::move(type_node.s);
 
@@ -157,13 +157,13 @@ class script_translator
     else
       assert(!m_context_stack.empty());
 
-    const node & system_def = n.components[2];
-    int child_idx = 0;
 
     this_context().control_map.emplace_back(system, vector<node>());
     int control_map_index = this_context().control_map.size() - 1;
 
-    for( const node & system_def_element : system_def.components )
+    int child_idx = 0;
+
+    for( const node & system_def_element : def_node.components )
     {
       switch(system_def_element.tag)
       {
@@ -451,7 +451,6 @@ class script_translator
         mrs_natural row_column_count = (mrs_natural) row.components.size();
         for(mrs_natural c = 0; c < row_column_count; ++c)
         {
-          static const bool invalid_matrix_value = false;
           switch(row.components[c].tag)
           {
           case REAL_NODE:
@@ -459,7 +458,7 @@ class script_translator
           case INT_NODE:
             matrix(r, c) = (mrs_real) row.components[c].v.i; break;
           default:
-            assert(invalid_matrix_value);
+            assert(false);
           }
         }
       }
@@ -472,8 +471,7 @@ class script_translator
       return find_remote_control(anchor, link_path);
     }
     default:
-      bool control_value_is_valid = false;
-      assert(control_value_is_valid);
+      assert(false);
     }
     return MarControlPtr();
   }
