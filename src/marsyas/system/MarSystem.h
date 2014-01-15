@@ -232,10 +232,10 @@ public:
   // Naming methods
   virtual void setName(std::string name);
   virtual void setType(std::string type);
-  std::string getType() const;
-  std::string getName() const;
-  std::string getPrefix() const;
-  std::string getAbsPath() const;
+  const std::string & getType() const;
+  const std::string & getName() const;
+  const std::string & getPrefix() const;
+  const std::string & getAbsPath() const;
   void updatePath();
 
   const std::map<std::string, MarControlPtr> & controls() { return controls_; }
@@ -307,7 +307,12 @@ public:
     return isComposite_;
   }
 
-  // get controls
+  /**
+   * @brief Get control of ...[grand-][grand-]child by path.
+   * @param Path composed of types and names of children
+   * and a type and name of a control,
+   * e.g. "child-type/child-name/child-type/child-name/.../control-type/control-name"
+   */
   MarControlPtr getControl(std::string cname, bool searchParent = false, bool searchChildren = true);
   MarControlPtr getControlLocal(std::string cname)
   {
@@ -365,6 +370,11 @@ public:
 
   // Composite interface
   virtual bool addMarSystem(MarSystem *marsystem);
+  /**
+   * @brief Get ...[grand-][grand-]child by path.
+   * @param Path composed of child types and names,
+   * e.g. "child-type/child-name/child-type/child-name/..."
+   */
   virtual MarSystem* getChildMarSystem(std::string childPath);
   virtual void setParent(const MarSystem* parent);
   MarSystem* getParent() const
@@ -372,6 +382,36 @@ public:
     return parent_;
   }
   virtual std::vector<MarSystem*> getChildren();
+
+  // New composite interface //
+
+  const std::vector<MarSystem*> & children() const { return marsystems_; }
+
+  /**
+   * @brief Get immediate child by name.
+   * @param Child's name (without type).
+   */
+  MarSystem *child( const std::string & name );
+
+  /**
+   * @brief Get immediate control by name.
+   * @param Control name (without type).
+   */
+  MarControlPtr control( const std::string & name );
+
+  /**
+   * @brief Get ...[grand-][grand-]child by path.
+   * @param Path composed of child names (without types),
+   * e.g. "child-name/child-name/..."
+   */
+  MarSystem *remoteChild( const std::string & path );
+
+  /**
+   * @brief Get control of ...[grand-][grand-]child by path.
+   * @param Path composed of child names (without types) and a control name,
+   * e.g. "child-name/child-name/.../control-name"
+   */
+  MarControlPtr remoteControl( const std::string & path );
 
   // Processing and update methods
   bool isUpdating();
