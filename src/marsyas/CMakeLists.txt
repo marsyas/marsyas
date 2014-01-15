@@ -63,6 +63,8 @@ if(MARSYAS_REALTIME)
   set(MARSYAS_REALTIME_SOURCES
     realtime/runner.cpp
     realtime/udp_receiver.cpp
+    realtime/osc_dispatcher.cpp
+    realtime/osc_sender.cpp
   )
 endif()
 
