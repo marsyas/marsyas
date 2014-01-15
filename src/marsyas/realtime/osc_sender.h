@@ -53,7 +53,7 @@ class OscSender : public MarSystem
   static const size_t m_buffer_size = 4096;
   static const size_t max_key_length = 512;
 #ifndef _MSC_VER
-  alignas(64)
+  alignas(8)
 #endif
   char m_buffer[m_buffer_size];
   std::map<MarControl*, subscription> m_subscribers;
