@@ -32,7 +32,7 @@ using std::pair;
 using std::map;
 using std::istream;
 using std::ostream;
-
+using std::string;
 
 
 using namespace Marsyas;
@@ -527,25 +527,25 @@ MarSystem::setType(mrs_string type) // => mutexes [?]
   }
 }
 
-mrs_string
+const std::string &
 MarSystem::getType() const // => mutexes [?]
 {
   return type_;
 }
 
-mrs_string
+const std::string &
 MarSystem::getName() const // => mutexes [?]
 {
   return name_;
 }
 
-mrs_string
+const std::string &
 MarSystem::getPrefix() const // => mutexes [?]
 {
   return prefix_;
 }
 
-mrs_string
+const std::string &
 MarSystem::getAbsPath() const // => mutexes [?]
 {
   return absPath_;
@@ -1287,6 +1287,80 @@ vector<MarSystem*>
 MarSystem::getChildren()
 {
   return marsystems_;
+}
+
+// Name without type:
+MarSystem * MarSystem::child( const string & name )
+{
+  std::vector<MarSystem*>::iterator it;
+  for (it = marsystems_.begin(); it != marsystems_.end(); ++it)
+  {
+    if ((*it)->getName() == name)
+      return *it;
+  }
+
+  return 0;
+}
+
+// Name without type:
+MarControlPtr MarSystem::control( const string & name )
+{
+  ControlItr it;
+  for (it = controls_.begin(); it != controls_.end(); ++it)
+  {
+    if (it->second->id() == name)
+      return it->second;
+  }
+
+  return MarControlPtr();
+}
+
+// Path in form of "system-name/system-name/..." without types:
+MarSystem *MarSystem::remoteChild( const string & path )
+{
+  string::size_type pos = 0;
+  MarSystem * system = this;
+
+  while(system)
+  {
+    string::size_type separator = path.find('/', pos);
+    if (separator != string::npos)
+    {
+      size_t count = separator - pos;
+      system = system->child( path.substr(pos, count) );
+      pos = pos + count + 1;
+    }
+    else
+    {
+      return system->child( path.substr(pos) );
+    }
+  }
+
+  return 0;
+}
+
+// Path in form of "system-name/system-name/.../control-name" without types:
+MarControlPtr MarSystem::remoteControl( const string & path )
+{
+  string::size_type pos = 0;
+  MarSystem * system = this;
+
+  while(system)
+  {
+    string::size_type separator = path.find('/', pos);
+    if (separator != string::npos)
+    {
+      size_t count = separator - pos;
+      system = system->child( path.substr(pos, count) );
+      pos = pos + count + 1;
+    }
+    else
+    {
+      return system->control( path.substr(pos) );
+    }
+  }
+
+  return MarControlPtr();
 }
 
 bool

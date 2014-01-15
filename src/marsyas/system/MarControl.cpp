@@ -30,6 +30,7 @@ using std::ostringstream;
 using std::vector;
 using std::pair;
 using std::size_t;
+using std::string;
 
 namespace Marsyas {
 
@@ -109,15 +110,14 @@ MarControl::getMarSystem()
 }
 
 void
-MarControl::setName(std::string cname)
+MarControl::setName(const std::string & cname)
 {
   cname_ = cname;
-}
-
-std::string
-MarControl::getName() const
-{
-  return cname_;
+  string::size_type separator = cname.find('/');
+  if (separator != string::npos)
+    id_ = cname.substr( separator + 1 );
+  else
+    id_.clear();
 }
 
 void
@@ -732,6 +732,7 @@ MarControl::MarControl(const MarControl& a):
   value_(a.value_->clone()),
   msys_(a.msys_),
   cname_(a.cname_),
+  id_(a.id_),
   state_(a.state_),
   desc_(a.desc_)
 {
@@ -743,9 +744,9 @@ MarControl::MarControl(MarControlValue *value, std::string cname, MarSystem* msy
   refCount_(0),
   value_(value->clone()),
   msys_(msys),
-  cname_(cname),
   state_(state)
 {
+  setName(cname);
   value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
 
@@ -754,9 +755,9 @@ MarControl::MarControl(double re, std::string cname, MarSystem* msys, bool state
   refCount_(0),
   value_(new MarControlValueT<mrs_real>(re)),
   msys_(msys),
-  cname_(cname),
   state_(state)
 {
+  setName(cname);
   value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
 
@@ -765,9 +766,9 @@ MarControl::MarControl(float re, std::string cname, MarSystem* msys, bool state)
   refCount_(0),
   value_(new MarControlValueT<mrs_real>(re)),
   msys_(msys),
-  cname_(cname),
   state_(state)
 {
+  setName(cname);
   value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
 
@@ -777,9 +778,9 @@ MarControl::MarControl(mrs_natural ne, std::string cname, MarSystem* msys, bool 
   refCount_(0),
   value_(new MarControlValueT<mrs_natural>(ne)),
   msys_(msys),
-  cname_(cname),
   state_(state)
 {
+  setName(cname);
   value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
 
@@ -788,9 +789,9 @@ MarControl::MarControl(std::string st, std::string cname, MarSystem* msys, bool 
   refCount_(0),
   value_(new MarControlValueT<std::string>(st)),
   msys_(msys),
-  cname_(cname),
   state_(state)
 {
+  setName(cname);
   value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
 
@@ -799,9 +800,9 @@ MarControl::MarControl(mrs_bool be, std::string cname, MarSystem* msys, bool sta
   refCount_(0),
   value_(new MarControlValueT<bool>(be)),
   msys_(msys),
-  cname_(cname),
   state_(state)
 {
+  setName(cname);
   value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
 
@@ -810,9 +811,9 @@ MarControl::MarControl(realvec& ve, std::string cname, MarSystem* msys, bool sta
   refCount_(0),
   value_(new MarControlValueT<realvec>(ve)),
   msys_(msys),
-  cname_(cname),
   state_(state)
 {
+  setName(cname);
   value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 }
 

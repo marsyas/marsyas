@@ -27,6 +27,7 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <typeinfo>
 
 //#define TRACECONTROLS
 #ifdef TRACECONTROLS
@@ -159,6 +160,7 @@ private:
   MarControlValue *value_;
   MarSystem* msys_;
   std::string cname_;
+  std::string id_;
   bool state_;
   std::string desc_;
 
@@ -195,11 +197,19 @@ public:
 
   void setMarSystem(MarSystem* msys);
   MarSystem* getMarSystem();
-  void setName(std::string cname);
-  std::string getName() const;
+  void setName(const std::string & cname);
+  const std::string & getName() const { return cname_; }
+  const std::string & id() const { return id_; }
   void setState(bool state);
   bool hasState() const;
   std::string getType() const;
+
+
+  template<typename T>
+  bool hasType()
+  {
+    return value_ && (typeid(*value_) == typeid(MarControlValueT<T>));
+  }
 
   // for link controls
   bool linkTo(MarControlPtr ctrl, bool update = true);
