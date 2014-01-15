@@ -410,7 +410,7 @@ class script_translator
         processor->setOperation(op);
         owner->attachMarSystem(processor);
 
-        MarControlPtr src_control = find_control(processor, "result");
+        MarControlPtr src_control = processor->control("result");
         return src_control;
     }
     else
@@ -532,75 +532,10 @@ class script_translator
     if (path.empty())
       return MarControlPtr();
 
-    vector<string> path_elements;
-    string control_name;
-    bool absolute;
-    split_control_path(path, path_elements, control_name, absolute);
-
-    if (control_name.empty())
-      return MarControlPtr();
-
-    MarSystem *parent = absolute ? this_context().root_system : anchor;
-    MarSystem *control_owner = find_child(parent, path_elements);
-    if (!control_owner)
-        return MarControlPtr();
-
-    // cout << "-- Got control owner" << endl;
-    return find_control(control_owner, control_name);
-  }
-
-  MarControlPtr find_control(MarSystem *owner, const string & control_name)
-  {
-#if 0
-    cout << "-- Searching for local control: " << endl
-         << "-- -- " << control_name << endl
-         << "-- -- at " << owner->getAbsPath() << endl;
-#endif
-    const map<string, MarControlPtr>& controls = owner->getLocalControls();
-    map<string, MarControlPtr>::const_iterator control_itr;
-    for(const auto & control_mapping : controls)
-    {
-      const MarControlPtr & control = control_mapping.second;
-      string name = control->getName();
-      //cout << "-- Comparing control: " << name << endl;
-      name = name.substr( name.find('/') + 1 );
-
-      if (name == control_name)
-        return control;
-    }
-    return MarControlPtr();
-  }
-
-  MarSystem * find_child(MarSystem *parent,
-                         const vector<string> & path_elements )
-  {
-#if 0
-    cout << "-- Searching for child:" << endl
-         << "-- -- ";
-    for(const auto & elem : path_elements) cout << (elem + "/");
-    cout << endl;
-    cout << "-- -- " << "under " << parent->getAbsPath() << endl;
-#endif
-
-    MarSystem *system = parent;
-    for(const auto & path_element : path_elements)
-    {
-      MarSystem *matching_child = 0;
-      vector<MarSystem*> children = system->getChildren();
-      for(MarSystem *child : children)
-      {
-        if (child->getName() == path_element)
-        {
-          matching_child = child;
-          break;
-        }
-      }
-      if (matching_child)
-        system = matching_child;
-      else
-        return 0;
-    }
-    return system;
+    if (path[0] == '/')
+      return this_context().root_system->remoteControl(path.substr(1));
+    else
+      return anchor->remoteControl(path);
   }
 
   void split_control_path(const string & path,
