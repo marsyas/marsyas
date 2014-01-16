@@ -20,6 +20,7 @@ using namespace Marsyas;
 class RealvecWidget;
 class ControlsWidget;
 class StatisticsWidget;
+class FilePathLabel;
 class DebugController;
 class Main;
 
@@ -76,6 +77,7 @@ public slots:
 
 signals:
   void systemChanged();
+  void fileChanged( const QString & filePath );
 
 private:
   Main();
@@ -114,7 +116,8 @@ private:
   ActionManager m_action_manager;
 
   QMainWindow *m_main_window;
-  QLabel *m_reference_label;
+  FilePathLabel *m_system_label;
+  FilePathLabel *m_reference_label;
   QLabel *m_step_label;
   QSpinBox *m_step_control;
   QQuickView *m_graph;
@@ -142,6 +145,56 @@ public:
 
 signals:
   void clicked(RealvecWidget*);
+};
+
+class StatusLabel : public QLabel
+{
+  Q_OBJECT
+
+public:
+  StatusLabel( QWidget * parent = 0 );
+  StatusLabel( QString label, QString text = QString(), QWidget * parent = 0 );
+
+public slots:
+  void setLabel( const QString & label )
+  {
+    m_label = label;
+    updateFullText();
+  }
+
+  void setText( const QString & text )
+  {
+    m_text = text;
+    updateFullText();
+  }
+
+private:
+  void updateFullText()
+  {
+    QString full_text;
+    if (!m_label.isEmpty())
+    {
+      full_text += m_label;
+      full_text += ": ";
+    }
+    full_text += m_text;
+    QLabel::setText(full_text);
+  }
+
+  QString m_label;
+  QString m_text;
+};
+
+class FilePathLabel : public StatusLabel
+{
+  Q_OBJECT
+
+public:
+  FilePathLabel( QWidget * parent = 0 );
+  FilePathLabel( QString label, QString filePath = QString(), QWidget * parent = 0 );
+
+public slots:
+  void setFileName( const QString & filePath );
 };
 
 #endif // INSPECTOR_MAIN_CONTROLLER_INCLUDED

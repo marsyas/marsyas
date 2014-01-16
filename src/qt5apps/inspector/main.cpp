@@ -16,7 +16,7 @@
 #endif
 
 #include <QDebug>
-
+#include <QDir>
 #include <QApplication>
 #include <QGuiApplication>
 
@@ -127,13 +127,9 @@ Main::Main():
   status_label_palette.setColor(QPalette::Window, Qt::black);
   status_label_palette.setColor(QPalette::WindowText, Qt::white);
 
-  m_reference_label = new QLabel(tr("Reference: -"));
-  m_reference_label->setPalette(status_label_palette);
-  m_reference_label->setAutoFillBackground(true);
-
-  m_step_label = new QLabel(tr("Step: -"));
-  m_step_label->setPalette(status_label_palette);
-  m_step_label->setAutoFillBackground(true);
+  m_system_label = new FilePathLabel("System");
+  m_reference_label = new FilePathLabel("Reference");
+  m_step_label = new StatusLabel("Step");
 
   m_graph = new QQuickView(m_qml_engine, 0);
   m_graph->setColor( "black" );
@@ -146,8 +142,9 @@ Main::Main():
 
   QHBoxLayout *status_layout = new QHBoxLayout;
   status_layout->setSpacing(2);
-  status_layout->addWidget(m_step_label, 1);
+  status_layout->addWidget(m_system_label, 4);
   status_layout->addWidget(m_reference_label, 4);
+  status_layout->addWidget(m_step_label, 1);
 
   QVBoxLayout *central_layout = new QVBoxLayout;
   central_layout->setContentsMargins(0,0,0,0);
@@ -180,6 +177,8 @@ Main::Main():
   m_dock_stats_widget->setVisible(false);
   m_main_window->addDockWidget(Qt::BottomDockWidgetArea, m_dock_stats_widget);
 
+  connect( this, SIGNAL(fileChanged(QString)), m_system_label,
+           SLOT(setFileName(QString)) );
   connect( m_debugger, SIGNAL(ticked()),
            m_controls_widget, SLOT(refresh()) );
   connect( m_debugger, SIGNAL(ticked()),
@@ -361,6 +360,7 @@ void Main::openSystem(const QString & filename)
   delete old_system;
 
   emit systemChanged();
+  emit fileChanged( filename );
 }
 
 void Main::openRecording()
@@ -544,4 +544,66 @@ MarSystem *Main::systemForPath( const QString & path )
     system = m_root_system->getChildMarSystem( relative_path.toStdString() );
 
   return system;
+}
+
+StatusLabel::StatusLabel( QWidget * parent ):
+  QLabel(parent)
+{
+  QPalette palette;
+  palette.setColor(QPalette::Window, Qt::black);
+  palette.setColor(QPalette::WindowText, Qt::white);
+  setPalette(palette);
+
+  setAutoFillBackground(true);
+  setMargin(1);
+
+  updateFullText();
+}
+
+StatusLabel::StatusLabel( QString label, QString text, QWidget * parent ):
+  QLabel(parent),
+  m_label(label),
+  m_text(text)
+{
+  QPalette palette;
+  palette.setColor(QPalette::Window, Qt::black);
+  palette.setColor(QPalette::WindowText, Qt::white);
+  setPalette(palette);
+
+  setAutoFillBackground(true);
+  setMargin(1);
+
+  updateFullText();
+}
+
+FilePathLabel::FilePathLabel( QWidget * parent ):
+  StatusLabel(parent)
+{
+  setFileName(QString());
+}
+
+FilePathLabel::FilePathLabel( QString label, QString filePath, QWidget * parent ):
+  StatusLabel(parent)
+{
+    setLabel(label);
+    setFileName(filePath);
+}
+
+void FilePathLabel::setFileName( const QString & filePath )
+{
+  if (filePath.isEmpty())
+  {
+    setText("-");
+    return;
+  }
+
+  QFileInfo info(filePath);
+  QString dir_path = info.absolutePath();
+  QString file_name = info.fileName();
+
+  QString text = file_name;
+  if (!dir_path.isEmpty())
+    text += QString(" (%1)").arg(dir_path);
+
+  setText(text);
 }
