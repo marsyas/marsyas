@@ -33,6 +33,8 @@ StatisticsWidget::StatisticsWidget( ActionManager *,
 void StatisticsWidget::setSystem( Marsyas::MarSystem * system )
 {
   m_report_view->clear();
+  if (!system)
+    return;
   recursiveAddSystem(system, m_report_view->invisibleRootItem());
   m_report_view->expandAll();
 }
