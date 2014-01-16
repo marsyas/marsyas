@@ -319,36 +319,38 @@ void Main::openSystem(const QString & filename)
 
   if (!system) {
     qCritical("Could not open MarSystem file!");
-    return;
   }
 
   // Handle old state
 
-  QObject *old_system_adaptor =
-      m_graph->rootContext()->contextProperty("system").value<QObject*>();
+  QObject *old_system_adaptor = m_graph->rootContext()->contextProperty("system").value<QObject*>();
   MarSystem *old_system = m_root_system;
 
   m_graph->setSource(QUrl());
+  m_graph->rootContext()->setContextProperty("system", QVariant());
 
   // Apply new state
 
   m_root_system = system;
 
-  MarSystemAdaptor *system_adaptor = new MarSystemAdaptor(system, this);
-  m_graph->rootContext()->setContextProperty("system", QVariant::fromValue<QObject*>(system_adaptor));
-  m_graph->setSource(QUrl("qrc:///graph/Graph.qml"));
+  if (system)
+  {
+    MarSystemAdaptor *system_adaptor = new MarSystemAdaptor(system, this);
+    m_graph->rootContext()->setContextProperty("system", static_cast<QObject*>(system_adaptor));
+    m_graph->setSource(QUrl("qrc:///graph/Graph.qml"));
 
-  QObject *root_item = m_graph->rootObject();
-  if (root_item) {
-    QObject::connect( root_item, SIGNAL(clicked(QString)),
-                      this, SLOT(systemClicked(QString)) );
-    QObject::connect( root_item, SIGNAL(inputClicked(QString)),
-                      this, SLOT(systemInputClicked(QString)) );
-    QObject::connect( root_item, SIGNAL(outputClicked(QString)),
-                      this, SLOT(systemOutputClicked(QString)) );
-  }
-  else {
-    qWarning("Could not find top system item!");
+    QObject *root_item = m_graph->rootObject();
+    if (root_item) {
+      QObject::connect( root_item, SIGNAL(clicked(QString)),
+                        this, SLOT(systemClicked(QString)) );
+      QObject::connect( root_item, SIGNAL(inputClicked(QString)),
+                        this, SLOT(systemInputClicked(QString)) );
+      QObject::connect( root_item, SIGNAL(outputClicked(QString)),
+                        this, SLOT(systemOutputClicked(QString)) );
+    }
+    else {
+      qWarning("Could not find top system item!");
+    }
   }
 
   m_debugger->setSystem(system);
