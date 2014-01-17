@@ -387,6 +387,8 @@ public:
 
   // New composite interface //
 
+  std::string path() const;
+
   const std::vector<MarSystem*> & children() const { return marsystems_; }
 
   /**

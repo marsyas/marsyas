@@ -196,13 +196,14 @@ public:
   int getRefCount() const;
 
   void setMarSystem(MarSystem* msys);
-  MarSystem* getMarSystem();
+  MarSystem* getMarSystem() const;
   void setName(const std::string & cname);
   const std::string & getName() const { return cname_; }
   const std::string & id() const { return id_; }
   void setState(bool state);
   bool hasState() const;
   std::string getType() const;
+  std::string path() const;
 
 
   template<typename T>

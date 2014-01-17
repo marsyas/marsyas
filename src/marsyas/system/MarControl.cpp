@@ -104,7 +104,7 @@ MarControl::setMarSystem(MarSystem* msys)
 }
 
 MarSystem*
-MarControl::getMarSystem()
+MarControl::getMarSystem() const
 {
   return msys_;
 }
@@ -136,6 +136,19 @@ mrs_string
 MarControl::getType() const
 {
   return value_->getType();
+}
+
+std::string MarControl::path() const
+{
+  string path;
+  const MarSystem *system = getMarSystem();
+  if (system)
+  {
+    path += system->path();
+    path += '/';
+  }
+  path += id_;
+  return path;
 }
 
 void
