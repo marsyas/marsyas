@@ -327,6 +327,12 @@ void RealvecPlotCurve::setData( const realvec * data )
   mrs_natural row_count = data->getRows();
   mrs_natural column_count = data->getCols();
 
+  if (row_count < 1 || column_count < 1)
+  {
+    clear();
+    return;
+  }
+
   if (row_count != m_curves.count())
   {
     clear();
@@ -364,6 +370,7 @@ void RealvecPlotCurve::clear()
   }
   m_curves.clear();
   m_data = 0;
+  m_plotter->setAxisScale( QwtPlot::xBottom, 0.0, 1.0 );
 }
 
 void RealvecPlotCurve::fitRange()
@@ -397,16 +404,24 @@ RealvecPlotImage::~RealvecPlotImage()
 
 void RealvecPlotImage::setData( const Marsyas::realvec * data )
 {
+  if (data->getRows() < 1 || data->getCols() < 1)
+  {
+    clear();
+    return;
+  }
+
+  double y_range = (double) data->getRows();
+  double x_range = (double) data->getCols();
   RealvecRaster *raster = new RealvecRaster(data);
-  raster->setInterval(Qt::YAxis, QwtInterval(0, data->getRows(), QwtInterval::ExcludeMaximum));
-  raster->setInterval(Qt::XAxis, QwtInterval(0, data->getCols(), QwtInterval::ExcludeMaximum));
+  raster->setInterval(Qt::YAxis, QwtInterval(0, y_range, QwtInterval::ExcludeMaximum));
+  raster->setInterval(Qt::XAxis, QwtInterval(0, x_range, QwtInterval::ExcludeMaximum));
   raster->setInterval(Qt::ZAxis, m_range);
 
   m_image.setData( raster );
   m_image.attach(m_plotter);
 
-  m_plotter->setAxisScale(QwtPlot::yLeft, 0, data->getRows());
-  m_plotter->setAxisScale(QwtPlot::xBottom, 0, data->getCols());
+  m_plotter->setAxisScale(QwtPlot::yLeft, 0, y_range);
+  m_plotter->setAxisScale(QwtPlot::xBottom, 0, x_range);
 
   m_data = data;
 }
@@ -415,6 +430,8 @@ void RealvecPlotImage::clear()
 {
   m_image.detach();
   m_data = 0;
+  m_plotter->setAxisScale(QwtPlot::yLeft, 0, 1.0);
+  m_plotter->setAxisScale(QwtPlot::xBottom, 0, 1.0);
 }
 
 void RealvecPlotImage::fitRange()
