@@ -153,6 +153,8 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
   }
   else if(mode == "report" || done)
   {
+    ostringstream stream;
+
     if (getctrl("mrs_bool/regression")->isTrue()) {
 
       mrs_real varActual = regCorr.sumSqrClass -
@@ -177,35 +179,35 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
       mrs_real relativeAbsoluteError = 0.0;
       mrs_real rootRelativeSquaredError = 0.0;
       mrs_real instances = 0;
-      cout << "=== ClassificationReport ===" << endl << endl;
-      cout << "Correlation coefficient" << "\t\t\t" << correlation << "\t" << endl;
-      cout << "Mean absolute error" << "\t\t\t" << meanAbsoluteError << endl;
-      cout << "Root mean squared error" << "\t\t\t" << rootMeanSquaredError << endl;
-      cout << "Relative absolute error" << "\t\t\t" << relativeAbsoluteError << endl;
-      cout << "Root relative squared error" << "\t\t" << rootRelativeSquaredError << endl;
-      cout << "Total Number of Instances" << "\t\t" << instances << endl << endl;
+      stream << "=== ClassificationReport ===" << endl << endl;
+      stream << "Correlation coefficient" << "\t\t\t" << correlation << "\t" << endl;
+      stream << "Mean absolute error" << "\t\t\t" << meanAbsoluteError << endl;
+      stream << "Root mean squared error" << "\t\t\t" << rootMeanSquaredError << endl;
+      stream << "Relative absolute error" << "\t\t\t" << relativeAbsoluteError << endl;
+      stream << "Root relative squared error" << "\t\t" << rootRelativeSquaredError << endl;
+      stream << "Total Number of Instances" << "\t\t" << instances << endl << endl;
     } else {
 
       summaryStatistics stats = computeSummaryStatistics(confusionMatrix);
-      cout << "=== ClassificationReport ===" << endl << endl;
+      stream << "=== ClassificationReport ===" << endl << endl;
 
-      cout << "Correctly Classified Instances" << "\t\t" << stats.correctInstances << "\t";
-      cout << (((mrs_real)stats.correctInstances / (mrs_real)stats.instances)*100.0);
-      cout << " %" << endl;
+      stream << "Correctly Classified Instances" << "\t\t" << stats.correctInstances << "\t";
+      stream << (((mrs_real)stats.correctInstances / (mrs_real)stats.instances)*100.0);
+      stream << " %" << endl;
 
-      cout << "Incorrectly Classified Instances" << "\t" << (stats.instances - stats.correctInstances) << "\t";
-      cout << (((mrs_real)(stats.instances - stats.correctInstances) / (mrs_real)stats.instances)*100.0);
-      cout << " %" << endl;
+      stream << "Incorrectly Classified Instances" << "\t" << (stats.instances - stats.correctInstances) << "\t";
+      stream << (((mrs_real)(stats.instances - stats.correctInstances) / (mrs_real)stats.instances)*100.0);
+      stream << " %" << endl;
 
-      cout << "Kappa statistic" << "\t\t\t\t" << stats.kappa << "\t" << endl;
-      cout << "Mean absolute error" << "\t\t\t" << stats.meanAbsoluteError << endl;
-      cout << "Root mean squared error" << "\t\t\t" << stats.rootMeanSquaredError << endl;
-      cout << "Relative absolute error" << "\t\t\t" << stats.relativeAbsoluteError << endl;
-      cout << "Root relative squared error" << "\t\t" << stats.rootRelativeSquaredError << endl;
-      cout << "Total Number of Instances" << "\t\t" << stats.instances << endl << endl;
+      stream << "Kappa statistic" << "\t\t\t\t" << stats.kappa << "\t" << endl;
+      stream << "Mean absolute error" << "\t\t\t" << stats.meanAbsoluteError << endl;
+      stream << "Root mean squared error" << "\t\t\t" << stats.rootMeanSquaredError << endl;
+      stream << "Relative absolute error" << "\t\t\t" << stats.relativeAbsoluteError << endl;
+      stream << "Root relative squared error" << "\t\t" << stats.rootRelativeSquaredError << endl;
+      stream << "Total Number of Instances" << "\t\t" << stats.instances << endl << endl;
 
-      cout << "=== Confusion Matrix ===";
-      cout << endl; cout << endl;
+      stream << "=== Confusion Matrix ===";
+      stream << endl; stream << endl;
 
       if(!classNames.size())
         classNames = ",";
@@ -216,9 +218,9 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
       mrs_natural correct = 0;
       mrs_natural total = 0;
       for (mrs_natural x = 0; x<confusionMatrix.getCols(); x++)
-        cout << "\t" << (char)(x+'a');
-      cout << "\t" << "<-- classified as";
-      cout << endl;
+        stream << "\t" << (char)(x+'a');
+      stream << "\t" << "<-- classified as";
+      stream << endl;
 
       for(mrs_natural y = 0; y<confusionMatrix.getRows(); y++)
       {
@@ -229,21 +231,23 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
           if(x == y)
             correct += value;
 
-          cout << "\t" << value;
+          stream << "\t" << value;
         }//for x
-        cout << "\t" << "| ";
+        stream << "\t" << "| ";
         if(from < classNames.size())
         {
-          cout << (char)(y+'a') << " = " << classNames.substr(from, to - from);
+          stream << (char)(y+'a') << " = " << classNames.substr(from, to - from);
           from = to + 1;
           to = classNames.find(",", from);
           if(to == mrs_string::npos)
             to = classNames.size();
         }//if
-        cout << endl;
+        stream << endl;
       }//for y
-      cout << (total > 0 ? correct * 100 / total: 0) << "% classified correctly (" << correct << "/" << total << ")" << endl;
+      stream << (total > 0 ? correct * 100 / total: 0) << "% classified correctly (" << correct << "/" << total << ")" << endl;
     }
+
+    MrsLog::mrsMessage(stream);
 
     updControl("mrs_bool/done", true);
   }//if done
