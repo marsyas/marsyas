@@ -378,7 +378,9 @@ RealvecPlotImage::RealvecPlotImage( QwtPlot *plotter ):
   m_data(0),
   m_range(-1, 1)
 {
+  m_color_map = new QwtLinearColorMap("black", "white");
   m_image.setDisplayMode(QwtPlotSpectrogram::ImageMode, true);
+  m_image.setColorMap(m_color_map);
 }
 
 RealvecPlotImage::~RealvecPlotImage()
