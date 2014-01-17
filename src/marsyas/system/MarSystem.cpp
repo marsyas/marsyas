@@ -23,6 +23,7 @@
 #include "../common_source.h"
 
 #include <algorithm>
+#include <stack>
 
 using std::ostringstream;
 using std::cout;
@@ -1287,6 +1288,26 @@ vector<MarSystem*>
 MarSystem::getChildren()
 {
   return marsystems_;
+}
+
+std::string MarSystem::path() const
+{
+  std::stack<const MarSystem*> hierarchy;
+  const MarSystem *system = this;
+  while(system)
+  {
+    hierarchy.push(system);
+    system = system->getParent();
+  }
+  string path;
+  while(!hierarchy.empty())
+  {
+    path += hierarchy.top()->getName();
+    hierarchy.pop();
+    if (!hierarchy.empty())
+      path += '/';
+  }
+  return path;
 }
 
 // Name without type:
