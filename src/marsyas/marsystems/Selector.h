@@ -40,10 +40,14 @@ namespace Marsyas
  the other.
 
  Controls:
- - \b mrs_natural/disable [w] : passes in the number of the child
- MarSystem to disable.
- - \b mrs_natural/enable	[w] : pass in the number of the child MarSystem to
- enable.  (by default all children are enabled)
+ - \b mrs_natural/disable [w] : The number of an observation to disable.
+ - \b mrs_realvec/disableRange [w] : A realvec containing a pair of numbers:
+   the low and high ends of the range of observations to disable.
+ - \b mrs_natural/enable [w] : The number of a previously disabled observation
+   to enable.
+ - \b mrs_realvec/enableRange [w] : A realvec containing a pair of numbers:
+   the low and high ends of a range of (previously disabled) observations
+   to enable.
 
 */
 
