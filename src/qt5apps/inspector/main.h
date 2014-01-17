@@ -11,9 +11,12 @@
 #include <QDockWidget>
 #include <QLabel>
 #include <QSpinBox>
+#include <QPlainTextEdit>
 #include <QPointer>
 
 #include <QQmlEngine>
+
+#include <cassert>
 
 using namespace Marsyas;
 
@@ -22,6 +25,7 @@ class ControlsWidget;
 class StatisticsWidget;
 class FilePathLabel;
 class DebugController;
+class MessageDockWidget;
 class Main;
 
 class ActionManager
@@ -50,6 +54,8 @@ class Main : public QObject
 {
   Q_OBJECT
 
+  static Main *m_instance;
+
 public:
   enum Action {
     OpenSystem,
@@ -62,11 +68,11 @@ public:
 
   static Main * instance()
   {
-    static Main *instance = 0;
-    if (!instance)
-      instance = new Main;
-    return instance;
+    assert(m_instance);
+    return m_instance;
   }
+
+  Main();
 
 public slots:
   void openSystem();
@@ -79,8 +85,10 @@ signals:
   void systemChanged();
   void fileChanged( const QString & filePath );
 
+public:
+  MessageDockWidget *messageWidget() { return m_dock_msg_widget; }
+
 private:
-  Main();
   void createActions();
   void createMenu();
   void createToolbar();
@@ -98,6 +106,11 @@ private slots:
   void bugClicked( const QString & path );
 
 private:
+  static void reportMessage( const std::string & );
+  static void reportWarning( const std::string & );
+  static void reportError( const std::string & );
+  static void qtMessageHandler(QtMsgType, const QMessageLogContext &, const QString &);
+
   MarSystem *systemForPath( const QString & path );
 
   QAction *& action(ActionManager::Action type)
@@ -126,6 +139,7 @@ private:
   QPointer<RealvecWidget> m_current_signal_widget;
 
   QDockWidget *m_dock_stats_widget;
+  MessageDockWidget *m_dock_msg_widget;
 };
 
 class SignalDockWidget : public QDockWidget
@@ -195,6 +209,22 @@ public:
 
 public slots:
   void setFileName( const QString & filePath );
+};
+
+class MessageDockWidget : public QDockWidget
+{
+  Q_OBJECT
+public:
+  MessageDockWidget();
+
+public slots:
+  void message(const QString & msg);
+  void warning(const QString &msg);
+  void error(const QString &msg);
+  void append(const QString & text);
+
+private:
+  QPlainTextEdit *m_text_view;
 };
 
 #endif // INSPECTOR_MAIN_CONTROLLER_INCLUDED
