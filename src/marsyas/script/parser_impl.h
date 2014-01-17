@@ -4,6 +4,7 @@
 
 // $insert class.h
 #include "parser.h"
+#include <marsyas/common_source.h>
 
 // $insert namespace-open
 namespace Marsyas
@@ -11,7 +12,7 @@ namespace Marsyas
 
 inline void Parser::error(char const *msg)
 {
-    std::cerr << "** Error: line " << d_scanner.lineNr() << ": " << msg << std::endl;
+    MRSERR("Script parser: Line " << d_scanner.lineNr() << ": " << msg);
 }
 
 // $insert lex
