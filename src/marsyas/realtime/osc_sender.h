@@ -84,7 +84,7 @@ public:
   {
     if (!path.size() || path[0] != '/')
       return false;
-    MarControlPtr control = m_system->remoteControl(path.substr(1));
+    MarControlPtr control = m_system->remoteControl(path);
     return subscribe(control, address, port);
   }
 
@@ -101,7 +101,7 @@ public:
   {
     if (!path.size() || path[0] != '/')
       return;
-    MarControlPtr control = m_system->remoteControl(path.substr(1));
+    MarControlPtr control = m_system->remoteControl(path);
     return unsubscribe(control, address, port);
   }
 

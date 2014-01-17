@@ -308,7 +308,7 @@ class script_translator
         continue;
       }
 
-      MarControlPtr dst_control = find_remote_control(system, dst_path);
+      MarControlPtr dst_control = system->remoteControl(dst_path);
       if (dst_control.isInvalid()) {
         MRSERR("Invalid destination control: " << dst_path);
         continue;
@@ -468,7 +468,7 @@ class script_translator
     {
       string link_path = control_value.s;
       assert(!link_path.empty());
-      return find_remote_control(anchor, link_path);
+      return anchor->remoteControl(link_path);
     }
     default:
       assert(false);
@@ -519,23 +519,6 @@ class script_translator
     }
 
     return nullptr;
-  }
-
-  MarControlPtr find_remote_control( MarSystem *anchor, const string & path )
-  {
-#if 0
-    cout << "-- Searching for remote control: " << endl
-         << "-- -- " << path << endl
-         << "-- -- at " << anchor->getAbsPath() << endl
-         << "-- -- under " << current_context().root_system->getAbsPath() << endl;
-#endif
-    if (path.empty())
-      return MarControlPtr();
-
-    if (path[0] == '/')
-      return this_context().root_system->remoteControl(path.substr(1));
-    else
-      return anchor->remoteControl(path);
   }
 
   void split_control_path(const string & path,
