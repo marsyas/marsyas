@@ -26,6 +26,7 @@
 #include <qwt_series_data.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_spectrogram.h>
+#include <qwt_color_map.h>
 
 #include <QWidget>
 #include <QTableView>
@@ -237,6 +238,7 @@ public:
   void fitRange();
 private:
   QwtPlotSpectrogram m_image;
+  QwtLinearColorMap *m_color_map;
   const Marsyas::realvec *m_data;
   QwtInterval m_range;
 };
