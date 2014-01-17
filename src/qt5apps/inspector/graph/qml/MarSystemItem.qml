@@ -112,7 +112,7 @@ ColumnLayout {
                     color: "white"
                     anchors.centerIn: parent
                     id: label
-                    text: system.name
+                    text: system.name + "  [" + system.type + ']'
                 }
                 MouseArea {
                     id: titleArea
