@@ -75,9 +75,9 @@ public:
 
   /**
    * @brief Subscribe receiver to changes of a particular control.
-   * @param Path of control, in the form of "/child-system/child-system/.../control-name"
-   * @param IP host of receiver.
-   * @param IP port of receiver.
+   * @param path Path of control, in the form of "/child-system/child-system/.../control-name"
+   * @param address IP host of receiver.
+   * @param port IP port of receiver.
    * @return
    */
   bool subscribe( const std::string & path, const char * address, int port )
@@ -92,9 +92,9 @@ public:
 
   /**
    * @brief Unsubscribe receiver from changes of a particular control.
-   * @param Path of control, in the form of "/child-system/child-system/.../control-name"
-   * @param IP host of receiver.
-   * @param IP port of receiver.
+   * @param path Path of control, in the form of "/child-system/child-system/.../control-name"
+   * @param address IP host of receiver.
+   * @param port IP port of receiver.
    * @return
    */
   void unsubscribe( const std::string & path, const char * address, int port )
