@@ -55,6 +55,11 @@ Selector::addControls()
   addctrl("mrs_natural/enable", -1);
   setctrlState("mrs_natural/enable", true);
 
+  addControl("mrs_realvec/enableRange", realvec());
+  setControlState("mrs_realvec/enableRange", true);
+  addControl("mrs_realvec/disableRange", realvec());
+  setControlState("mrs_realvec/disableRange", true);
+
   addctrl("mrs_realvec/enabled", realvec(), ctrl_enabled_);
 }
 
@@ -90,14 +95,40 @@ Selector::myUpdate(MarControlPtr sender)
   }
   setctrl("mrs_natural/disable", -1);
 
+  const realvec & range_to_disable = getControl("mrs_realvec/disableRange")->to<mrs_realvec>();
+  if (range_to_disable.getSize() >= 2)
+  {
+    mrs_natural min = static_cast<mrs_natural>( range_to_disable(0) );
+    mrs_natural max = static_cast<mrs_natural>( range_to_disable(1) );
+    mrs_natural idx = std::max((mrs_natural) 0, min);
+    while(idx <= max && idx < enabled.getSize())
+    {
+      enabled(idx) = 0.0;
+      ++idx;
+    }
+  }
+
   //
-  // Enable any observations that the user asks to be disabled
+  // Enable any observations that the user asks to be enabled
   //
   mrs_natural input_to_enable = getctrl("mrs_natural/enable")->to<mrs_natural>();
   if (input_to_enable != -1 && input_to_enable < inObservations_) {
     enabled(input_to_enable) = 1.0;
   }
   setctrl("mrs_natural/enable", -1);
+
+  const realvec & range_to_enable = getControl("mrs_realvec/enableRange")->to<mrs_realvec>();
+  if (range_to_enable.getSize() >= 2)
+  {
+    mrs_natural min = static_cast<mrs_natural>( range_to_enable(0) );
+    mrs_natural max = static_cast<mrs_natural>( range_to_enable(1) );
+    mrs_natural idx = std::max( (mrs_natural) 0, min);
+    while(idx <= max && idx < enabled.getSize())
+    {
+      enabled(idx) = 1.0;
+      ++idx;
+    }
+  }
 
   //
   // Count how many of the observations are enabled
