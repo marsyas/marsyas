@@ -71,7 +71,7 @@ public:
 public slots:
   void setDisplayType( int type );
   void displayControl( Marsyas::MarSystem *system, const QString & path );
-  void displayPort( const QString & path, FlowDirection port );
+  void displayPort( Marsyas::MarSystem * system, FlowDirection port );
   void refresh(bool autoScale = false);
   void clear();
   void autoScale();

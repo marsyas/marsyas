@@ -40,31 +40,15 @@ ControlsWidget::ControlsWidget( QWidget * parent):
   m_tree->setHeaderLabels( QStringList()  << "Name" << "Value" << "Type" );
   m_tree->setRootIsDecorated(false);
 
-  {
-    QPalette palette;
-    palette.setColor(QPalette::Base, Qt::black);
-    palette.setColor(QPalette::Text, Qt::white);
-
-    m_label = new QLineEdit;
-    m_label->setReadOnly(true);
-    m_label->setFrame(false);
-    m_label->setPalette(palette);
-    // Let's try without it
-    m_label->hide();
-  }
-
   QVBoxLayout *column = new QVBoxLayout;
   column->setContentsMargins(0,0,0,0);
   column->setSpacing(0);
-  column->addWidget(m_label);
   column->addWidget(m_tree);
 
   setLayout(column);
 
   connect(m_tree, SIGNAL(itemClicked(QTreeWidgetItem*,int)),
           this, SLOT(onItemClicked(QTreeWidgetItem*,int)));
-  connect(m_label, SIGNAL(textChanged(QString)),
-          this, SIGNAL(labelTextChanged(QString)) );
 }
 
 void ControlsWidget::setSystem( Marsyas::MarSystem * system )
@@ -74,12 +58,12 @@ void ControlsWidget::setSystem( Marsyas::MarSystem * system )
 
   m_system = system;
 
-  if (m_system)
-    m_label->setText( QString::fromStdString(m_system->getAbsPath()) );
-  else
-    m_label->clear();
-
   rebuild();
+
+  if (m_system)
+    emit pathChanged( QString::fromStdString(m_system->path()) );
+  else
+    emit pathChanged( QString() );
 }
 
 void ControlsWidget::rebuild()
