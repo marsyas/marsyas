@@ -309,11 +309,13 @@ public:
 
   /**
    * @brief Get control of ...[grand-][grand-]child by path.
-   * @param Path composed of types and names of children
+   * @param path Path composed of types and names of children
    * and a type and name of a control,
    * e.g. "child-type/child-name/child-type/child-name/.../control-type/control-name"
+   * @param searchParent Whether to search for matching control among parents (recursively).
+   * @param searchChildren Whether to search for mathing control among children (recursively).
    */
-  MarControlPtr getControl(std::string cname, bool searchParent = false, bool searchChildren = true);
+  MarControlPtr getControl(std::string path, bool searchParent = false, bool searchChildren = true);
   MarControlPtr getControlLocal(std::string cname)
   {
     return getControl(cname, false, false);
@@ -372,10 +374,10 @@ public:
   virtual bool addMarSystem(MarSystem *marsystem);
   /**
    * @brief Get ...[grand-][grand-]child by path.
-   * @param Path composed of child types and names,
+   * @param path Path composed of child types and names,
    * e.g. "child-type/child-name/child-type/child-name/..."
    */
-  virtual MarSystem* getChildMarSystem(std::string childPath);
+  virtual MarSystem* getChildMarSystem(std::string path);
   virtual void setParent(const MarSystem* parent);
   MarSystem* getParent() const
   {
@@ -389,26 +391,26 @@ public:
 
   /**
    * @brief Get immediate child by name.
-   * @param Child's name (without type).
+   * @param name Child's name (without type).
    */
   MarSystem *child( const std::string & name );
 
   /**
    * @brief Get immediate control by name.
-   * @param Control name (without type).
+   * @param name Control name (without type).
    */
   MarControlPtr control( const std::string & name );
 
   /**
    * @brief Get ...[grand-][grand-]child by path.
-   * @param Path composed of child names (without types),
+   * @param path Path composed of child names (without types),
    * e.g. "child-name/child-name/..."
    */
   MarSystem *remoteChild( const std::string & path );
 
   /**
    * @brief Get control of ...[grand-][grand-]child by path.
-   * @param Path composed of child names (without types) and a control name,
+   * @param path Path composed of child names (without types) and a control name,
    * e.g. "child-name/child-name/.../control-name"
    */
   MarControlPtr remoteControl( const std::string & path );
