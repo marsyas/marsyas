@@ -32,7 +32,7 @@ public:
 
   QString name() const
   {
-    return QString::fromStdString( m_system->getPrefix() );
+    return QString::fromStdString( m_system->getName() );
   }
 
   QString type() const
