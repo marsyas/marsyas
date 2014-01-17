@@ -28,6 +28,7 @@
 #include <QStringList>
 #include <QPalette>
 #include <QKeySequence>
+#include <QTextCursor>
 
 #include <QWidget>
 #include <QSplitter>
@@ -50,6 +51,8 @@ using namespace std;
 using namespace Marsyas;
 using namespace MarsyasQml;
 
+Main *Main::m_instance = nullptr;
+
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
@@ -60,7 +63,7 @@ int main(int argc, char *argv[])
   if (arguments.size() > 1)
     filename = arguments[1];
 
-  Main *main = Main::instance();
+  Main *main = new Main();
 
   if (!filename.isEmpty())
     main->openSystem(filename);
@@ -170,12 +173,20 @@ Main::Main():
 
   addRealvecWidget();
 
+  m_dock_msg_widget = new MessageDockWidget;
+  m_main_window->addDockWidget(Qt::BottomDockWidgetArea, m_dock_msg_widget);
+
   m_stats_widget = new StatisticsWidget(&m_action_manager, m_debugger);
   m_dock_stats_widget = new QDockWidget;
   m_dock_stats_widget->setWidget(m_stats_widget);
   m_dock_stats_widget->setWindowTitle("Statistics");
-  m_dock_stats_widget->setVisible(false);
   m_main_window->addDockWidget(Qt::BottomDockWidgetArea, m_dock_stats_widget);
+  m_main_window->tabifyDockWidget(m_dock_msg_widget, m_dock_stats_widget);
+
+  m_dock_msg_widget->raise();
+
+  m_dock_msg_widget->hide();
+  m_dock_stats_widget->hide();
 
   connect( this, SIGNAL(fileChanged(QString)), m_system_label,
            SLOT(setFileName(QString)) );
@@ -197,6 +208,16 @@ Main::Main():
 
   m_main_window->resize(1000, 600);
   m_main_window->showMaximized();
+
+  m_instance = this;
+
+  MrsLog::setMessageFunction( &Main::reportMessage );
+  MrsLog::setWarningFunction( &Main::reportWarning );
+  MrsLog::setErrorFunction( &Main::reportError );
+  MrsLog::setDiagnosticFunction( &Main::reportMessage );
+  MrsLog::setDebugFunction( &Main::reportMessage );
+
+  qInstallMessageHandler( &Main::qtMessageHandler );
 }
 
 void Main::createActions()
@@ -249,6 +270,7 @@ void Main::createMenu()
   menuBar->addMenu(menu);
 
   menu = menuBar->addMenu(tr("&View"));
+  menu->addAction(m_dock_msg_widget->toggleViewAction());
   menu->addAction(m_dock_stats_widget->toggleViewAction());
   menu->addAction(action(ActionManager::AddRealvecWidget));
   menuBar->addMenu(menu);
@@ -608,4 +630,98 @@ void FilePathLabel::setFileName( const QString & filePath )
     text += QString(" (%1)").arg(dir_path);
 
   setText(text);
+}
+
+class MessageWidget : public QPlainTextEdit
+{
+protected:
+  virtual void contextMenuEvent(QContextMenuEvent *event)
+  {
+      QMenu *menu = createStandardContextMenu();
+
+      QAction *a = menu->addAction(tr("Clear"));
+      connect(a, SIGNAL(triggered()), this, SLOT(clear()));
+
+      menu->exec(event->globalPos());
+      delete menu;
+  }
+};
+
+MessageDockWidget::MessageDockWidget()
+{
+  m_text_view = new MessageWidget;
+  m_text_view->setMaximumBlockCount(1000);
+  m_text_view->setReadOnly(true);
+
+  setWidget(m_text_view);
+
+  setWindowTitle("Messages");
+}
+
+void MessageDockWidget::message(const QString & msg)
+{
+  m_text_view->appendPlainText(msg);
+}
+
+void MessageDockWidget::warning(const QString &msg)
+{
+  m_text_view->appendPlainText(QString("WARNING: ") + msg);
+}
+
+void MessageDockWidget::error(const QString &msg)
+{
+  m_text_view->appendPlainText(QString("PROBLEM: ") + msg);
+}
+
+void MessageDockWidget::append(const QString & text)
+{
+  QTextCursor cursor = m_text_view->textCursor();
+  cursor.movePosition(QTextCursor::End);
+  cursor.insertText(text);
+}
+
+void Main::reportMessage( const std::string & msg )
+{
+  instance()->messageWidget()->message(QString::fromUtf8(msg.c_str()));
+  instance()->messageWidget()->show();
+  instance()->messageWidget()->raise();
+}
+
+void Main::reportWarning( const std::string & msg )
+{
+  instance()->messageWidget()->warning(QString::fromUtf8(msg.c_str()));
+  instance()->messageWidget()->show();
+  instance()->messageWidget()->raise();
+}
+
+void Main::reportError( const std::string & msg )
+{
+  instance()->messageWidget()->error(QString::fromUtf8(msg.c_str()));
+  instance()->messageWidget()->show();
+  instance()->messageWidget()->raise();
+}
+
+void Main::qtMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg)
+{
+  switch (type)
+  {
+  case QtDebugMsg:
+    instance()->messageWidget()->message(msg);
+    instance()->messageWidget()->show();
+    instance()->messageWidget()->raise();
+    break;
+  case QtWarningMsg:
+    instance()->messageWidget()->warning(msg);
+    instance()->messageWidget()->show();
+    instance()->messageWidget()->raise();
+    break;
+  case QtCriticalMsg:
+    instance()->messageWidget()->error(msg);
+    instance()->messageWidget()->show();
+    instance()->messageWidget()->raise();
+    break;
+  case QtFatalMsg:
+    cerr << "Fatal: " << msg.toLocal8Bit().constData() << endl;
+    abort();
+  }
 }
