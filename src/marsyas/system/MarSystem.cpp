@@ -1290,22 +1290,39 @@ MarSystem::getChildren()
   return marsystems_;
 }
 
+std::string MarSystem::splitPathEnd( const std::string & path, std::string & remaining )
+{
+  string::size_type last_separator = path.rfind('/');
+  if (last_separator != string::npos)
+  {
+    string ending = path.substr(last_separator + 1);
+    if (last_separator > 0)
+      remaining = path.substr(0, last_separator);
+    else
+      remaining = '/';
+    return ending;
+  }
+  else
+  {
+    return path;
+  }
+}
+
 std::string MarSystem::path() const
 {
   std::stack<const MarSystem*> hierarchy;
   const MarSystem *system = this;
-  while(system)
+  while(system->getParent())
   {
     hierarchy.push(system);
     system = system->getParent();
   }
-  string path;
+  string path("/");
   while(!hierarchy.empty())
   {
     path += hierarchy.top()->getName();
+    path += '/';
     hierarchy.pop();
-    if (!hierarchy.empty())
-      path += '/';
   }
   return path;
 }
@@ -1337,10 +1354,21 @@ MarControlPtr MarSystem::control( const string & name )
 }
 
 // Path in form of "system-name/system-name/..." without types:
-MarSystem *MarSystem::remoteChild( const string & path )
+MarSystem *MarSystem::remoteSystem( const string & path )
 {
-  string::size_type pos = 0;
+  if (path.empty())
+    return 0;
+
   MarSystem * system = this;
+  string::size_type pos = 0;
+
+  if (path[0] == '/')
+  {
+    pos = 1;
+    // Absolute path. Go find root system:
+    while(system->getParent())
+      system = system->getParent();
+  }
 
   while(system)
   {
@@ -1353,7 +1381,11 @@ MarSystem *MarSystem::remoteChild( const string & path )
     }
     else
     {
-      return system->child( path.substr(pos) );
+      string name = path.substr(pos);
+      if (!name.empty())
+        return system->child( name );
+      else
+        return system;
     }
   }
 
@@ -1363,25 +1395,20 @@ MarSystem *MarSystem::remoteChild( const string & path )
 // Path in form of "system-name/system-name/.../control-name" without types:
 MarControlPtr MarSystem::remoteControl( const string & path )
 {
-  string::size_type pos = 0;
+  if (path.empty())
+    return MarControlPtr();
+
   MarSystem * system = this;
-
-  while(system)
+  string system_path;
+  string control_name = splitPathEnd(path, system_path);
+  if (!system_path.empty())
   {
-    string::size_type separator = path.find('/', pos);
-    if (separator != string::npos)
-    {
-      size_t count = separator - pos;
-      system = system->child( path.substr(pos, count) );
-      pos = pos + count + 1;
-    }
-    else
-    {
-      return system->control( path.substr(pos) );
-    }
+    system = remoteSystem(system_path);
   }
-
-  return MarControlPtr();
+  if (system)
+    return system->control( control_name );
+  else
+    return MarControlPtr();
 }
 
 bool

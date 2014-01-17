@@ -387,6 +387,8 @@ public:
 
   // New composite interface //
 
+  static std::string splitPathEnd( const std::string & path, std::string & remaining );
+
   std::string path() const;
 
   const std::vector<MarSystem*> & children() const { return marsystems_; }
@@ -408,7 +410,7 @@ public:
    * @param path Path composed of child names (without types),
    * e.g. "child-name/child-name/..."
    */
-  MarSystem *remoteChild( const std::string & path );
+  MarSystem *remoteSystem( const std::string & path );
 
   /**
    * @brief Get control of ...[grand-][grand-]child by path.

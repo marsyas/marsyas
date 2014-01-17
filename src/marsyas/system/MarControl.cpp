@@ -145,7 +145,6 @@ std::string MarControl::path() const
   if (system)
   {
     path += system->path();
-    path += '/';
   }
   path += id_;
   return path;
