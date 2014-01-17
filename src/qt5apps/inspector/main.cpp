@@ -168,7 +168,7 @@ Main::Main():
   dock_controls_widget->setWidget(m_controls_widget);
   dock_controls_widget->setWindowTitle("Control Data");
   m_main_window->addDockWidget(Qt::RightDockWidgetArea, dock_controls_widget);
-  connect(m_controls_widget, SIGNAL(labelTextChanged(QString)),
+  connect(m_controls_widget, SIGNAL(pathChanged(QString)),
           dock_controls_widget, SLOT(setWindowTitle(QString)) );
 
   addRealvecWidget();
@@ -464,8 +464,7 @@ void Main::systemInputClicked( const QString & path )
   m_controls_widget->setSystem(system);
 
   if (m_current_signal_widget)
-    m_current_signal_widget->displayPort
-        (QString::fromStdString(system->getAbsPath()), Input);
+    m_current_signal_widget->displayPort(system, Input);
 }
 
 void Main::systemOutputClicked( const QString & path )
@@ -479,8 +478,7 @@ void Main::systemOutputClicked( const QString & path )
   m_controls_widget->setSystem(system);
 
   if (m_current_signal_widget)
-    m_current_signal_widget->displayPort
-        (QString::fromStdString(system->getAbsPath()), Output);
+    m_current_signal_widget->displayPort(system, Output);
 }
 
 void Main::controlClicked( const QString & path )

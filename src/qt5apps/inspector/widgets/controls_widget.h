@@ -22,7 +22,6 @@
 #include <marsyas/system/MarSystem.h>
 
 #include <QTreeWidget>
-#include <QLineEdit>
 
 class ControlsWidget : public QWidget
 {
@@ -40,7 +39,7 @@ public slots:
 
 signals:
   void controlClicked( const QString & path );
-  void labelTextChanged( const QString & );
+  void pathChanged( const QString & );
 
 private slots:
   void onItemClicked( QTreeWidgetItem *, int column );
@@ -55,7 +54,6 @@ private:
 
   Marsyas::MarSystem * m_system;
   QTreeWidget *m_tree;
-  QLineEdit *m_label;
 };
 
 #endif // MARSYAS_INSPECTOR_CONTROLS_LIST_WIDGET_INCLUDED

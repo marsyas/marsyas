@@ -134,32 +134,38 @@ void RealvecWidget::displayControl( MarSystem * system, const QString & path )
   if (!m_display_port && m_system == system && m_path == path)
     return;
 
+  MarControlPtr control = system->getControl( path.toStdString() );
+  if (!control->hasType<mrs_realvec>())
+    return;
+
   m_display_port = false;
   m_path = path;
   m_system = system;
 
   refresh(true);
+
+  QString abs_path = QString::fromStdString(control->path());
+  emit pathChanged(abs_path);
 }
 
-void RealvecWidget::displayPort(const QString & path,
-                                           FlowDirection port)
+void RealvecWidget::displayPort( MarSystem * system,
+                                 FlowDirection port )
 {
-  if (m_display_port && m_path == path && m_port_type == port)
+  if (m_display_port && m_system == system && m_port_type == port)
     return;
 
   m_display_port = true;
   m_port_type = port;
-  m_system = 0;
-  m_path = path;
+  m_system = system;
+  m_path = QString::fromStdString(system->getAbsPath());
 
   refresh(true);
 
-  QString display_path(path);
+  QString display_path = QString::fromStdString(system->path());
   if (port == Input)
-    display_path += " - input";
+    display_path += " [input]";
   else
-    display_path += " - output";
-
+    display_path += " [output]";
   emit pathChanged(display_path);
 }
 
@@ -208,9 +214,9 @@ void RealvecWidget::refreshFromControl()
     return;
   }
 
-  if (control->getType() != "mrs_realvec") {
-    //qWarning() << "RealvecWidget: control type not 'mrs_realvec':" << m_control_path;
-    //clearPlot();
+  if (!control->hasType<mrs_realvec>()) {
+    qWarning() << "RealvecWidget: control type not 'mrs_realvec':" << m_path;
+    clearPlot();
     return;
   }
 
@@ -220,13 +226,11 @@ void RealvecWidget::refreshFromControl()
   m_data = data;
   if (m_plot)
     m_plot->setData(&m_data);
-
-  QString abs_path = QString::fromStdString(m_system->getAbsPath()) + m_path;
-  emit pathChanged(abs_path);
 }
 
 void RealvecWidget::refreshFromPort()
 {
+  Q_ASSERT(m_system);
   Q_ASSERT(!m_path.isEmpty());
 
   const realvec * data = 0;
