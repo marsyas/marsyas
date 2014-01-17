@@ -22,22 +22,57 @@
 #include <iostream>
 #include <fstream>
 
-using std::ostringstream;
-using std::cout;
-using std::endl;
-
-
 using namespace Marsyas;
+using namespace std;
 
 mrs_string MrsLog::fname_ = "marsyas.log";
 bool MrsLog::warnings_off_ = false;
 bool MrsLog::messages_off_ = false;
 
+MrsLog::log_function_t MrsLog::message_function_ = 0;
+MrsLog::log_function_t MrsLog::warning_function_ = 0;
+MrsLog::log_function_t MrsLog::error_function_ = 0;
+MrsLog::log_function_t MrsLog::debug_function_ = 0;
+MrsLog::log_function_t MrsLog::diagnostic_function_ = 0;
 
 void
 MrsLog::setLogFile(mrs_string fname)
 {
   fname_ = fname;
+}
+
+void MrsLog::setMessageFunction(log_function_t function)
+{
+  message_function_ = function;
+}
+
+void MrsLog::setWarningFunction(log_function_t function)
+{
+  warning_function_ = function;
+}
+
+void MrsLog::setErrorFunction(log_function_t function)
+{
+  error_function_ = function;
+}
+
+void MrsLog::setDebugFunction(log_function_t function)
+{
+  debug_function_ = function;
+}
+
+void MrsLog::setDiagnosticFunction(log_function_t function)
+{
+  diagnostic_function_ = function;
+}
+
+void MrsLog::setAllFunctions(log_function_t function)
+{
+  message_function_ = function;
+  warning_function_ = function;
+  error_function_ = function;
+  debug_function_ = function;
+  diagnostic_function_ = function;
 }
 
 void
@@ -46,6 +81,9 @@ MrsLog::mrsMessage(const ostringstream& oss)
 #ifdef MARSYAS_LOG_MESSAGES
   if (!messages_off_)
   {
+    if (message_function_)
+      message_function_(oss.str());
+
 #ifdef MARSYAS_LOG2STDOUT
     cout << "[MRS_MESSAGE] " << oss.str() << endl;
 #endif
@@ -81,8 +119,10 @@ MrsLog::mrsMessage(const ostringstream& oss)
 void
 MrsLog::mrsErr(const ostringstream& oss)
 {
-
 #ifdef MARSYAS_LOG_ERRORS
+
+  if (error_function_)
+    error_function_(oss.str());
 
 #ifdef MARSYAS_LOG2STDOUT
   cout << "[MRSERR] " << oss.str() << endl;
@@ -116,6 +156,9 @@ MrsLog::mrsWarning(const ostringstream& oss)
 #ifdef MARSYAS_LOG_WARNINGS
   if (!warnings_off_)
   {
+    if (warning_function_)
+      warning_function_(oss.str());
+
 #ifdef MARSYAS_LOG2STDOUT
     cout << "[MRS_WARNING] " << oss.str() << endl;
 #endif
@@ -151,6 +194,9 @@ MrsLog::mrsDiagnostic(const ostringstream& oss)
 {
 #ifdef MARSYAS_LOG_DIAGNOSTICS
 
+  if (diagnostic_function_)
+    diagnostic_function_(oss.str());
+
 #ifdef MARSYAS_LOG2STDOUT
   cout << "[MRS_DIAG] " << oss.str() << endl;
 #endif
@@ -184,6 +230,10 @@ void
 MrsLog::mrsDebug(const ostringstream& oss)
 {
   (void) oss;
+
+  if (debug_function_)
+    debug_function_(oss.str());
+
 #ifdef MARSYAS_LOG2STDOUT
   cout << "[MRS_DEBUG] " << oss.str() << endl;
 #endif
