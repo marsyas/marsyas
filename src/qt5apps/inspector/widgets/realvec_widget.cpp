@@ -343,7 +343,10 @@ void RealvecPlotCurve::setData( const realvec * data )
     m_curves[r]->setData(new RealvecRow(data, r));
   }
 
-  m_plotter->setAxisScale(QwtPlot::xBottom, 0.0, column_count);
+  m_plotter->setAxisScale
+      ( QwtPlot::xBottom,
+        0.0,
+        std::max((mrs_natural)(column_count - 1), (mrs_natural) 1) );
 
   m_data = data;
 }
