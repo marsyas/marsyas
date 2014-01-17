@@ -39,8 +39,17 @@ messages to a log file or std output (i.e. screen).
 
 class marsyas_EXPORT MrsLog
 {
+public:
+  typedef void (*log_function_t)(const std::string & msg);
+
+private:
   static std::string fname_;
 
+  static log_function_t message_function_;
+  static log_function_t warning_function_;
+  static log_function_t error_function_;
+  static log_function_t debug_function_;
+  static log_function_t diagnostic_function_;
 
 public:
   static bool warnings_off_;
@@ -48,6 +57,13 @@ public:
 
   static  void setLogFile(std::string fname);
   static  void getLogFile();
+
+  static void setMessageFunction(log_function_t function);
+  static void setWarningFunction(log_function_t function);
+  static void setErrorFunction(log_function_t function);
+  static void setDebugFunction(log_function_t function);
+  static void setDiagnosticFunction(log_function_t function);
+  static void setAllFunctions(log_function_t function);
 
   static  void mrsMessage(const std::ostringstream& oss);
   //logging methods
