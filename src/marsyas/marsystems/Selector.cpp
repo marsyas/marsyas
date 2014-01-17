@@ -107,6 +107,7 @@ Selector::myUpdate(MarControlPtr sender)
       ++idx;
     }
   }
+  setControl("mrs_realvec/disableRange", realvec());
 
   //
   // Enable any observations that the user asks to be enabled
@@ -129,6 +130,7 @@ Selector::myUpdate(MarControlPtr sender)
       ++idx;
     }
   }
+  setControl("mrs_realvec/enableRange", realvec());
 
   //
   // Count how many of the observations are enabled
