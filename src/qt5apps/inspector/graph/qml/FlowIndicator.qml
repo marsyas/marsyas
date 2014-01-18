@@ -15,20 +15,28 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled:true
         onClicked: root.clicked()
+        onEntered: flowInfoVisible = true
+        onExited: flowInfoVisible = false
     }
 
-    color: mouse_area.containsMouse ? "blue" : Qt.rgba(0,0,0.6)
+    color: selectedPort === root ? global_style.selection_background : global_style.port_background
 
     Text {
         anchors.centerIn: parent
 
         id: label
+        color: selectedPort === root ? global_style.selection : global_style.port_text
         text: if (output) {
                   controls.onSamples + " x " + controls.onObservations + " [" + controls.osrate + "]"
               } else {
                   controls.inSamples + " x " + controls.inObservations + " [" + controls.israte + "]"
               }
+    }
 
-        color: mouse_area.containsMouse ? "white" : Qt.rgba(0,0,1)
+    opacity: (flowInfoVisible) ? 1.0 : 0.0
+    Behavior on opacity {
+        SequentialAnimation {
+            NumberAnimation { duration: 500; easing.type: Easing.InOutQuad }
+        }
     }
 }
