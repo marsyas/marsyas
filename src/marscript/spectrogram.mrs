@@ -1,0 +1,20 @@
+
+accum: Accumulator
+{
+  + input = ""
+  + window_size = 2048
+  + window_count = 10
+
+  nTimes = window_count
+  inSamples = window_size
+
+  -> process: Series
+  {
+    -> source: SoundFileSource { filename = /input }
+    -> window: Windowing
+    -> spectrum: Spectrum
+    -> power_spectrum: PowerSpectrum
+    -> bin_range: Selector { disableRange = [201, 100000] }
+    -> amp: Gain
+  }
+}

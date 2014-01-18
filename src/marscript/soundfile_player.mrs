@@ -1,0 +1,22 @@
+Network : Series
+{
+  + file = ""
+  + volume = 1.0
+
+  inSamples = 1024
+
+  -> input : SoundFileSource
+  {
+    filename = /file
+  }
+
+  -> amp : Gain
+  {
+    gain = /volume
+  }
+
+  -> output: AudioSink
+  {
+    initAudio = true
+  }
+}
