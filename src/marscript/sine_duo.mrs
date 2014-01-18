@@ -1,0 +1,21 @@
+net: Series {
+
+  + initAudio = out/initAudio
+
+  israte = 44100.0
+
+  -> osc: Fanout
+  {
+    -> left: Series { -> sine: SineSource { frequency = 440.0 } -> amp: Gain }
+    -> right: Series { -> sine: SineSource { frequency = 447.0 } -> amp: Gain }
+  }
+
+  -> amp: Gain {
+    gain = 1.0
+  }
+
+  -> out: AudioSink
+  {
+    initAudio = true
+  }
+}
