@@ -75,6 +75,7 @@ public:
   }
 
   Main();
+  ~Main();
 
 public slots:
   void openSystem();

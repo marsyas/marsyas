@@ -225,6 +225,15 @@ Main::Main():
   qInstallMessageHandler( &Main::qtMessageHandler );
 }
 
+Main::~Main()
+{
+  // Must delete GUI explicitly, else can deadlock
+  // in ~QApplication, while ongoing QML animation.
+  // See GitHub issue #25.
+  delete m_main_window;
+  delete m_root_system;
+}
+
 void Main::createActions()
 {
   QAction *a;
@@ -301,7 +310,7 @@ void Main::createToolbar()
 
 void Main::createGraphStyles()
 {
-  QQmlPropertyMap *black_on_white = m_graph_styles["black-on-white"] = new QQmlPropertyMap;
+  QQmlPropertyMap *black_on_white = m_graph_styles["black-on-white"] = new QQmlPropertyMap(this);
   black_on_white->insert("background", QColor("white"));
   black_on_white->insert("node_border", QColor("black"));
   black_on_white->insert("node_text", QColor("black"));
