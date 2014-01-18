@@ -22,6 +22,7 @@ class MarSystemAdaptor : public QObject
   Q_PROPERTY( QString path READ path CONSTANT )
   Q_PROPERTY( int level READ level CONSTANT )
   Q_PROPERTY( bool hasChildren READ hasChildren NOTIFY childrenChanged )
+  Q_PROPERTY( int childCount READ childCount NOTIFY childrenChanged )
   Q_PROPERTY( QVariantList children READ children NOTIFY childrenChanged )
   Q_PROPERTY( QObject * defaultControls READ defaultControls NOTIFY controlsChanged )
 
@@ -60,6 +61,11 @@ public:
   bool hasChildren() const
   {
     return !m_children.isEmpty();
+  }
+
+  int childCount() const
+  {
+    return m_children.count();
   }
 
   QVariantList children() const;

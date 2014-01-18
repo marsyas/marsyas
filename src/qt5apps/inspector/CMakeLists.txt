@@ -11,6 +11,7 @@ set( inspector_moc_hdr
   main.h
   debug_controller.h
   graph/marsystem_adaptor.h
+  graph/connection_item.h
   widgets/controls_widget.h
   widgets/realvec_widget.h
   widgets/stats_widget.h
@@ -21,6 +22,7 @@ set( inspector_src
   debug_controller.cpp
   graph/marsyas_qml.cpp
   graph/marsystem_adaptor.cpp
+  graph/connection_item.cpp
   widgets/controls_widget.cpp
   widgets/realvec_widget.cpp
   widgets/stats_widget.cpp
