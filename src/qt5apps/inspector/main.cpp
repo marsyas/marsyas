@@ -135,8 +135,10 @@ Main::Main():
   m_step_label = new StatusLabel("Step");
 
   m_graph = new QQuickView(m_qml_engine, 0);
-  m_graph->setColor( "black" );
   m_graph->setResizeMode(QQuickView::SizeRootObjectToView);
+
+  createGraphStyles();
+  setCurrentGraphStyle("black-on-white");
 
   // Central widget
 
@@ -294,6 +296,21 @@ void Main::createToolbar()
   toolbar->addAction(action(ActionManager::Rewind));
 }
 
+void Main::createGraphStyles()
+{
+  QQmlPropertyMap *black_on_white = m_graph_styles["black-on-white"] = new QQmlPropertyMap;
+  black_on_white->insert("background", QColor("white"));
+  black_on_white->insert("node_border", QColor("black"));
+  black_on_white->insert("node_text", QColor("black"));
+  black_on_white->insert("port_background", QColor(210, 210, 210));
+  black_on_white->insert("port_text", QColor(120, 120, 120));
+  black_on_white->insert("expand_icon", QColor(0, 0, 0));
+  black_on_white->insert("expand_icon_background", QColor(200, 200, 200));
+  black_on_white->insert("selection", QColor("blue"));
+  black_on_white->insert("selection_background", QColor(190,190,220));
+
+}
+
 void Main::openSystem()
 {
   QString filename =
@@ -345,11 +362,13 @@ void Main::openSystem(const QString & filename)
 
   // Handle old state
 
-  QObject *old_system_adaptor = m_graph->rootContext()->contextProperty("system").value<QObject*>();
+  QQmlContext *graph_context = m_graph->rootContext();
+
+  QObject *old_system_adaptor = graph_context->contextProperty("system").value<QObject*>();
   MarSystem *old_system = m_root_system;
 
   m_graph->setSource(QUrl());
-  m_graph->rootContext()->setContextProperty("system", QVariant());
+  graph_context->setContextProperty("system", QVariant());
 
   // Apply new state
 
@@ -358,7 +377,7 @@ void Main::openSystem(const QString & filename)
   if (system)
   {
     MarSystemAdaptor *system_adaptor = new MarSystemAdaptor(system, this);
-    m_graph->rootContext()->setContextProperty("system", static_cast<QObject*>(system_adaptor));
+    graph_context->setContextProperty("system", static_cast<QObject*>(system_adaptor));
     m_graph->setSource(QUrl("qrc:///graph/Graph.qml"));
 
     QObject *root_item = m_graph->rootObject();
@@ -461,8 +480,6 @@ void Main::systemInputClicked( const QString & path )
     return;
   }
 
-  m_controls_widget->setSystem(system);
-
   if (m_current_signal_widget)
     m_current_signal_widget->displayPort(system, Input);
 }
@@ -474,8 +491,6 @@ void Main::systemOutputClicked( const QString & path )
     qWarning() << "Main: System not found for path:" << path;
     return;
   }
-
-  m_controls_widget->setSystem(system);
 
   if (m_current_signal_widget)
     m_current_signal_widget->displayPort(system, Output);
@@ -566,6 +581,13 @@ MarSystem *Main::systemForPath( const QString & path )
     system = m_root_system->getChildMarSystem( relative_path.toStdString() );
 
   return system;
+}
+
+void Main::setCurrentGraphStyle(const QString & name)
+{
+  m_graph_style = name;
+  m_graph->setColor(currentGraphStyle()->value("background").value<QColor>());
+  m_graph->rootContext()->setContextProperty("global_style", currentGraphStyle());
 }
 
 StatusLabel::StatusLabel( QWidget * parent ):

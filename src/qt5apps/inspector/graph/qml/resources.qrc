@@ -6,5 +6,6 @@
         <file>MarSystemLayoutFactory.qml</file>
         <file>SeriesLayout.qml</file>
         <file>FanoutLayout.qml</file>
+        <file>ExpandButton.qml</file>
     </qresource>
 </RCC>

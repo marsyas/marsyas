@@ -1,9 +1,18 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.0
 
-ColumnLayout {
+Rectangle {
     id: root
-    spacing: 0
+
+    implicitWidth: contents.implicitWidth
+    implicitHeight: contents.implicitHeight + input_indicator.implicitHeight + output_indicator.implicitHeight
+
+    color: "transparent"
+    border {
+        color: global_style.node_border
+        width: 1
+    }
+
     property color color_code:
         Qt.hsla( (system.level + 1) * 2 % 15 / 14, 0.45, 0.7 )
 
@@ -30,129 +39,166 @@ ColumnLayout {
             parentShouldExpand();
     }
 
-    states: [
-        State {
-            when: privateData.expanded
+    StateGroup {
+        states: [
+            State {
+                when: privateData.expanded
+                PropertyChanges {
+                    target: children
+                    Layout.preferredHeight: children_layout.implicitHeight
+                }
+            },
+            State {
+                when: !privateData.expanded
+                PropertyChanges {
+                    target: children
+                    Layout.preferredHeight: 16
+                }
+            }
+        ]
+    }
+
+    StateGroup {
+        states: State {
+            name: "selected"
+            when: the_root.selectedSystem === root
             PropertyChanges {
-                target: children
-                Layout.preferredHeight: children_layout.implicitHeight
+                target: root
+                border.width: 2
+                border.color: global_style.selection
             }
-        },
-        State {
-            when: !privateData.expanded
             PropertyChanges {
-                target: children
-                Layout.preferredHeight: 16
+                target: label
+                color: global_style.selection
             }
-        }
-    ]
-
-    FlowIndicator {
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
-
-        controls: system.defaultControls;
-        output: false;
-        onClicked: the_root.inputClicked(system.path);
-
-        MouseArea {
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.right: parent.right
-            anchors.rightMargin: 3
-            width: 11
-            height: 11
-            Rectangle {
-                x: 5
-                y: 0
-                width: 1
-                height: 11
-                color: "white"
-                visible: !privateData.expanded
-            }
-            Rectangle {
-                x: 0
-                y: 5
-                width: 11
-                height: 1
-                color: "white"
-            }
-            visible: system.hasChildren
-            onClicked: setExpanded(!privateData.expanded)
         }
     }
-    Rectangle {
-        id: frame
-        color: "transparent"
-        border {
-            color: Qt.rgba(0,0,0.6)
-            width: 1
-        }
+
+    FlowIndicator {
+        id: input_indicator
+        output: false;
+        controls: system.defaultControls;
+
         anchors {
             left: parent.left
             right: parent.right
+            //horizontalCenter: parent.horizontalCenter
+            top: parent.top
+            leftMargin: 2
+            topMargin: 2
+            rightMargin: 2
         }
+        z:1
 
-        implicitWidth: contents.implicitWidth
-        implicitHeight: contents.implicitHeight
+        onClicked: {
+            the_root.inputClicked(system.path);
+            selectedPort = this;
+        }
+    }
 
-        ColumnLayout {
-            id: contents
-            anchors.fill: parent
-            spacing: 0
+    FlowIndicator {
+        id: output_indicator
+        output: true;
+        controls: system.defaultControls;
 
-            Rectangle {
-                Layout.fillWidth: true
-                implicitWidth: label.implicitWidth + 60
-                implicitHeight: label.implicitHeight + 10
-                color: titleArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
+        anchors {
+            left: parent.left
+            right: parent.right
+            //horizontalCenter: parent.horizontalCenter
+            bottom: parent.bottom
+            leftMargin: 2
+            bottomMargin: 2
+            rightMargin: 2
+        }
+        z:1
 
-                Text {
-                    color: "white"
-                    anchors.centerIn: parent
-                    id: label
-                    text: system.name + "  [" + system.type + ']'
-                }
-                MouseArea {
+        onClicked: {
+            the_root.outputClicked(system.path);
+            selectedPort = this;
+        }
+    }
+
+    ColumnLayout {
+        id: contents
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: input_indicator.bottom
+        }
+        z: 2
+
+        spacing: 0
+
+        Item {
+            Layout.fillWidth: true
+            implicitWidth: label.implicitWidth + 60
+            implicitHeight: label.implicitHeight + 10
+
+            /*Rectangle {
+                anchors.fill: parent
+                anchors.margins: 1
+                color: the_root.selectedSystem == root ? Qt.rgba(1.0, 1.0, 0.7) : "transparent"
+            }*/
+
+            Text {
+                color: global_style.node_text
+                anchors.centerIn: parent
+                id: label
+                text: system.name + "  [" + system.type + ']'
+                Component.onCompleted: font.pointSize = font.pointSize + 2;
+            }
+            /*MouseArea {
                     id: titleArea
                     hoverEnabled: true
-                    anchors.fill: parent
+                    anchors.fill: root
                     onDoubleClicked: {
                         setExpanded(!privateData.expanded)
                     }
                     onClicked: {
                         the_root.clicked(system.path);
                     }
-                }
-            }
+                }*/
 
-            Item {
-                id: children
-                visible: privateData.expanded
-                implicitWidth:  children_layout.implicitWidth
-                Layout.fillWidth: true
-                Loader {
-                    id: children_layout
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-                    sourceComponent: layoutComponents.get(system.type);
-                    property var parent_system: system
-                    property var parent_system_item: root
+            ExpandButton {
+                z: 2
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: label.right
+                anchors.leftMargin: 10
+                visible: system.hasChildren
+                expanded: privateData.expanded
+                onClicked: setExpanded(!privateData.expanded)
+            }
+        }
+
+        Item {
+            id: children
+            visible: privateData.expanded
+            implicitWidth:  children_layout.implicitWidth
+            Layout.fillWidth: true
+            Loader {
+                id: children_layout
+                anchors {
+                    left: parent.left
+                    right: parent.right
                 }
+                sourceComponent: layoutComponents.get(system.type);
+                property var parent_system: system
+                property var parent_system_item: root
             }
         }
     }
-    FlowIndicator {
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
 
-        controls: system.defaultControls;
-        output: true;
-        onClicked: the_root.outputClicked(system.path);
+
+    MouseArea {
+        id: system_area
+        anchors.fill: parent
+        z: 0
+        onDoubleClicked: {
+            setExpanded(!privateData.expanded)
+        }
+        onClicked: {
+            the_root.clicked(system.path);
+            the_root.selectedSystem = root;
+        }
     }
 }

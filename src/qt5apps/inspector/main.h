@@ -14,7 +14,9 @@
 #include <QPlainTextEdit>
 #include <QPointer>
 
+#include <QQmlPropertyMap>
 #include <QQmlEngine>
+#include <QQmlPropertyMap>
 
 #include <cassert>
 
@@ -92,6 +94,7 @@ private:
   void createActions();
   void createMenu();
   void createToolbar();
+  void createGraphStyles();
 
 private slots:  
   void addRealvecWidget();
@@ -110,6 +113,11 @@ private:
   static void reportWarning( const std::string & );
   static void reportError( const std::string & );
   static void qtMessageHandler(QtMsgType, const QMessageLogContext &, const QString &);
+  QQmlPropertyMap *currentGraphStyle() const
+  {
+    return m_graph_styles[m_graph_style];
+  }
+  void setCurrentGraphStyle(const QString & name);
 
   MarSystem *systemForPath( const QString & path );
 
@@ -127,6 +135,9 @@ private:
   DebugController *m_debugger;
 
   ActionManager m_action_manager;
+
+  QMap<QString, QQmlPropertyMap*> m_graph_styles;
+  QString m_graph_style;
 
   QMainWindow *m_main_window;
   FilePathLabel *m_system_label;

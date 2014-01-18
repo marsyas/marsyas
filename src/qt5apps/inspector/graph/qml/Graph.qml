@@ -15,6 +15,9 @@ Flickable {
     property var layoutComponents: MarSystemLayoutFactory {}
     property var systemViews: {"/": the_root}
     property var bugs: []
+    property bool flowInfoVisible: false
+    property var selectedSystem
+    property var selectedPort
 
     MarSystemItem {
         id: top_system_item
