@@ -31,12 +31,11 @@ Rectangle {
               } else {
                   controls.inSamples + " x " + controls.inObservations + " [" + controls.israte + "]"
               }
-    }
-
-    opacity: (flowInfoVisible) ? 1.0 : 0.0
-    Behavior on opacity {
-        SequentialAnimation {
-            NumberAnimation { duration: 500; easing.type: Easing.InOutQuad }
+        opacity: (flowInfoVisible) ? 1.0 : 0.0
+        Behavior on opacity {
+            SequentialAnimation {
+                NumberAnimation { duration: 500; easing.type: Easing.InOutQuad }
+            }
         }
     }
 }

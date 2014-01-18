@@ -5,7 +5,7 @@ Rectangle {
     id: root
 
     implicitWidth: contents.implicitWidth
-    implicitHeight: contents.implicitHeight + input_indicator.implicitHeight + output_indicator.implicitHeight
+    implicitHeight: contents.implicitHeight + input_indicator.implicitHeight + output_indicator.implicitHeight + 4
 
     color: "transparent"
     border {
@@ -82,7 +82,6 @@ Rectangle {
         anchors {
             left: parent.left
             right: parent.right
-            //horizontalCenter: parent.horizontalCenter
             top: parent.top
             leftMargin: 2
             topMargin: 2
@@ -104,7 +103,6 @@ Rectangle {
         anchors {
             left: parent.left
             right: parent.right
-            //horizontalCenter: parent.horizontalCenter
             bottom: parent.bottom
             leftMargin: 2
             bottomMargin: 2
@@ -130,15 +128,18 @@ Rectangle {
         spacing: 0
 
         Item {
-            Layout.fillWidth: true
             implicitWidth: label.implicitWidth + 60
             implicitHeight: label.implicitHeight + 10
+            anchors { left: parent.left; right: parent.right }
 
-            /*Rectangle {
+            Rectangle {
                 anchors.fill: parent
-                anchors.margins: 1
-                color: the_root.selectedSystem == root ? Qt.rgba(1.0, 1.0, 0.7) : "transparent"
-            }*/
+                anchors{
+                    leftMargin: 2
+                    rightMargin: 2
+                }
+                color: global_style.port_background
+            }
 
             Text {
                 color: global_style.node_text
@@ -147,17 +148,6 @@ Rectangle {
                 text: system.name + "  [" + system.type + ']'
                 Component.onCompleted: font.pointSize = font.pointSize + 2;
             }
-            /*MouseArea {
-                    id: titleArea
-                    hoverEnabled: true
-                    anchors.fill: root
-                    onDoubleClicked: {
-                        setExpanded(!privateData.expanded)
-                    }
-                    onClicked: {
-                        the_root.clicked(system.path);
-                    }
-                }*/
 
             ExpandButton {
                 z: 2
@@ -174,7 +164,14 @@ Rectangle {
             id: children
             visible: privateData.expanded
             implicitWidth:  children_layout.implicitWidth
-            Layout.fillWidth: true
+            anchors { left: parent.left; right: parent.right }
+
+            Rectangle {
+                anchors.fill: parent
+                color: "transparent"
+                border { color: global_style.node_border }
+            }
+
             Loader {
                 id: children_layout
                 anchors {
@@ -187,7 +184,6 @@ Rectangle {
             }
         }
     }
-
 
     MouseArea {
         id: system_area

@@ -1,6 +1,7 @@
 #include "main.h"
 #include "debug_controller.h"
 #include "graph/marsystem_adaptor.h"
+#include "graph/connection_item.h"
 #include "widgets/controls_widget.h"
 #include "widgets/realvec_widget.h"
 #include "widgets/stats_widget.h"
@@ -112,6 +113,8 @@ void SignalDockWidget::closeEvent(QCloseEvent *event)
 Main::Main():
   m_root_system(0)
 {
+  qmlRegisterType<ConnectionItem>("Marsyas", 1, 0, "ConnectionLine");
+
   m_qml_engine = new QQmlEngine(this);
 
   m_debugger = new DebugController(this);
@@ -302,12 +305,13 @@ void Main::createGraphStyles()
   black_on_white->insert("background", QColor("white"));
   black_on_white->insert("node_border", QColor("black"));
   black_on_white->insert("node_text", QColor("black"));
-  black_on_white->insert("port_background", QColor(210, 210, 210));
+  black_on_white->insert("port_background", QColor(220, 220, 220));
   black_on_white->insert("port_text", QColor(120, 120, 120));
+  black_on_white->insert("connection", QColor("blue"));
   black_on_white->insert("expand_icon", QColor(0, 0, 0));
   black_on_white->insert("expand_icon_background", QColor(200, 200, 200));
   black_on_white->insert("selection", QColor("blue"));
-  black_on_white->insert("selection_background", QColor(190,190,220));
+  black_on_white->insert("selection_background", QColor(180,180,230));
 
 }
 
