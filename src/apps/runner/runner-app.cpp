@@ -73,41 +73,25 @@ int set_control(MarControlPtr & control, const string & text)
   return 0;
 }
 
-MarControlPtr find_control(MarSystem *owner, const string & control_name)
-{
-  const map<string, MarControlPtr>& controls = owner->getLocalControls();
-  map<string, MarControlPtr>::const_iterator control_itr;
-  for(const auto & control_mapping : controls)
-  {
-    const MarControlPtr & control = control_mapping.second;
-    string name = control->getName();
-    name = name.substr( name.find('/') + 1 );
-
-    if (name == control_name)
-      return control;
-  }
-  return MarControlPtr();
-}
-
 static int apply_controls( MarSystem *system,
                            const vector<pair<string,string>> & controls )
 {
   for( const auto & mapping : controls )
   {
-    const string & control_name = mapping.first;
+    const string & control_path = mapping.first;
     const string & control_value_text = mapping.second;
 
-    MarControlPtr control = find_control(system, control_name);
+    MarControlPtr control = system->remoteControl(control_path);
     if (control.isInvalid())
     {
-      MRSERR("Can not set control - invalid name: " << control_name);
+      MRSERR("Can not set control - invalid path: " << control_path);
       return 1;
     }
     int err = set_control(control, control_value_text);
     if (err)
     {
       MRSERR("Can not set control - invalid value: "
-             << control_name << " = " << control_value_text);
+             << control_path << " = " << control_value_text);
       return err;
     }
   }
