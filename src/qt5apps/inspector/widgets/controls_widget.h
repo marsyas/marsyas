@@ -20,8 +20,11 @@
 #define MARSYAS_INSPECTOR_CONTROLS_LIST_WIDGET_INCLUDED
 
 #include <marsyas/system/MarSystem.h>
+#include <QTreeView>
 
-#include <QTreeWidget>
+namespace MarsyasQt {
+  class ControlModel;
+}
 
 class ControlsWidget : public QWidget
 {
@@ -34,15 +37,14 @@ public:
   QSize sizeHint() const { return QSize(500,300); }
 
 public slots:
-  void rebuild();
-  void refresh();
+    void refresh();
 
 signals:
-  void controlClicked( const QString & path );
-  void pathChanged( const QString & );
+    void pathChanged( const QString & );
+    void controlClicked( const QString & path );
 
 private slots:
-  void onItemClicked( QTreeWidgetItem *, int column );
+    void onItemClicked(const QModelIndex & index);
 
 private:
   enum DataColumns {
@@ -53,7 +55,8 @@ private:
   };
 
   Marsyas::MarSystem * m_system;
-  QTreeWidget *m_tree;
+  MarsyasQt::ControlModel *m_model;
+  QTreeView *m_tree;
 };
 
 #endif // MARSYAS_INSPECTOR_CONTROLS_LIST_WIDGET_INCLUDED

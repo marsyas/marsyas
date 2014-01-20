@@ -1,10 +1,12 @@
 set(src
   realvec_item_model.cpp
   realvec_table_widget.cpp
+  control_model.cpp
 )
 
 set(moc_hdr
   realvec_table_widget.h
+  control_model.h
 )
 
 if(MARSYAS_REALTIME)
