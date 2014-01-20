@@ -16,7 +16,9 @@ ControlsWidget::ControlsWidget( QWidget * parent):
 
   m_tree = new QTreeView;
   m_tree->setRootIsDecorated(false);
+  m_tree->setEditTriggers( QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed );
   m_tree->setModel(m_model);
+
 
   QVBoxLayout *column = new QVBoxLayout;
   column->setContentsMargins(0,0,0,0);

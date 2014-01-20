@@ -1,5 +1,7 @@
 #include "control_model.h"
 
+#include <QDebug>
+
 namespace MarsyasQt {
 
 int ControlModel::rowCount(const QModelIndex & parent) const
@@ -29,6 +31,30 @@ QModelIndex ControlModel::index(int row, int column, const QModelIndex & parent)
 QModelIndex ControlModel::parent(const QModelIndex &) const
 {
   return QModelIndex();
+}
+
+Qt::ItemFlags ControlModel::flags(const QModelIndex & index) const
+{
+  if (index == QModelIndex())
+    return Qt::NoItemFlags;
+
+  if (index.column() < 0 || index.column() >= 3 ||
+      index.row() < 0 || index.row() >= m_items.size())
+    return Qt::NoItemFlags;
+
+  Qt::ItemFlags flags;
+  flags |= Qt::ItemNeverHasChildren | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+
+  if (index.column() == 1)
+  {
+    const MarControlPtr & control = m_items[index.row()].control;
+    if (!control->hasType<mrs_realvec>())
+    {
+      flags |= Qt::ItemIsEditable;
+    }
+  }
+
+  return flags;
 }
 
 QVariant ControlModel::data(const QModelIndex & index, int role) const
@@ -67,6 +93,40 @@ QVariant ControlModel::data(const QModelIndex & index, int role) const
   default:
     return QVariant();
   }
+}
+
+bool ControlModel::setData(const QModelIndex & index, const QVariant & value, int role)
+{
+  if (role != Qt::EditRole)
+    return false;
+
+  if (index == QModelIndex())
+    return false;
+
+  if (index.column() != 1 ||
+      index.row() < 0 || index.row() >= m_items.size())
+    return false;
+
+  Item &item = m_items[index.row()];
+  MarControlPtr & control = item.control;
+
+  if (control->hasType<bool>())
+    control->setValue( value.value<bool>() );
+  else if (control->hasType<mrs_natural>())
+    control->setValue( value.value<mrs_natural>() );
+  else if (control->hasType<mrs_real>())
+    control->setValue( value.value<mrs_real>() );
+  else if (control->hasType<mrs_string>())
+    control->setValue( value.value<QString>().toStdString() );
+  else
+    return false;
+
+  // For now, refresh all fields;
+  // we don't know which related controls might also change.
+  refresh();
+  //emit dataChanged( index, index, QVector<int>() << Qt::DisplayRole );
+
+  return true;
 }
 
 QVariant ControlModel::headerData(int section, Qt::Orientation orientation, int role) const
