@@ -44,6 +44,11 @@ void ControlsWidget::setSystem( Marsyas::MarSystem * system )
     emit pathChanged( QString::fromStdString(m_system->path()) );
   else
     emit pathChanged( QString() );
+
+  // NOTE: don't resize value column, as it may contain
+  // ridiculously long strings.
+  m_tree->resizeColumnToContents(0);
+  m_tree->resizeColumnToContents(2);
 }
 
 void ControlsWidget::refresh()
