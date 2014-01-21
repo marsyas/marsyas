@@ -307,7 +307,7 @@ public:
 
   void read ( size_t position, T * destination, size_t count )
   {
-    assert(position + count < m_capacity);
+    assert(position + count <= m_capacity);
 
     size_t queue_capacity = m_queue.capacity();
     size_t read_index = m_position + position;
