@@ -21,6 +21,7 @@
 
 #include <marsyas/system/MarSystem.h>
 #include <marsyas/realtime/packet_queue.h>
+#include <marsyas/export.h>
 
 #include <memory>
 #include <vector>
@@ -39,7 +40,7 @@ struct OscProvider;
  * OSC address, and sets the control to the first OSC value.
  */
 
-class OscReceiver
+class marsyas_EXPORT OscReceiver
 {
   MarSystem *m_system;
   std::vector<OscProvider*> m_providers;
@@ -77,7 +78,7 @@ struct OscProvider
   virtual void provide( OscProviderDestination & ) = 0;
 };
 
-class OscQueueProvider : public OscProvider
+class marsyas_EXPORT OscQueueProvider : public OscProvider
 {
 public:
   OscQueueProvider(packet_queue *queue):

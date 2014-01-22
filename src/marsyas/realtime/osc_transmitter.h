@@ -20,6 +20,7 @@
 #define MARSYAS_REALTIME_OSC_SENDER_HPP
 
 #include <marsyas/system/MarSystem.h>
+#include <marsyas/export.h>
 
 #include <vector>
 #include <string>
@@ -46,7 +47,7 @@ struct OscSubscriber
  * to.
  */
 
-class OscTransmitter : public MarSystem
+class marsyas_EXPORT OscTransmitter : public MarSystem
 {
 public:
   OscTransmitter( MarSystem * system ):

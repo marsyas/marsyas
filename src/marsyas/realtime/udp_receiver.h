@@ -21,6 +21,8 @@
 
 #include <marsyas/realtime/osc_receiver.h>
 #include <marsyas/realtime/packet_queue.h>
+#include <marsyas/export.h>
+
 #include <string>
 #include <thread>
 
@@ -32,7 +34,7 @@ namespace RealTime {
  * @author Jakob Leben (jakob.leben@gmail.com)
  */
 
-class UdpReceiver : public OscQueueProvider
+class marsyas_EXPORT UdpReceiver : public OscQueueProvider
 {
 public:
   UdpReceiver( const std::string & address, int port,
