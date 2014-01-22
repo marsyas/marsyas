@@ -19,15 +19,15 @@ Control * System::createControl( const QString & path )
   Control *control;
 
   if ( thread_control->isValueType<bool>() )
-    control = new ControlBool(thread_control, this);
+    control = new ControlBool(thread_control, &m_controller, this);
   else if ( thread_control->isValueType<mrs_real>() )
-    control = new ControlReal(thread_control, this);
+    control = new ControlReal(thread_control, &m_controller, this);
   else if ( thread_control->isValueType<mrs_natural>() )
-    control = new ControlNatural(thread_control, this);
+    control = new ControlNatural(thread_control, &m_controller, this);
   else if ( thread_control->isValueType<mrs_string>() )
-    control = new ControlString(thread_control, this);
+    control = new ControlString(thread_control, &m_controller, this);
   else if ( thread_control->isValueType<mrs_realvec>() )
-    control = new ControlRealvec(thread_control, this);
+    control = new ControlRealvec(thread_control, &m_controller, this);
   else {
     MRSERR( "QtMarSystem: Can not access control - unsupported type." );
     return 0;

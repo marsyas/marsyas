@@ -66,6 +66,7 @@ if(MARSYAS_REALTIME)
     realtime/osc_transmitter.cpp
     realtime/udp_receiver.cpp
     realtime/udp_transmitter.cpp
+    realtime/controller.cpp
   )
 endif()
 
@@ -379,7 +380,6 @@ install( FILES
   realtime/queue.h
   realtime/stage.h
   realtime/realvec_queue.h
-  realtime/event_queue.h
   realtime/atomic_control.h
   realtime/runner.h
 

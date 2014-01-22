@@ -19,7 +19,6 @@
 #ifndef MARSYAS_THREAD_SYSTEM_INCLUDED
 #define MARSYAS_THREAD_SYSTEM_INCLUDED
 
-#include <marsyas/realtime/event_queue.h>
 #include <marsyas/realtime/atomic_control.h>
 #include <marsyas/realtime/any.h>
 #include <marsyas/realtime/packet_queue.h>
@@ -72,36 +71,6 @@ public:
 
   Control * control( const std::string & path );
 
-  /**
-  @brief Perform staged control value changes
-  */
-  void update();
-
-#if 0
-  any controlValue( const std::string & path )
-  {
-    if (isRunning()) {
-      Control * control = tracked_control(path);
-      if (!control) {
-        MRSERR("MarSystemThread: Can not get control value - control not being tracked: " << path);
-        return any();
-      }
-      return control->value();
-    } else {
-      MRSERR("MarSystemThread: Can not get control value while not running.");
-      return any();
-    }
-  }
-
-  void setControlValue( const std::string & path, const any & value )
-  {
-    if (isRunning())
-      push_request( new SetControlEvent(path, value) );
-    else
-      MRSERR("MarSystemThread: Can not set control value while not running.");
-  }
-#endif
-
 private:
   friend class Control;
   friend class RunnerThread;
@@ -109,12 +78,6 @@ private:
   Control * create_control( const std::string & path );
 
   void refit_realvec_controls();
-
-  void enqueue_control_value( const MarControlPtr & control, const any & value, bool push = true );
-  void push_staged_control_values();
-
-  void push_request( Event * request );
-  void delete_processed_requests();
 
 private:
   MarSystem * m_system;
@@ -126,26 +89,21 @@ private:
 
   RunnerThread *m_thread;
 
-  SetControlsEvent *m_set_controls_event;
-
   struct Shared
   {
-    Shared(OscReceiver *osc_rcv): request_queue(1000), controller(osc_rcv) {}
-    EventQueue request_queue;
+    Shared(OscReceiver *osc_rcv): controller(osc_rcv) {}
+    OscReceiver * controller;
     std::map<std::string, Control*> controls;
-    OscReceiver *controller;
   };
-
   Shared * m_shared;
 };
 
-class marsyas_EXPORT Control {
+class marsyas_EXPORT Control
+{
 public:
   std::string path() const { return m_path; }
 
   any value() const;
-
-  void setValue(const any &value, bool update = true);
 
   template <typename T>
   bool isValueType()

@@ -27,6 +27,7 @@ namespace RealTime {
 
 using std::array;
 using std::atomic_int;
+using std::atomic;
 
 /**
   @ingroup NotmarCore
