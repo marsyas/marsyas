@@ -107,41 +107,6 @@ private:
   std::thread m_thread;
 };
 
-#if 1
-template <typename T>
-static void set_control_value( MarControlPtr & control, const any & value, bool update = true )
-{
-  // FIXME: real-time-safe setting of string and realvec!
-  try {
-    const T & typed_value = any_cast<T>( value );
-    control->setValue(typed_value, update);
-  } catch ( bad_any_cast ) {
-    return;
-  };
-}
-
-static void set_control_value( MarControlPtr & control, const any & value, bool update = true )
-{
-  std::string control_type = control->getType();
-  if(control_type == "mrs_bool")
-    set_control_value<bool>(control, value, update);
-  else if(control_type == "mrs_real")
-    set_control_value<mrs_real>(control, value, update);
-  else if(control_type == "mrs_natural")
-    set_control_value<mrs_natural>(control, value, update);
-  else if(control_type == "mrs_string")
-    set_control_value<mrs_string>(control, value, update);
-  else if(control_type == "mrs_realvec")
-    set_control_value<mrs_realvec>(control, value, update);
-  else {
-    MRSERR(
-      "Marsyas::Thread::System:: Can not set control value - unsupported type: "
-      << control_type.c_str()
-    );
-    return;
-  }
-}
-
 static any get_control_value( const MarControlPtr & control )
 {
   std::string control_type = control->getType();
@@ -163,7 +128,6 @@ static any get_control_value( const MarControlPtr & control )
     return any();
   }
 }
-#endif
 
 Runner::Runner(Marsyas::MarSystem * system):
   m_system(system),
@@ -171,7 +135,6 @@ Runner::Runner(Marsyas::MarSystem * system):
   m_osc_receiver(system),
   m_osc_transmitter(system),
   m_thread(0),
-  m_set_controls_event(0),
   m_shared(new Shared(&m_osc_receiver))
 {
 }
@@ -202,9 +165,6 @@ void Runner::stop()
 
     delete m_thread;
     m_thread = 0;
-
-    delete m_set_controls_event;
-    m_set_controls_event = 0;
   }
 }
 
@@ -216,9 +176,6 @@ void Runner::wait()
 
     delete m_thread;
     m_thread = 0;
-
-    delete m_set_controls_event;
-    m_set_controls_event = 0;
   }
 }
 
@@ -275,14 +232,6 @@ Control * Runner::control( const std::string & path )
     return create_control( path );
 }
 
-void Runner::update()
-{
-  if (isRunning())
-    push_staged_control_values();
-  else
-    m_system->update();
-}
-
 Control * Runner::create_control( const std::string & control_path )
 {
   if (isRunning()) {
@@ -333,47 +282,6 @@ for (const auto & mapping : m_shared->controls)
   }
 }
 
-void Runner::enqueue_control_value(const MarControlPtr & control,
-                                   const any & value,
-                                   bool push)
-{
-  if (push)
-  {
-    push_request( new SetControlEvent(control, value) );
-  }
-  else
-  {
-    if (!m_set_controls_event)
-      m_set_controls_event = new SetControlsEvent;
-
-    m_set_controls_event->control_values[control] = value;
-  }
-}
-
-void Runner::push_staged_control_values()
-{
-  if (m_set_controls_event) {
-    push_request( m_set_controls_event );
-    m_set_controls_event = 0;
-  }
-}
-
-void Runner::push_request( Event * request )
-{
-  bool ok = m_shared->request_queue.push(request);
-  if (!ok)
-    MRSERR("Marsyas::Thread::System: failed to push event! Event queue full?");
-  delete_processed_requests();
-}
-
-void Runner::delete_processed_requests()
-{
-  Event *event;
-  while( m_shared->request_queue.popProcessed(event) ) {
-    delete event;
-  }
-}
-
 ///////////////////////////
 
 void RunnerThread::run()
@@ -397,7 +305,6 @@ void RunnerThread::run()
           not_system_done() )
   {
     //cout << "tick" << endl;
-    process_requests();
 
     m_shared->controller->run();
 
@@ -425,55 +332,9 @@ void RunnerThread::run()
   m_system->updControl("mrs_bool/active", false);
 
   // make sure not to miss latest updates:
-  process_requests();
+  m_shared->controller->run();
 }
 
-void RunnerThread::process_requests()
-{
-  Event *event;
-  while( m_shared->request_queue.pop(event) )
-  {
-    //cout << "MarSystemThread: popped event: type=" << event->type << endl;
-    switch (event->type) {
-    case SetControl:
-    {
-      SetControlEvent* request = static_cast<SetControlEvent*>(event);
-      //cout << "MarSystemThread: setting control: " << request->control->getName() << endl;
-      set_control_value( request->control, request->value );
-      break;
-    }
-    case SetControlValue:
-    {
-      SetControlValueEvent* request = static_cast<SetControlValueEvent*>(event);
-      //cout << "MarSystemThread: setting control value: " << request->path << endl;
-      MarControlPtr control = m_system->getControl(request->path);
-      if (control.isInvalid()) {
-        MRSERR("Marsyas::Thread::System:: Can not set control - invalid path: " << request->path);
-      } else
-        set_control_value(control, request->value );
-      break;
-    }
-    case SetControls:
-    {
-      SetControlsEvent *request = static_cast<SetControlsEvent*>(event);
-for( const auto & mapping : request->control_values )
-      {
-        const bool do_not_update = false;
-        //cout << "MarSystemThread: setting staged control: " << mapping.first->getName() << endl;
-        // FIXME: evil const_cast:
-        MarControlPtr & settable_control = const_cast<MarControlPtr &>(mapping.first);
-        set_control_value(settable_control, mapping.second, do_not_update);
-      }
-      m_system->update();
-      break;
-    }
-    default:
-      MRSERR("Marsyas::Thread::System:: unsupported event type: " << event->type);
-    }
-
-    event->setProcessed();
-  }
-}
 
 ////////////////////////
 
@@ -484,16 +345,6 @@ any Control::value() const
   else
     return get_control_value( m_atomic->systemControl() );
 }
-
-void Control::setValue(const any &value, bool update)
-{
-  MarControlPtr & control = m_atomic->systemControl();
-  if (m_runner->isRunning())
-    m_runner->enqueue_control_value( control, value, update );
-  else
-    set_control_value( control, value, update );
-}
-
 
 } // namespace RealTime
 } // namespace Marsyas
