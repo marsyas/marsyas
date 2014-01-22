@@ -2,6 +2,8 @@
 #include <marsyas/system/MarSystemManager.h>
 #include <marsyas/system/MarSystem.h>
 #include <marsyas/realtime/runner.h>
+#include <marsyas/realtime/udp_transmitter.h>
+#include <marsyas/realtime/udp_receiver.h>
 #include <marsyas/common_source.h>
 
 #ifdef MARSYAS_HAS_SCRIPT
@@ -18,6 +20,7 @@
 #include <string>
 
 using namespace Marsyas;
+using namespace Marsyas::RealTime;
 using namespace std;
 
 int set_control(MarControlPtr & control, const string & text)
@@ -194,7 +197,8 @@ static void parse_osc_subscriptions( const string & text,
 }
 
 static void apply_osc_subscriptions( RealTime::Runner & runner,
-                                     const CommandLineOptions & opt )
+                                     const CommandLineOptions & opt,
+                                     std::vector<UdpTransmitter*> & subscribers )
 {
   vector< pair<osc_endpoint, vector<string> > > subscriptions;
   parse_osc_subscriptions(opt.value<string>("OSC-send"), subscriptions);
@@ -202,9 +206,25 @@ static void apply_osc_subscriptions( RealTime::Runner & runner,
   for ( const auto & host : subscriptions )
   {
     const osc_endpoint & endpoint = host.first;
+
+    UdpTransmitter *subscriber = nullptr;
+    for ( UdpTransmitter *transmitter : subscribers )
+    {
+      if (transmitter->hasDestination(endpoint.host.c_str(), endpoint.ip))
+      {
+        subscriber = transmitter;
+        break;
+      }
+    }
+    if (!subscriber)
+    {
+      subscriber = new UdpTransmitter(endpoint.host.c_str(), endpoint.ip);
+      subscribers.push_back(subscriber);
+    }
+
     for ( const string & path : host.second )
     {
-      bool ok = runner.subscribeOsc(path, endpoint.host.c_str(), endpoint.ip);
+      bool ok = runner.subscribe(path, subscriber);
       if (ok)
       {
         MRSDEBUG("OSC subscription: " << path << " -> " << endpoint.host << ":" << endpoint.ip);
@@ -267,18 +287,34 @@ int run( MarSystem *system, const CommandLineOptions & opt )
 
     bool realtime = opt.value<bool>("realtime");
 
-    RealTime::Runner runner(system);
+    std::vector<UdpTransmitter*> osc_subscribers;
+    UdpReceiver *osc_controller = nullptr;
 
+    RealTime::Runner runner(system);
     runner.setRtPriorityEnabled(realtime);
 
-    if (opt.has("OSC-receive"))
-      runner.receiveOsc(opt.value<int>("OSC-receive"));
-
     if (opt.has("OSC-send"))
-      apply_osc_subscriptions(runner, opt);
+      apply_osc_subscriptions(runner, opt, osc_subscribers);
+
+    if (opt.has("OSC-receive"))
+    {
+      int port = opt.value<int>("OSC-receive");
+      osc_controller = new UdpReceiver("localhost", port);
+      runner.addController(osc_controller);
+      osc_controller->start();
+    }
 
     runner.start((unsigned int)ticks);
     runner.wait();
+
+    if (osc_controller)
+    {
+      osc_controller->stop();
+      delete osc_controller;
+    }
+
+    for ( UdpTransmitter * subscriber : osc_subscribers )
+      delete subscriber;
 
     return 0;
 }

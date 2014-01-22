@@ -1,10 +1,26 @@
-#include "osc_sender.h"
+/*
+** Copyright (C) 2014 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+#include "osc_transmitter.h"
 
 #include <marsyas/system/MarSystem.h>
 #include <marsyas/common_source.h>
 
-#include <oscpack/ip/IpEndpointName.h>
-#include <oscpack/ip/UdpSocket.h>
 #include <oscpack/osc/OscOutboundPacketStream.h>
 
 #include <stack>
@@ -16,7 +32,7 @@ using namespace std;
 namespace Marsyas {
 namespace RealTime {
 
-string OscSender::make_osc_path( MarControlPtr control, char separator )
+string OscTransmitter::make_osc_path( MarControlPtr control, char separator )
 {
   string id("/");
   stack<MarSystem*> system_stack;
@@ -43,7 +59,7 @@ string OscSender::make_osc_path( MarControlPtr control, char separator )
   return id;
 }
 
-bool OscSender::subscribe( MarControlPtr control, const char * address, int port )
+bool OscTransmitter::subscribe( MarControlPtr control, OscSubscriber * subscriber )
 {
   if (control.isInvalid())
     return false;
@@ -63,15 +79,14 @@ bool OscSender::subscribe( MarControlPtr control, const char * address, int port
     m_subscribers[handler()].path = path;
   }
 
-  IpEndpointName endpoint(address, port);
   subscription &slot = m_subscribers[handler()];
-  if (!slot.contains(endpoint))
-    slot.add(endpoint);
+  if (!slot.contains(subscriber))
+    slot.add(subscriber);
 
   return true;
 }
 
-void OscSender::unsubscribe( MarControlPtr control, const char * address, int port )
+void OscTransmitter::unsubscribe( MarControlPtr control, OscSubscriber * subscriber )
 {
   if (control.isInvalid())
     return;
@@ -90,10 +105,9 @@ void OscSender::unsubscribe( MarControlPtr control, const char * address, int po
   auto subscribers_it = m_subscribers.find(handler());
   if (subscribers_it != m_subscribers.end())
   {
-    // Find subscriber for address & port:
-    IpEndpointName endpoint(address, port);
+    // Find subscriber:
     subscription & slot = subscribers_it->second;
-    slot.remove(endpoint);
+    slot.remove(subscriber);
 
     // If no subscriber for control left:
     if (slot.empty())
@@ -108,12 +122,12 @@ void OscSender::unsubscribe( MarControlPtr control, const char * address, int po
   }
 }
 
-void OscSender::myProcess(realvec &, realvec &)
+void OscTransmitter::myProcess(realvec &, realvec &)
 {
   // no-op
 }
 
-void OscSender::myUpdate( MarControlPtr handler )
+void OscTransmitter::myUpdate( MarControlPtr handler )
 {
   if (handler.isInvalid())
     return;
@@ -147,21 +161,9 @@ void OscSender::myUpdate( MarControlPtr handler )
     MRSWARN("OSC sender: " << e.what());
   }
 
-  for( const auto & endpoint : slot.subscribers )
+  for( OscSubscriber * subscriber : slot.subscribers )
   {
-    try
-    {
-      m_socket.SendTo( endpoint, packet.Data(), packet.Size() );
-#if 0
-      cout << "OSC sender: sent: " << slot.path
-           << " -> " << endpoint.address << ":" << endpoint.port
-           << endl;
-#endif
-    }
-    catch ( std::exception & e )
-    {
-      MRSWARN("OSC sender: " << e.what());
-    }
+    subscriber->process(packet.Data(), packet.Size());
   }
 }
 
