@@ -62,9 +62,10 @@ set( Marsyas_SOURCES
 if(MARSYAS_REALTIME)
   set(MARSYAS_REALTIME_SOURCES
     realtime/runner.cpp
+    realtime/osc_receiver.cpp
+    realtime/osc_transmitter.cpp
     realtime/udp_receiver.cpp
-    realtime/osc_dispatcher.cpp
-    realtime/osc_sender.cpp
+    realtime/udp_transmitter.cpp
   )
 endif()
 

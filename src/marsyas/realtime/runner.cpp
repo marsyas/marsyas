@@ -16,21 +16,15 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "osc_sender.h"
-#include "osc_dispatcher.h"
+#include "osc_transmitter.h"
+#include "osc_receiver.h"
 
 #include <marsyas/realtime/runner.h>
 #include <marsyas/realtime/atomic_control.h>
 #include <marsyas/realtime/packet_queue.h>
-#include <marsyas/realtime/udp_receiver.h>
 #include <marsyas/common_header.h>
 
 #include "../common_source.h"
-
-#include <oscpack/ip/IpEndpointName.h>
-#include <oscpack/ip/UdpSocket.h>
-#include <oscpack/osc/OscPacketListener.h>
-#include <oscpack/osc/OscOutboundPacketStream.h>
 
 #include <iostream>
 #include <algorithm>
@@ -113,28 +107,6 @@ private:
   std::thread m_thread;
 };
 
-class OscReceiverThread
-{
-  UdpReceiver m_udp_receiver;
-  std::thread m_thread;
-
-public:
-  OscReceiverThread( const string & address, int port, packet_queue * queue ):
-    m_udp_receiver(address, port, queue),
-    m_thread( &UdpReceiver::run, &m_udp_receiver )
-  {
-  }
-
-  void stop()
-  {
-    m_udp_receiver.stop();
-    m_thread.join();
-  }
-};
-
-
-
-
 #if 1
 template <typename T>
 static void set_control_value( MarControlPtr & control, const any & value, bool update = true )
@@ -196,20 +168,18 @@ static any get_control_value( const MarControlPtr & control )
 Runner::Runner(Marsyas::MarSystem * system):
   m_system(system),
   m_realtime_priority(false),
-  m_osc_receiver_port(0),
+  m_osc_receiver(system),
+  m_osc_transmitter(system),
   m_thread(0),
-  m_osc_receiver_thread(0),
   m_set_controls_event(0),
-  m_shared(new Shared)
+  m_shared(new Shared(&m_osc_receiver))
 {
-  m_osc_sender = new OscSender(m_system);
 }
 
 Runner::~Runner()
 {
   stop();
 
-  delete m_osc_sender;
   delete m_shared;
 }
 
@@ -217,17 +187,9 @@ void Runner::start(unsigned int ticks)
 {
   if (!m_thread)
   {
-    assert (!m_osc_receiver_thread);
-
     refit_realvec_controls();
 
     m_thread = new RunnerThread(m_system, m_shared, m_realtime_priority, ticks);
-
-    if (m_osc_receiver_port != 0)
-    {
-      m_osc_receiver_thread =
-          new OscReceiverThread("localhost", m_osc_receiver_port, &m_shared->osc_queue);
-    }
   }
 }
 
@@ -243,14 +205,6 @@ void Runner::stop()
 
     delete m_set_controls_event;
     m_set_controls_event = 0;
-
-    if (m_osc_receiver_thread)
-    {
-      m_osc_receiver_thread->stop();
-      delete m_osc_receiver_thread;
-      m_osc_receiver_thread = 0;
-    }
-    m_shared->osc_queue.clear();
   }
 }
 
@@ -265,18 +219,32 @@ void Runner::wait()
 
     delete m_set_controls_event;
     m_set_controls_event = 0;
-
-    if (m_osc_receiver_thread)
-    {
-      m_osc_receiver_thread->stop();
-      delete m_osc_receiver_thread;
-      m_osc_receiver_thread = 0;
-    }
-    m_shared->osc_queue.clear();
   }
 }
 
-bool Runner::subscribeOsc( const std::string & path, const char * address, int port )
+void Runner::addController( OscProvider * controller )
+{
+  if (isRunning())
+  {
+    MRSERR("Runner: can not add OSC controller while running.");
+    return;
+  }
+
+  m_osc_receiver.addProvider(controller);
+}
+
+void Runner::removeController( OscProvider * controller )
+{
+  if (isRunning())
+  {
+    MRSERR("Runner: can not remove OSC controller while running.");
+    return;
+  }
+
+  m_osc_receiver.removeProvider(controller);
+}
+
+bool Runner::subscribe( const std::string & path, OscSubscriber *subscriber )
 {
   if (isRunning())
   {
@@ -284,10 +252,10 @@ bool Runner::subscribeOsc( const std::string & path, const char * address, int p
     return false;
   }
 
-  return m_osc_sender->subscribe( path, address, port );
+  return m_osc_transmitter.subscribe( path, subscriber );
 }
 
-void Runner::unsubscribeOsc( const std::string & path,  const char * address, int port )
+void Runner::unsubscribe( const std::string & path,  OscSubscriber *subscriber )
 {
   if (isRunning())
   {
@@ -295,7 +263,7 @@ void Runner::unsubscribeOsc( const std::string & path,  const char * address, in
     return;
   }
 
-  m_osc_sender->unsubscribe( path, address, port );
+  m_osc_transmitter.unsubscribe( path, subscriber );
 }
 
 Control * Runner::control( const std::string & path )
@@ -412,8 +380,6 @@ void RunnerThread::run()
 {
   //cout << "MarSystemThread: running" << endl;
 
-  OscDispatcher osc_dispatcher(m_system, &m_shared->osc_queue);
-
   m_system->updControl("mrs_bool/active", true);
 
   MarControlPtr done_control = m_system->getControl("mrs_bool/done");
@@ -433,7 +399,7 @@ void RunnerThread::run()
     //cout << "tick" << endl;
     process_requests();
 
-    osc_dispatcher.run();
+    m_shared->controller->run();
 
     m_system->tick();
 

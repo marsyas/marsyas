@@ -76,21 +76,43 @@ private:
 };
 
 UdpReceiver::UdpReceiver( const std::string & address, int port,
-                          packet_queue * queue ):
+                          size_t queue_size ):
+  OscQueueProvider(&m_queue),
   m_address(address),
   m_port(port),
-  m_implementation(new Implementation(queue))
+  m_queue(queue_size),
+  m_implementation(nullptr)
 {
 }
 
-void UdpReceiver::run()
+UdpReceiver::~UdpReceiver()
 {
-  m_implementation->run(m_address, m_port);
+  if (running())
+    stop();
+}
+
+void UdpReceiver::start()
+{
+  if (m_implementation)
+  {
+    MRSERR("UdpReceiver: Can not start: already running.");
+    return;
+  }
+  m_implementation = new Implementation(&m_queue);
+  m_thread = thread(&Implementation::run, m_implementation, m_address, m_port);
 }
 
 void UdpReceiver::stop()
 {
+  if (!m_implementation)
+  {
+    MRSERR("UdpReceiver: Can not stop: not running.");
+    return;
+  }
   m_implementation->stop();
+  m_thread.join();
+  delete m_implementation;
+  m_implementation = nullptr;
 }
 
 }

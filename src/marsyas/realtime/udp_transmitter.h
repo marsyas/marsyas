@@ -16,50 +16,33 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef MARSYAS_REALTIME_UDP_RECEIVER_INCLUDED
-#define MARSYAS_REALTIME_UDP_RECEIVER_INCLUDED
+#ifndef MARSYAS_REALTIME_UDP_TRANSMITTER_INCLUDED
+#define MARSYAS_REALTIME_UDP_TRANSMITTER_INCLUDED
 
-#include <marsyas/realtime/osc_receiver.h>
-#include <marsyas/realtime/packet_queue.h>
-#include <string>
-#include <thread>
+#include <marsyas/realtime/osc_transmitter.h>
 
 namespace Marsyas {
 namespace RealTime {
 
 /**
- * @brief Awaits UDP packets and pushes them onto a packet_queue.
+ * @brief Receives OSC packets as an OscSubscriber, and sends them over UDP.
  * @author Jakob Leben (jakob.leben@gmail.com)
  */
 
-class UdpReceiver : public OscQueueProvider
+class UdpTransmitter : public OscSubscriber
 {
 public:
-  UdpReceiver( const std::string & address, int port,
-               size_t queue_size = 1000 * 128 );
-  ~UdpReceiver();
-
-  void start();
-
-  void stop();
-
-  bool running() { return m_implementation != nullptr; }
-
-  // NOTE: Only safe while queue consumer not running!
-  void clearQueue() { m_queue.clear(); }
+  UdpTransmitter( const char *address, int ip );
+  virtual ~UdpTransmitter() {}
+  bool hasDestination( const char *address, int ip );
+  virtual void process( const char * data, int size );
 
 private:
-  std::string m_address;
-  int m_port;
-  packet_queue m_queue;
-  std::thread m_thread;
-
-  class Implementation;
-  friend class Implementation;
-  Implementation *m_implementation;
+  struct private_data;
+  private_data *p;
 };
 
 }
 }
 
-#endif // MARSYAS_REALTIME_UDP_RECEIVER_INCLUDED
+#endif // MARSYAS_REALTIME_UDP_TRANSMITTER_INCLUDED
