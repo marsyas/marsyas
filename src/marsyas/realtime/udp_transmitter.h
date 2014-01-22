@@ -20,6 +20,7 @@
 #define MARSYAS_REALTIME_UDP_TRANSMITTER_INCLUDED
 
 #include <marsyas/realtime/osc_transmitter.h>
+#include <marsyas/export.h>
 
 namespace Marsyas {
 namespace RealTime {
@@ -29,7 +30,7 @@ namespace RealTime {
  * @author Jakob Leben (jakob.leben@gmail.com)
  */
 
-class UdpTransmitter : public OscSubscriber
+class marsyas_EXPORT UdpTransmitter : public OscSubscriber
 {
 public:
   UdpTransmitter( const char *address, int ip );
