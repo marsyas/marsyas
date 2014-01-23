@@ -93,6 +93,13 @@ const mrs_real TWOPI = 6.28318530717958647692;
 #define DEPRECATED(func) func
 #endif
 
+#if defined(_MSC_VER)
+# define MARSYAS_ALIGN(X) __declspec(align(X))
+#elif defined(__GNUC__)  && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 8))
+# define MARSYAS_ALIGN(X) __attribute__ ((aligned (X)))
+#else
+# define MARSYAS_ALIGN(X) alignas(X)
+#endif
 
 #endif /* !MARSYAS_COMMONHEADER_H */
 

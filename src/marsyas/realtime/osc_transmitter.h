@@ -21,6 +21,7 @@
 
 #include <marsyas/system/MarSystem.h>
 #include <marsyas/export.h>
+#include <marsyas/common_header.h>
 
 #include <vector>
 #include <string>
@@ -126,12 +127,7 @@ private:
   MarSystem * m_system;
   static const size_t m_buffer_size = 4096;
   static const size_t max_key_length = 512;
-#ifdef _MSC_VER
-  __declspec(align(8))
-#else
-  alignas(8)
-#endif
-  char m_buffer[m_buffer_size];
+  MARSYAS_ALIGN(8) char m_buffer[m_buffer_size];
   std::map<MarControl*, subscription> m_subscribers;
 };
 
