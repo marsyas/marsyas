@@ -21,13 +21,8 @@
 
 #include <marsyas/realtime/osc_receiver.h>
 #include <marsyas/realtime/packet_queue.h>
+#include <marsyas/common_header.h>
 #include <marsyas/export.h>
-
-#ifdef _MSC_VER
-# define MARSYAS_ALIGN(X) __declspec(align(X))
-#else
-# define MARSYAS_ALIGN(X) alignas(X)
-#endif
 
 namespace Marsyas {
 namespace RealTime {

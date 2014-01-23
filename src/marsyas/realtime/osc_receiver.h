@@ -22,6 +22,7 @@
 #include <marsyas/system/MarSystem.h>
 #include <marsyas/realtime/packet_queue.h>
 #include <marsyas/export.h>
+#include <marsyas/common_header.h>
 
 #include <memory>
 #include <vector>
@@ -89,12 +90,7 @@ public:
 
 private:
   static const size_t m_buffer_size = 4096;
-#ifdef _MSC_VER
-  __declspec(align(8))
-#else
-  alignas(8)
-#endif
-  char m_buffer[m_buffer_size];
+  MARSYAS_ALIGN(8) char m_buffer[m_buffer_size];
 
   packet_queue *m_queue;
 };
