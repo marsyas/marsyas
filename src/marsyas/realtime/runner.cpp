@@ -284,9 +284,20 @@ for (const auto & mapping : m_shared->controls)
 
 ///////////////////////////
 
+static void init_audio_recursive( MarSystem * system )
+{
+  MarControlPtr init_audio_control = system->getControl("mrs_bool/initAudio");
+  if (!init_audio_control.isInvalid())
+    init_audio_control->setValue(true);
+  for ( MarSystem * child : system->children() )
+    init_audio_recursive( child );
+}
+
 void RunnerThread::run()
 {
   //cout << "MarSystemThread: running" << endl;
+
+  init_audio_recursive(m_system);
 
   m_system->updControl("mrs_bool/active", true);
 
