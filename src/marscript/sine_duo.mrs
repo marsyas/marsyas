@@ -15,7 +15,4 @@ net: Series {
   }
 
   -> out: AudioSink
-  {
-    initAudio = true
-  }
 }

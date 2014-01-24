@@ -16,7 +16,4 @@ Network : Series
   }
 
   -> output: AudioSink
-  {
-    initAudio = true
-  }
 }
