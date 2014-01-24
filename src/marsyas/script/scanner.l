@@ -22,6 +22,8 @@
 
 }
 
+"(public)" { return Parser::PUBLIC; }
+
 \{ { return '{'; }
 \} { return '}'; }
 \[ { return '['; }

@@ -6,6 +6,7 @@
 
 %stype node
 %token INT REAL STRING BOOL ID PATH ARROW WHEN ELSE INCLUDE AS DIRECTIVE_ARG
+%token PUBLIC
 
 %left '='
 %left EQ NEQ LESS MORE
@@ -112,29 +113,54 @@ actor_def_element:
 
 | '~' actor_prototype { $$ = $2; }
 
-| control
-
-| '+' control
-{
-  $2.components[0].s = std::string("+") + $2.components[0].s;
-  $$ = $2;
-}
+| control_def
 
 | state
 ;
 
-control:
-  path '=' control_value {
-    $$ = node();
-    $$.tag = CONTROL_NODE;
-    $$.components = { std::move($1), std::move($3) };
-#ifdef MARSYAS_DEBUG_SCRIPT
-    std::cout << "control:"
-    << " '" << $$.components[0].s << "'"
-    << " '" << $$.components[1].s << "'"
-    << std::endl;
-#endif
-  }
+control_def:
+'+' access_spec id '=' control_value
+{
+$$ = node(CONTROL_DEF_NODE);
+$$.components = { true, $2, $3, $5 };
+}
+|
+'+' id '=' control_value
+{
+$$ = node(CONTROL_DEF_NODE);
+$$.components = { true, false, $2, $4 };
+}
+|
+access_spec id '=' control_value
+{
+$$ = node(CONTROL_DEF_NODE);
+$$.components = { false, $1, $2, $4 };
+}
+|
+id '=' control_value
+{
+$$ = node(CONTROL_DEF_NODE);
+$$.components = { false, false, $1, $3 };
+}
+|
+access_spec id
+{
+$$ = node(CONTROL_DEF_NODE);
+$$.components = { false, $1, $2 };
+}
+;
+
+remote_control_assignment:
+path '=' control_value
+{
+$$ = node(CONTROL_ASSIGNMENT_NODE);
+$$.components = { $1, $3 };
+}
+;
+
+access_spec:
+PUBLIC
+{ $$ = true; }
 ;
 
 control_value:
@@ -167,7 +193,7 @@ else_state:
 
 state_def:
 //empty
-| state_def control
+| state_def remote_control_assignment
 {
   $1.components.push_back($2);
   $$ = $1;

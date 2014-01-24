@@ -3,6 +3,7 @@
 #include "operation_processor.hpp"
 #include <marsyas/system/MarSystemManager.h>
 #include <marsyas/FileName.h>
+#include <marsyas/common_source.h>
 
 #include <cassert>
 #include <string>
@@ -193,7 +194,7 @@ class script_translator
         this_context().control_map[control_map_index].second.push_back(system_def_element);
         break;
       }
-      case CONTROL_NODE:
+      case CONTROL_DEF_NODE:
         this_context().control_map[control_map_index].second.push_back(system_def_element);
         break;
       default:
@@ -232,7 +233,7 @@ class script_translator
       {
         switch(control_node.tag)
         {
-        case CONTROL_NODE:
+        case CONTROL_DEF_NODE:
           apply_control(system, control_node);
           break;
         case STATE_NODE:
@@ -295,7 +296,7 @@ class script_translator
     {
       //cout << "Translating a mapping..." << endl;
 
-      assert(mapping_node.tag == CONTROL_NODE);
+      assert(mapping_node.tag == CONTROL_ASSIGNMENT_NODE);
       assert(mapping_node.components.size() == 2);
       assert(mapping_node.components[0].tag == ID_NODE);
 
@@ -323,51 +324,81 @@ class script_translator
   void apply_control( MarSystem * system,
                       const node & control_node )
   {
-    assert(control_node.tag == CONTROL_NODE);
-    assert(control_node.components.size() == 2);
-    assert(control_node.components[0].tag == ID_NODE);
+    assert(control_node.tag == CONTROL_DEF_NODE);
+    assert(control_node.components.size() >= 3);
+    assert(control_node.components[0].tag == BOOL_NODE);
+    assert(control_node.components[1].tag == BOOL_NODE);
+    assert(control_node.components[2].tag == ID_NODE);
 
-    const std::string & dst_description = control_node.components[0].s;
-    assert(!dst_description.empty());
+    bool do_create = control_node.components[0].v.b;
+    bool is_public = control_node.components[1].v.b;
+    bool has_value = control_node.components.size() >= 4;
 
-    const node & src_node = control_node.components[1];
-    MarControlPtr source_control = translate_complex_value(system, src_node, system);
-    if (source_control.isInvalid()) {
-      MRSERR("Can not set control - invalid value: "
-             << system->getAbsPath() << dst_description);
-      return;
+    MarControlPtr control;
+
+    if (has_value)
+    {
+      control = assign_control
+          ( system, control_node.components[2], control_node.components[3], do_create );
+    }
+    else
+    {
+      const string control_name = control_node.components[2].s;
+      assert(!control_name.empty());
+      control = system->control( control_name );
+      if (control.isInvalid())
+      {
+        MRSERR("Can not set control access - control does not exist: " << control_name);
+      }
     }
 
-    string control_name = dst_description;
-    bool create = control_name[0] == '+';
-    if (create)
-      control_name = control_name.substr(1);
+    if (control.isInvalid())
+      return;
 
-    bool link = source_control->getMarSystem() != nullptr;
+    if (is_public)
+    {
+      control->setPublic(true);
+    }
+  }
+
+  MarControlPtr assign_control( MarSystem * system,
+                                const node & dst_node, const node & src_node,
+                                bool create )
+  {
+    string dst_name = dst_node.s;
+
+    MarControlPtr dst_control = system->control( dst_name );
+
+    MarControlPtr src_control = translate_complex_value(system, src_node, system);
+    if (src_control.isInvalid()) {
+      MRSERR("Can not set control - invalid value: "
+             << system->path() << dst_name);
+      return MarControlPtr();
+    }
+
+    bool link = src_control->getMarSystem() != nullptr;
 
     static const bool do_not_update = false;
-
-    std::string control_path = source_control->getType() + '/' + control_name;
-    MarControlPtr control = system->getControl( control_path );
 
     if (create)
     {
       //cout << "Creating:" << system->getAbsPath() << control_path << endl;
-      if (!control.isInvalid())
+      if (!dst_control.isInvalid())
       {
         MRSERR("ERROR: Can not add control - "
-               << "same control already exists: " << system->getAbsPath() << control_path);
-        return;
+               << "same control already exists: " << system->path() << dst_name);
+        return MarControlPtr();
       }
-      bool created = system->addControl(control_path, *source_control, control);
+      string dst_descriptor = src_control->getType() + '/' + dst_name;
+      bool created = system->addControl(dst_descriptor, *src_control, dst_control);
       if (!created)
       {
-        MRSERR("ERROR: Failed to create control: " << system->getAbsPath() << control_path);
-        return;
+        MRSERR("ERROR: Failed to create control: " << system->path() << dst_name);
+        return MarControlPtr();
       }
       if (link)
       {
-        control->linkTo(source_control, do_not_update);
+        dst_control->linkTo(src_control, do_not_update);
       }
     }
     else
@@ -377,21 +408,23 @@ class script_translator
            << " = " << source_control
            << endl;
            */
-      if (control.isInvalid())
+      if (dst_control.isInvalid())
       {
         MRSERR("ERROR: Can not set control - "
-               << "it does not exist: " << system->getAbsPath() << control_path);
-        return;
+               << "it does not exist: " << system->path() << dst_name);
+        return MarControlPtr();
       }
       if (link)
       {
-        control->linkTo(source_control, do_not_update);
+        dst_control->linkTo(src_control, do_not_update);
       }
       else
       {
-        control->setValue( source_control );
+        dst_control->setValue( src_control );
       }
     }
+
+    return dst_control;
   }
 
   MarControlPtr translate_complex_value( MarSystem *anchor,

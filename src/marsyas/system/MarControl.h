@@ -161,8 +161,9 @@ private:
   MarSystem* msys_;
   std::string cname_;
   std::string id_;
-  bool state_;
   std::string desc_;
+  bool state_;
+  bool is_public_;
 
 private:
   // default constructor
@@ -204,6 +205,8 @@ public:
   bool hasState() const;
   std::string getType() const;
   std::string path() const;
+  bool isPublic() const { return is_public_; }
+  void setPublic(bool flag) { is_public_ = flag; }
 
 
   template<typename T>
