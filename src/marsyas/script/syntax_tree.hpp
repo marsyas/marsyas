@@ -14,7 +14,8 @@ enum node_tag
 
   ACTOR_NODE,
   PROTOTYPE_NODE,
-  CONTROL_NODE,
+  CONTROL_DEF_NODE, // { append-spec, access-spec, name, value }
+  CONTROL_ASSIGNMENT_NODE, // { path, value }
   STATE_NODE,
   ID_NODE,
 
@@ -34,6 +35,8 @@ struct node
 {
   node(): tag(GENERIC_NODE) {}
 
+  node(node_tag t): tag(t) {}
+
   node( const node & other):
     tag(other.tag),
     v(other.v),
@@ -48,6 +51,29 @@ struct node
     components(std::move(other.components))
   {}
 
+  node( bool b ):
+    tag(BOOL_NODE)
+  {
+    v.b = b;
+  }
+
+  node ( long i ):
+    tag(INT_NODE)
+  {
+    v.i = i;
+  }
+
+  node ( double r ):
+    tag(REAL_NODE)
+  {
+    v.r = r;
+  }
+
+  node ( const std::string & other_s ):
+    tag(STRING_NODE),
+    s(other_s)
+  {}
+
   void operator=( const node & other )
   {
     *this = std::move(other);
@@ -59,37 +85,6 @@ struct node
     v = other.v;
     s = std::move(other.s);
     components = std::move(other.components);
-  }
-
-  void operator=( bool b )
-  {
-    tag = BOOL_NODE;
-    v.b = b;
-    s.clear();
-    components.clear();
-  }
-
-  void operator=( long i )
-  {
-    tag = INT_NODE;
-    v.i = i;
-    s.clear();
-    components.clear();
-  }
-
-  void operator=( double r )
-  {
-    tag = REAL_NODE;
-    v.r = r;
-    s.clear();
-    components.clear();
-  }
-
-  void operator=( const std::string & other_s )
-  {
-    tag = STRING_NODE;
-    s = other_s;
-    components.clear();
   }
 
   void set_operation( const node & lhs, const std::string & op, const node & rhs )
