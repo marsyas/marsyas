@@ -15,7 +15,7 @@ int ControlModel::rowCount(const QModelIndex & parent) const
 int ControlModel::columnCount(const QModelIndex & parent) const
 {
   if (parent == QModelIndex())
-    return 3;
+    return ColumnCount;
   else
     return 0;
 }
@@ -38,7 +38,7 @@ Qt::ItemFlags ControlModel::flags(const QModelIndex & index) const
   if (index == QModelIndex())
     return Qt::NoItemFlags;
 
-  if (index.column() < 0 || index.column() >= 3 ||
+  if (index.column() < 0 || index.column() >= ColumnCount ||
       index.row() < 0 || index.row() >= m_items.size())
     return Qt::NoItemFlags;
 
@@ -62,7 +62,7 @@ QVariant ControlModel::data(const QModelIndex & index, int role) const
   if (role != Qt::DisplayRole)
     return QVariant();
 
-  if (index.column() < 0 || index.column() >= 3 ||
+  if (index.column() < 0 || index.column() >= ColumnCount ||
       index.row() < 0 || index.row() >= m_items.size())
     return QVariant();
 
@@ -70,9 +70,9 @@ QVariant ControlModel::data(const QModelIndex & index, int role) const
 
   switch(index.column())
   {
-  case 0:
+  case Name:
     return QString::fromStdString( item.control->id() );
-  case 1:
+  case Value:
     if (item.control->hasType<bool>())
     {
       bool value = item.control->to<bool>();
@@ -88,8 +88,10 @@ QVariant ControlModel::data(const QModelIndex & index, int role) const
       return QString("[...]");
     else
       return QVariant();
-  case 2:
+  case Type:
     return QString::fromStdString( item.control->getType() );
+  case Access:
+    return item.control->isPublic();
   default:
     return QVariant();
   }
