@@ -9,15 +9,15 @@ msm = marsyas.MarSystemManager()
 
 
 # create a MarSystem from a recursive list specification
-def create(net):
-  composite = msm.create("Gain/id") # will be overwritten
-  if (len(net) == 2):
-    composite = msm.create(net[0])
-    msyslist = map(create,net[1])
-    msyslist = map(composite.addMarSystem,msyslist)
-  else:
-    composite = msm.create(net)
-  return composite
+# def create(net):
+#   composite = msm.create("Gain/id") # will be overwritten
+#   if (len(net) == 2):
+#     composite = msm.create(net[0])
+#     msyslist = map(create,net[1])
+#     msyslist = map(composite.addMarSystem,msyslist)
+#   else:
+#     composite = msm.create(net)
+#   return composite
 
 net = ["Series/net",
        ["SoundFileSource/src",
