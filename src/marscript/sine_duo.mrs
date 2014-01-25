@@ -1,17 +1,19 @@
-net: Series {
-
-  + initAudio = out/initAudio
+net: Series
+{
+  + (public) frequency1 = 440.0
+  + (public) frequency2 = 447.0
+  + (public) amp = 1.0
 
   israte = 44100.0
 
   -> osc: Fanout
   {
-    -> left: Series { -> sine: SineSource { frequency = 440.0 } -> amp: Gain }
-    -> right: Series { -> sine: SineSource { frequency = 447.0 } -> amp: Gain }
+    -> left: Series { -> sine: SineSource { frequency = /frequency1 } -> amp: Gain }
+    -> right: Series { -> sine: SineSource { frequency = /frequency2 } -> amp: Gain }
   }
 
   -> amp: Gain {
-    gain = 1.0
+    gain = /amp
   }
 
   -> out: AudioSink

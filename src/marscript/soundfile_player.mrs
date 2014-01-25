@@ -1,16 +1,16 @@
 Network : Series
 {
-  + file = ""
-  + volume = 1.0
+  + (public) file = ""
+  + (public) volume = 1.0
 
-  inSamples = 1024
+  inSamples = 2048
 
-  -> input : SoundFileSource
+  -> input: SoundFileSource
   {
     filename = /file
   }
 
-  -> amp : Gain
+  -> amp: Gain
   {
     gain = /volume
   }
