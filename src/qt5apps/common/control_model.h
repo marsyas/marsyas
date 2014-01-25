@@ -22,6 +22,16 @@ class ControlModel : public QAbstractItemModel
   };
 
 public:
+  enum DataColumn
+  {
+    Name = 0,
+    Value,
+    Type,
+    Access,
+
+    ColumnCount
+  };
+
   ControlModel( QObject * parent = 0 ):
     QAbstractItemModel(parent)
   {}

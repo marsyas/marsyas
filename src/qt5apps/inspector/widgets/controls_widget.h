@@ -20,11 +20,39 @@
 #define MARSYAS_INSPECTOR_CONTROLS_LIST_WIDGET_INCLUDED
 
 #include <marsyas/system/MarSystem.h>
+
+#include <QSortFilterProxyModel>
 #include <QTreeView>
+#include <QLineEdit>
+#include <QCheckBox>
 
 namespace MarsyasQt {
   class ControlModel;
 }
+
+class ControlFilterModel : public QSortFilterProxyModel
+{
+  Q_OBJECT
+
+public:
+  ControlFilterModel( QObject * parent = 0 ):
+    QSortFilterProxyModel(parent),
+    m_show_private(false)
+  {}
+
+  bool filterAcceptsRow(int row,
+                        const QModelIndex & parent) const;
+
+public slots:
+  void setShowPrivate(bool visible)
+  {
+    m_show_private = visible;
+    invalidateFilter();
+  }
+
+private:
+  bool m_show_private;
+};
 
 class ControlsWidget : public QWidget
 {
@@ -56,7 +84,10 @@ private:
 
   Marsyas::MarSystem * m_system;
   MarsyasQt::ControlModel *m_model;
+  ControlFilterModel *m_filter_model;
   QTreeView *m_tree;
+  QLineEdit *m_filter_edit;
+  QCheckBox *m_private_toggle;
 };
 
 #endif // MARSYAS_INSPECTOR_CONTROLS_LIST_WIDGET_INCLUDED
