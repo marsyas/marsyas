@@ -47,12 +47,13 @@ target_link_libraries( inspector qwt )
 set_target_properties( inspector PROPERTIES OUTPUT_NAME marsyas-inspector )
 
 if(APPLE)
+  set(bundle_name "Marsyas Inspector")
+  set(bundle_dir "${CMAKE_INSTALL_PREFIX}/${bundle_name}.app")
+
   set_target_properties( inspector PROPERTIES MACOSX_BUNDLE TRUE )
-  set_target_properties( inspector PROPERTIES OUTPUT_NAME "Marsyas Inspector" )
+  set_target_properties( inspector PROPERTIES OUTPUT_NAME ${bundle_name} )
 
   install(TARGETS inspector BUNDLE DESTINATION .)
-
-  set(bundle_dir "${CMAKE_INSTALL_PREFIX}/Marsyas Inspector.app")
 
   install(
     FILES ${qt5_dir}/plugins/platforms/libqcocoa.dylib
