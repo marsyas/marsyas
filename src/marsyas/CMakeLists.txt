@@ -377,10 +377,16 @@ install( FILES
 
 install( FILES
   realtime/any.h
-  realtime/queue.h
   realtime/stage.h
+  realtime/queue.h
+  realtime/packet_queue.h
   realtime/realvec_queue.h
   realtime/atomic_control.h
+  realtime/controller.h
+  realtime/osc_receiver.h
+  realtime/osc_transmitter.h
+  realtime/udp_receiver.h
+  realtime/udp_transmitter.h
   realtime/runner.h
 
   DESTINATION include/marsyas/realtime
@@ -393,6 +399,12 @@ install( FILES
   debug/file_io.h
 
   DESTINATION include/marsyas/debug
+)
+
+install( FILES
+  script/script.h
+
+  DESTINATION include/marsyas/script
 )
 
 # FIXME: Install headers for MarSystem subclasses
