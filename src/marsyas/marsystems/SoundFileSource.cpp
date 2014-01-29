@@ -160,6 +160,13 @@ void
 SoundFileSource::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("SoundFileSource::myUpdate");
+
+  // Do nothing on output-only controls
+  if (sender() == ctrl_hasData_())
+  {
+    return;
+  }
+
   ctrl_inObsNames_->setValue("audio,", NOUPDATE);
 
   if (filename_ != ctrl_filename_->to<mrs_string>())
@@ -190,7 +197,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 
       if (src_->getctrl("mrs_natural/size")->to<mrs_natural>() != 0)
       {
-        ctrl_hasData_->setValue(true, NOUPDATE);
+        ctrl_hasData_->setValue(true);
         src_->hasData_ = true;
 
         ctrl_lastTickWithData_->setValue(false, NOUPDATE);
@@ -202,7 +209,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
     {
       ctrl_onObservations_->setValue(1, NOUPDATE);
       ctrl_israte_->setValue((mrs_real)22050.0, NOUPDATE); //[!] why not set to 0 or some invalid value?
-      ctrl_hasData_->setValue(false, NOUPDATE);
+      ctrl_hasData_->setValue(false);
       ctrl_lastTickWithData_->setValue(true, NOUPDATE);
       src_ = NULL;
     }
@@ -230,7 +237,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 
       src_->setctrl("mrs_natural/pos", getctrl("mrs_natural/pos"));
       src_->update();
-      setctrl("mrs_bool/hasData", src_->hasData_);
+      updControl("mrs_bool/hasData", src_->hasData_);
       setctrl("mrs_bool/lastTickWithData", src_->lastTickWithData_);
       return;
     }
@@ -266,7 +273,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 
     setctrl("mrs_natural/pos", src_->pos_);//[!]
     setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]
-    setctrl("mrs_bool/hasData", src_->hasData_);//[!]
+    updControl("mrs_bool/hasData", src_->hasData_);//[!]
     setctrl("mrs_bool/lastTickWithData", src_->lastTickWithData_);
     setctrl("mrs_natural/size", src_->getctrl("mrs_natural/size"));
     setctrl("mrs_real/repetitions", src_->getctrl("mrs_real/repetitions"));
@@ -449,7 +456,7 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
     // replaced by gtzan
     ctrl_pos_->setValue(src_->getctrl("mrs_natural/pos")->to<mrs_natural>(), NOUPDATE);
     ctrl_loop_->setValue(src_->rewindpos_, NOUPDATE);
-    ctrl_hasData_->setValue(src_->hasData_, NOUPDATE);
+    ctrl_hasData_->setValue(src_->hasData_);
     ctrl_lastTickWithData_->setValue(src_->lastTickWithData_, NOUPDATE);
     ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
     ctrl_previouslyPlaying_->setValue(src_->getctrl("mrs_string/previouslyPlaying"));
