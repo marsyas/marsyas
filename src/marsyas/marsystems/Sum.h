@@ -44,7 +44,7 @@ namespace Marsyas
 	- "sum_observations" -> Sum up across observations.  Add up all
 	  the samples in an observation.
 
-	- "sum_observations" -> Sum up across samples.  Add up all
+	- "sum_samples" -> Sum up across samples.  Add up all
 	  the observations for each sample.
 
 	- "sum_whole" -> Sum up all the observations and samples of the

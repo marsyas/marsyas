@@ -25,25 +25,25 @@
 namespace Marsyas
 {
 /**
-	\ingroup Analysis
-	\brief Generalized autocorrelation
+  \ingroup Analysis
+  \brief Generalized autocorrelation
 
-	Computes the generalized autocorrelation of the input window
-	(with optional magnitude compression) using the
-	Fast Fourier Transform (FFT).
+  Computes the generalized autocorrelation of the input window
+  (with optional magnitude compression) using the
+  Fast Fourier Transform (FFT).
 
-	Controls:
-	- \b mrs_bool/aliasedOutput [w] : by default, this control is set to true and
-	the output of AutoCorrelation
-	will be an alised time domain signal (as used by the original Marsyas0.1 code
-	implemented by George Tzanetakis - MUST CHECK IF THIS MAKES SENSE!).
-	Setting this control to false, the FFTs will be computed using the next power of 2
-	of the inSamples*2+1, which avoids alising in the iFFT step. In this mode, only the
-	first inSamples of the autocorrleation function will be output (since the remaining
-	ones are mirrored versions or zero valued).
+  Controls:
+  - \b mrs_bool/aliasedOutput [w] : (default: false)
+    - \b true: The output will be an alised time domain signal
+    (as used by the original Marsyas0.1 code implemented by George Tzanetakis).
+    - \b false: The FFTs will be computed using the next power of 2
+    of the inSamples*2+1, which avoids alising in the iFFT step. In this mode,
+    only the first inSamples of the autocorrleation function will be output
+    (since the remaining ones are mirrored versions or zero valued).
 
-	- \b mrs_bool/setr0to1" [w]: if set to true, the output will be normalized so that r_xx(0) = 1
-	Had to use a weird name because there already was a normalize control [AL]
+  - \b mrs_bool/setr0to1" [w]:
+  If set to true, the output will be normalized so that r_xx(0) = 1.
+  Had to use a weird name because there already was a normalize control [AL]
 */
 
 class AutoCorrelation: public MarSystem
