@@ -88,8 +88,19 @@ PlotSink::myUpdate(MarControlPtr sender)
   // no change to network flow
   MarSystem::myUpdate(sender);
 
-  if (ctrl_single_file_->isTrue() && single_file_ == NULL) {
-    single_file_ = new std::ofstream(ctrl_filename_->to<mrs_string>().c_str());
+  if (single_file_ && (!ctrl_single_file_->isTrue() || ctrl_filename_->to<mrs_string>() != filename_))
+  {
+    single_file_->close();
+    delete single_file_;
+    single_file_ = NULL;
+  }
+
+  filename_ = ctrl_filename_->to<mrs_string>();
+
+  if (!single_file_ && ctrl_single_file_->isTrue() &&
+      !filename_.empty() && filename_ != "defaultfile")
+  {
+    single_file_ = new std::ofstream(filename_.c_str());
   }
 }
 
@@ -117,8 +128,6 @@ PlotSink::myProcess(realvec& in, realvec& out)
     oss << ctrl_filename_->to<mrs_string>() <<
         setfill('0') << setw(4) << counter_ << ".plot";
     cout << "name = " << name_ << " " << oss.str() << endl;
-
-    MRSMSG("Writing " << oss.str() << endl);
     in.write(oss.str());
   }
 

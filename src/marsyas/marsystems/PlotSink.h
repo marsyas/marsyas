@@ -57,6 +57,7 @@ class PlotSink: public MarSystem
 private:
   mrs_natural counter_;
   std::ofstream *single_file_;
+  std::string filename_;
 
   MarControlPtr ctrl_messages_;
   MarControlPtr ctrl_separator_;
