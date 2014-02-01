@@ -90,12 +90,14 @@ public:
   // for:	friend std::ostream& operator<<(std::ostream&, const MarControl& ctrl);
   virtual std::ostream& serialize(std::ostream& os) = 0;
   // for:	friend bool operator!=(MarControlValue& v1, MarControlValue& v2)
-  virtual bool isNotEqual(MarControlValue *v) = 0;
+  virtual bool isEqual(MarControlValue *v) = 0;
+  virtual bool isLessThan(MarControlValue *v) = 0;
 
   virtual MarControlValue* sum(MarControlValue *v) = 0;
   virtual MarControlValue* subtract(MarControlValue *v) = 0;
   virtual MarControlValue* multiply(MarControlValue *v) = 0;
   virtual MarControlValue* divide(MarControlValue *v) = 0;
+
 
   template <typename T>
   struct IsArithmetic { static const bool value = false; };
@@ -151,7 +153,8 @@ public:
 
   virtual void createFromStream(std::istream&);
   virtual std::ostream& serialize(std::ostream& os);
-  virtual bool isNotEqual(MarControlValue *v);
+  virtual bool isEqual(MarControlValue *v);
+  virtual bool isLessThan(MarControlValue *v);
   virtual MarControlValue* sum(MarControlValue *v);
   virtual MarControlValue* subtract(MarControlValue *v);
   virtual MarControlValue* multiply(MarControlValue *v);
@@ -289,27 +292,6 @@ MarControlValueT<T>::get() const
 }
 
 template<class T>
-bool
-MarControlValueT<T>::isNotEqual(MarControlValue *v)
-{
-  if(this != v)//if referring to different objects, check if their contents is different...
-  {
-    if (type_ != v->getType())
-    {
-      std::ostringstream sstr;
-      sstr << "MarControlValueT::isNotEqual() - Trying to compare different types of MarControlValue. "
-           << "(" << this->getType() << " with " << v->getType() << ")";
-      MRSWARN(sstr.str());
-      return false;
-    }
-
-    return (value_ != dynamic_cast<MarControlValueT<T>*>(v)->get());
-  }
-  else //if v1 and v2 refer to the same object, they must be equal (=> return false)
-    return false;
-}
-
-template<class T>
 void
 MarControlValueT<T>::createFromStream(std::istream& in)
 {
@@ -359,6 +341,18 @@ MarControlValueT<T>::divide(MarControlValue *v)
   return Arithmetic<T, IsArithmetic<T>::value>::divide(this, v);
 }
 
+template<class T>
+bool MarControlValueT<T>::isEqual(MarControlValue *v)
+{
+  return Arithmetic<T, IsArithmetic<T>::value>::isEqual(this, v);
+}
+
+template<class T>
+bool MarControlValueT<T>::isLessThan(MarControlValue *v)
+{
+  return Arithmetic<T, IsArithmetic<T>::value>::isLessThan(this, v);
+}
+
 template <typename T>
 struct MarControlValue::Arithmetic<T, false>
 {
@@ -370,6 +364,19 @@ struct MarControlValue::Arithmetic<T, false>
   { throw std::runtime_error("Can not multiply this."); }
   static MarControlValue *divide( void*, void*)
   { throw std::runtime_error("Can not divide this."); }
+  static bool isEqual( MarControlValueT<T> *lhs, MarControlValue *rhs )
+  {
+    if (lhs == rhs)
+      return true;
+    if (rhs->hasType<T>())
+    {
+      return lhs->get() == static_cast<MarControlValueT<T>*>(rhs)->get();
+    }
+    throw std::runtime_error("Can not compare this.");
+  }
+
+  static bool isLessThan( void*, void*)
+  { throw std::runtime_error("Can not compare this."); }
 };
 
 template<typename T>
@@ -434,7 +441,7 @@ struct MarControlValue::Arithmetic<T, true>
     }
     else
     {
-      throw std::runtime_error("Can not sum this.");
+      throw std::runtime_error("Can not add that.");
     }
   }
 
@@ -450,7 +457,7 @@ struct MarControlValue::Arithmetic<T, true>
     }
     else
     {
-      throw std::runtime_error("Can not subtract this.");
+      throw std::runtime_error("Can not subtract that.");
     }
   }
 
@@ -466,7 +473,7 @@ struct MarControlValue::Arithmetic<T, true>
     }
     else
     {
-      throw std::runtime_error("Can not multiply this.");
+      throw std::runtime_error("Can not multiply with that.");
     }
   }
 
@@ -482,7 +489,44 @@ struct MarControlValue::Arithmetic<T, true>
     }
     else
     {
-      throw std::runtime_error("Can not divide this.");
+      throw std::runtime_error("Can not divide by that.");
+    }
+  }
+
+  static bool isEqual( MarControlValueT<T>*lhs, MarControlValue*rhs )
+  {
+    if (lhs == rhs)
+    {
+      return true;
+    }
+    else if (rhs->hasType<T>())
+    {
+      return lhs->get() == static_cast<MarControlValueT<T>*>(rhs)->get();
+    }
+    else if (rhs->hasType<mrs_natural>())
+    {
+      return lhs->get() == static_cast<MarControlValueT<mrs_natural>*>(rhs)->get();
+    }
+    else if (rhs->hasType<mrs_real>())
+    {
+      return lhs->get() == static_cast<MarControlValueT<mrs_real>*>(rhs)->get();
+    }
+    throw std::runtime_error("Can not compare to that.");
+  }
+
+  static bool isLessThan( MarControlValueT<T>*lhs, MarControlValue*rhs )
+  {
+    if (rhs->hasType<mrs_natural>())
+    {
+      return lhs->get() < static_cast<MarControlValueT<mrs_natural>*>(rhs)->get();
+    }
+    else if (rhs->hasType<mrs_real>())
+    {
+      return lhs->get() < static_cast<MarControlValueT<mrs_real>*>(rhs)->get();
+    }
+    else
+    {
+      throw std::runtime_error("Can not compare to that.");
     }
   }
 };
