@@ -26,6 +26,7 @@
 #include <vector>
 #include <utility>
 #include <typeinfo>
+#include <stdexcept>
 
 namespace Marsyas
 {
@@ -36,6 +37,8 @@ namespace Marsyas
 */
 
 class marsyas_EXPORT MarControl; //forward declaration
+
+template<class T> class MarControlValueT;
 
 class marsyas_EXPORT MarControlValue
 {
@@ -77,6 +80,11 @@ public:
 
   virtual std::string	getType() const ;
 
+  template<typename T> bool hasType()
+  {
+    return (typeid(*this) == typeid(MarControlValueT<T>));
+  }
+
   // workaround - virtual member functions to overload friend operators
   virtual void createFromStream(std::istream&) = 0;
   // for:	friend std::ostream& operator<<(std::ostream&, const MarControl& ctrl);
@@ -94,6 +102,8 @@ public:
 
   template <typename T, bool enabled = false>
   struct Arithmetic {};
+
+  struct GenericArithmetic;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -352,10 +362,61 @@ MarControlValueT<T>::divide(MarControlValue *v)
 template <typename T>
 struct MarControlValue::Arithmetic<T, false>
 {
-  static MarControlValue *sum( void*, void*) { assert(0); return 0; }
-  static MarControlValue *subtract( void*, void*) { assert(0); return 0; }
-  static MarControlValue *multiply( void*, void*) { assert(0); return 0; }
-  static MarControlValue *divide( void*, void*) { assert(0); return 0; }
+  static MarControlValue *sum( void*, void*)
+  { throw std::runtime_error("Can not sum this."); }
+  static MarControlValue *subtract( void*, void*)
+  { throw std::runtime_error("Can not subtract this."); }
+  static MarControlValue *multiply( void*, void*)
+  { throw std::runtime_error("Can not multiply this."); }
+  static MarControlValue *divide( void*, void*)
+  { throw std::runtime_error("Can not divide this."); }
+};
+
+template<typename T>
+MarControlValueT<T> *controlValueFor( const T & val )
+{
+  return new MarControlValueT<T>(val);
+}
+
+struct MarControlValue::GenericArithmetic
+{
+  template<typename T>
+  static MarControlValueT<T> * makeValue( const T & val )
+  {
+    return new MarControlValueT<T>(val);
+  }
+
+  template<typename LHS, typename RHS>
+  static MarControlValue *add( MarControlValue * lhs, MarControlValue * rhs )
+  {
+    MarControlValueT<LHS> *lhs_typed = static_cast<MarControlValueT<LHS>*>(lhs);
+    MarControlValueT<RHS> *rhs_typed = static_cast<MarControlValueT<RHS>*>(rhs);
+    return makeValue(lhs_typed->get() + rhs_typed->get());
+  }
+
+  template<typename LHS, typename RHS>
+  static MarControlValue *subtract( MarControlValue * lhs, MarControlValue * rhs )
+  {
+    MarControlValueT<LHS> *lhs_typed = static_cast<MarControlValueT<LHS>*>(lhs);
+    MarControlValueT<RHS> *rhs_typed = static_cast<MarControlValueT<RHS>*>(rhs);
+    return makeValue(lhs_typed->get() - rhs_typed->get());
+  }
+
+  template<typename LHS, typename RHS>
+  static MarControlValue *multiply( MarControlValue * lhs, MarControlValue * rhs )
+  {
+    MarControlValueT<LHS> *lhs_typed = static_cast<MarControlValueT<LHS>*>(lhs);
+    MarControlValueT<RHS> *rhs_typed = static_cast<MarControlValueT<RHS>*>(rhs);
+    return makeValue(lhs_typed->get() * rhs_typed->get());
+  }
+
+  template<typename LHS, typename RHS>
+  static MarControlValue *divide( MarControlValue * lhs, MarControlValue * rhs )
+  {
+    MarControlValueT<LHS> *lhs_typed = static_cast<MarControlValueT<LHS>*>(lhs);
+    MarControlValueT<RHS> *rhs_typed = static_cast<MarControlValueT<RHS>*>(rhs);
+    return makeValue(lhs_typed->get() / rhs_typed->get());
+  }
 };
 
 template <typename T>
@@ -363,58 +424,66 @@ struct MarControlValue::Arithmetic<T, true>
 {
   static MarControlValue *sum( MarControlValueT<T>*lhs, MarControlValue*rhs)
   {
-    MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(rhs);
-    if(!ptr)
+    if (rhs->hasType<mrs_natural>())
     {
-      std::ostringstream sstr;
-      sstr << "MarControlValueT::sum() - Trying to sum different types of MarControlValue. "
-           << "(" << lhs->getType() << " with " << rhs->getType() << ")";
-      MRSWARN(sstr.str());
-      return NULL;
+      return GenericArithmetic::add<T,mrs_natural>(lhs, rhs);
     }
-    return new MarControlValueT<T>(lhs->get() + ptr->get());
+    else if (rhs->hasType<mrs_real>())
+    {
+      return GenericArithmetic::add<T,mrs_real>(lhs, rhs);
+    }
+    else
+    {
+      throw std::runtime_error("Can not sum this.");
+    }
   }
 
   static MarControlValue *subtract( MarControlValueT<T>*lhs, MarControlValue*rhs)
   {
-    MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(rhs);
-    if(!ptr)
+    if (rhs->hasType<mrs_natural>())
     {
-      std::ostringstream sstr;
-      sstr << "MarControlValueT::subtract() - Trying to subtract different types of MarControlValue. "
-           << "(" << lhs->getType() << " with " << rhs->getType() << ")";
-      MRSWARN(sstr.str());
-      return NULL;
+      return GenericArithmetic::subtract<T,mrs_natural>(lhs, rhs);
     }
-    return new MarControlValueT<T>(lhs->get() - ptr->get());
+    else if (rhs->hasType<mrs_real>())
+    {
+      return GenericArithmetic::subtract<T,mrs_real>(lhs, rhs);
+    }
+    else
+    {
+      throw std::runtime_error("Can not subtract this.");
+    }
   }
 
   static MarControlValue *multiply( MarControlValueT<T>*lhs, MarControlValue*rhs)
   {
-    MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(rhs);
-    if(!ptr)
+    if (rhs->hasType<mrs_natural>())
     {
-      std::ostringstream sstr;
-      sstr << "MarControlValueT::multiply() - Trying to multiply different types of MarControlValue. "
-           << "(" << lhs->getType() << " with " << rhs->getType() << ")";
-      MRSWARN(sstr.str());
-      return NULL;
+      return GenericArithmetic::multiply<T,mrs_natural>(lhs, rhs);
     }
-    return new MarControlValueT<T>(lhs->get() * ptr->get());
+    else if (rhs->hasType<mrs_real>())
+    {
+      return GenericArithmetic::multiply<T,mrs_real>(lhs, rhs);
+    }
+    else
+    {
+      throw std::runtime_error("Can not multiply this.");
+    }
   }
 
   static MarControlValue *divide( MarControlValueT<T>*lhs, MarControlValue*rhs)
   {
-    MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(rhs);
-    if(!ptr)
+    if (rhs->hasType<mrs_natural>())
     {
-      std::ostringstream sstr;
-      sstr << "[MarControlValueT::divide] Trying to divide different types of MarControlValue. "
-           << "(" << lhs->getType() << " with " << rhs->getType() << ")";
-      MRSWARN(sstr.str());
-      return NULL;
+      return GenericArithmetic::divide<T,mrs_natural>(lhs, rhs);
     }
-    return new MarControlValueT<T>(lhs->get() / ptr->get());
+    else if (rhs->hasType<mrs_real>())
+    {
+      return GenericArithmetic::divide<T,mrs_real>(lhs, rhs);
+    }
+    else
+    {
+      throw std::runtime_error("Can not divide this.");
+    }
   }
 };
 
