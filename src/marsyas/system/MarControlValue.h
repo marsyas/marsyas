@@ -88,6 +88,12 @@ public:
   virtual MarControlValue* subtract(MarControlValue *v) = 0;
   virtual MarControlValue* multiply(MarControlValue *v) = 0;
   virtual MarControlValue* divide(MarControlValue *v) = 0;
+
+  template <typename T>
+  struct IsArithmetic { static const bool value = false; };
+
+  template <typename T, bool enabled = false>
+  struct Arithmetic {};
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -110,19 +116,28 @@ public:
 
   MarControlValueT& operator=(const MarControlValueT& a);
 
-  virtual MarControlValue* clone();
+  virtual MarControlValue* clone()
+  {
+    return new MarControlValueT<T>(*this);
+  }
+
+  virtual MarControlValue* create()
+  {
+    return new MarControlValueT<T>();
+  }
+
   virtual void copyValue(MarControlValue& value);
   virtual void callMarSystemsUpdate();
-  virtual MarControlValue* create();
 
   virtual std::string getTypeID();
 
   //setters
-  void set(MarControlValue *val, bool update);
+  //void set(MarControlValue *val, bool update);
   void set(const T &re, bool update);
 
   //getters
   const T& get() const;
+  T& getRef();
 
   virtual void createFromStream(std::istream&);
   virtual std::ostream& serialize(std::ostream& os);
@@ -132,97 +147,6 @@ public:
   virtual MarControlValue* multiply(MarControlValue *v);
   virtual MarControlValue* divide(MarControlValue *v);
 };
-
-template<>
-class marsyas_EXPORT MarControlValueT<realvec> : public MarControlValue
-{
-  friend class MarControl;
-  friend class MarControlAccessor;
-
-protected:
-  realvec value_;
-
-public:
-  MarControlValueT(realvec value);
-  MarControlValueT(const MarControlValueT& a);
-
-  virtual ~MarControlValueT() {}
-
-  MarControlValueT& operator=(const MarControlValueT& a);
-
-  virtual MarControlValue* clone();
-  virtual void copyValue(MarControlValue& value);
-  virtual void callMarSystemsUpdate();
-  virtual MarControlValue* create();
-
-  virtual std::string getTypeID();
-
-  //setters
-  inline void set(MarControlValue *val, bool update);
-  inline void set(const realvec &, bool update);
-
-  //getters
-  const realvec& get() const;
-  realvec& getRef();
-
-  virtual void createFromStream(std::istream&);
-  virtual std::ostream& serialize(std::ostream& os);
-  virtual bool isNotEqual(MarControlValue *v);
-  virtual MarControlValue* sum(MarControlValue *v);
-  virtual MarControlValue* subtract(MarControlValue *v);
-  virtual MarControlValue* multiply(MarControlValue *v);
-  virtual MarControlValue* divide(MarControlValue *v);
-};
-
-// To avoid the compiler complaints
-template<>
-class marsyas_EXPORT MarControlValueT<bool> : public MarControlValue
-{
-  friend class MarControl;
-  friend class MarControlAccessor;
-
-protected:
-  bool value_;
-
-public:
-  MarControlValueT(bool value);
-  MarControlValueT(const MarControlValueT& a);
-
-  virtual ~MarControlValueT() {}
-
-  MarControlValueT& operator=(const MarControlValueT& a);
-
-  virtual std::string getTypeID();
-
-  virtual MarControlValue* clone();
-  virtual void copyValue(MarControlValue& value);
-  virtual void callMarSystemsUpdate();
-  virtual MarControlValue* create();
-
-  //setters
-  inline void set(MarControlValue *val, bool update);
-  inline void set(bool re, bool update);
-
-  //getters
-  const bool& get() const;
-
-  virtual void createFromStream(std::istream&);
-  virtual std::ostream& serialize(std::ostream& os);
-  virtual bool isNotEqual(MarControlValue *v);
-  virtual MarControlValue* sum(MarControlValue *v);
-  virtual MarControlValue* subtract(MarControlValue *v);
-  virtual MarControlValue* multiply(MarControlValue *v);
-  virtual MarControlValue* divide(MarControlValue *v);
-};
-
-// To avoid the compiler complaints
-inline std::string operator-(std::string& , std::string&) { return ""; }
-inline std::string operator*(std::string& , std::string&) { return ""; }
-inline std::string operator/(std::string& , std::string&) { return ""; }
-
-/************************************************************************/
-/* MarControlValueT template implementation                             */
-/************************************************************************/
 
 template<class T>
 MarControlValueT<T>::MarControlValueT()
@@ -297,13 +221,6 @@ MarControlValueT<T>::operator=(const MarControlValueT& a)
 }
 
 template<class T>
-MarControlValue*
-MarControlValueT<T>::clone()
-{
-  return new MarControlValueT<T>(*this);
-}
-
-template<class T>
 void
 MarControlValueT<T>::copyValue(MarControlValue& value)
 {
@@ -334,31 +251,10 @@ MarControlValueT<T>::callMarSystemsUpdate()
 }
 
 template<class T>
-MarControlValue*
-MarControlValueT<T>::create()
-{
-  return new MarControlValueT<T>(T());
-}
-
-template<class T>
 std::string
 MarControlValueT<T>::getTypeID()
 {
   return typeid(T).name();
-}
-
-inline
-std::string
-MarControlValueT<realvec>::getTypeID()
-{
-  return typeid(realvec).name();
-}
-
-inline
-std::string
-MarControlValueT<bool>::getTypeID()
-{
-  return typeid(bool).name();
 }
 
 template<class T>
@@ -375,42 +271,12 @@ MarControlValueT<T>::set(const T & val, bool update)
   }
 }
 
-inline
-void
-MarControlValueT<realvec>::set(const realvec & val, bool update)
-{
-  value_ = val;
-
-  setDebugValue();
-
-  if(update)
-  {
-    callMarSystemsUpdate();
-  }
-}
-
-inline
-void
-MarControlValueT<bool>::set(bool val, bool update)
-{
-  value_ = val;
-
-  setDebugValue();
-
-
-  if(update)
-    callMarSystemsUpdate();
-}
-
 template<class T>
 const T&
 MarControlValueT<T>::get() const
 {
   return value_;
 }
-
-
-
 
 template<class T>
 bool
@@ -434,74 +300,6 @@ MarControlValueT<T>::isNotEqual(MarControlValue *v)
 }
 
 template<class T>
-MarControlValue*
-MarControlValueT<T>::sum(MarControlValue *v)
-{
-  MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(v);
-  if(!ptr)
-  {
-    std::ostringstream sstr;
-    sstr << "MarControlValueT::sum() - Trying to sum different types of MarControlValue. "
-         << "(" << this->getType() << " with " << v->getType() << ")";
-    MRSWARN(sstr.str());
-    return NULL;
-  }
-  return new MarControlValueT<T>(value_+ptr->value_);
-}
-
-template<class T>
-MarControlValue*
-MarControlValueT<T>::subtract(MarControlValue *v)
-{
-  MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(v);
-  if(!ptr)
-  {
-    std::ostringstream sstr;
-    sstr << "MarControlValueT::subtract() - Trying to subtract different types of MarControlValue. "
-         << "(" << this->getType() << " with " << v->getType() << ")";
-    MRSWARN(sstr.str());
-    return NULL;
-  }
-  return new MarControlValueT<T>(value_-ptr->value_);
-}
-
-template<class T>
-MarControlValue*
-MarControlValueT<T>::multiply(MarControlValue *v)
-{
-  MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(v);
-  if(!ptr)
-  {
-    std::ostringstream sstr;
-    sstr << "MarControlValueT::multiply() - Trying to multiply different types of MarControlValue. "
-         << "(" << this->getType() << " with " << v->getType() << ")";
-    MRSWARN(sstr.str());
-    return NULL;
-  }
-  return new MarControlValueT<T>(value_*ptr->value_);
-}
-
-template<class T>
-MarControlValue*
-MarControlValueT<T>::divide(MarControlValue *v)
-{
-  MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(v);
-  if(!ptr)
-  {
-    std::ostringstream sstr;
-    sstr << "[MarControlValueT::divide] Trying to divide different types of MarControlValue. "
-         << "(" << this->getType() << " with " << v->getType() << ")";
-    MRSWARN(sstr.str());
-    return NULL;
-  }
-  return new MarControlValueT<T>(value_/ptr->value_);
-}
-
-
-
-
-
-template<class T>
 void
 MarControlValueT<T>::createFromStream(std::istream& in)
 {
@@ -523,6 +321,106 @@ MarControlValueT<T>::serialize(std::ostream& os)
   return os;
 }
 
-}//namespace Marsyas
+template<class T>
+MarControlValue*
+MarControlValueT<T>::sum(MarControlValue *v)
+{
+  return Arithmetic<T, IsArithmetic<T>::value>::sum(this, v);
+}
+
+template<class T>
+MarControlValue*
+MarControlValueT<T>::subtract(MarControlValue *v)
+{
+  return Arithmetic<T, IsArithmetic<T>::value>::subtract(this, v);
+}
+
+template<class T>
+MarControlValue*
+MarControlValueT<T>::multiply(MarControlValue *v)
+{
+  return Arithmetic<T, IsArithmetic<T>::value>::multiply(this, v);
+}
+
+template<class T>
+MarControlValue*
+MarControlValueT<T>::divide(MarControlValue *v)
+{
+  return Arithmetic<T, IsArithmetic<T>::value>::divide(this, v);
+}
+
+template <typename T>
+struct MarControlValue::Arithmetic<T, false>
+{
+  static MarControlValue *sum( void*, void*) { assert(0); return 0; }
+  static MarControlValue *subtract( void*, void*) { assert(0); return 0; }
+  static MarControlValue *multiply( void*, void*) { assert(0); return 0; }
+  static MarControlValue *divide( void*, void*) { assert(0); return 0; }
+};
+
+template <typename T>
+struct MarControlValue::Arithmetic<T, true>
+{
+  static MarControlValue *sum( MarControlValueT<T>*lhs, MarControlValue*rhs)
+  {
+    MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(rhs);
+    if(!ptr)
+    {
+      std::ostringstream sstr;
+      sstr << "MarControlValueT::sum() - Trying to sum different types of MarControlValue. "
+           << "(" << lhs->getType() << " with " << rhs->getType() << ")";
+      MRSWARN(sstr.str());
+      return NULL;
+    }
+    return new MarControlValueT<T>(lhs->get() + ptr->get());
+  }
+
+  static MarControlValue *subtract( MarControlValueT<T>*lhs, MarControlValue*rhs)
+  {
+    MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(rhs);
+    if(!ptr)
+    {
+      std::ostringstream sstr;
+      sstr << "MarControlValueT::subtract() - Trying to subtract different types of MarControlValue. "
+           << "(" << lhs->getType() << " with " << rhs->getType() << ")";
+      MRSWARN(sstr.str());
+      return NULL;
+    }
+    return new MarControlValueT<T>(lhs->get() - ptr->get());
+  }
+
+  static MarControlValue *multiply( MarControlValueT<T>*lhs, MarControlValue*rhs)
+  {
+    MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(rhs);
+    if(!ptr)
+    {
+      std::ostringstream sstr;
+      sstr << "MarControlValueT::multiply() - Trying to multiply different types of MarControlValue. "
+           << "(" << lhs->getType() << " with " << rhs->getType() << ")";
+      MRSWARN(sstr.str());
+      return NULL;
+    }
+    return new MarControlValueT<T>(lhs->get() * ptr->get());
+  }
+
+  static MarControlValue *divide( MarControlValueT<T>*lhs, MarControlValue*rhs)
+  {
+    MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(rhs);
+    if(!ptr)
+    {
+      std::ostringstream sstr;
+      sstr << "[MarControlValueT::divide] Trying to divide different types of MarControlValue. "
+           << "(" << lhs->getType() << " with " << rhs->getType() << ")";
+      MRSWARN(sstr.str());
+      return NULL;
+    }
+    return new MarControlValueT<T>(lhs->get() / ptr->get());
+  }
+};
+
+template<> struct MarControlValue::IsArithmetic<mrs_natural> { static const bool value = true; };
+template<> struct MarControlValue::IsArithmetic<mrs_real> { static const bool value = true; };
+
+} //namespace Marsyas
 
 #endif
