@@ -224,7 +224,6 @@ public:
 
   // setters
   template<class T> WAS_INLINE bool setValue(const T& t, bool update = true);
-  template<class T> WAS_INLINE bool setValue(T& t, bool update = true);
   WAS_INLINE bool setValue(MarControlPtr mc, bool update = true);
   WAS_INLINE bool setValue(MarControlValue *mcv, bool update = true);
   WAS_INLINE bool setValue(const char *t, bool update = true);
@@ -298,31 +297,6 @@ MarControl::to() const
 template<class T>
 WAS_INLINE
 bool
-MarControl::setValue(T& t, bool update)
-{
-  MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(value_);
-  if(ptr)
-  {
-    if (ptr->get() == t)
-      return true;
-
-    ptr->set(t, update);
-
-    return true;
-  }
-  else
-  {
-    std::ostringstream sstr;
-    sstr << "MarControl::setValue() - Trying to set value of incompatible type "
-         << "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
-    MRSWARN(sstr.str());
-    return false;
-  }
-}
-
-template<class T>
-WAS_INLINE
-bool
 MarControl::setValue(const T& t, bool update)
 {
   MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(value_);
@@ -331,7 +305,7 @@ MarControl::setValue(const T& t, bool update)
     if (ptr->get() == t)
       return true;
 
-    ptr->set(const_cast<T&>(t), update);
+    ptr->set(t, update);
 
     return true;
   }
