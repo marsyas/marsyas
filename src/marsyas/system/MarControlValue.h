@@ -44,7 +44,6 @@ class marsyas_EXPORT MarControlValue
 
 protected:
   std::string type_;
-  MarControl* current_link_;
 
   std::string value_debug_;
 
@@ -62,9 +61,7 @@ protected:
 
   //for debugging purposes only
   void setDebugValue();
-
-  void current_link_update();
-
+  static void updateMarSystemFor( MarControl * );
 
 public:
   virtual ~MarControlValue() {}
@@ -103,7 +100,6 @@ class MarControlValueT : public MarControlValue
 
 protected:
   T value_;
-  T tempValue_;
 
 public:
   MarControlValueT();
@@ -145,7 +141,6 @@ class marsyas_EXPORT MarControlValueT<realvec> : public MarControlValue
 
 protected:
   realvec value_;
-  realvec tempValue_;
 
 public:
   MarControlValueT(realvec value);
@@ -188,7 +183,6 @@ class marsyas_EXPORT MarControlValueT<bool> : public MarControlValue
 
 protected:
   bool value_;
-  bool tempValue_;
 
 public:
   MarControlValueT(bool value);
@@ -234,7 +228,6 @@ template<class T>
 MarControlValueT<T>::MarControlValueT()
 {
   value_ = T();
-  tempValue_ = T();
 
   // simple tests are previously done for basic types for efficiency purposes
   if (typeid(T) == typeid(mrs_real))
@@ -328,19 +321,16 @@ MarControlValueT<T>::callMarSystemsUpdate()
   //(otherwise, only the first MarSystem in the loop below would
   //get the current value - all the remaining ones would get the value
   //"toggled" bu the first MarSystem update() call)
-  tempValue_ = value_;
+  T tempValue_ = value_;
 
   //iterate over all the MarControls that own this MarControlValue
   //and call any necessary MarSystem updates after this value change
   for(lit_ = links_.begin(); lit_ != links_.end(); ++lit_)
   {
     value_ = tempValue_; //make sure to use the current value, not a "toggled" one
-    current_link_ = lit_->first;
-    current_link_update();
-
+    MarControl * linked_control = lit_->first;
+    updateMarSystemFor(linked_control);
   }
-
-
 }
 
 template<class T>
