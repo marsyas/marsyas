@@ -131,10 +131,10 @@ MarControlValueT<realvec>::callMarSystemsUpdate()
 
   //iterate over all the MarControls that own this MarControlValue
   //and call any necessary MarSystem updates after this value change
-  for(lit_ = links_.begin(); lit_ != links_.end(); ++lit_)
+  for(link_vector::iterator it = links_.begin(); it != links_.end(); ++it)
   {
     value_ = tempValue_; //make sure to use the current value, not a "toggled" one
-    lit_->first->callMarSystemUpdate(); //lit->first is a pointer to a MarControl*
+    it->first->callMarSystemUpdate(); //lit->first is a pointer to a MarControl*
   }
 }
 
@@ -282,10 +282,10 @@ MarControlValueT<bool>::callMarSystemsUpdate()
 
   //iterate over all the MarControls that own this MarControlValue
   //and call any necessary MarSystem updates after this value change
-  for(lit_ = links_.begin(); lit_ != links_.end(); ++lit_)
+  for(link_vector::iterator it = links_.begin(); it != links_.end(); ++it)
   {
     value_ = tempValue_; //make sure to use the current value, not a "toggled" one
-    lit_->first->callMarSystemUpdate(); //lit->first is a pointer to a MarControl*
+    it->first->callMarSystemUpdate(); //lit->first is a pointer to a MarControl*
   }
 }
 

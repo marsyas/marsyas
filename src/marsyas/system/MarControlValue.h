@@ -50,7 +50,7 @@ protected:
   //MarControls that use this MarControlValue
   //(i.e. linked MarControls)
   std::vector<std::pair<MarControl*, MarControl*> > links_;
-  std::vector<std::pair<MarControl*, MarControl*> >::iterator lit_;
+  typedef std::vector<std::pair<MarControl*, MarControl*> > link_vector;
 
 protected:
   MarControlValue() {} // can't be directly created (use MarControl or MarControlValueT)
@@ -325,10 +325,10 @@ MarControlValueT<T>::callMarSystemsUpdate()
 
   //iterate over all the MarControls that own this MarControlValue
   //and call any necessary MarSystem updates after this value change
-  for(lit_ = links_.begin(); lit_ != links_.end(); ++lit_)
+  for(link_vector::iterator it = links_.begin(); it != links_.end(); ++it)
   {
     value_ = tempValue_; //make sure to use the current value, not a "toggled" one
-    MarControl * linked_control = lit_->first;
+    MarControl * linked_control = it->first;
     updateMarSystemFor(linked_control);
   }
 }
