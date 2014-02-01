@@ -88,6 +88,7 @@
 #include <marsyas/marsystems/Filter.h>
 #include <marsyas/marsystems/FlowCutSource.h>
 #include <marsyas/marsystems/FlowThru.h>
+#include <marsyas/marsystems/FlowToControl.h>
 #include <marsyas/marsystems/Flux.h>
 #include <marsyas/marsystems/FullWaveRectifier.h>
 #include <marsyas/marsystems/GMMClassifier.h>
@@ -374,6 +375,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("Filter", new Filter("filterp"));
   registerPrototype("FlowCutSource", new FlowCutSource("fcs"));
   registerPrototype("FlowThru", new FlowThru("flowthrupr"));
+  registerPrototype("FlowToControl", new FlowToControl("flowtocontrolpr"));
   registerPrototype("Flux", new Flux("fluxp"));
   registerPrototype("FullWaveRectifier", new FullWaveRectifier("fwr"));
   registerPrototype("GMMClassifier", new GMMClassifier("gmmsp"));

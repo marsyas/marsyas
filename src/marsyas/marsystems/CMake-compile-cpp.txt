@@ -87,6 +87,7 @@ FanOutIn.cpp
 Filter.cpp
 FlowCutSource.cpp
 FlowThru.cpp
+FlowToControl.cpp
 Flux.cpp
 FM.cpp
 FMeasure.cpp
