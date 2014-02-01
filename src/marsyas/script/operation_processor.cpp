@@ -163,15 +163,16 @@ MarControlPtr ScriptOperationProcessor::evaluateOperation( operation *opn )
       case NEQ_OP:
         return a != b;
       case LESS_OP:
-        return a < b;
-#if 1
+        // NOTE: MarControlPtr::operator< only compares pointers, not values
+        // That was probably intended for usage in std::map and similar...
+        return (*a() < *b());
       case MORE_OP:
-        return !(a == b || a < b);
+        return !(a == b || (*a() < *b()));
       case LESSEQ_OP:
-        return (a == b || a < b);
+        return (a == b || (*a() < *b()));
       case MOREEQ_OP:
-        return !(a < b);
-#endif
+        return !(*a() < *b());
+
       default:
         MRSERR("Unknown operator: " << opn->op);
       }

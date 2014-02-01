@@ -904,7 +904,7 @@ MarControl::setValue(MarControlValue *mcv, bool update)
     return false;
   }
 
-  if (!mcv->isNotEqual(value_))
+  if (mcv->isEqual(value_))
   {
     return true;
   }
@@ -943,20 +943,6 @@ std::ostream&
 operator<<(std::ostream& os, const MarControl& ctrl)
 {
   return ctrl.value_->serialize(os);
-}
-
-WAS_INLINE
-bool
-operator==(const MarControl& v1, const MarControl& v2)
-{
-  return !(v1.value_->isNotEqual(v2.value_));
-}
-
-WAS_INLINE
-bool
-operator!=(const MarControl& v1, const MarControl& v2)
-{
-  return v1.value_->isNotEqual(v2.value_);
 }
 
 WAS_INLINE

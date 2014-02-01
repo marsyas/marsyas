@@ -265,6 +265,21 @@ public:
   friend WAS_INLINE MarControl operator-(const MarControl& v1, const MarControl& v2);
   friend WAS_INLINE MarControl operator*(const MarControl& v1, const MarControl& v2);
   friend WAS_INLINE MarControl operator/(const MarControl& v1, const MarControl& v2);
+
+  bool operator== (const MarControl& rhs)
+  {
+    return value_->isEqual(rhs.value_);
+  }
+
+  bool operator!= (const MarControl& rhs)
+  {
+    return !(value_->isEqual(rhs.value_));
+  }
+
+  bool operator< (const MarControl & rhs)
+  {
+    return value_->isLessThan(rhs.value_);
+  }
 };
 
 
