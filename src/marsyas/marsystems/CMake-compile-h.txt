@@ -87,6 +87,7 @@ FanOutIn.h
 Filter.h
 FlowCutSource.h
 FlowThru.h
+FlowToControl.h
 Flux.h
 FMeasure.h
 FM.h
