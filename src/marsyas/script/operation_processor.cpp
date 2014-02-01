@@ -147,32 +147,38 @@ MarControlPtr ScriptOperationProcessor::evaluateOperation( operation *opn )
     if (a.isInvalid() || b.isInvalid())
       return MarControlPtr();
 
-    switch(opn->op)
-    {
-    case PLUS_OP:
-      return a + b;
-    case MINUS_OP:
-      return a - b;
-    case MULT_OP:
-      return a * b;
-    case DIV_OP:
-      return a / b;
-    case EQ_OP:
-      return a == b;
-    case NEQ_OP:
-      return a != b;
-    case LESS_OP:
-      return a < b;
+    try {
+      switch(opn->op)
+      {
+      case PLUS_OP:
+        return a + b;
+      case MINUS_OP:
+        return a - b;
+      case MULT_OP:
+        return a * b;
+      case DIV_OP:
+        return a / b;
+      case EQ_OP:
+        return a == b;
+      case NEQ_OP:
+        return a != b;
+      case LESS_OP:
+        return a < b;
 #if 1
-    case MORE_OP:
-      return !(a == b || a < b);
-    case LESSEQ_OP:
-      return (a == b || a < b);
-    case MOREEQ_OP:
-      return !(a < b);
+      case MORE_OP:
+        return !(a == b || a < b);
+      case LESSEQ_OP:
+        return (a == b || a < b);
+      case MOREEQ_OP:
+        return !(a < b);
 #endif
-    default:
-      MRSERR("Unknown operator: " << opn->op);
+      default:
+        MRSERR("Unknown operator: " << opn->op);
+      }
+    }
+    catch(...)
+    {
+      MRSERR("Invalid operator for given operands.");
     }
 
     return MarControlPtr();
