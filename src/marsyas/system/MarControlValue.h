@@ -119,7 +119,7 @@ public:
 
   //setters
   void set(MarControlValue *val, bool update);
-  void set(T &re, bool update);
+  void set(const T &re, bool update);
 
   //getters
   const T& get() const;
@@ -159,7 +159,7 @@ public:
 
   //setters
   inline void set(MarControlValue *val, bool update);
-  inline void set(realvec &re, bool update);
+  inline void set(const realvec &, bool update);
 
   //getters
   const realvec& get() const;
@@ -201,7 +201,7 @@ public:
 
   //setters
   inline void set(MarControlValue *val, bool update);
-  inline void set(bool &re, bool update);
+  inline void set(bool re, bool update);
 
   //getters
   const bool& get() const;
@@ -363,7 +363,7 @@ MarControlValueT<bool>::getTypeID()
 
 template<class T>
 void
-MarControlValueT<T>::set(T &val, bool update)
+MarControlValueT<T>::set(const T & val, bool update)
 {
   value_ = val;
 
@@ -377,7 +377,7 @@ MarControlValueT<T>::set(T &val, bool update)
 
 inline
 void
-MarControlValueT<realvec>::set(realvec &val, bool update)
+MarControlValueT<realvec>::set(const realvec & val, bool update)
 {
   value_ = val;
 
@@ -391,7 +391,7 @@ MarControlValueT<realvec>::set(realvec &val, bool update)
 
 inline
 void
-MarControlValueT<bool>::set(bool &val, bool update)
+MarControlValueT<bool>::set(bool val, bool update)
 {
   value_ = val;
 
