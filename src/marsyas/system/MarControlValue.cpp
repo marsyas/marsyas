@@ -76,7 +76,6 @@ Methods should be documented in the header file anyway.
 /************************************************************************/
 /* MarControlValueT realvec specialization                              */
 /************************************************************************/
-realvec MarControlValueT<realvec>::invalidValue;
 
 // constructor specialization for realvec
 MarControlValueT<realvec>::MarControlValueT(realvec value)
@@ -226,7 +225,6 @@ MarControlValueT<realvec>::divide(MarControlValue *v)
 /************************************************************************/
 /* MarControlValueT bool specialization                                 */
 /************************************************************************/
-bool MarControlValueT<bool>::invalidValue;
 
 // constructor specialization for realvec
 MarControlValueT<bool>::MarControlValueT(bool value)
