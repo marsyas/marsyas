@@ -106,9 +106,6 @@ protected:
   T tempValue_;
 
 public:
-  static T invalidValue;
-
-public:
   MarControlValueT();
   MarControlValueT(T value);
   MarControlValueT(const MarControlValueT& a);
@@ -138,7 +135,6 @@ public:
   virtual MarControlValue* subtract(MarControlValue *v);
   virtual MarControlValue* multiply(MarControlValue *v);
   virtual MarControlValue* divide(MarControlValue *v);
-  bool isInvalid() { return &value_ == &invalidValue; }
 };
 
 template<>
@@ -150,9 +146,6 @@ class marsyas_EXPORT MarControlValueT<realvec> : public MarControlValue
 protected:
   realvec value_;
   realvec tempValue_;
-
-public:
-  static realvec invalidValue;
 
 public:
   MarControlValueT(realvec value);
@@ -184,7 +177,6 @@ public:
   virtual MarControlValue* subtract(MarControlValue *v);
   virtual MarControlValue* multiply(MarControlValue *v);
   virtual MarControlValue* divide(MarControlValue *v);
-  bool isInvalid() { return &value_ == &invalidValue; }
 };
 
 // To avoid the compiler complaints
@@ -197,9 +189,6 @@ class marsyas_EXPORT MarControlValueT<bool> : public MarControlValue
 protected:
   bool value_;
   bool tempValue_;
-
-public:
-  static bool invalidValue;
 
 public:
   MarControlValueT(bool value);
@@ -230,7 +219,6 @@ public:
   virtual MarControlValue* subtract(MarControlValue *v);
   virtual MarControlValue* multiply(MarControlValue *v);
   virtual MarControlValue* divide(MarControlValue *v);
-  bool isInvalid() { return &value_ == &invalidValue; }
 };
 
 // To avoid the compiler complaints
@@ -241,8 +229,6 @@ inline std::string operator/(std::string& , std::string&) { return ""; }
 /************************************************************************/
 /* MarControlValueT template implementation                             */
 /************************************************************************/
-template<class T>
-T MarControlValueT<T>::invalidValue;
 
 template<class T>
 MarControlValueT<T>::MarControlValueT()

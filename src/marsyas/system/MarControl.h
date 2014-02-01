@@ -279,12 +279,6 @@ template<class T>
 const T&
 MarControl::to() const
 {
-  if(!this)
-  {
-    MRSERR("MarControl::to() - trying to get a value from a NULL MarControl! Returning invalid value...");
-    return MarControlValueT<T>::invalidValue;
-  }
-
   const MarControlValueT<T> *ptr = dynamic_cast<const MarControlValueT<T>*>(value_);
   if(ptr)
   {
@@ -292,8 +286,10 @@ MarControl::to() const
   }
   else
   {
-    MRSERR("MarControl::to() -  Incompatible type requested - " << "expected " << value_->getType() << " for control  " << this->getName()) ;
-    return MarControlValueT<T>::invalidValue;
+    static T invalidValue;
+    MRSERR("MarControl::to() -  Incompatible type requested - " << "expected "
+           << value_->getType() << " for control  " << this->getName()) ;
+    return invalidValue;
   }
 }
 
