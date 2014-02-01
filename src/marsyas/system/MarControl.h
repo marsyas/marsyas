@@ -212,7 +212,7 @@ public:
   template<typename T>
   bool hasType()
   {
-    return value_ && (typeid(*value_) == typeid(MarControlValueT<T>));
+    return value_ && value_->hasType<T>();
   }
 
   // for link controls
