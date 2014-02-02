@@ -62,6 +62,9 @@ Selector::addControls()
   addControl("mrs_realvec/disableRange", realvec());
   setControlState("mrs_realvec/disableRange", true);
 
+  addControl("mrs_realvec/setEnabled", realvec());
+  setControlState("mrs_realvec/setEnabled", true);
+
   addctrl("mrs_realvec/enabled", realvec(), ctrl_enabled_);
 }
 
@@ -73,6 +76,24 @@ Selector::myUpdate(MarControlPtr sender)
 
   MarControlAccessor acc(ctrl_enabled_);
   mrs_realvec& enabled = acc.to<mrs_realvec>();
+
+  {
+    const bool do_not_update = false;
+    MarControlAccessor accessor(getControl("mrs_realvec/setEnabled"), do_not_update);
+    realvec & set_enabled_array = accessor.to<realvec>();
+    if (set_enabled_array.getSize())
+    {
+      if (set_enabled_array.getSize() == inObservations_)
+      {
+        enabled = set_enabled_array;
+      }
+      else
+      {
+        MRSERR("Selector: wrong array size for 'setEnabled' control.");
+      }
+      set_enabled_array = realvec();
+    }
+  }
 
   //
   // If the enabled realvec has not been created, create it now.
