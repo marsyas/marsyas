@@ -109,6 +109,7 @@ LPCC.h
 LPC.h
 LSP.h
 LyonPassiveEar.h
+Map.h
 MarFileSink.h
 MarSystemTemplateAdvanced.h
 MarSystemTemplateBasic.h

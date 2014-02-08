@@ -106,6 +106,7 @@
 #include <marsyas/marsystems/LSP.h>
 #include <marsyas/marsystems/LyonPassiveEar.h>
 #include <marsyas/marsystems/MFCC.h>
+#include <marsyas/marsystems/Map.h>
 #include <marsyas/system/MarSystem.h>
 #include <marsyas/system/MarSystemManager.h>
 #include <marsyas/marsystems/MarSystemTemplateMedium.h>
@@ -395,6 +396,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("LSP", new LSP("lsppr"));
   registerPrototype("LyonPassiveEar", new LyonPassiveEar("lyonp"));
   registerPrototype("MFCC", new MFCC("mfcc"));
+  registerPrototype("Map", new Map("proto_map"));
   registerPrototype("MarSystemTemplateMedium", new MarSystemTemplateMedium("marsystemtemplatemediumpr"));
   registerPrototype("MathPower", new MathPower("mathpowerpr"));
   registerPrototype("MaxArgMax", new MaxArgMax("mxrp"));
