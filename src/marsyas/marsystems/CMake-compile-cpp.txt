@@ -109,6 +109,7 @@ LPCC.cpp
 LPC.cpp
 LSP.cpp
 LyonPassiveEar.cpp
+Map.cpp
 MarFileSink.cpp
 MarSystemTemplateAdvanced.cpp
 MarSystemTemplateBasic.cpp
