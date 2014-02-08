@@ -73,8 +73,9 @@ class marsyas_EXPORT realvec
 
 public:
   realvec();
-  realvec(mrs_natural size);
-  realvec(mrs_natural rows, mrs_natural cols);
+  explicit realvec(mrs_natural size);
+  explicit realvec(mrs_natural rows, mrs_natural cols, mrs_real value = 0.0);
+
   realvec(const realvec& a);
   ~realvec(); // not mean to be inherited from
 
@@ -136,22 +137,45 @@ public:
 
   /** \name Vector Operations */
   //@{
+
+  bool operator!=(const realvec& v1) const;
+  bool operator==(const realvec &v1) const;
   realvec& operator+=(const realvec& vec);
   realvec& operator-=(const realvec& vec);
   realvec& operator*=(const realvec& vec);
   realvec& operator/=(const realvec& vec);
-  realvec& operator*=(const mrs_real val);
-  realvec& operator/=(const mrs_real val);
-  realvec& operator+=(const mrs_real val);
-  realvec& operator-=(const mrs_real val);
 
-  marsyas_EXPORT friend realvec operator+(const realvec& vec1, const realvec& vec2);
-  marsyas_EXPORT friend realvec operator-(const realvec& vec1, const realvec& vec2);
-  marsyas_EXPORT friend realvec operator*(const realvec& vec1, const realvec& vec2);
-  marsyas_EXPORT friend realvec operator/(const realvec& vec1, const realvec& vec2);
+  template <typename T>
+  realvec& operator*=(const T & rhs)
+  {
+    for (mrs_natural i = 0; i < size_; ++i)
+      data_[i] *= rhs;
+    return *this;
+  }
 
-  bool operator!=(const realvec& v1) const;
-  bool operator==(const realvec &v1) const;
+  template <typename T>
+  realvec& operator/=(const T & rhs)
+  {
+    for (mrs_natural i = 0; i < size_; ++i)
+      data_[i] /= rhs;
+    return *this;
+  }
+
+  template <typename T>
+  realvec& operator+=(const T & rhs)
+  {
+    for (mrs_natural i = 0; i < size_; ++i)
+      data_[i] += rhs;
+    return *this;
+  }
+
+  template <typename T>
+  realvec& operator-=(const T & rhs)
+  {
+    for (mrs_natural i = 0; i < size_; ++i)
+      data_[i] -= rhs;
+    return *this;
+  }
 
   //@}
 
@@ -315,9 +339,96 @@ mrs_real& realvec::operator()(const mrs_natural i)
   return data_[i];
 }
 
+template <typename RHS> inline
+realvec operator*( const realvec & lhs, const RHS & rhs )
+{
+  realvec result(lhs);
+  result *= rhs;
+  return result;
+}
 
+template <typename RHS> inline
+realvec operator/( const realvec & lhs, const RHS & rhs )
+{
+  realvec result(lhs);
+  result /= rhs;
+  return result;
+}
 
+template <typename RHS> inline
+realvec operator+( const realvec & lhs, const RHS & rhs )
+{
+  realvec result(lhs);
+  result += rhs;
+  return result;
+}
 
+template <typename RHS> inline
+realvec operator-( const realvec & lhs, const RHS & rhs )
+{
+  realvec result(lhs);
+  result -= rhs;
+  return result;
+}
+
+// Type traits to enable/disable instantiations of operator templates below:
+
+template <typename LHS>
+struct realvec_lhs_operand { typedef LHS enabled; };
+
+template <>
+struct realvec_lhs_operand<realvec> {};
+
+// Operator templates below are only enabled for non-realvec types,
+// to prevent ambiguity with the operator templates above.
+
+template <typename LHS,
+          typename = typename realvec_lhs_operand<LHS>::enabled>
+inline
+realvec operator*( const LHS & lhs, const realvec & rhs )
+{
+  realvec result;
+  result.allocate(rhs.getRows(), rhs.getCols());
+  for (mrs_natural i = 0; i < result.getSize(); ++i)
+    result(i) = lhs * rhs(i);
+  return result;
+}
+
+template <typename LHS,
+          typename = typename realvec_lhs_operand<LHS>::enabled>
+inline
+realvec operator/( const LHS & lhs, const realvec & rhs )
+{
+  realvec result;
+  result.allocate(rhs.getRows(), rhs.getCols());
+  for (mrs_natural i = 0; i < result.getSize(); ++i)
+    result(i) = lhs / rhs(i);
+  return result;
+}
+
+template <typename LHS,
+          typename = typename realvec_lhs_operand<LHS>::enabled>
+inline
+realvec operator+( const LHS & lhs, const realvec & rhs )
+{
+  realvec result;
+  result.allocate(rhs.getRows(), rhs.getCols());
+  for (mrs_natural i = 0; i < result.getSize(); ++i)
+    result(i) = lhs + rhs(i);
+  return result;
+}
+
+template <typename LHS,
+          typename = typename realvec_lhs_operand<LHS>::enabled>
+inline
+realvec operator-( const LHS & lhs, const realvec & rhs )
+{
+  realvec result;
+  result.allocate(rhs.getRows(), rhs.getCols());
+  for (mrs_natural i = 0; i < result.getSize(); ++i)
+    result(i) = lhs - rhs(i);
+  return result;
+}
 
 }//namespace Marsyas
 

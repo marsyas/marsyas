@@ -453,7 +453,8 @@ void tempo_medianMultiBands(mrs_string sfName, float ground_truth_tempo, mrs_str
 
   float predicted_tempo;
   predicted_tempo = bpms[bpms.size()/2];
-  evaluate_estimated_tempo(sfName, predicted_tempo, ground_truth_tempo, tolerance);
+  evaluate_estimated_tempo(sfName, realvec(1,1,predicted_tempo),
+                           ground_truth_tempo, tolerance);
 
   delete total;
 }
@@ -1990,11 +1991,9 @@ tempo_histoSumBands(mrs_string sfName, float ground_truth_tempo, mrs_string resN
     // total->updControl("BeatPhase/beatphase/mrs_real/tempo", bin);
   }
 
+  evaluate_estimated_tempo(sfName, realvec(1,1,bpms[bpms.size()-1]),
+      ground_truth_tempo, tolerance);
 
-
-
-
-  evaluate_estimated_tempo(sfName, bpms[bpms.size()-1], ground_truth_tempo, tolerance);
   delete total;
 }
 
@@ -2125,7 +2124,8 @@ tempo_histoSumBandsQ(mrs_string sfName, float ground_truth_tempo, mrs_string res
   float predicted_tempo;
   predicted_tempo = bpms[bpms.size()-1];
 
-  evaluate_estimated_tempo(sfName, predicted_tempo, ground_truth_tempo, tolerance);
+  evaluate_estimated_tempo(sfName, realvec(1,1,predicted_tempo),
+                           ground_truth_tempo, tolerance);
 
   delete total;
 }
@@ -2254,7 +2254,8 @@ tempo_medianSumBands(mrs_string sfName, float ground_truth_tempo, mrs_string res
   // sort bpm estimates for median filtering
   sort(bpms.begin(), bpms.end());
 
-  evaluate_estimated_tempo(sfName, bpms[bpms.size()/2], ground_truth_tempo, tolerance);
+  evaluate_estimated_tempo(sfName, realvec(1,1,bpms[bpms.size()/2]),
+      ground_truth_tempo, tolerance);
 
   delete total;
 }
