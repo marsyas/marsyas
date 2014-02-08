@@ -66,6 +66,11 @@ protected:
   void setDebugValue();
   static void updateMarSystemFor( MarControl * );
 
+  template<typename T> const T & as() const
+  {
+    return static_cast<const MarControlValueT<T>*>(this)->get();
+  }
+
 public:
   virtual ~MarControlValue() {}
 
@@ -85,6 +90,13 @@ public:
     return (typeid(*this) == typeid(MarControlValueT<T>));
   }
 
+  template<typename T> const T & get() const
+  {
+    if (!hasType<T>())
+      throw std::runtime_error("MarControlValue: Trying to convert to invalid type.");
+    return static_cast<const MarControlValueT<T>*>(this)->get();
+  }
+
   // workaround - virtual member functions to overload friend operators
   virtual void createFromStream(std::istream&) = 0;
   // for:	friend std::ostream& operator<<(std::ostream&, const MarControl& ctrl);
@@ -98,6 +110,11 @@ public:
   virtual MarControlValue* multiply(MarControlValue *v) = 0;
   virtual MarControlValue* divide(MarControlValue *v) = 0;
 
+  template<typename T>
+  static MarControlValueT<T> * make( const T & val )
+  {
+    return new MarControlValueT<T>(val);
+  }
 
   template <typename T>
   struct IsArithmetic { static const bool value = false; };
@@ -387,42 +404,28 @@ MarControlValueT<T> *controlValueFor( const T & val )
 
 struct MarControlValue::GenericArithmetic
 {
-  template<typename T>
-  static MarControlValueT<T> * makeValue( const T & val )
-  {
-    return new MarControlValueT<T>(val);
-  }
-
   template<typename LHS, typename RHS>
   static MarControlValue *add( MarControlValue * lhs, MarControlValue * rhs )
   {
-    MarControlValueT<LHS> *lhs_typed = static_cast<MarControlValueT<LHS>*>(lhs);
-    MarControlValueT<RHS> *rhs_typed = static_cast<MarControlValueT<RHS>*>(rhs);
-    return makeValue(lhs_typed->get() + rhs_typed->get());
+    return MarControlValue::make(lhs->as<LHS>() + rhs->as<RHS>());
   }
 
   template<typename LHS, typename RHS>
   static MarControlValue *subtract( MarControlValue * lhs, MarControlValue * rhs )
   {
-    MarControlValueT<LHS> *lhs_typed = static_cast<MarControlValueT<LHS>*>(lhs);
-    MarControlValueT<RHS> *rhs_typed = static_cast<MarControlValueT<RHS>*>(rhs);
-    return makeValue(lhs_typed->get() - rhs_typed->get());
+    return MarControlValue::make(lhs->as<LHS>() - rhs->as<RHS>());
   }
 
   template<typename LHS, typename RHS>
   static MarControlValue *multiply( MarControlValue * lhs, MarControlValue * rhs )
   {
-    MarControlValueT<LHS> *lhs_typed = static_cast<MarControlValueT<LHS>*>(lhs);
-    MarControlValueT<RHS> *rhs_typed = static_cast<MarControlValueT<RHS>*>(rhs);
-    return makeValue(lhs_typed->get() * rhs_typed->get());
+    return MarControlValue::make(lhs->as<LHS>() * rhs->as<RHS>());
   }
 
   template<typename LHS, typename RHS>
   static MarControlValue *divide( MarControlValue * lhs, MarControlValue * rhs )
   {
-    MarControlValueT<LHS> *lhs_typed = static_cast<MarControlValueT<LHS>*>(lhs);
-    MarControlValueT<RHS> *rhs_typed = static_cast<MarControlValueT<RHS>*>(rhs);
-    return makeValue(lhs_typed->get() / rhs_typed->get());
+    return MarControlValue::make(lhs->as<LHS>() / rhs->as<RHS>());
   }
 };
 
@@ -438,6 +441,10 @@ struct MarControlValue::Arithmetic<T, true>
     else if (rhs->hasType<mrs_real>())
     {
       return GenericArithmetic::add<T,mrs_real>(lhs, rhs);
+    }
+    else if (rhs->hasType<mrs_realvec>())
+    {
+      return GenericArithmetic::add<T,mrs_realvec>(lhs, rhs);
     }
     else
     {
@@ -455,6 +462,10 @@ struct MarControlValue::Arithmetic<T, true>
     {
       return GenericArithmetic::subtract<T,mrs_real>(lhs, rhs);
     }
+    else if (rhs->hasType<mrs_realvec>())
+    {
+      return GenericArithmetic::subtract<T,mrs_realvec>(lhs, rhs);
+    }
     else
     {
       throw std::runtime_error("Can not subtract that.");
@@ -471,6 +482,10 @@ struct MarControlValue::Arithmetic<T, true>
     {
       return GenericArithmetic::multiply<T,mrs_real>(lhs, rhs);
     }
+    else if (rhs->hasType<mrs_realvec>())
+    {
+      return GenericArithmetic::multiply<T,mrs_realvec>(lhs, rhs);
+    }
     else
     {
       throw std::runtime_error("Can not multiply with that.");
@@ -486,6 +501,10 @@ struct MarControlValue::Arithmetic<T, true>
     else if (rhs->hasType<mrs_real>())
     {
       return GenericArithmetic::divide<T,mrs_real>(lhs, rhs);
+    }
+    else if (rhs->hasType<mrs_realvec>())
+    {
+      return GenericArithmetic::divide<T,mrs_realvec>(lhs, rhs);
     }
     else
     {
@@ -533,6 +552,7 @@ struct MarControlValue::Arithmetic<T, true>
 
 template<> struct MarControlValue::IsArithmetic<mrs_natural> { static const bool value = true; };
 template<> struct MarControlValue::IsArithmetic<mrs_real> { static const bool value = true; };
+template<> struct MarControlValue::IsArithmetic<mrs_realvec> { static const bool value = true; };
 
 } //namespace Marsyas
 

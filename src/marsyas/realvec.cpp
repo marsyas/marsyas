@@ -62,14 +62,19 @@ realvec::realvec(mrs_natural size)
   allocateData(size_);
 }
 
-realvec::realvec(mrs_natural rows, mrs_natural cols)
-  : size_(rows * cols),
-    allocatedSize_(0),
-    data_(NULL),
-    rows_(rows),
-    cols_(cols)
+realvec::realvec(mrs_natural rows, mrs_natural cols, mrs_real value):
+  size_(rows * cols),
+  allocatedSize_(rows * cols),
+  data_(0),
+  rows_(rows),
+  cols_(cols)
 {
-  allocateData(size_);
+  if (size_ > 0)
+  {
+    data_ = new mrs_real[size_];
+    for (mrs_natural i=0; i<size_; ++i)
+      data_[i] = value;
+  }
 }
 
 realvec::realvec(const realvec& a)
@@ -701,63 +706,6 @@ realvec::sqroot()
     data_[i] = sqrt(data_[i]);
   }
 }
-
-realvec
-operator+(const realvec& vec1, const realvec& vec2)
-{
-  mrs_natural size;
-  if (vec1.size_ != vec2.size_) {
-    MRSERR("Size of realvecs does not match");
-  }
-  if (vec1.size_ >= vec2.size_) {
-    size = vec1.size_;
-  } else {
-    size = vec2.size_;
-  }
-  realvec sum;
-  sum.create(size);
-
-  for (mrs_natural i=0; i<vec1.size_; ++i)
-  {
-    sum.data_[i] = vec1.data_[i];
-  }
-  for (mrs_natural i=0; i<vec2.size_; ++i)
-  {
-    sum.data_[i] += vec2.data_[i];
-  }
-
-  return sum;
-}
-
-realvec
-operator-(const realvec& vec1, const realvec& vec2)
-{
-  mrs_natural size;
-  mrs_natural i;
-  if (vec1.size_ != vec2.size_) {
-    MRSERR("Size of realvecs does not match");
-  }
-  if (vec1.size_ >= vec2.size_) {
-    size = vec1.size_;
-  } else {
-    size = vec2.size_;
-  }
-  realvec diff;
-  diff.create(size);
-
-  for (i=0; i<vec1.size_; ++i)
-  {
-    diff.data_[i] = vec1.data_[i];
-  }
-  for (i=0; i<vec2.size_; ++i)
-  {
-    diff.data_[i] -= vec2.data_[i];
-  }
-
-  return diff;
-}
-
-
 
 void
 realvec::send(Communicator *com)
@@ -1711,78 +1659,52 @@ bool realvec::operator!=(const realvec &v1)  const
   return !(*this == v1);
 }
 
-
 realvec&
-realvec::operator/=(const mrs_real val)
+realvec::operator+=(const realvec& rhs)
 {
+  if (size_ != rhs.size_)
+    throw std::runtime_error("realvec: Trying to sum matrices of incompatible size.");
+
   for (mrs_natural i=0; i<size_; ++i)
-    data_[i] /= val;
-  return *this;
-}
-
-
-
-realvec&
-realvec::operator*=(const mrs_real val)
-{
-  for (mrs_natural i=0; i<size_; ++i)
-    data_[i] *= val;
+    data_[i] += rhs.data_[i];
   return *this;
 }
 
 
 realvec&
-realvec::operator-=(const mrs_real val)
+realvec::operator-=(const realvec& rhs)
 {
+  if (size_ != rhs.size_)
+    throw std::runtime_error("realvec: Trying to subtract matrices of incompatible size.");
+
   for (mrs_natural i=0; i<size_; ++i)
-    data_[i] -= val;
+    data_[i] -= rhs.data_[i];
   return *this;
 }
 
 
 realvec&
-realvec::operator+=(const mrs_real val)
+realvec::operator*=(const realvec& rhs)
 {
+  if (size_ != rhs.size_)
+    throw std::runtime_error("realvec: Trying to multiply matrices of incompatible size.");
+
   for (mrs_natural i=0; i<size_; ++i)
-    data_[i] += val;
+    data_[i] *= rhs.data_[i];
   return *this;
 }
 
 
 realvec&
-realvec::operator+=(const realvec& vec)
+realvec::operator/=(const realvec& rhs)
 {
-  for (mrs_natural i=0; i<size_; ++i)
-    data_[i] += vec.data_[i];
-  return *this;
-}
+  if (size_ != rhs.size_)
+    throw std::runtime_error("realvec: Trying to divide matrices of incompatible size.");
 
-
-realvec&
-realvec::operator-=(const realvec& vec)
-{
-  for (mrs_natural i=0; i<size_; ++i)
-    data_[i] -= vec.data_[i];
-  return *this;
-}
-
-
-realvec&
-realvec::operator*=(const realvec& vec)
-{
-  for (mrs_natural i=0; i<size_; ++i)
-    data_[i] *= vec.data_[i];
-  return *this;
-}
-
-
-realvec&
-realvec::operator/=(const realvec& vec)
-{
   for (mrs_natural i=0; i<size_; ++i)
   {
-    MRSASSERT(vec.data_[i] != 0);
-    data_[i] /= vec.data_[i];
+    MRSASSERT(rhs.data_[i] != 0);
+    data_[i] /= rhs.data_[i];
   }
   return *this;
 }
