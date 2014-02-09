@@ -339,6 +339,44 @@ mrs_real& realvec::operator()(const mrs_natural i)
   return data_[i];
 }
 
+// Non-template operators between two realvecs are required
+// to avoid ambiguity among the templates below for lhs or rhs
+// operands.
+
+inline
+realvec operator*( const realvec & lhs, const realvec & rhs )
+{
+  realvec result(lhs);
+  result *= rhs;
+  return result;
+}
+
+inline
+realvec operator/( const realvec & lhs, const realvec & rhs )
+{
+  realvec result(lhs);
+  result /= rhs;
+  return result;
+}
+
+inline
+realvec operator+( const realvec & lhs, const realvec & rhs )
+{
+  realvec result(lhs);
+  result += rhs;
+  return result;
+}
+
+inline
+realvec operator-( const realvec & lhs, const realvec & rhs )
+{
+  realvec result(lhs);
+  result -= rhs;
+  return result;
+}
+
+// Operators with right-hand-side operand as template parameter
+
 template <typename RHS> inline
 realvec operator*( const realvec & lhs, const RHS & rhs )
 {
@@ -371,19 +409,9 @@ realvec operator-( const realvec & lhs, const RHS & rhs )
   return result;
 }
 
-// Type traits to enable/disable instantiations of operator templates below:
+// Operators with left-hand-side operand as template parameter
 
 template <typename LHS>
-struct realvec_lhs_operand { typedef LHS enabled; };
-
-template <>
-struct realvec_lhs_operand<realvec> {};
-
-// Operator templates below are only enabled for non-realvec types,
-// to prevent ambiguity with the operator templates above.
-
-template <typename LHS,
-          typename = typename realvec_lhs_operand<LHS>::enabled>
 inline
 realvec operator*( const LHS & lhs, const realvec & rhs )
 {
@@ -394,8 +422,7 @@ realvec operator*( const LHS & lhs, const realvec & rhs )
   return result;
 }
 
-template <typename LHS,
-          typename = typename realvec_lhs_operand<LHS>::enabled>
+template <typename LHS>
 inline
 realvec operator/( const LHS & lhs, const realvec & rhs )
 {
@@ -406,8 +433,7 @@ realvec operator/( const LHS & lhs, const realvec & rhs )
   return result;
 }
 
-template <typename LHS,
-          typename = typename realvec_lhs_operand<LHS>::enabled>
+template <typename LHS>
 inline
 realvec operator+( const LHS & lhs, const realvec & rhs )
 {
@@ -418,8 +444,7 @@ realvec operator+( const LHS & lhs, const realvec & rhs )
   return result;
 }
 
-template <typename LHS,
-          typename = typename realvec_lhs_operand<LHS>::enabled>
+template <typename LHS>
 inline
 realvec operator-( const LHS & lhs, const realvec & rhs )
 {
