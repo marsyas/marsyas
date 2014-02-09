@@ -22,8 +22,10 @@ def autocorrelation(signal):
 
 def find_peaks(defs, signal, number=10, peak_neighbors=1):
     candidates = []
-    for i in xrange(4*defs.BPM_MIN+peak_neighbors,
-        4*defs.BPM_MAX-peak_neighbors-1):
+    #for i in xrange(4*defs.BPM_MIN+peak_neighbors,
+    #    4*defs.BPM_MAX-peak_neighbors-1):
+    for i in xrange(peak_neighbors,
+        len(signal) - peak_neighbors-1):
     #for i in xrange(200, 720):
         if signal[i-1] < signal[i] > signal[i+1]:
             ok = True
@@ -156,6 +158,12 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
 
     ### autocorrelation
     autocorr = autocorrelation(overlapped)
+    for i in xrange( autocorr.shape[0] ):
+        for j in xrange(0, autocorr.shape[1]):
+            factor = 8/2
+            Hni = int(oss_sr * 60.0 * factor / (j+1) + 0.5);
+            if not (4*defs.BPM_MIN <= Hni <= 4*defs.BPM_MAX):
+                autocorr[i][j] = 0
 
     ### beat histogram
     Hn = numpy.zeros( (autocorr.shape[0], 4*defs.BPM_MAX) )
@@ -302,8 +310,13 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
         combo_peaks = open('out/beat_histogram.txt', 'w')
     peaks = []
     bh_total = numpy.zeros( (Hn.shape[0], 10) )
-    for i in xrange( Hn.shape[0] ):
-        these_peaks = find_peaks(defs, harmonic_strengthened_bh[i],
+
+
+    #for i in xrange( Hn.shape[0] ):
+    #    these_peaks = find_peaks(defs, harmonic_strengthened_bh[i],
+    #        number=10, peak_neighbors=1)
+    for i in xrange( autocorr.shape[0] ):
+        these_peaks = find_peaks(defs, autocorr[i],
             number=10, peak_neighbors=1)
         bh_total[i,:] = these_peaks
         if defs.WRITE_BH:
@@ -316,7 +329,8 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
             bpms_strengths = [harmonic_strengthened_bh[i][4*b] for b in bpms]
             numpy.savetxt("out/bh-peaks-%i.txt" % (i+1),
                 numpy.vstack((bpms, bpms_strengths)).transpose())
-        peaks.append( numpy.array(these_peaks) / 4.0)
+        #peaks.append( numpy.array(these_peaks) / 4.0)
+        peaks.append( numpy.array(these_peaks))
     if defs.WRITE_BH:
         combo_peaks.close()
 

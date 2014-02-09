@@ -227,7 +227,8 @@ BeatPhase::myProcess(realvec& in, realvec& out)
       max_crco = 0.0;
 
       tempo = tempos(k);
-      period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize
+      //period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize
+      period = tempo;
       mrs_natural period_int = (mrs_natural)(period+0.5);
 
 

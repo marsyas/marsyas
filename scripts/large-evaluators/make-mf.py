@@ -71,7 +71,7 @@ FEATURES = [
     'rel3',
     #'has2',
     #'has3',
-    'num_non_zero',
+    #'num_non_zero',
     #'energyinpeak',
     ]
 

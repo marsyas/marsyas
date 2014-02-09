@@ -2,12 +2,14 @@ import numpy
 import pylab
 
 import overlap
+import scipy.stats
 
 #import scipy.signal
 
 
 def calc_pulse_trains(bpm, window, sr):
-    period = int(round(60.0 * sr / bpm))
+    #period = int(round(60.0 * sr / bpm))
+    period = int(round(bpm))
     #pulse_trains = numpy.zeros( (period, length) )
     num_offsets = period
     samples = len(window)
@@ -66,9 +68,13 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
         bp_accum = open("out/bp-accum.txt", "w")
     #print candidate_bpms_orig
     candidate_bpms = candidate_bpms_orig
+
+    defs.BPM_MAX = 1000
     bphase = numpy.zeros(defs.BPM_MAX)
+    bpms = numpy.arange(defs.BPM_MAX)
     for i in xrange(overlapped.shape[0]):
         cands = candidate_bpms[i]
+        print cands
 
         onset_scores = numpy.zeros(len(cands))
         tempo_scores = numpy.zeros(len(cands))
@@ -92,8 +98,16 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
         bestbpm = round(cands[besti])
         beststr = combo_scores[besti]
 
+        #print combo_scores
 
-        bphase[ int(bestbpm) ] += beststr
+        #bphase[ int(bestbpm) ] += beststr
+        ### TODO: adjust the scale to have X% within 4% of the
+        ### original BPM
+        spreadbpm = scipy.stats.norm.pdf(bpms,
+            loc=bestbpm, scale=10)
+        spreadbpm = (spreadbpm * beststr) / spreadbpm.max()
+        bphase += spreadbpm
+
             
         if defs.WRITE_BP:
             #numpy.savetxt("out/bp-%i.txt" % (i+1),
@@ -143,6 +157,7 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
 
     if defs.WRITE_BP:
         bp_accum.close()
+    bpm = 60 * oss_sr / bpm
     return bpm, bphase
 
 

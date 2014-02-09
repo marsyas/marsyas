@@ -57,6 +57,8 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
     ### handle Beat Histogram
     pickle_filename = filename + "-bh-%i-%i.pickle" % (
         defs.OPTIONS_ONSET, defs.OPTIONS_BH)
+    ### FIXME: totemp
+    regen = True
     if os.path.exists(pickle_filename) and not regen:
         pickle_file = open(pickle_filename, 'rb')
         candidate_bpms = pickle.load(pickle_file)

@@ -21,7 +21,7 @@ class Defs:
  
         self.WRITE_ONSETS = 0
         self.WRITE_BH = 0
-        self.WRITE_BP = 0
+        self.WRITE_BP = 1
         self.WRITE_LATE = 0
 
         self.CHECK_REFERENCE = 0
