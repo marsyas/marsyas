@@ -116,14 +116,29 @@ public:
     return new MarControlValueT<T>(val);
   }
 
-  template <typename T>
-  struct IsArithmetic { static const bool value = false; };
+  struct FalseTrait { static const bool value = false; };
+  struct TrueTrait { static const bool value = true; };
 
-  template <typename T, bool enabled = false>
-  struct Arithmetic {};
+  template <typename T> struct IsArithmetic;
+  template <typename T> struct IsArithmeticComparable;
+
+  template <typename T, bool enabled>
+  struct Arithmetic;
+
+  template <typename T, bool enabled>
+  struct ArithmeticCompare;
 
   struct GenericArithmetic;
 };
+
+template <typename T> struct MarControlValue::IsArithmetic : FalseTrait {};
+template<> struct MarControlValue::IsArithmetic<mrs_natural> : TrueTrait {};
+template<> struct MarControlValue::IsArithmetic<mrs_real> : TrueTrait {};
+template<> struct MarControlValue::IsArithmetic<mrs_realvec> : TrueTrait {};
+
+template <typename T> struct MarControlValue::IsArithmeticComparable : FalseTrait {};
+template<> struct MarControlValue::IsArithmeticComparable<mrs_natural> : TrueTrait {};
+template<> struct MarControlValue::IsArithmeticComparable<mrs_real> : TrueTrait {};
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -361,15 +376,16 @@ MarControlValueT<T>::divide(MarControlValue *v)
 template<class T>
 bool MarControlValueT<T>::isEqual(MarControlValue *v)
 {
-  return Arithmetic<T, IsArithmetic<T>::value>::isEqual(this, v);
+  return ArithmeticCompare<T, IsArithmeticComparable<T>::value>::isEqual(this, v);
 }
 
 template<class T>
 bool MarControlValueT<T>::isLessThan(MarControlValue *v)
 {
-  return Arithmetic<T, IsArithmetic<T>::value>::isLessThan(this, v);
+  return ArithmeticCompare<T, IsArithmeticComparable<T>::value>::isLessThan(this, v);
 }
 
+// Arithmetic for non-arithmetic types
 template <typename T>
 struct MarControlValue::Arithmetic<T, false>
 {
@@ -381,6 +397,12 @@ struct MarControlValue::Arithmetic<T, false>
   { throw std::runtime_error("Can not multiply this."); }
   static MarControlValue *divide( void*, void*)
   { throw std::runtime_error("Can not divide this."); }
+};
+
+// Arithmetic comparison for non-arithmetic-comparable types
+template <typename T>
+struct MarControlValue::ArithmeticCompare<T, false>
+{
   static bool isEqual( MarControlValueT<T> *lhs, MarControlValue *rhs )
   {
     if (lhs == rhs)
@@ -395,12 +417,6 @@ struct MarControlValue::Arithmetic<T, false>
   static bool isLessThan( void*, void*)
   { throw std::runtime_error("Can not compare this."); }
 };
-
-template<typename T>
-MarControlValueT<T> *controlValueFor( const T & val )
-{
-  return new MarControlValueT<T>(val);
-}
 
 struct MarControlValue::GenericArithmetic
 {
@@ -511,7 +527,11 @@ struct MarControlValue::Arithmetic<T, true>
       throw std::runtime_error("Can not divide by that.");
     }
   }
+};
 
+template <typename T>
+struct MarControlValue::ArithmeticCompare<T, true>
+{
   static bool isEqual( MarControlValueT<T>*lhs, MarControlValue*rhs )
   {
     if (lhs == rhs)
@@ -549,10 +569,6 @@ struct MarControlValue::Arithmetic<T, true>
     }
   }
 };
-
-template<> struct MarControlValue::IsArithmetic<mrs_natural> { static const bool value = true; };
-template<> struct MarControlValue::IsArithmetic<mrs_real> { static const bool value = true; };
-template<> struct MarControlValue::IsArithmetic<mrs_realvec> { static const bool value = true; };
 
 } //namespace Marsyas
 
