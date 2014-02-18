@@ -61,7 +61,8 @@ endif()
 add_subdirectory(mirex2008)
 add_subdirectory(mirex2010)
 add_subdirectory(peakClusteringEval)
-add_subdirectory(mirex2009_tsunoo)
+# Disabled due to use of deprecated functionality of Delta MarSystem:
+#add_subdirectory(mirex2009_tsunoo)
 add_subdirectory(aim)
 
 ## not in docs; must edit tools.texi   -gp
