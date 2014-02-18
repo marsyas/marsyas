@@ -300,11 +300,15 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
     crm->setctrl("mrs_natural/inObservations", wsize/2);
     crm->update();
 
+    // NOTE: The following are deprecated controls of Delta.
+    // In order to use this code, revert to git ID:
+    // [649bb95e41339d1dd984ddfea7a43bf178cd3627]
     dlt->setctrl("mrs_bool/sum", true);
     dlt->setctrl("mrs_bool/absolute", true);
     dlt->setctrl("mrs_bool/normalize", true);
     dlt->setctrl("mrs_natural/normSize", 40);
     dlt->update();
+
     Inp2->tick();
     delta = Inp2->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
