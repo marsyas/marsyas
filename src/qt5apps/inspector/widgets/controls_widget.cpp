@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QHeaderView>
 
 using namespace Marsyas;
 using namespace MarsyasQt;
@@ -36,6 +37,9 @@ ControlsWidget::ControlsWidget( QWidget * parent):
   m_tree->setEditTriggers( QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed );
   m_tree->setModel(m_filter_model);
   m_tree->setColumnHidden( ControlModel::Access, true );
+  // NOTE: don't resize value column, as it may contain
+  // ridiculously long strings.
+  m_tree->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 
   m_filter_edit = new QLineEdit;
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 2, 0))
@@ -79,11 +83,6 @@ void ControlsWidget::setSystem( Marsyas::MarSystem * system )
     emit pathChanged( QString::fromStdString(m_system->path()) );
   else
     emit pathChanged( QString() );
-
-  // NOTE: don't resize value column, as it may contain
-  // ridiculously long strings.
-  m_tree->resizeColumnToContents(0);
-  m_tree->resizeColumnToContents(2);
 }
 
 void ControlsWidget::refresh()
