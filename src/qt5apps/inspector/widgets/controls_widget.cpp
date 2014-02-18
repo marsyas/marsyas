@@ -38,7 +38,9 @@ ControlsWidget::ControlsWidget( QWidget * parent):
   m_tree->setColumnHidden( ControlModel::Access, true );
 
   m_filter_edit = new QLineEdit;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 2, 0))
   m_filter_edit->setClearButtonEnabled(true);
+#endif
 
   m_private_toggle = new QCheckBox("Private");
 
