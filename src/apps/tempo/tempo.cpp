@@ -1281,7 +1281,11 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
 
   // autocorrelation parameters
+#if STEM_TYPE > 0
   tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.5);
+#else
+  // do nothing; leave magcompress at 2.0
+#endif
   tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to0", true);
   tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to1", true);
 
