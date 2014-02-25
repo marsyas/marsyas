@@ -36,7 +36,7 @@ class script_translator
   };
 
   std::string m_working_dir;
-  MarSystemManager & m_manager;
+  MarSystemManager * m_manager;
   std::stack<context> m_context_stack;
 
   context & this_context() { return m_context_stack.top(); }
@@ -91,7 +91,7 @@ class script_translator
     }
 
     //cout << "Registering prototype: " << system->getName() << " as " << id << endl;
-    m_manager.registerPrototype(id, system);
+    m_manager->registerPrototype(id, system);
     return true;
   }
 
@@ -139,7 +139,7 @@ class script_translator
     switch (type_node.tag)
     {
     case ID_NODE:
-      system = m_manager.create(type, name);
+      system = m_manager->create(type, name);
       break;
     case STRING_NODE:
       // represents a filename
@@ -213,7 +213,7 @@ class script_translator
     if (n.tag == PROTOTYPE_NODE)
     {
       assert(!name.empty());
-      m_manager.registerPrototype(name, system);
+      m_manager->registerPrototype(name, system);
     }
 
     return system;
@@ -579,7 +579,7 @@ class script_translator
 
 public:
 
-  script_translator( MarSystemManager & manager,
+  script_translator( MarSystemManager * manager,
                      const string & working_dir = string() ):
     m_working_dir(working_dir),
     m_manager(manager)
@@ -617,7 +617,7 @@ MarSystem *system_from_script(std::istream & script_stream,
   if (!manager)
     manager = new MarSystemManager;
 
-  script_translator translator(*manager, working_directory);
+  script_translator translator(manager, working_directory);
 
   if (!translator.handle_directives(directives))
     return nullptr;
