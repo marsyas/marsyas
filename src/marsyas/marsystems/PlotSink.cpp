@@ -77,6 +77,7 @@ PlotSink::addControls()
   addctrl("mrs_bool/no_ticks", false, ctrl_no_ticks_);
   setctrlState("mrs_bool/single_file", true);
   addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
+  setctrlState("mrs_string/filename", true);
   addctrl("mrs_bool/matlab", false, ctrl_matlab_);
   addctrl("mrs_string/matlabCommand",
           "plot("+type_+"_"+name_+"_indata);", ctrl_matlabCommand_);
@@ -131,7 +132,7 @@ PlotSink::myProcess(realvec& in, realvec& out)
     in.write(oss.str());
   }
 
-  if (ctrl_single_file_->isTrue()) {
+  if (ctrl_single_file_->isTrue() && single_file_) {
     for (o=0; o < inObservations_; o++) {
       for (t = 0; t < inSamples_; t++) {
         //(*single_file_) << counter_ << " " << t << " ";
