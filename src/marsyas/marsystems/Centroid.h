@@ -25,11 +25,10 @@
 namespace Marsyas
 {
 /**
-    \class Centroid
-	\ingroup Analysis
-    \brief Centroid of each time slice of observations
+\ingroup Analysis
+\brief Centroid of observations within each sample.
 
-    Centroid computes the centroid of the observations for each
+Centroid computes the centroid of the observations for each
 time sample. The center is defined as the normalized first moment
 (center of gravity) of the observation vector.
 */
