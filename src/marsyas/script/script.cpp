@@ -603,7 +603,8 @@ public:
 };
 
 MarSystem *system_from_script(std::istream & script_stream,
-                              const std::string & working_directory)
+                              const std::string & working_directory,
+                              MarSystemManager *given_manager)
 {
   Parser parser(script_stream);
   parser.parse();
@@ -611,8 +612,12 @@ MarSystem *system_from_script(std::istream & script_stream,
   const node &directives = parser.directives();
   const node &actor = parser.actor();
 
-  MarSystemManager manager;
-  script_translator translator(manager, working_directory);
+  MarSystemManager *manager = given_manager;
+
+  if (!manager)
+    manager = new MarSystemManager;
+
+  script_translator translator(*manager, working_directory);
 
   if (!translator.handle_directives(directives))
     return nullptr;
@@ -622,10 +627,13 @@ MarSystem *system_from_script(std::istream & script_stream,
   if (system && system->getName().empty())
     system->setName("network");
 
+  if (manager != given_manager)
+    delete manager;
+
   return system;
 }
 
-MarSystem *system_from_script(const std::string & filename_string)
+MarSystem *system_from_script(const std::string & filename_string, MarSystemManager *mng)
 {
   FileName filename(filename_string);
   string path = filename.path();
@@ -637,7 +645,7 @@ MarSystem *system_from_script(const std::string & filename_string)
     return nullptr;
   }
 
-  return system_from_script(file, path);
+  return system_from_script(file, path, mng);
 }
 
 }
