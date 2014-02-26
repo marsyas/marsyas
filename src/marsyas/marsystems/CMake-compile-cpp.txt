@@ -224,6 +224,7 @@ Shifter.cpp
 ShiftInput.cpp
 ShiftOutput.cpp
 Shredder.cpp
+Sidechain.cpp
 Signum.cpp
 SilenceRemove.cpp
 SimilarityMatrix.cpp
