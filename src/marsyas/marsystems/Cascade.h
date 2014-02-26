@@ -20,34 +20,40 @@
 #define MARSYAS_CASCADE_H
 
 #include <marsyas/system/MarSystem.h>
+#include <vector>
 
 namespace Marsyas
 {
 /**
-    \class Cascade
-	\ingroup Composites
-    \brief Cascade of MarSystem objects
+\ingroup Composites
+\brief Cascade of MarSystem objects
 
-	Fills observations with successive output of its internal
+Fills observations with successive output of its internal
 MarSystems.  ie MarSystemA => obs 0, MarSystemB => obs 1.
 
-	Controls: none.
+Controls: none.
 */
 
 
 class Cascade: public MarSystem
 {
-private:
-  std::vector<realvec*> slices_;
-  void deleteSlices();
-  void myUpdate(MarControlPtr sender);
-
 public:
   Cascade(std::string name);
+  Cascade(const Cascade & other);
   ~Cascade();
   MarSystem* clone() const;
 
+private:
+  void myUpdate(MarControlPtr sender);
   void myProcess(realvec& in, realvec& out);
+
+  struct system_info
+  {
+    realvec buffer;
+  };
+
+  std::vector<system_info> m_child_info;
+  bool m_valid_output;
 };
 
 }//namespace Marsyas
