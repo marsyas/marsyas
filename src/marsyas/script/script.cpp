@@ -10,6 +10,7 @@
 #include <sstream>
 #include <map>
 #include <stack>
+#include <deque>
 #include <algorithm>
 #include <iostream>
 
@@ -21,12 +22,14 @@ class script_translator
 {
   typedef std::pair<MarSystem*, std::vector<node>> control_mapping_t;
   typedef std::vector<control_mapping_t> control_map_t;
+  typedef map<string, MarSystem*> prototype_map_t;
 
   struct context
   {
     context(MarSystem *system): root_system(system) {}
     MarSystem *root_system;
     control_map_t control_map;
+    prototype_map_t prototypes;
   };
 
   enum context_policy
@@ -37,9 +40,52 @@ class script_translator
 
   std::string m_working_dir;
   MarSystemManager * m_manager;
-  std::stack<context> m_context_stack;
+  std::deque<context> m_context_stack;
 
-  context & this_context() { return m_context_stack.top(); }
+  context & this_context() { return m_context_stack.back(); }
+
+  bool add_prototype( const string & name, MarSystem * system )
+  {
+    assert(!name.empty());
+
+    MarSystem *& prototype = this_context().prototypes[name];
+
+    if (prototype)
+    {
+      cerr << "Prototype with name '" << name << "'"
+           << " already registered in this context!" << endl;
+      return false;
+    }
+
+    system->setType(name);
+    prototype = system;
+
+    return true;
+  }
+
+  MarSystem * instantiate_system( const std::string & type, const std::string & name )
+  {
+    for ( auto it = m_context_stack.rbegin(); it != m_context_stack.rend(); ++it )
+    {
+      const context & ctx = *it;
+      MarSystem *prototype = nullptr;
+      try {
+        prototype = ctx.prototypes.at(type);
+      }
+      catch (...)
+      {
+        continue;
+      }
+
+      assert(prototype);
+
+      MarSystem *system = prototype->clone();;
+      system->setName(name);
+      return system;
+    }
+
+    return m_manager->create(type, name);
+  }
 
   bool handle_directive( const node & directive_node )
   {
@@ -91,8 +137,7 @@ class script_translator
     }
 
     //cout << "Registering prototype: " << system->getName() << " as " << id << endl;
-    m_manager->registerPrototype(id, system);
-    return true;
+    return add_prototype(id, system);
   }
 
   string absolute_filename( const string & filename )
@@ -106,7 +151,7 @@ class script_translator
 
   MarSystem *translate_script( const string & filename )
   {
-    MarSystem *system = system_from_script( absolute_filename(filename) );
+    MarSystem *system = system_from_script( absolute_filename(filename), m_manager );
     return system;
   }
 
@@ -139,7 +184,7 @@ class script_translator
     switch (type_node.tag)
     {
     case ID_NODE:
-      system = m_manager->create(type, name);
+      system = instantiate_system(type, name);
       break;
     case STRING_NODE:
       // represents a filename
@@ -154,7 +199,7 @@ class script_translator
       return nullptr;
 
     if (policy == own_context)
-      m_context_stack.emplace(system);
+      m_context_stack.emplace_back(system);
     else
       assert(!m_context_stack.empty());
 
@@ -207,13 +252,12 @@ class script_translator
     if (policy == own_context)
     {
       apply_controls(this_context().control_map);
-      m_context_stack.pop();
+      m_context_stack.pop_back();
     }
 
     if (n.tag == PROTOTYPE_NODE)
     {
-      assert(!name.empty());
-      m_manager->registerPrototype(name, system);
+      add_prototype(name, system);
     }
 
     return system;
