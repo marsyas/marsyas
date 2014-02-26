@@ -156,81 +156,48 @@ Fanout::myUpdate(MarControlPtr sender)
     children_info_[i].enabled = enabled(i) != 0.0;
   }
 
-  if (child_count)
+  if (!child_count)
   {
-    mrs_natural highestStabilizingDelay = ctrl_inStabilizingDelay_->to<mrs_natural>();
-    //propagate in flow controls to first child
-    marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
-    marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
-    marsystems_[0]->setctrl("mrs_real/israte", israte_);
-    marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
-    marsystems_[0]->setctrl("mrs_natural/inStabilizingDelay", inStabilizingDelay_);
-    marsystems_[0]->update();
+    MarSystem::myUpdate(sender);
+    return;
+  }
 
-    // update dataflow component MarSystems in order
-    ostringstream oss;
-    mrs_natural onObservations = 0;
-    if (children_info_[0].enabled)
+  // Configure children
+
+  mrs_natural highestStabilizingDelay = ctrl_inStabilizingDelay_->to<mrs_natural>();
+  ostringstream oss;
+  mrs_natural onObservations = 0;
+
+  for (mrs_natural i=0; i < child_count; ++i)
+  {
+    marsystems_[i]->setctrl("mrs_natural/inSamples", inSamples_);
+    marsystems_[i]->setctrl("mrs_natural/inObservations", inObservations_);
+    marsystems_[i]->setctrl("mrs_real/israte", israte_);
+    marsystems_[i]->setctrl("mrs_string/inObsNames", inObsNames_);
+    marsystems_[i]->setctrl("mrs_natural/inStabilizingDelay", inStabilizingDelay_);
+    marsystems_[i]->update(sender);
+
+    if (children_info_[i].enabled)
     {
-      mrs_natural child_out_observations = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-      mrs_natural child_out_samples = marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-      children_info_[0].buffer.create( child_out_observations, child_out_samples );
+      mrs_natural child_out_observations = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+      mrs_natural child_out_samples = marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+      children_info_[i].buffer.create( child_out_observations, child_out_samples );
 
       onObservations += child_out_observations;
-      oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
-      mrs_natural localStabilizingDelay = marsystems_[0]->getctrl("mrs_natural/onStabilizingDelay")->to<mrs_natural>();
+      oss << marsystems_[i]->getctrl("mrs_string/onObsNames");
+      mrs_natural localStabilizingDelay = marsystems_[i]->getctrl("mrs_natural/onStabilizingDelay")->to<mrs_natural>();
       if (highestStabilizingDelay < localStabilizingDelay)
         highestStabilizingDelay = localStabilizingDelay;
-
     }
-    for (mrs_natural i=1; i < child_count; ++i)
-    {
-      marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/inSamples"));
-      marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/inObservations"));
-      marsystems_[i]->setctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/israte"));
-      marsystems_[i]->setctrl("mrs_string/inObsNames", marsystems_[0]->getctrl("mrs_string/inObsNames"));
-      marsystems_[i]->setctrl("mrs_natural/inStabilizingDelay", inStabilizingDelay_);
-      marsystems_[i]->update(sender);
-      if (children_info_[i].enabled)
-      {
-        mrs_natural child_out_observations = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-        mrs_natural child_out_samples = marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-        children_info_[i].buffer.create( child_out_observations, child_out_samples );
-
-        onObservations += child_out_observations;
-        oss << marsystems_[i]->getctrl("mrs_string/onObsNames");
-        mrs_natural localStabilizingDelay = marsystems_[i]->getctrl("mrs_natural/onStabilizingDelay")->to<mrs_natural>();
-        if (highestStabilizingDelay < localStabilizingDelay)
-          highestStabilizingDelay = localStabilizingDelay;
-      }
-    }
-
-    // forward flow propagation
-    setctrl(ctrl_onSamples_, marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-    setctrl(ctrl_onObservations_, onObservations);
-    setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate")->to<mrs_real>());
-    setctrl(ctrl_onObsNames_, oss.str());
-    setctrl(ctrl_onStabilizingDelay_, highestStabilizingDelay);
-
-#if 0
-    // update buffers between components
-    mrs_natural max_observations = 0;
-    mrs_natural max_samples = 0;
-    for (mrs_natural i=0; i< child_count; ++i)
-    {
-      mrs_natural child_observation_count =
-          marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-      mrs_natural child_sample_count =
-          marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-      max_observations = std::max(max_observations, child_observation_count);
-      max_samples = std::max(max_samples, child_sample_count);
-    }
-
-    buffer_.create(max_observations, max_samples);
-#endif
   }
-  else //if composite is empty...
-    MarSystem::myUpdate(sender);
+
+  // Forward flow propagation
+
+  setctrl(ctrl_onSamples_, marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+  setctrl(ctrl_onObservations_, onObservations);
+  setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate")->to<mrs_real>());
+  setctrl(ctrl_onObsNames_, oss.str());
+  setctrl(ctrl_onStabilizingDelay_, highestStabilizingDelay);
 }
 
 void
