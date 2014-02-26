@@ -62,6 +62,7 @@ private:
   struct child_info {
     child_info(): enabled(true) {}
     bool enabled;
+    bool output;
     //int observation_count;
     realvec buffer;
   };

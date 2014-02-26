@@ -166,36 +166,54 @@ Fanout::myUpdate(MarControlPtr sender)
 
   mrs_natural highestStabilizingDelay = ctrl_inStabilizingDelay_->to<mrs_natural>();
   ostringstream oss;
-  mrs_natural onObservations = 0;
+  mrs_natural out_observations = 0;
+  mrs_natural out_samples = 0;
+  mrs_real out_rate = 0.0;
 
   for (mrs_natural i=0; i < child_count; ++i)
   {
-    marsystems_[i]->setctrl("mrs_natural/inSamples", inSamples_);
-    marsystems_[i]->setctrl("mrs_natural/inObservations", inObservations_);
-    marsystems_[i]->setctrl("mrs_real/israte", israte_);
-    marsystems_[i]->setctrl("mrs_string/inObsNames", inObsNames_);
-    marsystems_[i]->setctrl("mrs_natural/inStabilizingDelay", inStabilizingDelay_);
-    marsystems_[i]->update(sender);
+    MarSystem * child = marsystems_[i];
+
+    child->setctrl("mrs_natural/inSamples", inSamples_);
+    child->setctrl("mrs_natural/inObservations", inObservations_);
+    child->setctrl("mrs_real/israte", israte_);
+    child->setctrl("mrs_string/inObsNames", inObsNames_);
+    child->setctrl("mrs_natural/inStabilizingDelay", inStabilizingDelay_);
+    child->update(sender);
+
+    mrs_natural child_out_observations = child->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+    mrs_natural child_out_samples = child->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+    mrs_real child_out_rate = child->getctrl("mrs_real/osrate")->to<mrs_real>();
+
+    if (i == 0)
+    {
+      out_samples = child_out_samples;
+      out_rate = child_out_rate;
+    }
 
     if (children_info_[i].enabled)
     {
-      mrs_natural child_out_observations = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-      mrs_natural child_out_samples = marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-      children_info_[i].buffer.create( child_out_observations, child_out_samples );
+      bool output = (child_out_samples <= out_samples);
 
-      onObservations += child_out_observations;
-      oss << marsystems_[i]->getctrl("mrs_string/onObsNames");
-      mrs_natural localStabilizingDelay = marsystems_[i]->getctrl("mrs_natural/onStabilizingDelay")->to<mrs_natural>();
+      children_info_[i].buffer.create( child_out_observations, child_out_samples );
+      children_info_[i].output = output;
+
+      if (output)
+        out_observations += child_out_observations;
+
+      mrs_natural localStabilizingDelay = child->getctrl("mrs_natural/onStabilizingDelay")->to<mrs_natural>();
       if (highestStabilizingDelay < localStabilizingDelay)
         highestStabilizingDelay = localStabilizingDelay;
+
+      oss << child->getctrl("mrs_string/onObsNames");
     }
   }
 
   // Forward flow propagation
 
-  setctrl(ctrl_onSamples_, marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-  setctrl(ctrl_onObservations_, onObservations);
-  setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate")->to<mrs_real>());
+  setctrl(ctrl_onSamples_, out_samples);
+  setctrl(ctrl_onObservations_, out_observations);
+  setctrl(ctrl_osrate_, out_rate);
   setctrl(ctrl_onObsNames_, oss.str());
   setctrl(ctrl_onStabilizingDelay_, highestStabilizingDelay);
 }
@@ -217,21 +235,26 @@ Fanout::myProcess(realvec& in, realvec& out)
 
     for (mrs_natural i = 0; i < child_count; ++i)
     {
-      mrs_natural child_observation_count = children_info_[i].buffer.getRows();
-      mrs_natural child_sample_count = children_info_[i].buffer.getCols();
+      child_info & info = children_info_[i];
+      mrs_natural child_observation_count = info.buffer.getRows();
+      mrs_natural child_sample_count = info.buffer.getCols();
 
-      if (children_info_[i].enabled)//enabled child have a non-zero localIndex
+      if (info.enabled)
       {
         //check if the child is unmuted, otherwise just use the previous output
         if(!muted(i))
         {
-          marsystems_[i]->process(in, children_info_[i].buffer);
+          marsystems_[i]->process(in, info.buffer);
+        }
 
+        if (info.output)
+        {
           for (o=0; o < child_observation_count; o++)
             for (t=0; t < child_sample_count; t++)
-              out(out_observation_offset + o,t) = children_info_[i].buffer(o,t);
+              out(out_observation_offset + o,t) = info.buffer(o,t);
+
+          out_observation_offset += child_observation_count;
         }
-        out_observation_offset += child_observation_count;
       }
     }
   }
