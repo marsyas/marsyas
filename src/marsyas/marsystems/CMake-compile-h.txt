@@ -224,6 +224,7 @@ Shifter.h
 ShiftInput.h
 ShiftOutput.h
 Shredder.h
+Sidechain.h
 Signum.h
 SilenceRemove.h
 SimilarityMatrix.h
