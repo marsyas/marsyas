@@ -286,3 +286,4 @@ Windowing.h
 Yin.h
 ZeroCrossings.h
 ZeroRClassifier.h
+Ratio.h
