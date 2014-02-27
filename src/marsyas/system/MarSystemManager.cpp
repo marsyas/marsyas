@@ -281,6 +281,7 @@
 #include <marsyas/marsystems/Sidechain.h>
 #include <marsyas/marsystems/CsvSink.h>
 #include <marsyas/marsystems/Ratio.h>
+#include <marsyas/marsystems/Threshold.h>
 //modifyHeader
 
 #ifdef MARSYAS_AUDIOIO
@@ -565,6 +566,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("Sidechain", new Sidechain("sidechain_prototype"));
   registerPrototype("CsvSink", new CsvSink("csvsink_prototype"));
   registerPrototype("Ratio", new Ratio("ratio_prototype"));
+  registerPrototype("Threshold", new Threshold("threshold_prototype"));
   //modifyRegister
 
   // optional MarSystems
