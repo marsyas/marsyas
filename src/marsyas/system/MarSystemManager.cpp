@@ -280,6 +280,7 @@
 #include <marsyas/marsystems/ChromaFilter.h>
 #include <marsyas/marsystems/Sidechain.h>
 #include <marsyas/marsystems/CsvSink.h>
+#include <marsyas/marsystems/Ratio.h>
 //modifyHeader
 
 #ifdef MARSYAS_AUDIOIO
@@ -563,6 +564,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("ChromaFilter", new ChromaFilter("chromafilterpr"));
   registerPrototype("Sidechain", new Sidechain("sidechain_prototype"));
   registerPrototype("CsvSink", new CsvSink("csvsink_prototype"));
+  registerPrototype("Ratio", new Ratio("ratio_prototype"));
   //modifyRegister
 
   // optional MarSystems

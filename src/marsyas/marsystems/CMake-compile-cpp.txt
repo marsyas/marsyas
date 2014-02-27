@@ -286,3 +286,4 @@ Windowing.cpp
 Yin.cpp
 ZeroCrossings.cpp
 ZeroRClassifier.cpp
+Ratio.cpp
