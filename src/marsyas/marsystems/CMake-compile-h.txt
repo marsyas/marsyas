@@ -61,6 +61,7 @@ Confidence.h
 ConstQFiltering.h
 CrossCorrelation.h
 CsvFileSource.h
+CsvSink.h
 Daub4.h
 DCSource.h
 Deinterleave.h

@@ -279,6 +279,7 @@
 #include <marsyas/marsystems/SpectralCentroidBandNorm.h>
 #include <marsyas/marsystems/ChromaFilter.h>
 #include <marsyas/marsystems/Sidechain.h>
+#include <marsyas/marsystems/CsvSink.h>
 //modifyHeader
 
 #ifdef MARSYAS_AUDIOIO
@@ -561,6 +562,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("SpectralCentroidBandNorm", new SpectralCentroidBandNorm("spectralcentroidbandnormpr"));
   registerPrototype("ChromaFilter", new ChromaFilter("chromafilterpr"));
   registerPrototype("Sidechain", new Sidechain("sidechain_prototype"));
+  registerPrototype("CsvSink", new CsvSink("csvsink_prototype"));
   //modifyRegister
 
   // optional MarSystems

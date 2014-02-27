@@ -61,6 +61,7 @@ Confidence.cpp
 ConstQFiltering.cpp
 CrossCorrelation.cpp
 CsvFileSource.cpp
+CsvSink.cpp
 Daub4.cpp
 DCSource.cpp
 Deinterleave.cpp
