@@ -287,3 +287,4 @@ Yin.cpp
 ZeroCrossings.cpp
 ZeroRClassifier.cpp
 Ratio.cpp
+Threshold.cpp

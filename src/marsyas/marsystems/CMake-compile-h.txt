@@ -287,3 +287,4 @@ Yin.h
 ZeroCrossings.h
 ZeroRClassifier.h
 Ratio.h
+Threshold.h
