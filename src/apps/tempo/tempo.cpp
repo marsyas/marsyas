@@ -76,7 +76,7 @@
 // 0: no doubling at all
 // 1: single threshold (bpm > x => double)
 // 2: SVM-based doubling
-#define POST_DOUBLING 2
+#define POST_DOUBLING 0
 
 // 0: baseline, do OSS and autocorrelation but that's it
 // 9: normal
@@ -1068,7 +1068,7 @@ mrs_real energy_in_histo_range(realvec histo,
   return sum;
 }
 
-const int INFO_SIZE = 2;
+const int INFO_SIZE = 9;
 realvec info_histogram(mrs_natural bpm, realvec histo,
                        mrs_real factor, mrs_real tolerance)
 {
@@ -1143,7 +1143,6 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
                                          2.0*bpm*(1.0 - tolerance), 2.0*bpm*(1.0 + tolerance) ) / energy_total;
 
 // original
-/*
   info(0) = energy_under;
   info(1) = energy_over;
   info(2) = 1.0 - (energy_under + energy_over);
@@ -1154,9 +1153,10 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
   info(7) = str05 / str10;
   info(8) = str20 / str10;
   //info(9) = num_non_zero;
-*/
+/*
   info(0) = energy_under;
   info(1) = str05;
+*/
   return info;
 }
 
@@ -1248,8 +1248,8 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   //  enhance the BH harmonic peaks
   MarSystem* hfanout = mng.create("Fanout", "hfanout");
   hfanout->addMarSystem(mng.create("Gain", "id1"));
-  hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
-  hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
+  hfanout->addMarSystem(mng.create("SimpleStretch", "tsc1"));
+  hfanout->addMarSystem(mng.create("SimpleStretch", "tsc2"));
   tempoInduction->addMarSystem(hfanout);
   tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
 #endif
@@ -1304,7 +1304,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   // parameters for BH pick peaking
   // (yes, these should be "reversed" like this:)
   const mrs_natural minlag = (mrs_natural) (oss_sr * 60.0 / MAX_BPM);
-  const mrs_natural maxlag = (mrs_natural) (oss_sr * 60.0 / MIN_BPM);
+  const mrs_natural maxlag = (mrs_natural) (oss_sr * 60.0 / MIN_BPM)+1;
 
   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 2);
   tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
@@ -1336,9 +1336,9 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   tempoInduction->updControl("BeatHistogram/histo/mrs_real/alpha", 0.0);
 
 */
-#if STEM_TYPE >= 99
-  tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 2.0);
-  tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc2/mrs_real/factor", 4.0);
+#if STEM_TYPE >= 5
+  tempoInduction->updControl("Fanout/hfanout/SimpleStretch/tsc1/mrs_real/factor", 2.0);
+  tempoInduction->updControl("Fanout/hfanout/SimpleStretch/tsc2/mrs_real/factor", 4.0);
   tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
 #endif
 
@@ -1552,10 +1552,10 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   // generated through post-processing
   // scripts/large-evaluators/make-mf.py
-    const mrs_real mins[] = { 0.0258916, 6.72676e-83, 50.1745, 0 };
-    const mrs_real maxs[] = { 0.890664, 0.408394, 210.938, 0 };
+    const mrs_real mins[] = { 0.0268669, 0.0, 0.0606002, 6.77331e-83, 0.0730958, 0.0, 0.0211872, 6.94883e-83, 0.0, 50.1745, 0 };
+    const mrs_real maxs[] = { 0.791289, 0.876271, 0.973133, 0.428424, 0.978813, 0.48247, 0.88637, 1.19532, 1.81915, 208.807, 0 };
     const mrs_real svm_weights[] = {
-        -3.2959, 3.7287, -7.374, 0
+        -3.2959, 3.7287, -7.374, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     };
     double svm_sum = 1.0359;
 
