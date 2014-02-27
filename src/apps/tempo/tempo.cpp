@@ -76,7 +76,7 @@
 // 0: no doubling at all
 // 1: single threshold (bpm > x => double)
 // 2: SVM-based doubling
-#define POST_DOUBLING 0
+#define POST_DOUBLING 2
 
 // 0: baseline, do OSS and autocorrelation but that's it
 // 9: normal
@@ -1068,7 +1068,7 @@ mrs_real energy_in_histo_range(realvec histo,
   return sum;
 }
 
-const int INFO_SIZE = 9;
+const int INFO_SIZE = 2;
 realvec info_histogram(mrs_natural bpm, realvec histo,
                        mrs_real factor, mrs_real tolerance)
 {
@@ -1142,6 +1142,8 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
   mrs_real str20 = energy_in_histo_range(histo, factor,
                                          2.0*bpm*(1.0 - tolerance), 2.0*bpm*(1.0 + tolerance) ) / energy_total;
 
+// original
+/*
   info(0) = energy_under;
   info(1) = energy_over;
   info(2) = 1.0 - (energy_under + energy_over);
@@ -1149,9 +1151,12 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
   info(4) = str10;
   info(5) = str20;
   info(6) = 1.0 - (str05 + str10 + str20);
-  info(7) = bpm2 / bpm;
-  info(8) = bpm3 / bpm;
+  info(7) = str05 / str10;
+  info(8) = str20 / str10;
   //info(9) = num_non_zero;
+*/
+  info(0) = energy_under;
+  info(1) = str05;
   return info;
 }
 
@@ -1231,7 +1236,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
   //tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
 
-#if 0
+#if 1
   tempoInduction->addMarSystem(mng.create("PlotSink", "plotsink_ac"));
   tempoInduction->updControl("PlotSink/plotsink_ac/mrs_string/filename",
                              "out/ac-combo.txt");
@@ -1239,7 +1244,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   tempoInduction->updControl("PlotSink/plotsink_ac/mrs_bool/single_file", true);
 #endif
 
-#if STEM_TYPE >= 3
+#if STEM_TYPE >= 5
   //  enhance the BH harmonic peaks
   MarSystem* hfanout = mng.create("Fanout", "hfanout");
   hfanout->addMarSystem(mng.create("Gain", "id1"));
@@ -1249,7 +1254,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
 #endif
 
-#if 0
+#if 1
   tempoInduction->addMarSystem(mng.create("PlotSink", "plotsink_hbh"));
   tempoInduction->updControl("PlotSink/plotsink_hbh/mrs_string/filename",
                              "out/hbh-combo.txt");
@@ -1331,7 +1336,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   tempoInduction->updControl("BeatHistogram/histo/mrs_real/alpha", 0.0);
 
 */
-#if STEM_TYPE >= 3
+#if STEM_TYPE >= 99
   tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 2.0);
   tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc2/mrs_real/factor", 4.0);
   tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
@@ -1408,7 +1413,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 
     // single Gaussian PDF
-    mrs_real gaussian_std = 5;
+    mrs_real gaussian_std = 10;
     const mrs_natural GAUSSIAN_CENTER = 1000;
     mrs_realvec gaussian(2*GAUSSIAN_CENTER+1);
     static const mrs_real sqrt_2pi = 2.5066282746310002;
@@ -1547,14 +1552,12 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   // generated through post-processing
   // scripts/large-evaluators/make-mf.py
-    const mrs_real mins[] = { 4.56095e-05, 0.0, 0.0820953, 0.0, 0.0963733, 0.0, 1.94792e-05, 0.0, 0.0, 50.1745, 0 };
-    const mrs_real maxs[] = { 0.859752, 0.885494, 0.999954, 0.478573, 0.999981, 0.522138, 0.866239, 3.64486, 3.95192, 208.807, 0 };
+    const mrs_real mins[] = { 0.0258916, 6.72676e-83, 50.1745, 0 };
+    const mrs_real maxs[] = { 0.890664, 0.408394, 210.938, 0 };
     const mrs_real svm_weights[] = {
-         -1.295, 1.3336, 0.0778, 2.3335,
-         -0.0307, -0.3252, -1.1228, 1.0692,
-         -0.6934, -8.214, 0,
+        -3.2959, 3.7287, -7.374, 0
     };
-    double svm_sum = 0.6446;
+    double svm_sum = 1.0359;
 
 
   for (int i=0; i<features.getCols(); i++) {
