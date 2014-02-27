@@ -22,14 +22,12 @@ void Ratio::myUpdate(MarControlPtr)
   else
     m_mode = raw;
 
-  setControl("mrs_natural/onObservations", 1);
+  setControl("mrs_natural/onObservations", std::max(inObservations_ - 1, (mrs_natural) 1));
   setControl("mrs_natural/onSamples", inSamples_);
 }
 
 void Ratio::myProcess(realvec& in, realvec& out)
 {
-  mrs_real ratio;
-
   if (inObservations_ < 2)
   {
     double ratio;
@@ -55,28 +53,25 @@ void Ratio::myProcess(realvec& in, realvec& out)
   case raw:
     for(mrs_natural s = 0; s < inSamples_; ++s)
     {
-      ratio = in(0,s);
+      mrs_real reference = in(0,s);
       for(mrs_natural o = 1; o < inObservations_; ++o)
-        ratio /= in(o,s);
-      out(0,s) = ratio;
+        out(o-1, s) = in(o,s) / reference;
     }
     break;
   case log:
     for(mrs_natural s = 0; s < inSamples_; ++s)
     {
-      ratio = in(0,s);
+      mrs_real reference = in(0,s);
       for(mrs_natural o = 1; o < inObservations_; ++o)
-        ratio = in(o,s);
-      out(0,s) = std::log(ratio);
+        out(o-1, s) = std::log( in(o,s) / reference );
     }
     break;
   case log10:
     for(mrs_natural s = 0; s < inSamples_; ++s)
     {
-      ratio = in(0,s);
+      mrs_real reference = in(0,s);
       for(mrs_natural o = 1; o < inObservations_; ++o)
-        ratio /= in(o,s);
-      out(0,s) = std::log10(ratio);
+        out(o-1, s) = std::log10( in(o,s) / reference );
     }
     break;
   }
