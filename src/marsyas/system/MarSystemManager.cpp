@@ -213,6 +213,7 @@
 #include <marsyas/marsystems/Shredder.h>
 #include <marsyas/marsystems/SilenceRemove.h>
 #include <marsyas/marsystems/SimilarityMatrix.h>
+#include <marsyas/marsystems/SimpleStretch.h>
 #include <marsyas/marsystems/SimulMaskingFft.h>
 #include <marsyas/marsystems/SineSource.h>
 #include <marsyas/marsystems/Skewness.h>
@@ -499,6 +500,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("Shredder", new Shredder("shred"));
   registerPrototype("SilenceRemove", new SilenceRemove("silenceremovepr"));
   registerPrototype("SimilarityMatrix", new SimilarityMatrix("similaritymatrixpr"));
+  registerPrototype("SimpleStretch", new SimpleStretch("simplestretch"));
   registerPrototype("SimulMaskingFft", new SimulMaskingFft("simulmask"));
   registerPrototype("SineSource", new SineSource("sinesp"));
   registerPrototype("Skewness", new Skewness("Skewnessp"));

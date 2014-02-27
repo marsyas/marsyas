@@ -32,7 +32,7 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
         defs.OSS_WINDOWSIZE)
 
     ### log-magnitude of FFT
-    ffts = scipy.fftpack.fft(windowed, defs.OSS_WINDOWSIZE,  axis=1)
+    ffts = scipy.fftpack.fft(windowed, defs.OSS_WINDOWSIZE, axis=1)
     ffts_abs = abs(ffts)[:,:ffts.shape[1]/2 + 1]
     # extra scaling to match Marsyas FFT output
     ffts_abs /= defs.OSS_WINDOWSIZE
@@ -49,6 +49,10 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
         flux[i] = sum(diffclipped)
         #if i < 2:
         #    print diffclipped
+
+    #if True:
+    #    ts = numpy.arange(len(flux)-1) / oss_sr
+    #    pylab.plot(ts, flux[1:], color="red")
 
     #numpy.savetxt('flux.txt', flux)
     ### clear out first window

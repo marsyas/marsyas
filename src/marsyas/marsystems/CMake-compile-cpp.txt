@@ -225,6 +225,7 @@ Shredder.cpp
 Signum.cpp
 SilenceRemove.cpp
 SimilarityMatrix.cpp
+SimpleStretch.cpp
 SimulMaskingFft.cpp
 SineSource.cpp
 Skewness.cpp

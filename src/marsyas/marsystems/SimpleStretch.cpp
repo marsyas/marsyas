@@ -16,37 +16,37 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "TimeStretch.h"
+#include "SimpleStretch.h"
 
 using namespace std;
 using namespace Marsyas;
 
-TimeStretch::TimeStretch(mrs_string name):MarSystem("TimeStretch",name)
+SimpleStretch::SimpleStretch(mrs_string name):MarSystem("SimpleStretch",name)
 {
-  //type_ = "TimeStretch";
+  //type_ = "SimpleStretch";
   //name_ = name;
 
   addControls();
 }
 
-TimeStretch::~TimeStretch()
+SimpleStretch::~SimpleStretch()
 {
 }
 
 MarSystem*
-TimeStretch::clone() const
+SimpleStretch::clone() const
 {
-  return new TimeStretch(*this);
+  return new SimpleStretch(*this);
 }
 
 void
-TimeStretch::addControls()
+SimpleStretch::addControls()
 {
   addctrl("mrs_real/factor", 1.0);
 }
 
 void
-TimeStretch::myProcess(realvec& in, realvec& out)
+SimpleStretch::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
   mrs_real factor = getctrl("mrs_real/factor")->to<mrs_real>();
@@ -54,31 +54,12 @@ TimeStretch::myProcess(realvec& in, realvec& out)
 
   for (mrs_natural t=0; t < inSamples; t++)
   {
-    // linear interpolation
-    ni = t* factor;
+    mrs_natural ni = t*factor;
     // it doesn't make sense to wrap the "stretching" around! -gp
-    //li = ((unsigned long)ni) % inSamples;
-    if (ni > inSamples-1) {
+    if (ni >= inSamples) {
         break;
     }
-    li = ni;
-    ri = li + 1;
-
-    out(0,t) = in(li) + w_ * (in(0,ri) - in(0,li));
-    w_ = ni - li;
-    cout<<t<<"\t"<<li<<"\t"<<ri<<endl;
-    //if (ri < inSamples)
-      //out(0,t) = in(li) + w_ * (in(0,ri) - in(0,li));
-    //else
-    //  out(0,t) = in(li);
+    out(0,t) = in(ni);
   }
 }
-
-
-
-
-
-
-
-
 

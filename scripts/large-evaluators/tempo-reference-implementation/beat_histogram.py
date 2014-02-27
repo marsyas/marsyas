@@ -166,43 +166,43 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
                 autocorr[i][j] = 0
 
     ### beat histogram
-    Hn = numpy.zeros( (autocorr.shape[0], 4*defs.BPM_MAX) )
-    for i in xrange( autocorr.shape[0] ):
-        #if i > 0 and i != (defs.BH_WINDOWSIZE / defs.BH_HOPSIZE):
-        #    Hn[i] = Hn[i-1]
-        prev_Hni = 4*defs.BPM_MAX-1
-        pprev_Hni = prev_Hni
-        sumamp = 0.0
-        count = 1
-
-        for j in xrange(1, autocorr.shape[1]):
-            factor = 8/2
-            Hni = int(oss_sr * 60.0 * factor / (j+1) + 0.5);
-            #bpm = autocorr_bpms[i]
-            if Hni < 4*defs.BPM_MAX:
-                amp = autocorr[i][j]
-                #print j, Hni, amp
-                if amp < 0:
-                    amp = 0
-                if prev_Hni == Hni:
-                    sumamp += amp
-                    count += 1
-                else:
-                    sumamp += amp
-                    Hn[i][prev_Hni] = sumamp / float(count)
-                    sumamp = 0.0
-                    count = 1
-                ### linear interpolate not-set bins
-                if pprev_Hni - prev_Hni > 1:
-                    x0 = prev_Hni
-                    x1 = pprev_Hni
-                    y0 = Hn[i][prev_Hni]
-                    y1 = Hn[i][pprev_Hni]
-                    for k in xrange(prev_Hni+1, pprev_Hni):
-                        Hn[i][k] = y0 + (y1-y0)*(k-x0)/(x1-x0)
-                    #print x0, x1, y0, y1, Hn[i][pprev_Hni-1]
-                pprev_Hni = prev_Hni
-                prev_Hni = Hni
+#    Hn = numpy.zeros( (autocorr.shape[0], 4*defs.BPM_MAX) )
+#    for i in xrange( autocorr.shape[0] ):
+#        #if i > 0 and i != (defs.BH_WINDOWSIZE / defs.BH_HOPSIZE):
+#        #    Hn[i] = Hn[i-1]
+#        prev_Hni = 4*defs.BPM_MAX-1
+#        pprev_Hni = prev_Hni
+#        sumamp = 0.0
+#        count = 1
+#
+#        for j in xrange(1, autocorr.shape[1]):
+#            factor = 8/2
+#            Hni = int(oss_sr * 60.0 * factor / (j+1) + 0.5);
+#            #bpm = autocorr_bpms[i]
+#            if Hni < 4*defs.BPM_MAX:
+#                amp = autocorr[i][j]
+#                #print j, Hni, amp
+#                if amp < 0:
+#                    amp = 0
+#                if prev_Hni == Hni:
+#                    sumamp += amp
+#                    count += 1
+#                else:
+#                    sumamp += amp
+#                    Hn[i][prev_Hni] = sumamp / float(count)
+#                    sumamp = 0.0
+#                    count = 1
+#                ### linear interpolate not-set bins
+#                if pprev_Hni - prev_Hni > 1:
+#                    x0 = prev_Hni
+#                    x1 = pprev_Hni
+#                    y0 = Hn[i][prev_Hni]
+#                    y1 = Hn[i][pprev_Hni]
+#                    for k in xrange(prev_Hni+1, pprev_Hni):
+#                        Hn[i][k] = y0 + (y1-y0)*(k-x0)/(x1-x0)
+#                    #print x0, x1, y0, y1, Hn[i][pprev_Hni-1]
+#                pprev_Hni = prev_Hni
+#                prev_Hni = Hni
     #numpy.savetxt('bh.txt', Hn[0])
 
     #for a in range(0, 20):
@@ -215,38 +215,53 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
     #    pylab.title("Beat histogram")
 
     ### time stretch, add
+    Hn = autocorr
     harmonic_strengthened_bh = numpy.zeros( Hn.shape )
     for i in xrange( Hn.shape[0] ):
         ### unchecked direct translation of marsyas
-        factor2 = 0.5
-        factor4 = 0.25
+        factor2 = 2.0
+        #factor4 = 0.25
         stretched = numpy.zeros( Hn.shape[1] )
         numSamples = Hn.shape[1]
         for t in xrange( Hn.shape[1] ):
             ni = t*factor2
-            li = int(ni) % numSamples
+            li = int(ni)
+            if li >= numSamples:
+                print "broke at", t
+                break
             ri = li + 1
             w = ni - li
-            #print "%i\t%i\t%f\t%f" % (li, ri, w, ni)
+            print "%i\t%i\t%f\t%f" % (li, ri, w, ni)
             #zzz
             if ri < numSamples:
+                #print "here"
                 stretched[t] += Hn[i][li] + w * (Hn[i][ri] - Hn[i][li])
             else:
-                stretched[t] += Hn[t]
+                #stretched[t] += Hn[t]
+                break
+            #if t > 1000:
+            #    break
 
-            ni = t*factor4
-            li = int(ni) % numSamples
-            ri = li + 1
-            w = ni - li
-            if ri < numSamples:
-                stretched[t] += Hn[i][li] + w * (Hn[i][ri] - Hn[i][li])
-            else:
-                stretched[t] += Hn[t]
+#            ni = t*factor4
+#            li = int(ni) % numSamples
+#            ri = li + 1
+#            w = ni - li
+#            if ri < numSamples:
+#                stretched[t] += Hn[i][li] + w * (Hn[i][ri] - Hn[i][li])
+#            else:
+#                stretched[t] += Hn[t]
         harmonic_strengthened_bh[i] = (
             Hn[i]
             + stretched
             )
+    if True:
+        pylab.clf()
+        pylab.plot(autocorr[10])
+        pylab.plot(harmonic_strengthened_bh[10])
+        pylab.show()
+        exit(1)
 
+    if False:
         if defs.WRITE_BH:
             samps = numpy.arange(defs.BH_WINDOWSIZE)
             numpy.savetxt("out/aq-%i.txt" % (i+1),
@@ -256,6 +271,7 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
                 numpy.vstack((bpms, Hn[i])).transpose())
             numpy.savetxt("out/hbh-%i.txt" % (i+1),
                 numpy.vstack((bpms, harmonic_strengthened_bh[i])).transpose())
+
 
     #for a in range(0, 20):
     #    numpy.savetxt("bh-combo-%i.txt" % a, harmonic_strengthened_bh[a])

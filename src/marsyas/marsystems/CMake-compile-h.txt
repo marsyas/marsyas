@@ -225,6 +225,7 @@ Shredder.h
 Signum.h
 SilenceRemove.h
 SimilarityMatrix.h
+SimpleStretch.h
 SimulMaskingFft.h
 SineSource.h
 Skewness.h

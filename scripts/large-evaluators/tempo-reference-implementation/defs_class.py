@@ -1,13 +1,13 @@
 
 class Defs:
     def __init__(self):
-        self.BPM_MIN = 40
-        self.BPM_MAX = 180  # marsyas
+        self.BPM_MIN = 50
+        self.BPM_MAX = 210  # marsyas
         
-        self.OSS_WINDOWSIZE = 256
+        self.OSS_WINDOWSIZE = 512
         self.OSS_HOPSIZE = 128
         
-        self.OSS_LOWPASS_CUTOFF = 6.0 # Hz
+        self.OSS_LOWPASS_CUTOFF = 7.0 # Hz
         #self.OSS_LOWPASS_CUTOFF = 0 # Hz
         self.OSS_LOWPASS_N = 15
         
