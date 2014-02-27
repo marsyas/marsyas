@@ -49,12 +49,10 @@ out = open("weka.arff", 'w')
 
 INTRO_BEGIN = """@relation mults"""
 FEATURES = [
-    #'above_p1',
-    #'below_p1',
-    #'above_p2',
-    #'below_p2',
-    #'above_p3',
-    #'below_p3',
+### minimal
+    #'energy_under',
+    #'str05',
+###
     'energy_under',
     'energy_over',
     'energy_residual',
@@ -62,17 +60,8 @@ FEATURES = [
     'str10',
     'str20',
     'str_residual',
-    #'strp1',
-    #'strp2',
-    #'strp3',
-    #'strp_residual',
-    #'rel1',
     'rel2',
     'rel3',
-    #'has2',
-    #'has3',
-    #'num_non_zero',
-    #'energyinpeak',
     ]
 
 if INCLUDE_05:
@@ -165,8 +154,12 @@ for line in lines:
         #if extended_harmonic_accuracy(mult*detected, ground_truth) == 0:
         if accuracy(mult*detected, ground_truth) == 0:
             cause_problems += 1
-            # don't multipy value; penalize MIREX but keep HARMONIC
-            mult = 1.0
+            if mult*detected > 210:
+                # don't worry; it won't be doubled anyway
+                mult = 0
+            else:
+                # don't multipy value; penalize MIREX but keep HARMONIC
+                mult = 1.0
     total += 1
     
     vec = numpy.zeros(len(sl)-1+1-1)

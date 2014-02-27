@@ -76,7 +76,7 @@
 // 0: no doubling at all
 // 1: single threshold (bpm > x => double)
 // 2: SVM-based doubling
-#define POST_DOUBLING 0
+#define POST_DOUBLING 2
 
 // 0: baseline, do OSS and autocorrelation but that's it
 // 9: normal
@@ -1555,9 +1555,11 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     const mrs_real mins[] = { 0.0268669, 0.0, 0.0606002, 6.77331e-83, 0.0730958, 0.0, 0.0211872, 6.94883e-83, 0.0, 50.1745, 0 };
     const mrs_real maxs[] = { 0.791289, 0.876271, 0.973133, 0.428424, 0.978813, 0.48247, 0.88637, 1.19532, 1.81915, 208.807, 0 };
     const mrs_real svm_weights[] = {
-        -3.2959, 3.7287, -7.374, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+         0, 1.972, 0, 2.5832, 
+         0, 0, -2.9743, 0,
+         0, -6.9021, 0,
     };
-    double svm_sum = 1.0359;
+    double svm_sum = 0.8543;
 
 
   for (int i=0; i<features.getCols(); i++) {
@@ -1623,7 +1625,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
 
 #if POST_DOUBLING == 1
-  if (heuristic_tempo <= 72.5) {
+  if (heuristic_tempo <= 69.5) {
     mult = 2.0;
   }
 #endif
