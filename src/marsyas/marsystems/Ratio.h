@@ -25,7 +25,14 @@ namespace Marsyas
 {
 /**
 \ingroup Processing Basic
-\brief Ratio among observations.
+\brief Ratio of observations to first observation.
+
+The count of output observations will be the count of input observations - 1,
+where output observation x = input observations x / input observation 0.
+Optionally, natural or base-10 logarithm may be applied to the ratios.
+
+If there is less than 2 input observations, the output will be a constant 1.0
+(or 0.0 if the logarithm is applied).
 
 \b Controls:
 - \b mrs_string/mode: One of:
