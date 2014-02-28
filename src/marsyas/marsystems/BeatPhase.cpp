@@ -295,6 +295,12 @@ BeatPhase::myProcess(realvec& in, realvec& out)
         tempo_phases(k) = max_phase;
         beats.setval(0.0);
 
+/*
+        if (period_int == 178) {
+            phase_correlations.writeText("phase_correlations_178.txt");
+            cout<<"printed"<<endl;
+        }
+*/
         //printf("\t%f\t%f", max_crco, onset_scores(k));
         //cout<<endl;
       }

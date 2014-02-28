@@ -84,6 +84,7 @@
 
 
 #define WRITE_INTERMEDIATE 0
+#define WRITE_INTERMEDIATE_SHORT 0
 #define DISPLAY_SVM 1
 
 
@@ -1257,6 +1258,17 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   beatTracker->addMarSystem(onset_strength);
 
+#if WRITE_INTERMEDIATE
+  MarSystem *output10 = mng.create("PlotSink", "output10");
+  output10->updControl("mrs_string/filename",
+                             "out/output10.txt");
+  output10->updControl("mrs_bool/sequence", false);
+  output10->updControl("mrs_bool/single_file", true);
+  //output10->updControl("mrs_bool/no_ticks", true);
+  beatTracker->addMarSystem(output10);
+#endif
+
+
   /* After the onset signal is calculated it is used for initial
      tempo induction based mapping an enhanced autocorrelation to a
      beat histogram BH and selecting the peaks of the BH as tempo candidates.
@@ -1336,6 +1348,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if STEM_TYPE > 5
   // beatTracker->addMarSystem(mng.create("ShiftInput/si3"));
   beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
+
   beatTracker->addMarSystem(mng.create("Gain/id"));
 #endif
 
@@ -1495,6 +1508,9 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if WRITE_INTERMEDIATE
   ofstream out_bh;
   out_bh.open("out/beat_histogram.txt");
+
+  ofstream out_bp;
+  out_bp.open("out/output14.txt");
 #endif
   // middle: actual data, the input BH buffer is full
   mrs_natural end_tick_num = num_ticks - 1;
@@ -1521,6 +1537,10 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if STEM_TYPE >= 3
     tempos = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempos")->to<mrs_realvec>();
     temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
+
+#if WRITE_INTERMEDIATE
+    out_bp << tempos(0) << "\t" << temposcores(0) <<endl;
+#endif
 
 #else
     tempos = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
@@ -1558,8 +1578,10 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         bphase_add(i) = beatstrength * gaussian(GAUSSIAN_CENTER - lag + i);
     }
     bphase = bphase + bphase_add;
-    //bphase_add.writeText("bphase_add.txt");
-    //exit(1);
+#if WRITE_INTERMEDIATE
+    bphase_add.writeText("bphase_add.txt");
+    bphase.writeText("bphase_full.txt");
+#endif
 #else
     mrs_natural bpm = tempos(0) + 0.5;
     mrs_real beatstrength = 1.0;
@@ -1569,9 +1591,22 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if 0
     printf("%li\t%f\n", bpm, temposcores(0));
 #endif
+
+#if WRITE_INTERMEDIATE
+#if WRITE_INTERMEDIATE_SHORT
+  // used to generate figures for the TASPL paper
+  if (ticks == 18) {
+    out_bh.close();
+    out_bp.close();
+    break;
+  }
+#endif
+#endif
+
   }
 #if WRITE_INTERMEDIATE
   out_bh.close();
+  out_bp.close();
 #endif
 
   // Find the max bin of the histogram created from the
@@ -1595,6 +1630,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
 
   mrs_real heuristic_tempo = max_i;
+  cout<<"heuristic tempo lag: "<<heuristic_tempo<<endl;
 
 
   mrs_natural num_features = 1*INFO_SIZE + 2;
