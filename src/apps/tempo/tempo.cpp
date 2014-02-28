@@ -76,7 +76,7 @@
 // 0: no doubling at all
 // 1: single threshold (bpm > x => double)
 // 2: SVM-based doubling
-#define POST_DOUBLING 2
+#define POST_DOUBLING 0
 
 // 0: baseline, do OSS and autocorrelation but that's it
 // 9: normal
@@ -885,11 +885,37 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
   fluxnet->addMarSystem(mng.create("SoundFileSource/src"));
   fluxnet->addMarSystem(mng.create("MixToMono/m2m"));
 
+#if WRITE_INTERMEDIATE
+  MarSystem *output00 = mng.create("PlotSink", "output00");
+  output00->updControl("mrs_string/filename", "out/output00.txt");
+  output00->updControl("mrs_bool/sequence", false);
+  output00->updControl("mrs_bool/single_file", true);
+  fluxnet->addMarSystem(output00);
+#endif
+
+
   // fluxnet->addMarSystem(mng.create("DownSampler/tds"));
   fluxnet->addMarSystem(mng.create("ShiftInput/si"));	       // overlap for the spectral flux
+
+#if WRITE_INTERMEDIATE
+  MarSystem *output01 = mng.create("PlotSink", "output01");
+  output01->updControl("mrs_string/filename", "out/output01.txt");
+  output01->updControl("mrs_bool/sequence", false);
+  output01->updControl("mrs_bool/single_file", true);
+  fluxnet->addMarSystem(output01);
+#endif
+
   fluxnet->addMarSystem(mng.create("Windowing/windowing1"));
   fluxnet->addMarSystem(mng.create("Spectrum/spk"));
   fluxnet->addMarSystem(mng.create("PowerSpectrum/pspk"));
+
+#if WRITE_INTERMEDIATE
+  MarSystem *output02 = mng.create("PlotSink", "output02");
+  output02->updControl("mrs_string/filename", "out/output02.txt");
+  output02->updControl("mrs_bool/sequence", false);
+  output02->updControl("mrs_bool/single_file", true);
+  fluxnet->addMarSystem(output02);
+#endif
 
 
   //fluxnet->addMarSystem(mng.create("TriangularFilterBank/tfb"));
@@ -901,9 +927,31 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
   //fluxnet->addMarSystem(mng.create("Delta/delta"));
   //fluxnet->updControl("Delta/delta/mrs_bool/positive", true);
 
+#if WRITE_INTERMEDIATE
+  MarSystem *output03 = mng.create("PlotSink", "output03");
+  output03->updControl("mrs_string/filename",
+                             "out/output03.txt");
+  output03->updControl("mrs_bool/sequence", false);
+  output03->updControl("mrs_bool/single_file", true);
+  output03->updControl("mrs_bool/no_ticks", true);
+  fluxnet->addMarSystem(output03);
+#endif
+
+
   fluxnet->addMarSystem(mng.create("Filter", "filt1"));
   //fluxnet->addMarSystem(mng.create("Filter", "filt2"));
   //fluxnet->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
+  //
+#if WRITE_INTERMEDIATE
+  MarSystem *output04 = mng.create("PlotSink", "output04");
+  output04->updControl("mrs_string/filename",
+                             "out/output04.txt");
+  output04->updControl("mrs_bool/sequence", false);
+  output04->updControl("mrs_bool/single_file", true);
+  output04->updControl("mrs_bool/no_ticks", true);
+  fluxnet->addMarSystem(output04);
+#endif
+
 
   accum->addMarSystem(fluxnet);
   onset_strength->addMarSystem(accum);
@@ -1078,8 +1126,8 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
 
   // global maximum (will be a peak)
   //mrs_real bpm1 = 0;
-  mrs_real bpm2 = 0;
-  mrs_real bpm3 = 0;
+  //mrs_real bpm2 = 0;
+  //mrs_real bpm3 = 0;
   mrs_real str1 = 0;
   mrs_real str2 = 0;
   mrs_real str3 = 0;
@@ -1099,7 +1147,7 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
         (histo(i-1) < histo(i)) && (histo(i+1) < histo(i)))
     {
       str2 = histo(i);
-      bpm2 = i / factor;
+      //bpm2 = i / factor;
     }
   }
 
@@ -1110,7 +1158,7 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
         (histo(i-1) < histo(i)) && (histo(i+1) < histo(i)))
     {
       str3 = histo(i);
-      bpm3 = i / factor;
+      //bpm3 = i / factor;
     }
   }
 
@@ -1236,13 +1284,16 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
   //tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
 
-#if 1
-  tempoInduction->addMarSystem(mng.create("PlotSink", "plotsink_ac"));
-  tempoInduction->updControl("PlotSink/plotsink_ac/mrs_string/filename",
-                             "out/ac-combo.txt");
-  tempoInduction->updControl("PlotSink/plotsink_ac/mrs_bool/sequence", false);
-  tempoInduction->updControl("PlotSink/plotsink_ac/mrs_bool/single_file", true);
+#if WRITE_INTERMEDIATE
+  MarSystem *output11 = mng.create("PlotSink", "output11");
+  output11->updControl("mrs_string/filename",
+                             "out/output11.txt");
+  output11->updControl("mrs_bool/sequence", false);
+  output11->updControl("mrs_bool/single_file", true);
+  //output11->updControl("mrs_bool/no_ticks", true);
+  tempoInduction->addMarSystem(output11);
 #endif
+
 
 #if STEM_TYPE >= 5
   //  enhance the BH harmonic peaks
@@ -1254,18 +1305,31 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
 #endif
 
-#if 1
-  tempoInduction->addMarSystem(mng.create("PlotSink", "plotsink_hbh"));
-  tempoInduction->updControl("PlotSink/plotsink_hbh/mrs_string/filename",
-                             "out/hbh-combo.txt");
-  tempoInduction->updControl("PlotSink/plotsink_hbh/mrs_bool/sequence", false);
-  tempoInduction->updControl("PlotSink/plotsink_hbh/mrs_bool/single_file", true);
+#if WRITE_INTERMEDIATE
+  MarSystem *output12 = mng.create("PlotSink", "output12");
+  output12->updControl("mrs_string/filename",
+                             "out/output12.txt");
+  output12->updControl("mrs_bool/sequence", false);
+  output12->updControl("mrs_bool/single_file", true);
+  //output12->updControl("mrs_bool/no_ticks", true);
+  tempoInduction->addMarSystem(output12);
 #endif
 
 
   // Select the peaks
   tempoInduction->addMarSystem(mng.create("Peaker", "pkr1"));
   tempoInduction->addMarSystem(mng.create("MaxArgMax", "mxr1"));
+
+#if WRITE_INTERMEDIATE
+  MarSystem *output13 = mng.create("PlotSink", "output13");
+  output13->updControl("mrs_string/filename",
+                             "out/output13.txt");
+  output13->updControl("mrs_bool/sequence", false);
+  output13->updControl("mrs_bool/single_file", true);
+  //output13->updControl("mrs_bool/no_ticks", true);
+  tempoInduction->addMarSystem(output13);
+#endif
+
 
   // Using the tempo induction block calculate the Beat Locations
   beatTracker->addMarSystem(tempoInduction);
