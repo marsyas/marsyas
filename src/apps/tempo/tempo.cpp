@@ -76,7 +76,7 @@
 // 0: no doubling at all
 // 1: single threshold (bpm > x => double)
 // 2: SVM-based doubling
-#define POST_DOUBLING 0
+#define POST_DOUBLING 2
 
 // 0: baseline, do OSS and autocorrelation but that's it
 // 9: normal
@@ -1180,16 +1180,16 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
   mrs_real energy_total  = energy_in_histo_range(histo, factor,
                            0, 1.0 );
   mrs_real energy_under = energy_in_histo_range(histo, factor,
-                          0.0, bpm*(1.0 - tolerance) ) / energy_total;
+                          0.0, bpm - tolerance ) / energy_total;
   mrs_real energy_over  = energy_in_histo_range(histo, factor,
-                          bpm*(1.0 + tolerance), 1.0 ) / energy_total;
+                          bpm + tolerance, 1.0 ) / energy_total;
 
   mrs_real str05 = energy_in_histo_range(histo, factor,
-                                         0.5*bpm*(1.0 - tolerance), 0.5*bpm*(1.0 + tolerance) ) / energy_total;
+                                         0.5*bpm - tolerance, 0.5*bpm + tolerance) / energy_total;
   mrs_real str10 = energy_in_histo_range(histo, factor,
-                                         1.0*bpm*(1.0 - tolerance), 1.0*bpm*(1.0 + tolerance) ) / energy_total;
+                                         1.0*bpm - tolerance, 1.0*bpm + tolerance) / energy_total;
   mrs_real str20 = energy_in_histo_range(histo, factor,
-                                         2.0*bpm*(1.0 - tolerance), 2.0*bpm*(1.0 + tolerance) ) / energy_total;
+                                         2.0*bpm - tolerance, 2.0*bpm + tolerance ) / energy_total;
 
 // original
   info(0) = energy_under;
@@ -1198,9 +1198,9 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
   info(3) = str05;
   info(4) = str10;
   info(5) = str20;
-  info(6) = 1.0 - (str05 + str10 + str20);
-  info(7) = str05 / str10;
-  info(8) = str20 / str10;
+  info(6) = 1.0 - (str05 + energy_under);
+  info(7) = 1.0 - (str05 + energy_over);
+  info(8) = str10 - str05;
   //info(9) = num_non_zero;
 /*
   info(0) = energy_under;
@@ -1633,15 +1633,25 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   cout<<"heuristic tempo lag: "<<heuristic_tempo<<endl;
 
 
-  mrs_natural num_features = 1*INFO_SIZE + 2;
+  mrs_natural num_features = 3*INFO_SIZE + 2;
   realvec features(num_features);
   realvec features_normalized(num_features);
   features_normalized.setval(0.0);
 
   realvec from_bp = info_histogram(heuristic_tempo, bphase,
-                                   1.0, 0.05);
+                                   1.0, 5);
   for (int i=0; i<INFO_SIZE; i++) {
     features(i) = from_bp(i);
+  }
+  realvec from_bp2 = info_histogram(heuristic_tempo, bphase,
+                                   1.0, 10);
+  for (int i=0; i<INFO_SIZE; i++) {
+    features(INFO_SIZE+i) = from_bp2(i);
+  }
+  realvec from_bp3 = info_histogram(heuristic_tempo, bphase,
+                                   1.0, 15);
+  for (int i=0; i<INFO_SIZE; i++) {
+    features(2*INFO_SIZE + i) = from_bp3(i);
   }
 
   // convert from periods to BPM
@@ -1652,14 +1662,30 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   // generated through post-processing
   // scripts/large-evaluators/make-mf.py
-    const mrs_real mins[] = { 0.0268669, 0.0, 0.0606002, 6.77331e-83, 0.0730958, 0.0, 0.0211872, 6.94883e-83, 0.0, 50.1745, 0 };
-    const mrs_real maxs[] = { 0.791289, 0.876271, 0.973133, 0.428424, 0.978813, 0.48247, 0.88637, 1.19532, 1.81915, 208.807, 0 };
-    const mrs_real svm_weights[] = {
-         0, 1.972, 0, 2.5832, 
-         0, 0, -2.9743, 0,
-         0, -6.9021, 0,
+    const mrs_real mins[] = {
+     0.0353127, 0.0, 0.0967916, 6.77331e-83, 0.10583, 0.0, -0.164141, 0.152381, -0.148714, 50.1745,
+     0.0353127, 0.0, 0.0967916, 6.77331e-83, 0.10583, 0.0, -0.164141, 0.152381, -0.148714, 50.1745,
+     0.0353127, 0.0, 0.0967916, 6.77331e-83, 0.10583, 0.0, -0.164141, 0.152381, -0.148714, 50.1745,
+     0
+      };
+    const mrs_real maxs[] = {
+        0.825594, 0.84761, 0.782738, 0.428424, 0.81371, 0.354727, 0.964678, 1.0, 0.81371, 208.807,
+        0.825594, 0.84761, 0.782738, 0.428424, 0.81371, 0.354727, 0.964678, 1.0, 0.81371, 208.807,
+        0.825594, 0.84761, 0.782738, 0.428424, 0.81371, 0.354727, 0.964678, 1.0, 0.81371, 208.807,
+        0
     };
-    double svm_sum = 0.8543;
+    const mrs_real svm_weights[] = {
+         -3.2179, 0, 0, 3.3173,
+         0, 0, 0, 0,
+         0, -9.3441, 0,
+         -3.2179, 0, 0, 3.3173,
+         0, 0, 0, 0,
+         0, -9.3441, 0,
+         -3.2179, 0, 0, 3.3173,
+         0, 0, 0, 0,
+         0, -9.3441, 0,
+    };
+    double svm_sum = 1.58;
 
 
   for (int i=0; i<features.getCols(); i++) {
