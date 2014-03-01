@@ -76,11 +76,22 @@
 // 0: no doubling at all
 // 1: single threshold (bpm > x => double)
 // 2: SVM-based doubling
-#define POST_DOUBLING 2
+#define POST_DOUBLING 0
 
-// 0: baseline, do OSS and autocorrelation but that's it
-// 9: normal
+// 0: try a different flux
 #define STEM_TYPE 9
+
+// 0: baseline (FFT 1024)
+// 1: FFT 512
+// 2: FFT 256
+// 3: FFT 1024
+// 4: FFT 2048
+//
+// 5: remove filter
+// 6: autocorrelation 2.0
+// 7: autocorrelation 0.4
+// 8: autocorrelation 0.6
+#define STEM_SECOND 6
 
 
 #define WRITE_INTERMEDIATE 0
@@ -939,7 +950,10 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
 #endif
 
 
+#if STEM_SECOND == 5
+#else
   fluxnet->addMarSystem(mng.create("Filter", "filt1"));
+#endif
   //fluxnet->addMarSystem(mng.create("Filter", "filt2"));
   //fluxnet->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
   //
@@ -1051,7 +1065,16 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
   //   updated values, for variable sample rates.  ms = milliseconds
   //   these will be rounded up to the nearest power of 2 (in samples)
   mrs_real oss_hop_ms = 2.9;     // for flux calculation
-  mrs_real oss_win_ms = 2*5.8;     // for flux calculation
+  mrs_real oss_win_ms = 4*5.8;     // for flux calculation
+#if STEM_SECOND == 2
+  oss_win_ms = 5.8;     // for flux calculation
+#endif
+#if STEM_SECOND == 3
+  oss_win_ms = 4*5.8;     // for flux calculation
+#endif
+#if STEM_SECOND == 4
+  oss_win_ms = 8*5.8;     // for flux calculation
+#endif
 
   mrs_real srate = onset_strength->getControl("mrs_real/file_srate")->to<mrs_real>();
   mrs_natural oss_hop_size = (mrs_natural) next_power_two(srate * oss_hop_ms * 0.001);
@@ -1117,7 +1140,7 @@ mrs_real energy_in_histo_range(realvec histo,
   return sum;
 }
 
-const int INFO_SIZE = 9;
+const int INFO_SIZE = 6;
 realvec info_histogram(mrs_natural bpm, realvec histo,
                        mrs_real factor, mrs_real tolerance)
 {
@@ -1186,22 +1209,18 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
 
   mrs_real str05 = energy_in_histo_range(histo, factor,
                                          0.5*bpm - tolerance, 0.5*bpm + tolerance) / energy_total;
-  mrs_real str10 = energy_in_histo_range(histo, factor,
-                                         1.0*bpm - tolerance, 1.0*bpm + tolerance) / energy_total;
-  mrs_real str20 = energy_in_histo_range(histo, factor,
-                                         2.0*bpm - tolerance, 2.0*bpm + tolerance ) / energy_total;
+  //mrs_real str10 = energy_in_histo_range(histo, factor,
+  //                                       1.0*bpm - tolerance, 1.0*bpm + tolerance) / energy_total;
+  //mrs_real str20 = energy_in_histo_range(histo, factor,
+  //                                       2.0*bpm - tolerance, 2.0*bpm + tolerance ) / energy_total;
 
 // original
   info(0) = energy_under;
   info(1) = energy_over;
-  info(2) = 1.0 - (energy_under + energy_over);
-  info(3) = str05;
-  info(4) = str10;
-  info(5) = str20;
-  info(6) = 1.0 - (str05 + energy_under);
-  info(7) = 1.0 - (str05 + energy_over);
-  info(8) = str10 - str05;
-  //info(9) = num_non_zero;
+  info(2) = str05;
+  info(3) = 1.0 - (str05 + energy_over);
+  info(4) = 1.0 - (str05 + energy_over + energy_under);
+  info(5) = 1.0 - (str05 + energy_under);
 /*
   info(0) = energy_under;
   info(1) = str05;
@@ -1353,9 +1372,8 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
 
   //mrs_natural hop_ms = 5.8;     // for flux calculation
-  //mrs_natural bhop_ms = 5.8;    // for onset strength signal
+  mrs_natural bhop_ms = 5.8;    // for onset strength signal
   mrs_real hop_ms = 2.9;     // for flux calculation
-  mrs_real bhop_ms = 2.9;    // for onset strength signal
   mrs_real bwin_ms = 46.4; // 46.4;	 // for onset strength signal
   // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
   mrs_natural nCandidates = 10;  // number of tempo candidates
@@ -1369,19 +1387,20 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   mrs_natural bwinSize = (mrs_natural) next_power_two(srate * bwin_ms * 0.001);
 
   mrs_real oss_sr = srate / ((float) hopSize);
-
-#if 0
-  cout<<"sizes:"<<endl;
-  cout<<hopSize<<endl;
-  cout<<bhopSize<<endl;
-  cout<<bwinSize<<"\t"<<srate * bwin_ms * 0.001<<endl;
-#endif
-
-
   // parameters for BH pick peaking
   // (yes, these should be "reversed" like this:)
   const mrs_natural minlag = (mrs_natural) (oss_sr * 60.0 / MAX_BPM);
   const mrs_natural maxlag = (mrs_natural) (oss_sr * 60.0 / MIN_BPM)+1;
+
+#if 1
+  cout<<"oss_sr: "<<oss_sr<<endl;
+  cout<<"sizes:"<<endl;
+  cout<<hopSize<<endl;
+  cout<<bhopSize<<endl;
+  cout<<bwinSize<<"\t"<<srate * bwin_ms * 0.001<<endl;
+  cout<<"minlag, maxlag\t"<<minlag<<"\t"<<maxlag<<endl;
+#endif
+
 
   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 2);
   tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
@@ -1396,11 +1415,18 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
 
   // autocorrelation parameters
-#if STEM_TYPE >= 2
   tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.5);
-#else
-  // do nothing; leave magcompress at 2.0
+#if STEM_SECOND == 6
+  tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 2.0);
 #endif
+#if STEM_SECOND == 7
+  tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.4);
+#endif
+#if STEM_SECOND == 8
+  tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.6);
+#endif
+
+
   tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to0", true);
   tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to1", true);
 
@@ -1633,25 +1659,15 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   cout<<"heuristic tempo lag: "<<heuristic_tempo<<endl;
 
 
-  mrs_natural num_features = 3*INFO_SIZE + 2;
+  mrs_natural num_features = 1*INFO_SIZE + 2;
   realvec features(num_features);
   realvec features_normalized(num_features);
   features_normalized.setval(0.0);
 
   realvec from_bp = info_histogram(heuristic_tempo, bphase,
-                                   1.0, 5);
-  for (int i=0; i<INFO_SIZE; i++) {
-    features(i) = from_bp(i);
-  }
-  realvec from_bp2 = info_histogram(heuristic_tempo, bphase,
-                                   1.0, 10);
-  for (int i=0; i<INFO_SIZE; i++) {
-    features(INFO_SIZE+i) = from_bp2(i);
-  }
-  realvec from_bp3 = info_histogram(heuristic_tempo, bphase,
                                    1.0, 15);
   for (int i=0; i<INFO_SIZE; i++) {
-    features(2*INFO_SIZE + i) = from_bp3(i);
+    features(i) = from_bp(i);
   }
 
   // convert from periods to BPM
@@ -1662,32 +1678,16 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   // generated through post-processing
   // scripts/large-evaluators/make-mf.py
-    const mrs_real mins[] = {
-     0.0353127, 0.0, 0.0967916, 6.77331e-83, 0.10583, 0.0, -0.164141, 0.152381, -0.148714, 50.1745,
-     0.0353127, 0.0, 0.0967916, 6.77331e-83, 0.10583, 0.0, -0.164141, 0.152381, -0.148714, 50.1745,
-     0.0353127, 0.0, 0.0967916, 6.77331e-83, 0.10583, 0.0, -0.164141, 0.152381, -0.148714, 50.1745,
-     0
-      };
-    const mrs_real maxs[] = {
-        0.825594, 0.84761, 0.782738, 0.428424, 0.81371, 0.354727, 0.964678, 1.0, 0.81371, 208.807,
-        0.825594, 0.84761, 0.782738, 0.428424, 0.81371, 0.354727, 0.964678, 1.0, 0.81371, 208.807,
-        0.825594, 0.84761, 0.782738, 0.428424, 0.81371, 0.354727, 0.964678, 1.0, 0.81371, 208.807,
-        0
+    const mrs_real mins[] = { 0.0166565, 0.0, 9.37217e-79, 0.173103, -0.208325, -0.208325, 50.1745, 0 };
+    const mrs_real maxs[] = { 0.803017, 0.826838, 0.533698, 1.0, 0.918201, 0.983284, 208.807, 0 };
+     const mrs_real svm_weights[] = {
+         -3.0606, 1.9087, 3.4649,
+        0,0,0,
+        -9.8383,
+         0,
     };
-    const mrs_real svm_weights[] = {
-         -3.2179, 0, 0, 3.3173,
-         0, 0, 0, 0,
-         0, -9.3441, 0,
-         -3.2179, 0, 0, 3.3173,
-         0, 0, 0, 0,
-         0, -9.3441, 0,
-         -3.2179, 0, 0, 3.3173,
-         0, 0, 0, 0,
-         0, -9.3441, 0,
-    };
-    double svm_sum = 1.58;
-
-
+    double svm_sum = 1.1731;
+   
   for (int i=0; i<features.getCols(); i++) {
     if (mins[i] == maxs[i]) {
       continue;
