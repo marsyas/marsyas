@@ -91,7 +91,14 @@
 // 6: autocorrelation 2.0
 // 7: autocorrelation 0.4
 // 8: autocorrelation 0.6
-#define STEM_SECOND 6
+//
+// == 10: disable harmonic enhancement
+// == 11: only harmonic 2
+// == 12: harmonics 2 3 4
+//
+// == 13: disable beat phase
+// == 14: keep beat phase, but ignore strength
+#define STEM_SECOND 14
 
 
 #define WRITE_INTERMEDIATE 0
@@ -1326,12 +1333,19 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
 
 
-#if STEM_TYPE >= 5
   //  enhance the BH harmonic peaks
+#if STEM_SECOND == 10
+#else
   MarSystem* hfanout = mng.create("Fanout", "hfanout");
   hfanout->addMarSystem(mng.create("Gain", "id1"));
   hfanout->addMarSystem(mng.create("SimpleStretch", "tsc1"));
+#if STEM_SECOND == 11
+#else
   hfanout->addMarSystem(mng.create("SimpleStretch", "tsc2"));
+#endif
+#if STEM_SECOND == 12
+  hfanout->addMarSystem(mng.create("SimpleStretch", "tsc3"));
+#endif
   tempoInduction->addMarSystem(hfanout);
   tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
 #endif
@@ -1364,15 +1378,15 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   // Using the tempo induction block calculate the Beat Locations
   beatTracker->addMarSystem(tempoInduction);
-#if STEM_TYPE > 5
+#if STEM_SECOND == 13
+#else
   // beatTracker->addMarSystem(mng.create("ShiftInput/si3"));
   beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
-
   beatTracker->addMarSystem(mng.create("Gain/id"));
 #endif
 
   //mrs_natural hop_ms = 5.8;     // for flux calculation
-  mrs_natural bhop_ms = 5.8;    // for onset strength signal
+  mrs_real bhop_ms = 5.8;    // for onset strength signal
   mrs_real hop_ms = 2.9;     // for flux calculation
   mrs_real bwin_ms = 46.4; // 46.4;	 // for onset strength signal
   // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
@@ -1392,7 +1406,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   const mrs_natural minlag = (mrs_natural) (oss_sr * 60.0 / MAX_BPM);
   const mrs_natural maxlag = (mrs_natural) (oss_sr * 60.0 / MIN_BPM)+1;
 
-#if 1
+#if 0
   cout<<"oss_sr: "<<oss_sr<<endl;
   cout<<"sizes:"<<endl;
   cout<<hopSize<<endl;
@@ -1439,9 +1453,16 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   tempoInduction->updControl("BeatHistogram/histo/mrs_real/alpha", 0.0);
 
 */
-#if STEM_TYPE >= 5
+#if STEM_SECOND == 10
+#else
   tempoInduction->updControl("Fanout/hfanout/SimpleStretch/tsc1/mrs_real/factor", 2.0);
+#if STEM_SECOND == 11
+#else
   tempoInduction->updControl("Fanout/hfanout/SimpleStretch/tsc2/mrs_real/factor", 4.0);
+#endif
+#if STEM_SECOND == 12
+  tempoInduction->updControl("Fanout/hfanout/SimpleStretch/tsc3/mrs_real/factor", 3.0);
+#endif
   tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
 #endif
 
@@ -1457,7 +1478,8 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   // of the tempo induction phase by cross-correlating pulse trains
   // with the onset strength signal
   //beatTracker->updControl("BeatPhase/beatphase/mrs_real/factor", (mrs_real)factor);
-#if STEM_TYPE >= 3
+#if STEM_SECOND == 13
+#else
   beatTracker->updControl("BeatPhase/beatphase/mrs_real/factor", (mrs_real)1);
   beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bhopSize", bhopSize);
   beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bwinSize", bwinSize);
@@ -1560,40 +1582,24 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
 
     // store best score in bphase
-#if STEM_TYPE >= 3
+#if STEM_SECOND == 13
+    tempos = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
+    tempos(0) = tempos(1); // weird flip due to format of MaxArgMax vs. BeatPhase
+    temposcores(0) = 1.0;
+
+#else
     tempos = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempos")->to<mrs_realvec>();
     temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
+#endif
+
+#if STEM_SECOND == 14
+    temposcores(0) = 1.0;
+#endif
 
 #if WRITE_INTERMEDIATE
     out_bp << tempos(0) << "\t" << temposcores(0) <<endl;
 #endif
 
-#else
-    tempos = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
-    tempos(0) = tempos(1); // weird flip due to format of MaxArgMax vs. BeatPhase
-
-
-    mrs_realvec acr = beatTracker->getctrl("FlowThru/tempoInduction/AutoCorrelation/acr/mrs_realvec/processedData")->to<mrs_realvec>();
-
-    mrs_natural cands = 8;
-    for (int k=0; k < cands; k++)
-    {
-        mrs_natural peak_lag = tempos(2*k+1) + 0.5;
-        mrs_real ac_total_energy = 0.0;
-        for (int i=minlag; i<maxlag; i++) {
-            ac_total_energy += acr(i) * acr(i);
-        }
-        mrs_real ac_peak_energy = acr(peak_lag) * acr(peak_lag);
-
-        mrs_real beatstrength = ac_peak_energy / ac_total_energy;
-
-        bphase_add.setval(0.0);
-        for (int i=0; i<BPHASE_SIZE; i++) {
-            bphase_add(i) = beatstrength * gaussian(GAUSSIAN_CENTER - peak_lag+ i);
-        }
-        bphase = bphase + bphase_add;
-    }
-#endif
 
 #if STEM_TYPE > 1
     mrs_natural lag = tempos(0) + 0.5; // not quite an integer!
