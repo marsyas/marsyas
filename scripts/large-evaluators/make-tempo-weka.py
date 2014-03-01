@@ -55,13 +55,10 @@ FEATURES = [
 ###
     'energy_under',
     'energy_over',
-    'energy_residual',
     'str05',
-    'str10',
-    'str20',
-    'str_residual',
-    'rel2',
-    'rel3',
+    'minus_str05_eo',
+    'minus_str05_eo_eu',
+    'minus_str05_eu',
     ]
 
 if INCLUDE_05:
@@ -108,8 +105,8 @@ for line in lines:
         for i in range(1,len(sl)-1):
             vec[i-1] = float(sl[i])
         minmax.append(vec)
-    #if not line.startswith("features_orig:"):
-    if not line.startswith("features_normalized:"):
+    if not line.startswith("features_orig:"):
+    #if not line.startswith("features_normalized:"):
         continue
     #detected_norm = float(sl[-2])
     grounds.append(ground_truth)
@@ -154,12 +151,12 @@ for line in lines:
         #if extended_harmonic_accuracy(mult*detected, ground_truth) == 0:
         if accuracy(mult*detected, ground_truth) == 0:
             cause_problems += 1
-            if mult*detected > 210:
+            #if mult*detected > 210:
                 # don't worry; it won't be doubled anyway
-                mult = 0
-            else:
+            #    mult = 0
+            #else:
                 # don't multipy value; penalize MIREX but keep HARMONIC
-                mult = 1.0
+            mult = 1.0
     total += 1
     
     vec = numpy.zeros(len(sl)-1+1-1)

@@ -16,7 +16,8 @@ import pylab
 #print "FIR, 15"
 N = 15
 #b = scipy.signal.firwin(N, 3.0 / (344.53125/2.0))
-b = scipy.signal.firwin(N, 7.0 / (344.53125/2.0))
+#b = scipy.signal.firwin(N, 7.0 / ((44100.0/256.0)/2.0))
+b = scipy.signal.firwin(N, 7.0 / ((44100.0/512.0)/2.0))
 a = numpy.ones(len(b))
 #b = scipy.signal.firwin2(N,
 #    [0.0, 4.0 / (344.53125/2.0/2.0), 1.0],
