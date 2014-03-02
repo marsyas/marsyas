@@ -103,8 +103,9 @@
 // == 21: gaussian std 1
 // == 22: gaussian std 2
 // == 23: gaussian std 5
-// == 24: gaussian std 10
-#define STEM_SECOND 20
+// == 24: gaussian std 8
+// == 25: gaussian std 12
+#define STEM_SECOND 24
 
 
 #define WRITE_INTERMEDIATE 0
@@ -1553,6 +1554,12 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
 #if STEM_SECOND == 23
     gaussian_std = 5;
+#endif
+#if STEM_SECOND == 24
+    gaussian_std = 8;
+#endif
+#if STEM_SECOND == 25
+    gaussian_std = 12;
 #endif
     const mrs_natural GAUSSIAN_CENTER = 1000;
     mrs_realvec gaussian(2*GAUSSIAN_CENTER+1);
