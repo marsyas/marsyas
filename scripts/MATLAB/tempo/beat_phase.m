@@ -50,17 +50,20 @@ for i = 1:num_frames
 			for b = 0:3
 				b = int32(b);
 				ind = phase - b*period;
+				% this is I_{ P, phi, 1 }
 				if ind >= 0
 					mag = mag + window(ind+1);
 				end
 				%printf("\t%i\t%f\n", ind, mag);
 
+				% this is I_{ P, phi, 2 }
 				ind = phase - b*period*2;
 				if ind >= 0
 					mag = mag + 0.5*window(ind+1);
 				end
 				%printf("\t%i\t%f\n", ind, mag);
 
+				% this is I_{ P, phi, 1.5 }
 				ind = phase - idivide(b*period*3, 2);
 				if ind >= 0
 					mag = mag + 0.5*window(ind+1);

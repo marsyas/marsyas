@@ -13,16 +13,21 @@ import subprocess
 import pipes
 
 def single_file_scheirer(filename):
+    #print "-----"
     cmd = "scheirer-tapping -infile %s " % (
         pipes.quote(filename))
     results = subprocess.check_output(cmd, shell=True).splitlines()
     bpm = 0
-    for line in results[-3:]:
+    for line in results[-50:]:
         try:
-            lastline = results[-1].split()
-            bpm = lastline[3]
+            splitline = line.split()
+            bpm_cand = splitline[3]
+            if bpm_cand > 0:
+                bpm = bpm_cand
+                #print "BPM:", bpm
         except:
             pass
+    #print "final BPM:", bpm
     return bpm
 
 
@@ -73,7 +78,7 @@ def main(mf_dir, output_dir):
         datum = (coll, output_dir)
         data.append(datum)
 
-    manager = eval_manager.EvalManager(4)
+    manager = eval_manager.EvalManager(3)
     if DEBUG:
         manager.task_block(scheirer, data)
     else:

@@ -25,16 +25,19 @@ def calc_pulse_trains(bpm, window, sr):
         #print
         for b in range(4):
             ind = int(phase - b*period)
+            # this is I_{ P, phi, 1)
             if ind >= 0:
                 mag += window[ind]
             #print "\t%i\t%f" % (ind, mag)
 
+            # this is I_{ P, phi, 2)
             # slow down by 2
             ind = int(phase - b*period*2)
             if ind >= 0:
                 mag += 0.5*window[ind]
             #print "\t%i\t%f" % (ind, mag)
 
+            # this is I_{ P, phi, 1.5)
             # slow down by 3
             ind = int(phase - b*period*3/2)
             if ind >= 0:
