@@ -5,7 +5,7 @@ WRITE_CACHE = 0;
 CACHE_OSS = 0;
 CACHE_BH = 0;
 CACHE_BP = 0;
-TEST_REFERENCE = 0;
+TEST_REFERENCE = 1;
 PLOT = 0;
 
 if PLOT
@@ -44,12 +44,16 @@ if TEST_REFERENCE
 		printf( 'Testing... OSS ok, maximum deviation %.2g\n', maxerr);
 	else
 		disp ('Testing... OSS FAILED');
-		plot(python_oss - oss, 'r')
+		hold on;
+		plot(python_oss)
+		plot(oss, 'g')
+		%plot(python_oss - oss, 'r')
 		pause
 		exit(1)
 	end
 end
 
+exit(1)
 
 %%%%%%%%% BH
 

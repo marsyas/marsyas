@@ -4,7 +4,7 @@ class Defs:
         self.BPM_MIN = 50
         self.BPM_MAX = 210  # marsyas
         
-        self.OSS_WINDOWSIZE = 512
+        self.OSS_WINDOWSIZE = 1024
         self.OSS_HOPSIZE = 128
         
         self.OSS_LOWPASS_CUTOFF = 7.0 # Hz
@@ -19,7 +19,7 @@ class Defs:
 
         self.DOUBLE_TYPE = 2
  
-        self.WRITE_ONSETS = 0
+        self.WRITE_ONSETS = 1
         self.WRITE_BH = 0
         self.WRITE_BP = 1
         self.WRITE_LATE = 0
