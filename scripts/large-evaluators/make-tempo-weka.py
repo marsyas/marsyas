@@ -105,8 +105,8 @@ for line in lines:
         for i in range(1,len(sl)-1):
             vec[i-1] = float(sl[i])
         minmax.append(vec)
-    if not line.startswith("features_orig:"):
-    #if not line.startswith("features_normalized:"):
+    #if not line.startswith("features_orig:"):
+    if not line.startswith("features_normalized:"):
         continue
     #detected_norm = float(sl[-2])
     grounds.append(ground_truth)

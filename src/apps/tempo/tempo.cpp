@@ -76,28 +76,28 @@
 // 0: no doubling at all
 // 1: single threshold (bpm > x => double)
 // 2: SVM-based doubling
-#define POST_DOUBLING 0
+#define POST_DOUBLING 2
 
 // 0: try a different flux
 #define STEM_TYPE 9
 
 // 0: baseline (FFT 1024)
-// 1: FFT 512
-// 2: FFT 256
-// 3: FFT 1024
-// 4: FFT 2048
+// == 1: FFT 512
+// == 2: FFT 256
+// // // // don't need  3: FFT 1024
+// == 4: FFT 2048
 //
-// 5: remove filter
-// 6: autocorrelation 2.0
-// 7: autocorrelation 0.4
-// 8: autocorrelation 0.6
+// == 5: remove filter
+// == 6: autocorrelation 2.0
+// == 7: autocorrelation 0.4
+// == 8: autocorrelation 0.6
+// == 9: autocorrelation 0.3
 //
 // == 10: disable harmonic enhancement
 // == 11: only harmonic 2
 // == 12: harmonics 2 3 4
 //
 // == 13: disable beat phase
-// == 14: keep beat phase, but ignore strength
 //
 // == 20: no gaussian (single impulse)
 // == 21: gaussian std 1
@@ -105,6 +105,7 @@
 // == 23: gaussian std 5
 // == 24: gaussian std 8
 // == 25: gaussian std 12
+// == 26: gaussian std 15
 #define STEM_SECOND 0
 
 
@@ -1080,6 +1081,9 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
   //   these will be rounded up to the nearest power of 2 (in samples)
   mrs_real oss_hop_ms = 2.9;     // for flux calculation
   mrs_real oss_win_ms = 4*5.8;     // for flux calculation
+#if STEM_SECOND == 1
+  oss_win_ms = 2*5.8;     // for flux calculation
+#endif
 #if STEM_SECOND == 2
   oss_win_ms = 5.8;     // for flux calculation
 #endif
@@ -1445,6 +1449,9 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if STEM_SECOND == 8
   tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.6);
 #endif
+#if STEM_SECOND == 9
+  tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.3);
+#endif
 
 
   tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to0", true);
@@ -1560,6 +1567,9 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if STEM_SECOND == 25
     gaussian_std = 12;
 #endif
+#if STEM_SECOND == 26
+    gaussian_std = 15;
+#endif
     const mrs_natural GAUSSIAN_CENTER = 1000;
     mrs_realvec gaussian(2*GAUSSIAN_CENTER+1);
     static const mrs_real sqrt_2pi = 2.5066282746310002;
@@ -1606,15 +1616,11 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if STEM_SECOND == 13
     tempos = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
     tempos(0) = tempos(1); // weird flip due to format of MaxArgMax vs. BeatPhase
-    temposcores(0) = 1.0;
+    //temposcores(0) = 1.0;
 
 #else
     tempos = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempos")->to<mrs_realvec>();
-    temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
-#endif
-
-#if STEM_SECOND == 14
-    temposcores(0) = 1.0;
+    //temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
 #endif
 
 #if WRITE_INTERMEDIATE
@@ -1628,11 +1634,10 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     bphase(bpm) += beatstrength;
 #else
     mrs_natural lag = tempos(0) + 0.5; // not quite an integer!
-    mrs_real beatstrength = temposcores(0);
 
     bphase_add.setval(0.0);
     for (int i=0; i<BPHASE_SIZE; i++) {
-        bphase_add(i) = beatstrength * gaussian(GAUSSIAN_CENTER - lag + i);
+        bphase_add(i) = gaussian(GAUSSIAN_CENTER - lag + i);
     }
     bphase = bphase + bphase_add;
 #if WRITE_INTERMEDIATE
@@ -1705,15 +1710,15 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   // generated through post-processing
   // scripts/large-evaluators/make-mf.py
-    const mrs_real mins[] = { 0.0166565, 0.0, 9.37217e-79, 0.173103, -0.208325, -0.208325, 50.1745, 0 };
-    const mrs_real maxs[] = { 0.803017, 0.826838, 0.533698, 1.0, 0.918201, 0.983284, 208.807, 0 };
+    const mrs_real mins[] = { 0.014734, 0.0, 2.4047e-79, 0.158499, -0.257324, -0.257324, 50.1745, 0 };
+    const mrs_real maxs[] = { 0.841312, 0.841433, 0.559607, 1.0, 0.907446, 0.985208, 208.807, 0 };
      const mrs_real svm_weights[] = {
-         -3.0606, 1.9087, 3.4649,
+        -3.1996, 0, 3.4952,
         0,0,0,
-        -9.8383,
+        -9.3999,
          0,
     };
-    double svm_sum = 1.1731;
+    double svm_sum = 1.2799;
    
   for (int i=0; i<features.getCols(); i++) {
     if (mins[i] == maxs[i]) {
@@ -1778,7 +1783,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
 
 #if POST_DOUBLING == 1
-  if (heuristic_tempo <= 69.5) {
+  if (heuristic_tempo <= 71.9) {
     mult = 2.0;
   }
 #endif
