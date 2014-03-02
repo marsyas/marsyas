@@ -82,15 +82,15 @@
 #define STEM_TYPE 9
 
 // 0: baseline (FFT 1024)
-// 1: FFT 512
-// 2: FFT 256
-// 3: FFT 1024
-// 4: FFT 2048
+// == 1: FFT 512
+// == 2: FFT 256
+// // // // don't need  3: FFT 1024
+// == 4: FFT 2048
 //
-// 5: remove filter
-// 6: autocorrelation 2.0
-// 7: autocorrelation 0.4
-// 8: autocorrelation 0.6
+// == 5: remove filter
+// == 6: autocorrelation 2.0
+// == 7: autocorrelation 0.4
+// == 8: autocorrelation 0.6
 //
 // == 10: disable harmonic enhancement
 // == 11: only harmonic 2
@@ -1081,6 +1081,9 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
   //   these will be rounded up to the nearest power of 2 (in samples)
   mrs_real oss_hop_ms = 2.9;     // for flux calculation
   mrs_real oss_win_ms = 4*5.8;     // for flux calculation
+#if STEM_SECOND == 1
+  oss_win_ms = 2*5.8;     // for flux calculation
+#endif
 #if STEM_SECOND == 2
   oss_win_ms = 5.8;     // for flux calculation
 #endif
