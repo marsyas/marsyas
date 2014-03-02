@@ -105,6 +105,7 @@
 // == 23: gaussian std 5
 // == 24: gaussian std 8
 // == 25: gaussian std 12
+// == 26: gaussian std 15
 #define STEM_SECOND 0
 
 
@@ -1606,15 +1607,11 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if STEM_SECOND == 13
     tempos = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
     tempos(0) = tempos(1); // weird flip due to format of MaxArgMax vs. BeatPhase
-    temposcores(0) = 1.0;
+    //temposcores(0) = 1.0;
 
 #else
     tempos = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempos")->to<mrs_realvec>();
-    temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
-#endif
-
-#if STEM_SECOND == 14
-    temposcores(0) = 1.0;
+    //temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
 #endif
 
 #if WRITE_INTERMEDIATE
@@ -1628,11 +1625,10 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     bphase(bpm) += beatstrength;
 #else
     mrs_natural lag = tempos(0) + 0.5; // not quite an integer!
-    mrs_real beatstrength = temposcores(0);
 
     bphase_add.setval(0.0);
     for (int i=0; i<BPHASE_SIZE; i++) {
-        bphase_add(i) = beatstrength * gaussian(GAUSSIAN_CENTER - lag + i);
+        bphase_add(i) = gaussian(GAUSSIAN_CENTER - lag + i);
     }
     bphase = bphase + bphase_add;
 #if WRITE_INTERMEDIATE
