@@ -105,7 +105,7 @@
 // == 23: gaussian std 5
 // == 24: gaussian std 8
 // == 25: gaussian std 12
-#define STEM_SECOND 24
+#define STEM_SECOND 0
 
 
 #define WRITE_INTERMEDIATE 0
@@ -1392,22 +1392,21 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   beatTracker->addMarSystem(mng.create("Gain/id"));
 #endif
 
-  //mrs_natural hop_ms = 5.8;     // for flux calculation
-  mrs_real bhop_ms = 5.8;    // for onset strength signal
   mrs_real hop_ms = 2.9;     // for flux calculation
-  mrs_real bwin_ms = 46.4; // 46.4;	 // for onset strength signal
+  mrs_real bhop_s = 0.37;   // seconds for beat detection hops
+  mrs_real bwin_s = 5.8;    // seconds for beat detection window
   // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
   mrs_natural nCandidates = 10;  // number of tempo candidates
   //mrs_natural factor = 4;
 
   // set the filename, hop and window size
   mrs_real srate = onset_strength->getControl("mrs_real/file_srate")->to<mrs_real>();
-
   mrs_natural hopSize = (mrs_natural) next_power_two(srate * hop_ms * 0.001);
-  mrs_natural bhopSize = (mrs_natural) next_power_two(srate * bhop_ms * 0.001);
-  mrs_natural bwinSize = (mrs_natural) next_power_two(srate * bwin_ms * 0.001);
-
   mrs_real oss_sr = srate / ((float) hopSize);
+
+  mrs_natural bhopSize = (mrs_natural) next_power_two(oss_sr * bhop_s);
+  mrs_natural bwinSize = (mrs_natural) next_power_two(oss_sr * bwin_s);
+
   // parameters for BH pick peaking
   // (yes, these should be "reversed" like this:)
   const mrs_natural minlag = (mrs_natural) (oss_sr * 60.0 / MAX_BPM);
@@ -1418,7 +1417,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   cout<<"sizes:"<<endl;
   cout<<hopSize<<endl;
   cout<<bhopSize<<endl;
-  cout<<bwinSize<<"\t"<<srate * bwin_ms * 0.001<<endl;
+  cout<<bwinSize<<"\t"<<oss_sr * bwin_s <<endl;
   cout<<"minlag, maxlag\t"<<minlag<<"\t"<<maxlag<<endl;
 #endif
 
