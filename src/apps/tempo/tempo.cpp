@@ -98,7 +98,13 @@
 //
 // == 13: disable beat phase
 // == 14: keep beat phase, but ignore strength
-#define STEM_SECOND 14
+//
+// == 20: no gaussian (single impulse)
+// == 21: gaussian std 1
+// == 22: gaussian std 2
+// == 23: gaussian std 5
+// == 24: gaussian std 10
+#define STEM_SECOND 20
 
 
 #define WRITE_INTERMEDIATE 0
@@ -1539,6 +1545,15 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
     // single Gaussian PDF
     mrs_real gaussian_std = 10;
+#if STEM_SECOND == 21
+    gaussian_std = 1;
+#endif
+#if STEM_SECOND == 22
+    gaussian_std = 2;
+#endif
+#if STEM_SECOND == 23
+    gaussian_std = 5;
+#endif
     const mrs_natural GAUSSIAN_CENTER = 1000;
     mrs_realvec gaussian(2*GAUSSIAN_CENTER+1);
     static const mrs_real sqrt_2pi = 2.5066282746310002;
@@ -1601,7 +1616,11 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
 
 
-#if STEM_TYPE > 1
+#if STEM_SECOND == 20
+    mrs_natural bpm = tempos(0) + 0.5;
+    mrs_real beatstrength = 1.0;
+    bphase(bpm) += beatstrength;
+#else
     mrs_natural lag = tempos(0) + 0.5; // not quite an integer!
     mrs_real beatstrength = temposcores(0);
 
@@ -1614,10 +1633,6 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     bphase_add.writeText("bphase_add.txt");
     bphase.writeText("bphase_full.txt");
 #endif
-#else
-    mrs_natural bpm = tempos(0) + 0.5;
-    mrs_real beatstrength = 1.0;
-    bphase(bpm) += beatstrength;
 #endif
 
 #if 0
