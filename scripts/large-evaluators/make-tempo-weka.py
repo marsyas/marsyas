@@ -8,7 +8,7 @@ PLOT = True
 PLOT = False
 
 INCLUDE_05 = False
-#INCLUDE_05 = True
+INCLUDE_05 = True
 
 def accuracy(bpm_detected, bpm_ground):
     tolerance = 0.04
@@ -50,15 +50,23 @@ out = open("weka.arff", 'w')
 INTRO_BEGIN = """@relation mults"""
 FEATURES = [
 ### minimal
-    #'energy_under',
-    #'str05',
-###
     'energy_under',
-    'energy_over',
     'str05',
-    'minus_str05_eo',
-    'minus_str05_eo_eu',
-    'minus_str05_eu',
+###
+    #'energy_under',
+    #'energy_over',
+    #'str05',
+    #'minus_str05_eo',
+    #'minus_str05_eo_eu',
+    #'minus_str05_eu',
+    #'num_peaks',
+    #'b_energy_under',
+    #'b_energy_over',
+    #'b_str05',
+    #'b_minus_str05_eo',
+    #'b_minus_str05_eo_eu',
+    #'b_minus_str05_eu',
+    #'b_num_peaks',
     ]
 
 if INCLUDE_05:

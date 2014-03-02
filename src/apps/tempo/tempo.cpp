@@ -1158,7 +1158,7 @@ mrs_real energy_in_histo_range(realvec histo,
   return sum;
 }
 
-const int INFO_SIZE = 6;
+const int INFO_SIZE = 2;
 realvec info_histogram(mrs_natural bpm, realvec histo,
                        mrs_real factor, mrs_real tolerance)
 {
@@ -1205,25 +1205,24 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
   }
 
   // number of values
-  /*
-  mrs_natural num_non_zero = 0;
+/*
+  mrs_natural num_peaks = 0;
   for (int i=1; i < size-1; i++)
   {
-    if (histo(i) > 0)
+    if ((histo(i-1) < histo(i)) && (histo(i) > histo(i+1)))
     {
-      num_non_zero += 1;
+      num_peaks += 1;
     }
   }
-  */
-
+*/
 
   // energy over / under
   mrs_real energy_total  = energy_in_histo_range(histo, factor,
                            0, 1.0 );
   mrs_real energy_under = energy_in_histo_range(histo, factor,
                           0.0, bpm - tolerance ) / energy_total;
-  mrs_real energy_over  = energy_in_histo_range(histo, factor,
-                          bpm + tolerance, 1.0 ) / energy_total;
+  //mrs_real energy_over  = energy_in_histo_range(histo, factor,
+  //                        bpm + tolerance, 1.0 ) / energy_total;
 
   mrs_real str05 = energy_in_histo_range(histo, factor,
                                          0.5*bpm - tolerance, 0.5*bpm + tolerance) / energy_total;
@@ -1233,16 +1232,16 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
   //                                       2.0*bpm - tolerance, 2.0*bpm + tolerance ) / energy_total;
 
 // original
+/*
   info(0) = energy_under;
   info(1) = energy_over;
   info(2) = str05;
   info(3) = 1.0 - (str05 + energy_over);
   info(4) = 1.0 - (str05 + energy_over + energy_under);
   info(5) = 1.0 - (str05 + energy_under);
-/*
+  */
   info(0) = energy_under;
   info(1) = str05;
-*/
   return info;
 }
 
@@ -1697,10 +1696,11 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   features_normalized.setval(0.0);
 
   realvec from_bp = info_histogram(heuristic_tempo, bphase,
-                                   1.0, 15);
+                                   1.0, 10);
   for (int i=0; i<INFO_SIZE; i++) {
     features(i) = from_bp(i);
   }
+
 
   // convert from periods to BPM
   heuristic_tempo = 60.0 * oss_sr / heuristic_tempo;
@@ -1710,16 +1710,9 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   // generated through post-processing
   // scripts/large-evaluators/make-mf.py
-    const mrs_real mins[] = { 0.014734, 0.0, 2.4047e-79, 0.158499, -0.257324, -0.257324, 50.1745, 0 };
-    const mrs_real maxs[] = { 0.841312, 0.841433, 0.559607, 1.0, 0.907446, 0.985208, 208.807, 0 };
-     const mrs_real svm_weights[] = {
-        -3.1996, 0, 3.4952,
-        0,0,0,
-        -9.3999,
-         0,
-    };
-    double svm_sum = 1.2799;
-   
+    const mrs_real mins[] = { 0.0321812, 1.68126e-83, 50.1745, 0 };
+    const mrs_real maxs[] = { 0.863237, 0.449184, 208.807, 0 };
+
   for (int i=0; i<features.getCols(); i++) {
     if (mins[i] == maxs[i]) {
       continue;
@@ -1727,11 +1720,37 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     features_normalized(i) = (features(i) - mins[i]) / (maxs[i] - mins[i]);
   }
 
+    const mrs_real svm_weights51[] = {
+             -1.9551, 0.4348, -4.6442, 0,
+             3.2896 };
+    const mrs_real svm_weights52[] = {
+         -3.0408, 2.7591, -6.5367, 0,
+         3.081 };
+    const mrs_real svm_weights12[] = {
+         -3.4624, 3.4397, -9.4897, 0,
+         1.6297 };
+
+    mrs_real svm_sum51 = 0.0;
+    mrs_real svm_sum52 = 0.0;
+    mrs_real svm_sum12 = 0.0;
+
+
   // -1 because the final "feature" is the ground truth (for
   // calibration) and of course we don't include that in the SVM
-  for (int i=0; i<features_normalized.getCols() - 1; i++) {
-    svm_sum += (features_normalized(i) * svm_weights[i]);
+
+  svm_sum51 = svm_weights51[num_features]; // the constant or "bias"
+  for (int i=0; i<num_features - 1; i++) {
+    svm_sum51 += (features_normalized(i) * svm_weights51[i]);
   }
+  svm_sum52 = svm_weights52[num_features]; // the constant or "bias"
+  for (int i=0; i<num_features - 1; i++) {
+    svm_sum52 += (features_normalized(i) * svm_weights52[i]);
+  }
+  svm_sum12 = svm_weights12[num_features]; // the constant or "bias"
+  for (int i=0; i<num_features - 1; i++) {
+    svm_sum12 += (features_normalized(i) * svm_weights12[i]);
+  }
+
 
 #if DISPLAY_SVM
   std::ostringstream features_text;
@@ -1748,7 +1767,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
   cout << features_normalized_text.str() << endl;
 
-  cout<<"svm_sum:\t"<<svm_sum<<endl;
+  //cout<<"svm_sum:\t"<<svm_sum<<endl;
 #endif
 
 #if WRITE_INTERMEDIATE
@@ -1776,9 +1795,12 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   mrs_real mult = 1.0;
 
 #if POST_DOUBLING == 2
-  if (svm_sum > 0) {
+  if ((svm_sum52 > 0) && (svm_sum12 > 0)) {
     mult = 2.0;
-    //cout<<"doubling!"<<endl;
+  }
+  if ((svm_sum51 <= 0) && (svm_sum52 < 0)) {
+    mult = 0.5;
+    cout<<"zzz half"<<endl;
   }
 #endif
 

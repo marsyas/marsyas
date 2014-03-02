@@ -17,8 +17,10 @@ for line in lines:
     else:
         val = sl[0]
     if len(sl) == 2:
-        print "0,\n    };"
-        print "    double svm_sum = %s;" % (val)
+        print "0,\n        ",
+        #print "    double svm_sum = %s;" % (val)
+        print "%s };\n" % (val),
+        #print "0,\n    };"
     else:
         print "%s," % (val),
         count += 1
