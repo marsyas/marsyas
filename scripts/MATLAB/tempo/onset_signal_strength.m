@@ -4,24 +4,24 @@ function [oss, oss_sr] = onset_signal_strength(wav_data, wav_sr)
 
 WINDOWSIZE = 1024;
 HOPSIZE = 128;
+% due to a bug in GNU/octave, I specify the filter coefficients manually
 %LOWPASS_N = 15;
-%LOWPASS_HZ = 6;
+%LOWPASS_HZ = 7;
 
-num_ticks = int32(length(wav_data) / (HOPSIZE*128)) - 1
+num_ticks = int32(length(wav_data) / (HOPSIZE*128)) - 1;
 
 extra_zeros = zeros(1, WINDOWSIZE - HOPSIZE);
 padded = [extra_zeros wav_data'];
 
 
-%%% create overlapped signal
-%buffered = buffer(wav_data, WINDOWSIZE, WINDOWSIZE-HOPSIZE);
+%%% 1) Overlap: create overlapped signal
 buffered = buffer(padded, WINDOWSIZE, WINDOWSIZE-HOPSIZE, 'nodelay');
 oss_sr = wav_sr / HOPSIZE;
 
 % only include complete buffers
 buffered = buffered(:,1:num_ticks*HOPSIZE);
 
-%%% windowing and log-magnitude spectrum
+%%% 2) Log Power Spectrum: windowing and log-magnitude spectrum
 % match Marsyas hamming window
 ns = 0:WINDOWSIZE-1;
 hamm = 0.54 - 0.46 * cos( 2*pi*ns / (WINDOWSIZE-1));
@@ -36,10 +36,10 @@ logmag = log(1+1000*fftabs_reduced);
 num_fft = size(logmag, 1);
 num_frames = size(logmag, 2);
 
-%%% spectral flux
+%%% 3) Flux: spectral flux
 prev = zeros(num_fft,1);
 flux = zeros(num_frames,1);
-%%% flux
+% flux
 for i = 1:num_frames
 	diff = logmag(:,i) - prev;
 	diff(diff<0) = 0;
@@ -48,21 +48,7 @@ for i = 1:num_frames
 	prev = logmag(:,i);
 end
 
-if 0
-	python_flux = load('flux.txt');
-	%size(python_flux)
-	%size(flux)
-        %python_flux = python_flux(:,2);
-	hold on;
-	%plot(flux);
-	%plot(python_flux, 'g');
-	plot(flux-python_flux, 'r');
-	pause;
-	exit(1);
-end
-
-
-%%% filter
+%%% 4) Low-pass filter
 %%% octave has a bug in the FIR filter design code, so for now
 %%% I just manually specify the coefficients after calculating
 %%% them in scipy
@@ -86,8 +72,8 @@ b = [
 ]';
 filtered_flux = filter(b, 1.0, flux);
 
-
-num_bh_frames = fix(length(filtered_flux) / 128);
-oss = filtered_flux(1:num_bh_frames * 128);
+% output values
+complete_beat_frames = fix(length(filtered_flux) / 128);
+oss = filtered_flux(1:complete_beat_frames * 128);
 
 
