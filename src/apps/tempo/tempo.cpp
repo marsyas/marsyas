@@ -111,6 +111,7 @@
 
 #define WRITE_INTERMEDIATE 0
 #define WRITE_INTERMEDIATE_SHORT 0
+#define WRITE_INTERMEDIATE_LARGE_FILES 0
 #define DISPLAY_SVM 1
 
 
@@ -912,24 +913,24 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
   fluxnet->addMarSystem(mng.create("SoundFileSource/src"));
   fluxnet->addMarSystem(mng.create("MixToMono/m2m"));
 
-#if WRITE_INTERMEDIATE
-  MarSystem *output00 = mng.create("PlotSink", "output00");
-  output00->updControl("mrs_string/filename", "out/output00.txt");
-  output00->updControl("mrs_bool/sequence", false);
-  output00->updControl("mrs_bool/single_file", true);
-  fluxnet->addMarSystem(output00);
-#endif
-
-
   // fluxnet->addMarSystem(mng.create("DownSampler/tds"));
   fluxnet->addMarSystem(mng.create("ShiftInput/si"));	       // overlap for the spectral flux
 
 #if WRITE_INTERMEDIATE
+#if WRITE_INTERMEDIATE_LARGE_FILES
   MarSystem *output01 = mng.create("PlotSink", "output01");
-  output01->updControl("mrs_string/filename", "out/output01.txt");
+  output01->updControl("mrs_string/filename", "out/OSS-1-audio-overlap.txt");
   output01->updControl("mrs_bool/sequence", false);
   output01->updControl("mrs_bool/single_file", true);
   fluxnet->addMarSystem(output01);
+#else
+  ofstream out_message;
+  out_message.open("out/OSS-1-2-not-here.txt");
+  out_message<<"To see these files, please enable WRITE_INTERMEDIATE_LARGE_FILES"<<endl;
+  out_message<<"However, be aware that they are 100-200 Mb each,"<<endl;
+  out_message<<"for a 30-second file!"<<endl;
+  out_message.close();
+#endif
 #endif
 
   fluxnet->addMarSystem(mng.create("Windowing/windowing1"));
@@ -937,11 +938,13 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
   fluxnet->addMarSystem(mng.create("PowerSpectrum/pspk"));
 
 #if WRITE_INTERMEDIATE
+#if WRITE_INTERMEDIATE_LARGE_FILES
   MarSystem *output02 = mng.create("PlotSink", "output02");
-  output02->updControl("mrs_string/filename", "out/output02.txt");
+  output02->updControl("mrs_string/filename", "out/OSS-2-logmag.txt");
   output02->updControl("mrs_bool/sequence", false);
   output02->updControl("mrs_bool/single_file", true);
   fluxnet->addMarSystem(output02);
+#endif
 #endif
 
 
@@ -957,7 +960,7 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
 #if WRITE_INTERMEDIATE
   MarSystem *output03 = mng.create("PlotSink", "output03");
   output03->updControl("mrs_string/filename",
-                             "out/output03.txt");
+                             "out/OSS-3-flux.txt");
   output03->updControl("mrs_bool/sequence", false);
   output03->updControl("mrs_bool/single_file", true);
   output03->updControl("mrs_bool/no_ticks", true);
@@ -975,7 +978,7 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
 #if WRITE_INTERMEDIATE
   MarSystem *output04 = mng.create("PlotSink", "output04");
   output04->updControl("mrs_string/filename",
-                             "out/output04.txt");
+                             "out/OSS-4-filter.txt");
   output04->updControl("mrs_bool/sequence", false);
   output04->updControl("mrs_bool/single_file", true);
   output04->updControl("mrs_bool/no_ticks", true);
@@ -1279,10 +1282,10 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   MarSystem *onset_strength = onset_strength_signal_flux(sfName);
   MarSystem *beatTracker = mng.create("Series/beatTracker");
 
-#if WRITE_INTERMEDIATE
+#if 0
   onset_strength->addMarSystem(mng.create("PlotSink", "plotsink"));
   onset_strength->updControl("PlotSink/plotsink/mrs_string/filename",
-                             "out/onset_signal_strength.txt");
+                             "out/OSS-final.txt");
   onset_strength->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
   onset_strength->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
   onset_strength->updControl("PlotSink/plotsink/mrs_bool/no_ticks", true);
@@ -1297,7 +1300,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if WRITE_INTERMEDIATE
   MarSystem *output10 = mng.create("PlotSink", "output10");
   output10->updControl("mrs_string/filename",
-                             "out/output10.txt");
+                             "out/BEATS-1-overlap.txt");
   output10->updControl("mrs_bool/sequence", false);
   output10->updControl("mrs_bool/single_file", true);
   //output10->updControl("mrs_bool/no_ticks", true);
@@ -1335,7 +1338,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if WRITE_INTERMEDIATE
   MarSystem *output11 = mng.create("PlotSink", "output11");
   output11->updControl("mrs_string/filename",
-                             "out/output11.txt");
+                             "out/BEATS-2-autocorr.txt");
   output11->updControl("mrs_bool/sequence", false);
   output11->updControl("mrs_bool/single_file", true);
   //output11->updControl("mrs_bool/no_ticks", true);
@@ -1363,7 +1366,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if WRITE_INTERMEDIATE
   MarSystem *output12 = mng.create("PlotSink", "output12");
   output12->updControl("mrs_string/filename",
-                             "out/output12.txt");
+                             "out/BEATS-3-harmonics.txt");
   output12->updControl("mrs_bool/sequence", false);
   output12->updControl("mrs_bool/single_file", true);
   //output12->updControl("mrs_bool/no_ticks", true);
@@ -1378,7 +1381,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if WRITE_INTERMEDIATE
   MarSystem *output13 = mng.create("PlotSink", "output13");
   output13->updControl("mrs_string/filename",
-                             "out/output13.txt");
+                             "out/BEATS-4-peaks.txt");
   output13->updControl("mrs_bool/sequence", false);
   output13->updControl("mrs_bool/single_file", true);
   //output13->updControl("mrs_bool/no_ticks", true);
@@ -1392,6 +1395,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #else
   // beatTracker->addMarSystem(mng.create("ShiftInput/si3"));
   beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
+
   beatTracker->addMarSystem(mng.create("Gain/id"));
 #endif
 
@@ -1579,16 +1583,16 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         mrs_real pdf = normal_pdf(i-GAUSSIAN_CENTER, 0, gaussian_std);
         gaussian(i) = pdf * one_over_maxval;
     }
-    //gaussian.writeText("gaussian.txt");
+    gaussian.writeText("out/ACCUM-1-gaussian.txt");
 
 
 
 #if WRITE_INTERMEDIATE
-  ofstream out_bh;
-  out_bh.open("out/beat_histogram.txt");
+  //ofstream out_bh;
+  //out_bh.open("out/beat_histogram.txt");
 
   ofstream out_bp;
-  out_bp.open("out/output14.txt");
+  out_bp.open("out/BEATS-5-pulse.txt");
 #endif
   // middle: actual data, the input BH buffer is full
   mrs_natural end_tick_num = num_ticks - 1;
@@ -1597,7 +1601,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     //mrs_realvec input = onset_strength->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
     //cout<<"middle:\t"<<input(0,0)<<"\t"<<input(0,2047)<<endl;
 
-#if WRITE_INTERMEDIATE
+#if 0
     mrs_realvec bh_candidates = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
     for (int k=0; k < nCandidates; k++)
     {
@@ -1623,7 +1627,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
 
 #if WRITE_INTERMEDIATE
-    out_bp << tempos(0) << "\t" << temposcores(0) <<endl;
+    out_bp << tempos(0) << endl;
 #endif
 
 
@@ -1639,10 +1643,6 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         bphase_add(i) = gaussian(GAUSSIAN_CENTER - lag + i);
     }
     bphase = bphase + bphase_add;
-#if WRITE_INTERMEDIATE
-    bphase_add.writeText("bphase_add.txt");
-    bphase.writeText("bphase_full.txt");
-#endif
 #endif
 
 #if 0
@@ -1653,7 +1653,10 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if WRITE_INTERMEDIATE_SHORT
   // used to generate figures for the TASPL paper
   if (ticks == 18) {
-    out_bh.close();
+    bphase_add.writeText("bphase_add.txt");
+    bphase.writeText("bphase_full.txt");
+
+    //out_bh.close();
     out_bp.close();
     break;
   }
@@ -1662,7 +1665,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   }
 #if WRITE_INTERMEDIATE
-  out_bh.close();
+  //out_bh.close();
   out_bp.close();
 #endif
 
@@ -1672,7 +1675,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   mrs_natural max_i = 0;
 
 #if WRITE_INTERMEDIATE
-  bphase.writeText("out/beat_phase.txt");
+  bphase.writeText("out/ACCUM-2-sum-final.txt");
 #endif
 
 
@@ -1704,6 +1707,12 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   // convert from periods to BPM
   heuristic_tempo = 60.0 * oss_sr / heuristic_tempo;
+
+  ofstream out_heuristic_tempo;
+  out_heuristic_tempo.open("out/ACCUM-3-peak.txt");
+  out_heuristic_tempo << heuristic_tempo << endl;
+  out_heuristic_tempo.close();
+
 
   features(num_features - 2) = heuristic_tempo;
   features(num_features - 1) = ground_truth_tempo;
@@ -1772,7 +1781,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 #if WRITE_INTERMEDIATE
   ofstream out_svm;
-  out_svm.open("out/doubling_heuristic_svm.txt");
+  out_svm.open("out/ACCUM-4-octave.txt");
 
   ostringstream features_text2;
   features_text2 << "features_orig:\t";
@@ -1788,7 +1797,9 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
   out_svm << features_normalized_text2.str() << endl;
 
-  out_svm << svm_sum << endl;
+  out_svm << svm_sum51 << endl;
+  out_svm << svm_sum52 << endl;
+  out_svm << svm_sum12 << endl;
 #endif
 
 
