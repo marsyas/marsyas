@@ -32,7 +32,6 @@ def info_histogram(bpm, histo, tolerance):
 def accumulator_overall(defs, tempo_lags, oss_sr):
     pdf = scipy.stats.norm.pdf(numpy.arange(2000)-1000, loc=0,
         scale=10)
-    pdf /= pdf.max()
 
     ### 1) convert to Gaussian, and
     ### 2) Accumulator (sum)

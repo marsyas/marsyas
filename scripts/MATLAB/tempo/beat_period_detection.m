@@ -1,5 +1,5 @@
 
-function [bh_cands] = beat_period_detection(oss, oss_sr)
+function [tempo_lags] = beat_period_detection(oss, oss_sr)
 
 hold on;
 
@@ -28,50 +28,38 @@ ffts = fft(buffered, 2*N) / (2*N);
 ffts_abs = abs(ffts);
 ffts_abs_scaled_real = real(power(ffts_abs, 0.5));
 scaled = real(ifft(ffts_abs_scaled_real)) * 2*N;
-autocorr = scaled(1:N,:);
+autocorr = scaled(1:N,:)';
 
-num_frames = size(autocorr, 2);
+num_frames = size(autocorr, 1);
 
-%ref = load('foo.txt');
 
-%%%%%%%%% time stretch, add
-harmonic_enhanced = zeros( size(autocorr) )';
+
+%%% 3) Enhance Harmonics
+harmonic_enhanced = zeros( size(autocorr) );
+stretched = zeros( 1, WINDOWSIZE );
 for i = 1:num_frames
-	stretched = zeros( 1, WINDOWSIZE );
-	for j = 1:511
-		stretched(j) = autocorr(2*j) + autocorr(4*j);
+	auto = autocorr(i,:);
+	% we don't want to wrap around, but also don't care about
+	% anything above maxlag, which is 414
+	for l = 0:511
+		% weird off-by-one tricks required because
+		% matlab/octave have the 1-index arrays
+		stretched(l+1) = auto(2*l+1) + auto(4*l+1);
 	end
-	%plot(harmonic_enhanced(:,i))
-	%plot(autocorr(:,i))
-	%plot(stretched(1:end-1), 'g')
-	harmonic_enhanced(i,:) = autocorr(:,i)' + stretched;
-	%plot(harmonic_enhanced(1:end-1,i), 'g')
-	%plot(ref(2:end), 'r')
-	%pause
-	%exit(1)
+	harmonic_enhanced(i,:) = auto + stretched;
+
 end
 
 
-%ref = load('foo.txt');
-%compare = harmonic_strengthened(:,1);
-%hold on
-%plot(ref)
-%plot(compare, 'g')
-%pause
-%delta = ref - compare;
-%max(delta)
-%exit(1)
-
-
-
-%%%%%%%%% find peaks
-all_peaks = zeros(num_frames, 10);
+%%% 4) Pick peaks
+all_lags = zeros(num_frames, 10);
 for i = 1:num_frames
 	peaks = zeros(1,2);
-%	cell( );
 	k = 1;
-	for j = minlag:maxlag
-		if ((harmonic_enhanced(i, j-1) < harmonic_enhanced(i, j)) && (harmonic_enhanced(i, j) > harmonic_enhanced(i, j+1)))
+	% off-by-one indices again
+	for j = minlag+1:maxlag+1
+		if ((harmonic_enhanced(i, j-1) < harmonic_enhanced(i, j))
+		 && (harmonic_enhanced(i, j)   > harmonic_enhanced(i, j+1)))
 			strength = harmonic_enhanced(i, j);
 			peaks(k,:) = [strength j];
 			k = k+1;
@@ -80,10 +68,73 @@ for i = 1:num_frames
 	sorted = sortrows(peaks);
 	l = size(sorted,1) - 9;
 	best = flipud(sorted(l:end, :));
-	best = best(:,2)
-	exit(1)
-	% translate matlab-style indices into BPM
-	all_peaks(i,:) = (best-1.0) / 4.0;
+	best = best(:,2);
+	% translate matlab-style indices into tempo lags
+	all_lags(i,:) = best - 1;
 end
+
+
+%%% 5) Evaluate pulse trains
+tempo_lags = zeros(num_frames, 1);
+
+onset_scores = zeros(10,1);
+tempo_scores = zeros(10,1);
+for i = 1:num_frames
+	window = buffered(:,i);
+	samples = int32(WINDOWSIZE);
+	cands = all_lags(i,:);
+
+	for j = 1:10
+		period = cands(j);
+
+		% perform cross-correlation between the
+		% three I_{ P, phi, v } pulse trains, for all
+		% possible phases (phi)
+		bp_mags = zeros(period, 1);
+		for phase = samples-1:-1:samples-period
+			phase = int32(phase);
+
+			mag = 0.0;
+			for b = 0:3
+				b = int32(b);
+				ind = phase - b*period;
+				% this is I_{ P, phi, 1 }
+				if ind >= 0
+					mag = mag + window(ind+1);
+				end
+
+				% this is I_{ P, phi, 2 }
+				ind = phase - b*period*2;
+				if ind >= 0
+					mag = mag + 0.5*window(ind+1);
+				end
+
+				% this is I_{ P, phi, 1.5 }
+				ind = phase - idivide(b*period*3, 2);
+				if ind >= 0
+					mag = mag + 0.5*window(ind+1);
+				end
+			end
+			bp_mags(samples-1-phase+1) = mag;
+		end
+		bp_max = max(bp_mags);
+		bp_var = var(bp_mags, 1);
+
+		tempo_scores(j) = bp_max;
+		onset_scores(j) = bp_var;
+	end
+	% normalize the scores
+	tempo_scores = tempo_scores / sum(tempo_scores);
+	onset_scores = onset_scores / sum(onset_scores);
+
+	combo_scores = tempo_scores + onset_scores;
+	combo_scores = combo_scores / sum(combo_scores);
+
+	[beststr, besti] = max(combo_scores);
+	bestlag = cands(besti);
+
+	tempo_lags(i) = bestlag;
+end
+
 
 

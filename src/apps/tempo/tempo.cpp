@@ -109,7 +109,7 @@
 #define STEM_SECOND 0
 
 
-#define WRITE_INTERMEDIATE 0
+#define WRITE_INTERMEDIATE 1
 #define WRITE_INTERMEDIATE_SHORT 0
 #define WRITE_INTERMEDIATE_LARGE_FILES 0
 #define DISPLAY_SVM 1
@@ -1575,13 +1575,12 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
     const mrs_natural GAUSSIAN_CENTER = 1000;
     mrs_realvec gaussian(2*GAUSSIAN_CENTER+1);
-    static const mrs_real sqrt_2pi = 2.5066282746310002;
-    mrs_real one_over_maxval = gaussian_std * sqrt_2pi;
+    //static const mrs_real sqrt_2pi = 2.5066282746310002;
+    //mrs_real one_over_maxval = gaussian_std * sqrt_2pi;
     
     bphase_add.setval(0.0);
     for (int i=0; i<2*GAUSSIAN_CENTER+1; i++) {
-        mrs_real pdf = normal_pdf(i-GAUSSIAN_CENTER, 0, gaussian_std);
-        gaussian(i) = pdf * one_over_maxval;
+        gaussian(i) = normal_pdf(i-GAUSSIAN_CENTER, 0, gaussian_std);
     }
     gaussian.writeText("out/ACCUM-1-gaussian.txt");
 

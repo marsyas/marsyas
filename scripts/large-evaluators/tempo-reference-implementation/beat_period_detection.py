@@ -110,7 +110,6 @@ def beat_period_detection(defs, oss_sr, oss_data, plot=False):
         stretched = numpy.zeros( defs.BH_WINDOWSIZE )
         for j in xrange( 512 ):
             stretched[j] = auto[2*j] + auto[4*j]
-        
         harmonic_enhanced[i] = (
             auto + stretched
             )

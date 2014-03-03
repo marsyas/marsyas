@@ -2,10 +2,9 @@
 function [bpm] = tempo_stem_file(filename)
 
 WRITE_CACHE = 1;
-CACHE_OSS = 1;
-CACHE_BH = 0;
-CACHE_BP = 0;
-TEST_REFERENCE = 1;
+CACHE_OSS = 0;
+CACHE_BEATS = 0;
+TEST_REFERENCE = 0;
 PLOT = 0;
 
 if PLOT
@@ -57,11 +56,11 @@ end
 
 %%%%%%%%% Beat Periods Detection
 
-if not(CACHE_BH)
+if not(CACHE_BEATS)
 	disp('Calculating new Beat Period Detection')
-	bh_cands = beat_period_detection(oss, oss_sr);
+	tempo_lags = beat_period_detection(oss, oss_sr);
 	if WRITE_CACHE
-		save 'beat_periods.mat' bh_cands;
+		save 'beat_periods.mat' tempo_lags;
 	end
 else
 	disp('Loading old Beat Periods')
@@ -69,10 +68,9 @@ else
 end
 
 if TEST_REFERENCE
-	python_bh = load('reference/beat_histogram.txt');
-	% temp for fast checking
-	%python_bh = python_bh(1:10,:);
-	delta = python_bh - bh_cands;
+	reference_beat_periods = load('reference/BEATS-5-pulse.txt');
+	%delta = reference_beat_periods - tempo_lags;
+	delta = reference_beat_periods - tempo_lags;
 	maxerr = max(max(abs(delta)));
 	if maxerr < 1e-13
 		printf( 'Testing... BH ok, maximum deviation %.2g\n', maxerr);
@@ -83,40 +81,9 @@ if TEST_REFERENCE
 end
 
 
-%%%%%%%%% BP
-if not(CACHE_BP)
-	disp('Calculating new BP')
-	[bpm_cand, bphase] = beat_phase(oss, oss_sr, bh_cands);
-	if WRITE_CACHE
-		save 'bpm_cand.mat' bpm_cand;
-		save 'bp.mat' bphase;
-	end
-else
-	disp('Loading old BP')
-	load('bpm_cand.mat');
-	load('bp.mat');
-end
+%%%%%%%%% ACCUMULATION AND OVERALL ESTIMATE
 
-if TEST_REFERENCE
-	python_bp = load('reference/beat_phase.txt');
-	delta = bphase - python_bp;
-	maxerr = max(max(abs(delta)));
-	if maxerr < 1e-3
-		printf( 'Testing... BP ok, maximum deviation %.2g\n', maxerr);
-	else
-		printf( 'Testing... BP FAILED, maximum deviation %.2g\n', maxerr);
-		%plot(bphase)
-		%plot(python_bp, 'g')
-		plot(abs(delta), 'r')
-		pause
-		exit(1);
-	end
-end
-
-
-%%%%%%%%% DOUBLING HEURISTIC
-
-bpm = late_heuristic(bpm_cand, bphase);
+bpm = accumulator_overall(tempo_lags, oss_sr);
 
 
 
