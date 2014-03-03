@@ -1,8 +1,8 @@
 
 function [bpm] = tempo_stem_file(filename)
 
-WRITE_CACHE = 0;
-CACHE_OSS = 0;
+WRITE_CACHE = 1;
+CACHE_OSS = 1;
 CACHE_BH = 0;
 CACHE_BP = 0;
 TEST_REFERENCE = 1;
@@ -37,35 +37,35 @@ end
 
 %%% test OSS
 if TEST_REFERENCE
-	python_oss = load('reference/onset_signal_strength.txt');
-	delta = oss - python_oss;
+	% output of OSS stage
+	reference_oss = load('reference/OSS-4-filter.txt');
+	delta = oss - reference_oss;
 	maxerr = max(abs(delta));
 	if maxerr < 1e-13
 		printf( 'Testing... OSS ok, maximum deviation %.2g\n', maxerr);
 	else
 		disp ('Testing... OSS FAILED');
 		hold on;
-		plot(python_oss)
+		plot(reference_oss)
 		plot(oss, 'g')
-		%plot(python_oss - oss, 'r')
+		plot(reference_oss - oss, 'r')
 		pause
 		exit(1)
 	end
 end
 
-exit(1)
 
-%%%%%%%%% BH
+%%%%%%%%% Beat Periods Detection
 
 if not(CACHE_BH)
-	disp('Calculating new BH')
-	bh_cands = beat_histogram(oss, oss_sr);
+	disp('Calculating new Beat Period Detection')
+	bh_cands = beat_period_detection(oss, oss_sr);
 	if WRITE_CACHE
-		save 'bh.mat' bh_cands;
+		save 'beat_periods.mat' bh_cands;
 	end
 else
-	disp('Loading old BH')
-	load('bh.mat');
+	disp('Loading old Beat Periods')
+	load('beat_periods.mat');
 end
 
 if TEST_REFERENCE

@@ -1811,7 +1811,6 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
   if ((svm_sum51 <= 0) && (svm_sum52 < 0)) {
     mult = 0.5;
-    cout<<"zzz half"<<endl;
   }
 #endif
 

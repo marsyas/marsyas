@@ -14,9 +14,8 @@ import pylab
 import mar_collection
 
 import onset_strength
-import beat_histogram
-import beat_phase
-import late_heuristic
+import beat_period_detection
+import accumulator_overall
 
 import evaluate_bpms
 
@@ -59,24 +58,24 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
         defs.OPTIONS_ONSET, defs.OPTIONS_BH)
     if os.path.exists(pickle_filename) and not regen:
         pickle_file = open(pickle_filename, 'rb')
-        candidate_bpms = pickle.load(pickle_file)
+        tempo_lags = pickle.load(pickle_file)
         pickle_file.close()
     else:
-        candidate_bpms = beat_histogram.beat_histogram(
+        tempo_lags = beat_period_detection.beat_period_detection(
             defs, oss_sr, oss_data,
             #plot=False)
             plot=plot)
         pickle_file = open(pickle_filename, 'wb')
-        pickle.dump( (candidate_bpms), pickle_file, -1 )
+        pickle.dump( (tempo_lags), pickle_file, -1 )
         pickle_file.close()
 
-    #return candidate_bpms, [candidate_bpms]
+    #return tempo_lags, [tempo_lags]
 
     if defs.OPTIONS_BP < 0:
         cands = numpy.zeros(4*defs.BPM_MAX)
-        for i in range(len(candidate_bpms)):
-            for j in range(len(candidate_bpms[i])):
-                bpm = candidate_bpms[i][j]
+        for i in range(len(tempo_lags)):
+            for j in range(len(tempo_lags[i])):
+                bpm = tempo_lags[i][j]
                 cands[bpm] += 9-j
         if plot:
             pylab.figure()
@@ -90,29 +89,14 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
             cands[bpm] = 0.0
             fewcands.append(4*bpm)
         return bestbpm, fewcands
-    ### handle Beat Phase
-    pickle_filename = filename + "-bp-%i-%i-%i.pickle" % (
-        defs.OPTIONS_ONSET, defs.OPTIONS_BH, defs.OPTIONS_BP)
-    if False:
-    #if os.path.exists(pickle_filename) and not regen:
-        pickle_file = open(pickle_filename, 'rb')
-        (bpm, bp) = pickle.load(pickle_file)
-        pickle_file.close()
-    else:
-        bpm, bp = beat_phase.beat_phase(defs, oss_sr, oss_data, candidate_bpms,
-            plot=plot)
-        pickle_file = open(pickle_filename, 'wb')
-        pickle.dump( (bpm, bp), pickle_file, -1 )
-        pickle_file.close()
 
-
-    bpm = late_heuristic.late_heuristic(defs, bpm, bp)
+    bpm = accumulator_overall.accumulator_overall(defs, tempo_lags, oss_sr)
 
     if plot:
         pylab.show()
     #print bpm
-    #return bpm, candidate_bpms
-    return bpm, candidate_bpms[-1]
+    #return bpm, tempo_lags
+    return bpm, tempo_lags[-1]
 
 def bpm_of_mf(defs, mf_filename, print_info=False):
     coll = mar_collection.MarCollection(mf_filename)

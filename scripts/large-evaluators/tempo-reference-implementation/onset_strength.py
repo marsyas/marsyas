@@ -107,7 +107,7 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
     if defs.CHECK_REFERENCE:
         calc = filtered_flux
         ref = numpy.loadtxt(
-            "reference/%s/onset_signal_strength.txt" % defs.basename)
+            "reference/OSS-4-filter.txt")
         delta = calc - ref
         maxerr = max(abs(delta))
         if maxerr < 1e-12:
