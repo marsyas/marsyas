@@ -19,6 +19,6 @@ if(MARSYAS_PNG)
   add_subdirectory(libpng-1.2.35)
 endif(MARSYAS_PNG)
 
-if(WITH_QT5)
+if(WITH_QT)
   add_subdirectory(qwt)
 endif()
