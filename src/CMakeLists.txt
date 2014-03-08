@@ -42,21 +42,6 @@ test_big_endian(MARSYAS_BIGENDIAN)
 ## user options
 include (marsyas-options)
 
-if(MARSYAS_AUDIOIO AND NOT WITH_CPP11)
-  message(FATAL_ERROR "MARSYAS_AUDIOIO is enabled, but it requires WITH_CPP11 which is disabled.")
-endif()
-
-if(WITH_CPP11)
-  set(MARSYAS_REALTIME ON)
-  set(MARSYAS_JSON OFF)
-  set(MARSYAS_SCRIPT ON)
-else()
-  message(STATUS "'Realtime' features and dependent apps disabled, because WITH_CPP11 is disabled")
-  set(MARSYAS_REALTIME OFF)
-  set(MARSYAS_JSON OFF)
-  set(MARSYAS_SCRIPT OFF)
-endif()
-
 ## detect packages
 include (marsyas-detect)
 
