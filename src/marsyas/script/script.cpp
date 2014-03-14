@@ -1,4 +1,5 @@
 #include "script.h"
+#include "manager.hpp"
 #include "parser.h"
 #include "operation_processor.hpp"
 #include <marsyas/system/MarSystemManager.h>
@@ -38,8 +39,10 @@ class script_translator
     inherit_context
   };
 
-  std::string m_working_dir;
   MarSystemManager * m_manager;
+  std::string m_working_dir;
+  const bool m_use_register;
+
   std::deque<context> m_context_stack;
 
   context & this_context() { return m_context_stack.back(); }
@@ -85,6 +88,16 @@ class script_translator
     }
 
     return m_manager->create(type, name);
+  }
+
+  bool handle_directives( const node & directives_node )
+  {
+    for( const node & directive_node : directives_node.components)
+    {
+      if (!handle_directive( directive_node ))
+        return false;
+    }
+    return true;
   }
 
   bool handle_directive( const node & directive_node )
@@ -140,7 +153,7 @@ class script_translator
     return add_prototype(id, system);
   }
 
-  string absolute_filename( const string & filename )
+  string resolve_filename( const string & filename )
   {
     string abs_filename(filename);
     FileName file_info(abs_filename);
@@ -151,8 +164,11 @@ class script_translator
 
   MarSystem *translate_script( const string & filename )
   {
-    MarSystem *system = system_from_script( absolute_filename(filename), m_manager );
-    return system;
+    ScriptTranslator translator(m_manager);
+    if (m_use_register)
+      return translator.translateRegistered( resolve_filename(filename) );
+    else
+      return translator.translateFile( resolve_filename(filename) );
   }
 
   MarSystem *translate_actor( const node & n, context_policy policy )
@@ -624,60 +640,63 @@ class script_translator
 public:
 
   script_translator( MarSystemManager * manager,
-                     const string & working_dir = string() ):
+                     const string & working_dir,
+                     bool from_register ):
+    m_manager(manager),
     m_working_dir(working_dir),
-    m_manager(manager)
+    m_use_register(from_register)
   {}
 
-  bool handle_directives( const node & directives_node )
+  MarSystem *translate(std::istream & script_stream)
   {
-    for( const node & directive_node : directives_node.components)
-    {
-      if (!handle_directive( directive_node ))
-        return false;
-    }
-    return true;
-  }
+    Parser parser(script_stream);
+    parser.parse();
 
-  MarSystem *translate( const node & syntax_tree )
-  {
-    MarSystem *system = translate_actor(syntax_tree, own_context);
+    const node &directives = parser.directives();
+    const node &actor = parser.actor();
+
+    if (!handle_directives(directives))
+      return nullptr;
+
+    MarSystem *system = translate_actor(actor, own_context);
+
+    if (system && system->getName().empty())
+      system->setName("network");
+
     return system;
   }
 };
 
 MarSystem *system_from_script(std::istream & script_stream,
                               const std::string & working_directory,
-                              MarSystemManager *given_manager)
+                              MarSystemManager *mng)
 {
-  Parser parser(script_stream);
-  parser.parse();
-
-  const node &directives = parser.directives();
-  const node &actor = parser.actor();
-
-  MarSystemManager *manager = given_manager;
-
-  if (!manager)
-    manager = new MarSystemManager;
-
-  script_translator translator(manager, working_directory);
-
-  if (!translator.handle_directives(directives))
-    return nullptr;
-
-  MarSystem *system = translator.translate(actor);
-
-  if (system && system->getName().empty())
-    system->setName("network");
-
-  if (manager != given_manager)
-    delete manager;
-
-  return system;
+  ScriptTranslator translator(mng);
+  return translator.translateStream(script_stream, working_directory);
 }
 
-MarSystem *system_from_script(const std::string & filename_string, MarSystemManager *mng)
+MarSystem *system_from_script(const std::string & filepath, MarSystemManager *mng)
+{
+  ScriptTranslator translator(mng);
+  return translator.translateFile(filepath);
+}
+
+
+ScriptTranslator::ScriptTranslator( MarSystemManager * manager ):
+  m_manager(manager),
+  m_own_manager(manager == nullptr)
+{
+  if (m_own_manager)
+    m_manager = new MarSystemManager;
+}
+
+ScriptTranslator::~ScriptTranslator()
+{
+  if (m_own_manager)
+    delete m_manager;
+}
+
+MarSystem *ScriptTranslator::translateFile(const std::string & filename_string)
 {
   FileName filename(filename_string);
   string path = filename.path();
@@ -689,7 +708,37 @@ MarSystem *system_from_script(const std::string & filename_string, MarSystemMana
     return nullptr;
   }
 
-  return system_from_script(file, path, mng);
+  script_translator translator(m_manager, path, false);
+  return translator.translate(file);
+}
+
+MarSystem *ScriptTranslator::translateStream
+(std::istream & script_stream, const std::string & working_directory)
+{
+  script_translator translator(m_manager, working_directory, false);
+  return translator.translate(script_stream);
+}
+
+MarSystem *ScriptTranslator::translateRegistered(const std::string & file_path)
+{
+  string script;
+  try {
+    script = ScriptManager::get(file_path);
+  }
+  catch (...)
+  {
+    MRSERR("Could not find registered script: " << file_path);
+    return nullptr;
+  }
+
+  istringstream script_stream(script);
+
+  // Treat registered paths just like file paths:
+  FileName filename(file_path);
+  string path = filename.path();
+
+  script_translator translator(m_manager, path, true);
+  return translator.translate(script_stream);
 }
 
 }
