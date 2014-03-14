@@ -55,6 +55,10 @@ if(MARSYAS_REALTIME)
   add_subdirectory(latency)
 endif()
 
+if(MARSYAS_SCRIPT)
+  add_subdirectory(script_tools)
+endif()
+
 #add_subdirectory(msl) # NOT MULTIPLARTFORM (only UNIX)
 
 ## EVALUATION PROJECTS
