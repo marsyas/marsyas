@@ -71,8 +71,6 @@ CollectionFileSource::addControls()
   addctrl("mrs_natural/loopPos", (mrs_natural)0);
   setctrlState("mrs_natural/pos", true);
 
-  addctrl("mrs_string/filename", "daufile");
-  setctrlState("mrs_string/filename", true);
   addctrl("mrs_natural/size", (mrs_natural)0);
   addctrl("mrs_string/filetype", "mf");
   addctrl("mrs_natural/cindex", 0);
@@ -154,7 +152,6 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
   inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 
-  filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
   pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
 
   if (mngCreated_ == false)
@@ -350,7 +347,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
         setctrl("mrs_natural/cindex", cindex_);
 
         // encforce re-reading of filename
-        isrc_->updControl("mrs_string/filename", SOUNDFILESOURCE_UNDEFINEDFILENAME);
+        isrc_->updControl("mrs_string/filename", "");
         isrc_->updControl("mrs_string/filename", col_.entry(cindex_));
         isrc_->updControl("mrs_natural/pos", 0);
 

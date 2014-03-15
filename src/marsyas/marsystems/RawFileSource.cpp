@@ -58,8 +58,6 @@ RawFileSource::addControls()
   addctrl("mrs_natural/size", 0);
   addctrl("mrs_natural/pos", 0);
   setctrlState("mrs_natural/pos", true);
-  addctrl("mrs_string/filename", "defaultfile.au");
-  setctrlState("mrs_string/filename", true);
   addctrl("mrs_bool/hasData", true);
   addctrl("mrs_bool/noteon", false);
   setctrlState("mrs_bool/noteon", true);
@@ -201,7 +199,6 @@ void RawFileSource::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", inObservations_);
   setctrl("mrs_real/osrate", israte_);
 
-  filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
   pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
 
   rate_ = fileSize_ * getctrl("mrs_real/frequency")->to<mrs_real>() / israte_;

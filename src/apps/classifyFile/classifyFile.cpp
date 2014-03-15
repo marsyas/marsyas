@@ -191,7 +191,7 @@ void classifyFile(vector<string> soundfiles, string pluginName)
     msys->updctrl("Confidence/confidence/mrs_bool/print",false);
     msys->updctrl("Confidence/confidence/mrs_bool/forcePrint", false);
     msys->updctrl("Memory/memory/mrs_bool/reset", true);
-    msys->updctrl("SilenceRemove/srm/SoundFileSource/src/mrs_string/filename", "defaultfile");
+    msys->updctrl("SilenceRemove/srm/SoundFileSource/src/mrs_string/filename", "");
 
   }
 

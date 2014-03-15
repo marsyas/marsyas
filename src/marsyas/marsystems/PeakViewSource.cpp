@@ -62,7 +62,7 @@ PeakViewSource::clone() const
 void
 PeakViewSource::addControls()
 {
-  addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
+  addctrl("mrs_string/filename", "", ctrl_filename_);
   setctrlState("mrs_string/filename", true);
 
   addctrl("mrs_natural/frameMaxNumPeaks", 0, ctrl_frameMaxNumPeaks_);
@@ -103,7 +103,7 @@ PeakViewSource::myUpdate(MarControlPtr sender)
   //if(ctrl_filename_->to<mrs_string>() != filename_)
   {
     //check if this is the first call to myUpdate()
-    if(ctrl_filename_->to<mrs_string>() == "defaultfile")
+    if(ctrl_filename_->to<mrs_string>().empty())
     {
       defaultConfig();
     }
