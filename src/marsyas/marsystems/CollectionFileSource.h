@@ -45,7 +45,6 @@ private:
   void getHeader(std::string filename);
 
   mrs_natural nChannels_;
-  std::string filename_;
   mrs_real myIsrate_;
   MarSystem* isrc_;
   MarSystem* downsampler_;

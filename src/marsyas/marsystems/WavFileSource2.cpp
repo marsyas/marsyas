@@ -64,7 +64,7 @@ WavFileSource2::hdrError()
   setctrl("mrs_real/israte", MRS_DEFAULT_SLICE_SRATE);//(mrs_real)22050.0);
   setctrl("mrs_natural/size", (mrs_natural)0);
   setctrl("mrs_bool/hasData", false);
-  setctrl("mrs_string/filename", "defaultfile");
+  setctrl("mrs_string/filename", string());
 }
 
 bool
@@ -75,7 +75,7 @@ WavFileSource2::getHeader()
 
   mrs_string filename = getctrl("mrs_string/filename")->to<mrs_string>();
   //if an empty filename, return error and default configuration
-  if(filename == "defaultfile")
+  if(filename.empty())
   {
     MRSERR("WavFileSource2::getHeader: empty FileName");
     hdrError();

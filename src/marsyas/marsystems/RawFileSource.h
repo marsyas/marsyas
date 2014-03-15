@@ -52,7 +52,6 @@ private:
   unsigned long fileSize_;
   unsigned long bufferSize_;
   bool byteSwap_;
-  std::string filename_;
   mrs_natural ch_, pos_, nChannels_;
 
   void addControls();

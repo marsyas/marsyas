@@ -43,16 +43,17 @@
 using namespace std;
 using namespace Marsyas;
 
-SoundFileSource::SoundFileSource(mrs_string name):MarSystem("SoundFileSource",name)
+SoundFileSource::SoundFileSource(mrs_string name):
+  MarSystem("SoundFileSource",name),
+  backend_ (0),
+  updateCurrDuration(false)
 {
-  src_ = NULL;
-  updateCurrDuration = false;
   addControls();
 }
 
 SoundFileSource::~SoundFileSource()
 {
-  delete src_;
+  delete backend_;
 }
 
 MarSystem*
@@ -61,11 +62,11 @@ SoundFileSource::clone() const
   return new SoundFileSource(*this);
 }
 
-SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
+SoundFileSource::SoundFileSource(const SoundFileSource& a):
+  MarSystem(a),
+  backend_ (0),
+  updateCurrDuration(false)
 {
-  updateCurrDuration = false;
-  src_ = NULL;
-
   ctrl_pos_ = getctrl("mrs_natural/pos");
   ctrl_loop_ = getctrl("mrs_natural/loopPos");
   ctrl_hasData_ = getctrl("mrs_bool/hasData");
@@ -101,7 +102,7 @@ SoundFileSource::addControls()
   addctrl("mrs_natural/loopPos", 0, ctrl_loop_);
   setctrlState("mrs_natural/loopPos", true);
 
-  addctrl("mrs_string/filename", SOUNDFILESOURCE_UNDEFINEDFILENAME, ctrl_filename_);
+  addctrl("mrs_string/filename", string(), ctrl_filename_);
   setctrlState("mrs_string/filename", true);
 
   addctrl("mrs_string/allfilenames", ",");
@@ -169,20 +170,24 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 
   ctrl_inObsNames_->setValue("audio,", NOUPDATE);
 
-  if (filename_ != ctrl_filename_->to<mrs_string>())
+  const string &new_filename = getctrl("mrs_string/filename")->to<mrs_string>();
+
+  if (new_filename != filename_)
   {
-    if (checkType() == true)
+    filename_ = new_filename;
+
+    if (updateBackend())
     {
       getHeader();
       filename_ = ctrl_filename_->to<mrs_string>();
-      ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
-      ctrl_previouslyPlaying_->setValue(src_->getctrl("mrs_string/previouslyPlaying"));
-      ctrl_currentLabel_->setValue(src_->getctrl("mrs_real/currentLabel"));
-      ctrl_previousLabel_->setValue(src_->getctrl("mrs_real/previousLabel"));
+      ctrl_currentlyPlaying_->setValue(backend_->getctrl("mrs_string/currentlyPlaying"));
+      ctrl_previouslyPlaying_->setValue(backend_->getctrl("mrs_string/previouslyPlaying"));
+      ctrl_currentLabel_->setValue(backend_->getctrl("mrs_real/currentLabel"));
+      ctrl_previousLabel_->setValue(backend_->getctrl("mrs_real/previousLabel"));
 
-      ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));
-      ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
-      ctrl_onObservations_->setValue(src_->ctrl_onObservations_, NOUPDATE);
+      ctrl_labelNames_->setValue(backend_->getctrl("mrs_string/labelNames"));
+      ctrl_nLabels_->setValue(backend_->getctrl("mrs_natural/nLabels"));
+      ctrl_onObservations_->setValue(backend_->ctrl_onObservations_, NOUPDATE);
 
       ostringstream oss;
       for (int ch = 0; ch < ctrl_onObservations_->to<mrs_natural>(); ch++)
@@ -191,27 +196,25 @@ SoundFileSource::myUpdate(MarControlPtr sender)
       }
       ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 
-      ctrl_israte_->setValue(src_->ctrl_israte_, NOUPDATE);
-      ctrl_osrate_->setValue(src_->ctrl_osrate_, NOUPDATE);
+      ctrl_israte_->setValue(backend_->ctrl_israte_, NOUPDATE);
+      ctrl_osrate_->setValue(backend_->ctrl_osrate_, NOUPDATE);
 
 
-      if (src_->getctrl("mrs_natural/size")->to<mrs_natural>() != 0)
+      if (backend_->getctrl("mrs_natural/size")->to<mrs_natural>() != 0)
       {
         ctrl_hasData_->setValue(true);
-        src_->hasData_ = true;
+        backend_->hasData_ = true;
 
         ctrl_lastTickWithData_->setValue(false, NOUPDATE);
-        src_->lastTickWithData_ =false;
+        backend_->lastTickWithData_ =false;
       }
     }
-
     else
     {
       ctrl_onObservations_->setValue(1, NOUPDATE);
       ctrl_israte_->setValue((mrs_real)22050.0, NOUPDATE); //[!] why not set to 0 or some invalid value?
       ctrl_hasData_->setValue(false);
       ctrl_lastTickWithData_->setValue(true, NOUPDATE);
-      src_ = NULL;
     }
 
   } else if(!sender.isInvalid()) {
@@ -235,10 +238,10 @@ SoundFileSource::myUpdate(MarControlPtr sender)
       // but this seems redundant, so for efficiency reasons we
       // return after making these (crucial) updates:
 
-      src_->setctrl("mrs_natural/pos", getctrl("mrs_natural/pos"));
-      src_->update();
-      updControl("mrs_bool/hasData", src_->hasData_);
-      setctrl("mrs_bool/lastTickWithData", src_->lastTickWithData_);
+      backend_->setctrl("mrs_natural/pos", getctrl("mrs_natural/pos"));
+      backend_->update();
+      updControl("mrs_bool/hasData", backend_->hasData_);
+      setctrl("mrs_bool/lastTickWithData", backend_->lastTickWithData_);
       return;
     }
   }
@@ -246,59 +249,59 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 
 
 
-  if (src_ != NULL)
+  if (backend_ != NULL)
   {
 
     //pass configuration to audio source object and update it
-    src_->ctrl_inSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-    src_->ctrl_inObservations_->setValue(ctrl_inObservations_, NOUPDATE);
-    src_->ctrl_regression_->setValue(ctrl_regression_, NOUPDATE);
-    src_->setctrl("mrs_real/repetitions", getctrl("mrs_real/repetitions"));
-    src_->setctrl("mrs_real/duration", getctrl("mrs_real/duration"));
-    src_->setctrl("mrs_natural/advance", getctrl("mrs_natural/advance"));
+    backend_->ctrl_inSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+    backend_->ctrl_inObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+    backend_->ctrl_regression_->setValue(ctrl_regression_, NOUPDATE);
+    backend_->setctrl("mrs_real/repetitions", getctrl("mrs_real/repetitions"));
+    backend_->setctrl("mrs_real/duration", getctrl("mrs_real/duration"));
+    backend_->setctrl("mrs_natural/advance", getctrl("mrs_natural/advance"));
     // src_->setctrl("mrs_natural/cindex", getctrl("mrs_natural/cindex"));
-    src_->setctrl("mrs_bool/shuffle", getctrl("mrs_bool/shuffle"));
-    src_->setctrl("mrs_bool/hasData", getctrl("mrs_bool/hasData"));
-    src_->setctrl("mrs_bool/lastTickWithData", getctrl("mrs_bool/lastTickWithData"));
-    src_->setctrl("mrs_natural/pos", getctrl("mrs_natural/pos"));
-    src_->pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();//[!]
-    src_->setctrl("mrs_natural/loopPos", getctrl("mrs_natural/loopPos"));
-    src_->rewindpos_ = getctrl("mrs_natural/loopPos")->to<mrs_natural>();//[!]
-    src_->update();
+    backend_->setctrl("mrs_bool/shuffle", getctrl("mrs_bool/shuffle"));
+    backend_->setctrl("mrs_bool/hasData", getctrl("mrs_bool/hasData"));
+    backend_->setctrl("mrs_bool/lastTickWithData", getctrl("mrs_bool/lastTickWithData"));
+    backend_->setctrl("mrs_natural/pos", getctrl("mrs_natural/pos"));
+    backend_->pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();//[!]
+    backend_->setctrl("mrs_natural/loopPos", getctrl("mrs_natural/loopPos"));
+    backend_->rewindpos_ = getctrl("mrs_natural/loopPos")->to<mrs_natural>();//[!]
+    backend_->update();
 
     //sync local controls with the controls from the audio source object
-    ctrl_onSamples_->setValue(src_->ctrl_onSamples_, NOUPDATE);
-    ctrl_onObservations_->setValue(src_->ctrl_onObservations_, NOUPDATE);
-    ctrl_osrate_->setValue(src_->ctrl_osrate_, NOUPDATE);
+    ctrl_onSamples_->setValue(backend_->ctrl_onSamples_, NOUPDATE);
+    ctrl_onObservations_->setValue(backend_->ctrl_onObservations_, NOUPDATE);
+    ctrl_osrate_->setValue(backend_->ctrl_osrate_, NOUPDATE);
 
-    setctrl("mrs_natural/pos", src_->pos_);//[!]
-    setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]
-    updControl("mrs_bool/hasData", src_->hasData_);//[!]
-    setctrl("mrs_bool/lastTickWithData", src_->lastTickWithData_);
-    setctrl("mrs_natural/size", src_->getctrl("mrs_natural/size"));
-    setctrl("mrs_real/repetitions", src_->getctrl("mrs_real/repetitions"));
-    setctrl("mrs_real/duration", src_->getctrl("mrs_real/duration"));
+    setctrl("mrs_natural/pos", backend_->pos_);//[!]
+    setctrl("mrs_natural/loopPos", backend_->rewindpos_);//[!]
+    updControl("mrs_bool/hasData", backend_->hasData_);//[!]
+    setctrl("mrs_bool/lastTickWithData", backend_->lastTickWithData_);
+    setctrl("mrs_natural/size", backend_->getctrl("mrs_natural/size"));
+    setctrl("mrs_real/repetitions", backend_->getctrl("mrs_real/repetitions"));
+    setctrl("mrs_real/duration", backend_->getctrl("mrs_real/duration"));
 
     advance_ = ctrl_advance_->to<mrs_natural>();//?!?!!? [!][?]
-    setctrl("mrs_natural/advance", src_->getctrl("mrs_natural/advance"));
+    setctrl("mrs_natural/advance", backend_->getctrl("mrs_natural/advance"));
 
-    setctrl("mrs_bool/shuffle", src_->getctrl("mrs_bool/shuffle"));
-    setctrl("mrs_natural/cindex", src_->getctrl("mrs_natural/cindex"));
-    setctrl("mrs_string/currentlyPlaying", src_->getctrl("mrs_string/currentlyPlaying"));
-    setctrl("mrs_string/previouslyPlaying", src_->getctrl("mrs_string/previouslyPlaying"));
-    setctrl("mrs_real/currentLabel", src_->getctrl("mrs_real/currentLabel"));
-    setctrl("mrs_real/previousLabel", src_->getctrl("mrs_real/previousLabel"));
-    setctrl("mrs_natural/nLabels", src_->getctrl("mrs_natural/nLabels"));
-    setctrl("mrs_string/labelNames", src_->getctrl("mrs_string/labelNames"));
-    setctrl("mrs_string/allfilenames", src_->getctrl("mrs_string/allfilenames"));
-    setctrl("mrs_natural/numFiles", src_->getctrl("mrs_natural/numFiles"));
+    setctrl("mrs_bool/shuffle", backend_->getctrl("mrs_bool/shuffle"));
+    setctrl("mrs_natural/cindex", backend_->getctrl("mrs_natural/cindex"));
+    setctrl("mrs_string/currentlyPlaying", backend_->getctrl("mrs_string/currentlyPlaying"));
+    setctrl("mrs_string/previouslyPlaying", backend_->getctrl("mrs_string/previouslyPlaying"));
+    setctrl("mrs_real/currentLabel", backend_->getctrl("mrs_real/currentLabel"));
+    setctrl("mrs_real/previousLabel", backend_->getctrl("mrs_real/previousLabel"));
+    setctrl("mrs_natural/nLabels", backend_->getctrl("mrs_natural/nLabels"));
+    setctrl("mrs_string/labelNames", backend_->getctrl("mrs_string/labelNames"));
+    setctrl("mrs_string/allfilenames", backend_->getctrl("mrs_string/allfilenames"));
+    setctrl("mrs_natural/numFiles", backend_->getctrl("mrs_natural/numFiles"));
 
-    if (src_->getctrl("mrs_string/filetype")->to<mrs_string>() == "raw")
+    if (backend_->getctrl("mrs_string/filetype")->to<mrs_string>() == "raw")
     {
-      setctrl("mrs_real/frequency", src_->getctrl("mrs_real/frequency"));
-      setctrl("mrs_bool/noteon", src_->getctrl("mrs_bool/noteon"));
+      setctrl("mrs_real/frequency", backend_->getctrl("mrs_real/frequency"));
+      setctrl("mrs_bool/noteon", backend_->getctrl("mrs_bool/noteon"));
     }
-    else if (src_->getctrl("mrs_string/filetype")->to<mrs_string>() == "mp3")
+    else if (backend_->getctrl("mrs_string/filetype")->to<mrs_string>() == "mp3")
     {
       updateCurrDuration = true;
       //setctrl("mrs_real/fullDuration", src_->getctrl("mrs_real/fullDuration"));
@@ -310,116 +313,100 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 
 }
 
-bool
-SoundFileSource::checkType()
+void SoundFileSource::clearBackend()
 {
-  mrs_string filename = getctrl("mrs_string/filename")->to<mrs_string>();
+  delete backend_;
+  backend_ = 0;
+  file_extension_.clear();
+}
+
+bool
+SoundFileSource::updateBackend()
+{
+  if (filename_.empty())
+  {
+    clearBackend();
+    return false;
+  }
 
   // check if file exists
-  if (filename != SOUNDFILESOURCE_UNDEFINEDFILENAME)
+  bool file_exists;
   {
-    FILE * sfp = fopen(filename.c_str(), "r");
-    if (sfp == NULL)
+    FILE *file = fopen(filename_.c_str(), "rb");
+    file_exists = file != 0;
+    if (file)
+      fclose(file);
+  }
+  if (!file_exists)
+  {
+    clearBackend();
+    MRSWARN("SoundFileSource: Failed to open file for reading: " << filename_);
+    return false;
+  }
+
+  mrs_string extension;
+  {
+    mrs_string::size_type pos = filename_.rfind(".", filename_.length());
+    if (pos != mrs_string::npos)
     {
-      mrs_string wrn = "SoundFileSource::Problem opening file ";
-      wrn += filename;
-      MRSWARN(wrn);
-      filename_ = SOUNDFILESOURCE_UNDEFINEDFILENAME;
-      setctrl("mrs_string/filename", SOUNDFILESOURCE_UNDEFINEDFILENAME);
-      return false;
+      extension = filename_.substr(pos);
+      // need this to be lowercase for the checks below.
+      std::transform(extension.begin(), extension.end(), extension.begin(), (int(*)(int))tolower);
     }
-    fclose(sfp);
-  }
-  else {
-    filename_ = SOUNDFILESOURCE_UNDEFINEDFILENAME;
   }
 
-  // try to open file with appropriate format
-  mrs_string::size_type pos = filename.rfind(".", filename.length());
-  mrs_string ext;
-  if (pos != mrs_string::npos)
-  {
-    ext = filename.substr(pos, filename.length());
-    // need this to be lowercase for the checks below.
-    std::transform(ext.begin(), ext.end(), ext.begin(), (int(*)(int))tolower);
-  }
+  if (file_extension_ == extension)
+    return true;
 
-  if (prev_ext_ != ext)
-  {
-    delete src_;
-    src_ = NULL;
-  }
+  file_extension_ = extension;
 
+  clearBackend();
 
-  if (ext == ".au")
+  if (extension == ".au")
   {
-    if (src_ == NULL)
-      src_ = new AuFileSource(getName());
+    backend_ = new AuFileSource(getName());
   }
-  else if (ext == ".wav")
+  else if (extension == ".wav")
   {
-    if (src_ == NULL)
-      src_ = new WavFileSource(getName());
+    backend_ = new WavFileSource(getName());
   }
-  else if (ext == ".raw")
+  else if (extension == ".raw")
   {
-    if (src_ == NULL)
-      src_ = new RawFileSource(getName());
+    backend_ = new RawFileSource(getName());
   }
-  else if (ext == ".txt")
+  else if (extension == ".txt")
   {
-    if (src_ == NULL)
-      src_ = new CollectionFileSource(getName());
+    backend_ = new CollectionFileSource(getName());
   }
-  else if (ext == ".mf")
+  else if (extension == ".mf")
   {
-    if (src_ == NULL)
-      src_ = new CollectionFileSource(getName());
+    backend_ = new CollectionFileSource(getName());
   }
 #ifdef MARSYAS_MAD
-  else if (ext == ".mp3")
+  else if (extension == ".mp3")
   {
-    if (src_ == NULL)
-      src_ = new MP3FileSource(getName());
+    backend_ = new MP3FileSource(getName());
   }
 #endif
 #ifdef MARSYAS_VORBIS
-  else if (ext == ".ogg")
+  else if (extension == ".ogg")
   {
-    if (src_ == NULL)
-      src_ = new OggFileSource(getName());
+    backend_ = new OggFileSource(getName());
   }
 #endif
   else
 #ifdef MARSYAS_GSTREAMER
     // use GStreamer as a fallback
   {
-    if (filename != SOUNDFILESOURCE_UNDEFINEDFILENAME)
-    {
-
-      MRSDIAG("SoundFileSource is falling back to GStreamerSource\n");
-      if (src_ == NULL)
-        src_ = new GStreamerSource(getName());
-    }
-    else {
-      return false;
-    }
+    MRSDIAG("SoundFileSource is falling back to GStreamerSource\n");
+    backend_ = new GStreamerSource(getName());
   }
 #else
   {
-    if (filename != SOUNDFILESOURCE_UNDEFINEDFILENAME)
-    {
-      mrs_string wrn = "Unsupported format for file ";
-      wrn += filename;
-      MRSWARN(wrn);
-      filename_ = SOUNDFILESOURCE_UNDEFINEDFILENAME;
-      setctrl("mrs_string/filename", SOUNDFILESOURCE_UNDEFINEDFILENAME);
-    }
-
+    MRSWARN("Unknown file extension: " << filename_);
     return false;
   }
 #endif
-  prev_ext_ = ext;
 
   return true;
 }
@@ -427,8 +414,10 @@ SoundFileSource::checkType()
 void
 SoundFileSource::getHeader()
 {
-  mrs_string filename = ctrl_filename_->to<mrs_string>();
-  src_->getHeader(filename);
+  assert(!filename_.empty());
+  assert(backend_ != 0);
+
+  backend_->getHeader(filename_);
   ctrl_pos_->setValue(0, NOUPDATE);
   ctrl_loop_->setValue(0, NOUPDATE);
 }
@@ -436,9 +425,9 @@ SoundFileSource::getHeader()
 void
 SoundFileSource::myProcess(realvec& in, realvec &out)
 {
-  if (src_ != NULL)
+  if (backend_ != NULL)
   {
-    src_->process(in,out);
+    backend_->process(in,out);
     // if (ctrl_mute_->isTrue())
     // out.setval(0.0);
 
@@ -454,26 +443,26 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
     setctrl("mrs_bool/hasData", src_->hasData_);//[!]
     */
     // replaced by gtzan
-    ctrl_pos_->setValue(src_->getctrl("mrs_natural/pos")->to<mrs_natural>(), NOUPDATE);
-    ctrl_loop_->setValue(src_->rewindpos_, NOUPDATE);
-    ctrl_hasData_->setValue(src_->hasData_);
-    ctrl_lastTickWithData_->setValue(src_->lastTickWithData_, NOUPDATE);
-    ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
-    ctrl_previouslyPlaying_->setValue(src_->getctrl("mrs_string/previouslyPlaying"));
+    ctrl_pos_->setValue(backend_->getctrl("mrs_natural/pos")->to<mrs_natural>(), NOUPDATE);
+    ctrl_loop_->setValue(backend_->rewindpos_, NOUPDATE);
+    ctrl_hasData_->setValue(backend_->hasData_);
+    ctrl_lastTickWithData_->setValue(backend_->lastTickWithData_, NOUPDATE);
+    ctrl_currentlyPlaying_->setValue(backend_->getctrl("mrs_string/currentlyPlaying"));
+    ctrl_previouslyPlaying_->setValue(backend_->getctrl("mrs_string/previouslyPlaying"));
 
-    ctrl_currentLabel_->setValue(src_->getctrl("mrs_real/currentLabel"));
-    ctrl_previousLabel_->setValue(src_->getctrl("mrs_real/previousLabel"));
-    ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));
-    ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
+    ctrl_currentLabel_->setValue(backend_->getctrl("mrs_real/currentLabel"));
+    ctrl_previousLabel_->setValue(backend_->getctrl("mrs_real/previousLabel"));
+    ctrl_labelNames_->setValue(backend_->getctrl("mrs_string/labelNames"));
+    ctrl_nLabels_->setValue(backend_->getctrl("mrs_natural/nLabels"));
 
     if (updateCurrDuration)
     {
-      setctrl("mrs_real/fullDuration", src_->durFull_);
+      setctrl("mrs_real/fullDuration", backend_->durFull_);
     }
 
 
-    if (src_->getType() == "CollectionFileSource") {
-      CollectionFileSource *coll = (CollectionFileSource*)src_;
+    if (backend_->getType() == "CollectionFileSource") {
+      CollectionFileSource *coll = (CollectionFileSource*)backend_;
       ctrl_currentHasData_->setValue(coll->iHasData_,
                                      NOUPDATE);
 
@@ -489,8 +478,8 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
                                     NOUPDATE);
       }
     } else {
-      ctrl_currentHasData_->setValue(src_->hasData_);
-      ctrl_currentLastTickWithData_->setValue(src_->lastTickWithData_);
+      ctrl_currentHasData_->setValue(backend_->hasData_);
+      ctrl_currentLastTickWithData_->setValue(backend_->lastTickWithData_);
     }
 
     // MRSMSG("currentLastTickWithData_" << ctrl_currentLastTickWithData_->to<mrs_bool>())

@@ -45,25 +45,15 @@ private:
   virtual void addControls();
   virtual void myUpdate(MarControlPtr sender);
 
-protected:
-  short *sdata_;
-  unsigned char *cdata_;
-  long *ldata_;
-
-
   std::string filename_;
-
-  FILE *sfp_;
-  long sfp_begin_;
-
-  AbsSoundFileSink* dest_;
+  AbsSoundFileSink* backend_;
 
 public:
   SoundFileSink(std::string name);
   SoundFileSink(const SoundFileSink& a);
   ~SoundFileSink();
   MarSystem* clone() const;
-  bool checkType();
+  bool updateBackend();
 
   virtual void myProcess(realvec& in, realvec& out);
 

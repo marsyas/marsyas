@@ -76,7 +76,7 @@ PlotSink::addControls()
   addctrl("mrs_bool/single_file", false, ctrl_single_file_);
   addctrl("mrs_bool/no_ticks", false, ctrl_no_ticks_);
   setctrlState("mrs_bool/single_file", true);
-  addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
+  addctrl("mrs_string/filename", "", ctrl_filename_);
   setctrlState("mrs_string/filename", true);
   addctrl("mrs_bool/matlab", false, ctrl_matlab_);
   addctrl("mrs_string/matlabCommand",
@@ -99,7 +99,7 @@ PlotSink::myUpdate(MarControlPtr sender)
   filename_ = ctrl_filename_->to<mrs_string>();
 
   if (!single_file_ && ctrl_single_file_->isTrue() &&
-      !filename_.empty() && filename_ != "defaultfile")
+      !filename_.empty())
   {
     single_file_ = new std::ofstream(filename_.c_str());
   }

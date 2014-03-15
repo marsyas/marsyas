@@ -25,7 +25,6 @@ using namespace Marsyas;
 SoundFileSource2::SoundFileSource2(mrs_string name):MarSystem("SoundFileSource2",name)
 {
   src_ = NULL;
-  //filename_ = "defaultfile";
 
   addControls();
 

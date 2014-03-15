@@ -3041,7 +3041,6 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
   */
 
   featureNetwork->updControl("Confidence/confidence/mrs_bool/mute", false);
-  featureNetwork->updControl("mrs_string/filename", "defaultfile");
   featureNetwork->updControl("WekaSink/wsink/mrs_bool/mute", true);
 
   if (pluginName == EMPTYSTRING) // output to stdout

@@ -31,25 +31,18 @@ using namespace Marsyas;
 
 
 
-SoundFileSink::SoundFileSink(mrs_string name):MarSystem("SoundFileSink",name)
+SoundFileSink::SoundFileSink(mrs_string name):
+  MarSystem("SoundFileSink",name),
+  backend_(0)
 {
-
-
-  sdata_ = NULL;
-  cdata_ = NULL;
-  sfp_ = NULL;
-  dest_ = NULL;
-
   addControls();
 }
 
 
-SoundFileSink::SoundFileSink(const SoundFileSink& a):MarSystem(a)
+SoundFileSink::SoundFileSink(const SoundFileSink& a):
+  MarSystem(a),
+  backend_(0)
 {
-  sdata_ = NULL;
-  cdata_ = NULL;
-  sfp_ = NULL;
-  dest_ = NULL;
 }
 
 
@@ -61,13 +54,13 @@ SoundFileSink::clone() const
 
 SoundFileSink::~SoundFileSink()
 {
-  delete dest_;
+  delete backend_;
 }
 
 void
 SoundFileSink::addControls()
 {
-  addctrl("mrs_string/filename", "defaultfile");
+  addctrl("mrs_string/filename", string());
   setctrlState("mrs_string/filename", true);
   // lossy encoding specific controls
   addctrl("mrs_natural/bitrate", 128);
@@ -83,68 +76,61 @@ SoundFileSink::addControls()
 void
 SoundFileSink::putHeader()
 {
-  mrs_string filename = getctrl("mrs_string/filename")->to<mrs_string>();
-  dest_->putHeader(filename);
+  assert(!filename_.empty());
+  assert(backend_ != 0);
+
+  backend_->putHeader(filename_);
 }
 
 
 
 bool
-SoundFileSink::checkType()
+SoundFileSink::updateBackend()
 {
-  mrs_string filename = getctrl("mrs_string/filename")->to<mrs_string>();
+  delete backend_;
+  backend_ = 0;
+
+  if (filename_.empty())
+    return false;
+
   // check if file exists
-  if (filename != "defaultfile")
+  bool file_exists;
   {
-    sfp_ = fopen(filename.c_str(), "wb");
-    if (sfp_ == NULL)
-    {
-      mrs_string wrn = "SoundFileSink::checkType: Problem opening file ";
-      wrn += filename;
-      MRSWARN(wrn);
-      filename = "defaultfile";
-      return false;
-    }
-    fclose(sfp_);
+    FILE *file = fopen(filename_.c_str(), "wb");
+    file_exists = file != 0;
+    if (file)
+      fclose(file);
+  }
+  if (!file_exists)
+  {
+    MRSWARN("SoundFileSink: Failed to open file for writing: " << filename_);
+    return false;
   }
 
   // try to open file with appropriate format
-  mrs_string::size_type pos = filename.rfind(".", filename.length());
+  mrs_string::size_type pos = filename_.rfind(".", filename_.length());
   mrs_string ext;
-  if (pos == mrs_string::npos) ext = "";
-  else
-    ext = filename.substr(pos, filename.length());
+  if (pos != mrs_string::npos)
+    ext = filename_.substr(pos);
 
   if (ext == ".au")
   {
-    delete dest_;
-    dest_ = new AuFileSink(getName());
+    backend_ = new AuFileSink(getName());
   }
   else if (ext == ".wav")
   {
-    delete dest_;
-    dest_ = new WavFileSink(getName());
+    backend_ = new WavFileSink(getName());
   }
 #ifdef MARSYAS_LAME
   else if (ext == ".mp3")
   {
-    delete dest_;
     dest_ = new MP3FileSink(getName());
   }
 #endif
   else
   {
-    if (filename != "defaultfile")
-    {
-      mrs_string wrn = "Unsupported format for file ";
-      wrn += filename;
-      MRSWARN(wrn);
-      filename_ = "defaultfile";
-      setctrl("mrs_string/filename", "defaultfile");
-      return false;
-    }
-    else
-      return false;
+    MRSWARN("Unknown file extension: " << filename_);
+    return false;
   }
 
   return true;
@@ -155,42 +141,41 @@ SoundFileSink::myUpdate(MarControlPtr sender)
 {
   (void) sender;  //suppress warning of unused parameter(s)
 
-  if (filename_ != getctrl("mrs_string/filename")->to<mrs_string>())
+  const string &new_filename = getctrl("mrs_string/filename")->to<mrs_string>();
+
+  if (new_filename != filename_)
   {
-    if (checkType() == true)
+    filename_ = new_filename;
+
+    if (updateBackend())
     {
-      dest_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-      dest_->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
-      dest_->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
-      dest_->update();
+      backend_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+      backend_->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+      backend_->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
+      backend_->update();
 
       putHeader();
       filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
 
-      setctrl("mrs_real/israte", dest_->getctrl("mrs_real/israte"));
+      setctrl("mrs_real/israte", backend_->getctrl("mrs_real/israte"));
     }
-    else
-      dest_ = NULL;
   }
 
-
-  if (dest_ != NULL)
+  if (backend_)
   {
-    dest_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-    dest_->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
-    dest_->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
+    backend_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+    backend_->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+    backend_->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
     // [ML] the filename is now propagated to the child
-    dest_->setctrl("mrs_string/filename", getctrl("mrs_string/filename"));
-    dest_->setctrl("mrs_natural/bitrate", getctrl("mrs_natural/bitrate"));
-    dest_->setctrl("mrs_natural/encodingQuality", getctrl("mrs_natural/encodingQuality"));
-    dest_->setctrl("mrs_string/id3tags", getctrl("mrs_string/id3tags"));
-    dest_->update();
+    backend_->setctrl("mrs_string/filename", getctrl("mrs_string/filename"));
+    backend_->setctrl("mrs_natural/bitrate", getctrl("mrs_natural/bitrate"));
+    backend_->setctrl("mrs_natural/encodingQuality", getctrl("mrs_natural/encodingQuality"));
+    backend_->setctrl("mrs_string/id3tags", getctrl("mrs_string/id3tags"));
+    backend_->update();
 
-    setctrl("mrs_natural/onSamples", dest_->getctrl("mrs_natural/onSamples"));
-    setctrl("mrs_natural/onObservations", dest_->getctrl("mrs_natural/onObservations"));
-    setctrl("mrs_real/osrate", dest_->getctrl("mrs_real/israte"));
-
-
+    setctrl("mrs_natural/onSamples", backend_->getctrl("mrs_natural/onSamples"));
+    setctrl("mrs_natural/onObservations", backend_->getctrl("mrs_natural/onObservations"));
+    setctrl("mrs_real/osrate", backend_->getctrl("mrs_real/israte"));
   }
 }
 
@@ -201,9 +186,9 @@ SoundFileSink::myProcess(realvec& in, realvec& out)
 
   mrs_bool paused = getctrl("mrs_bool/pause")->to<mrs_bool>();
 
-  if ((dest_ != NULL) &&  (paused==false))
+  if ((backend_ != NULL) &&  (paused==false))
   {
-    dest_->process(in,out);
+    backend_->process(in,out);
   }
 
 

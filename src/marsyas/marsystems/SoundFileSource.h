@@ -115,16 +115,18 @@ private:
 
   MarControlPtr ctrl_rewindToPos_;
 
-  AbsSoundFileSource* src_;
+  AbsSoundFileSource* backend_;
 
   mrs_natural advance_;
-  std::string prev_ext_;
+  std::string file_extension_;
 
 
   void addControls();
   void myUpdate(MarControlPtr sender);
 
   bool updateCurrDuration;
+
+  void clearBackend();
 
 public:
 
@@ -135,18 +137,10 @@ public:
   MarSystem* clone() const;
 
   virtual void myProcess(realvec& in,realvec& out);
-  virtual bool checkType();
+  virtual bool updateBackend();
   virtual void getHeader();
 
 };
-
-/// File name value to use for undefined files.
-
-// On OS X this does not get initialized and causes core dumps in the
-// unit tests. Not sure why.
-
-// const mrs_string SOUNDFILESOURCE_UNDEFINEDFILENAME("defaultfile");
-#define SOUNDFILESOURCE_UNDEFINEDFILENAME "defaultfile"
 
 }//namespace Marsyas
 

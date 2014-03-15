@@ -23,7 +23,6 @@ using namespace Marsyas;
 
 AbsSoundFileSource2::AbsSoundFileSource2(mrs_string type, mrs_string name):MarSystem(type, name)
 {
-  filename_ = "defaultfile";
   size_ = 0;
 
   addControls();
@@ -68,7 +67,7 @@ AbsSoundFileSource2::addControls()
 
   addctrl("mrs_bool/hasData", false);
 
-  addctrl("mrs_string/filename", "defaultfile");
+  addctrl("mrs_string/filename", "");
   setctrlState("mrs_string/filename", true);
 
   addctrl("mrs_string/filetype", "defaulttype");

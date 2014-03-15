@@ -25,7 +25,6 @@ using namespace Marsyas;
 MidiFileSynthSource::MidiFileSynthSource(mrs_string name):MarSystem("MidiFileSynthSource",name)
 {
   addControls();
-  filename_ = "defaultfile";
   nChannels_ = 0;
   size_ = 0;
 }
@@ -67,7 +66,7 @@ MidiFileSynthSource::MidiFileSynthSource(const MidiFileSynthSource& a):MarSystem
 void
 MidiFileSynthSource::addControls()
 {
-  addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
+  addctrl("mrs_string/filename", "", ctrl_filename_);
   setctrlState("mrs_string/filename", true);
 
   addctrl("mrs_natural/numActiveNotes", 0, ctrl_numActiveNotes_);
