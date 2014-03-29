@@ -48,7 +48,7 @@
 "->" { return Parser::ARROW; }
 
 "when" { return Parser::WHEN; }
-
+"on" { return Parser::ON; }
 "else" { return Parser::ELSE; }
 
 true|false { return Parser::BOOL; }

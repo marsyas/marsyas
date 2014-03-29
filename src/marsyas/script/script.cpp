@@ -606,8 +606,7 @@ class script_translator
         MRSERR("Can not parse expression: invalid control value!");
         return nullptr;
       }
-      auto op = new ScriptOperationProcessor::operation;
-      op->value = value;
+      auto op = new ScriptOperationProcessor::operation(value);
       return op;
     }
 
