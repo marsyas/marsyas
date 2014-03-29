@@ -18,29 +18,48 @@
 
 
 #include "Spectrum.h"
+#include <cmath>
 
 using namespace std;
 using namespace Marsyas;
 
-Spectrum::Spectrum(mrs_string name):MarSystem("Spectrum",name)
+template<typename NUM>
+static bool is_power_of_two(NUM n)
 {
-  ponObservations_ = 0;
+  double real_power_of_two = std::log( (double) n ) / std::log(2.0);
+  int int_power_of_two = (int) real_power_of_two;
+  return real_power_of_two == int_power_of_two;
+}
 
-  cutoff_ = 1.0;
-  lowcutoff_ = 0.0;
-  re_ = 0.0;
-  im_ = 0.0;
+Spectrum::Spectrum(mrs_string name):
+  MarSystem("Spectrum",name),
+  cutoff_(1.0),
+  lowcutoff_(0.0),
+  re_(0.0),
+  im_ (0.0),
+  ponObservations_(0),
+  correct_input_format_(false)
+{
   addControls();
+  checkInputFormat();
 }
 
 Spectrum::~Spectrum()
 {
 }
 
-Spectrum::Spectrum(const Spectrum& a): MarSystem(a)
+Spectrum::Spectrum(const Spectrum& a):
+  MarSystem(a),
+  cutoff_(1.0),
+  lowcutoff_(0.0),
+  re_(0.0),
+  im_ (0.0),
+  ponObservations_(0),
+  correct_input_format_(false)
 {
   ctrl_cutoff_ = getctrl("mrs_real/cutoff");
   ctrl_lowcutoff_ = getctrl("mrs_real/lowcutoff");
+  checkInputFormat();
 }
 
 void
@@ -58,6 +77,18 @@ Spectrum::clone() const
   return new Spectrum(*this);
 }
 
+void Spectrum::checkInputFormat()
+{
+  if (inSamples_ == 0)
+    return;
+
+  correct_input_format_ = is_power_of_two(inSamples_);
+  if (!correct_input_format_)
+  {
+    MRSERR("Spectrum: input amount of samples not power of two: " << inSamples_);
+  }
+}
+
 void
 Spectrum::myUpdate(MarControlPtr sender)
 {
@@ -73,6 +104,8 @@ Spectrum::myUpdate(MarControlPtr sender)
 
   if (ponObservations_ != onObservations_)
   {
+    checkInputFormat();
+
     /* ostringstream oss;
       oss << "rbin_0" << ","; //DC bin (only has real part)
       oss << "rbin_" << onObservations_/2 << ","; //Nyquist bin (only has real part)
@@ -116,6 +149,8 @@ Spectrum::myUpdate(MarControlPtr sender)
 void
 Spectrum::myProcess(realvec& in, realvec& out)
 {
+  if (!correct_input_format_)
+    return;
 
   mrs_natural t;
   // copy to output to perform inplace fft
