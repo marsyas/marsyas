@@ -60,6 +60,9 @@ private:
   MarControlPtr ctrl_cutoff_;
   MarControlPtr ctrl_lowcutoff_;
 
+  bool correct_input_format_;
+
+  void checkInputFormat();
   void addControls();
   void myUpdate(MarControlPtr sender);
 
