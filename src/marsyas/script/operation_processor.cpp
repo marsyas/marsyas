@@ -69,7 +69,7 @@ bool ScriptOperationProcessor::operation::update(const MarControlPtr & cause)
       case WHEN_OP:
         if (value.isInvalid())
           value = *a(); // create new control
-        else if ( b->to<bool>() )
+        else if ( b() == cause() && b->to<bool>() )
           *value() = *a(); // copy control value
         else
           reevaluate = false;
