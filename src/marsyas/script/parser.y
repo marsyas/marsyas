@@ -9,10 +9,9 @@
 %token PUBLIC
 
 %left '='
-%left EQ NEQ LESS MORE
-%left COMPARE
-%left MATH1
-%left MATH2
+%left COMPARE EQ NEQ LESS MORE
+%left MATH1 '+' '-'
+%left MATH2 '*' '/'
 
 %%
 
