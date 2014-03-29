@@ -1,0 +1,11 @@
+Series
+{
+  inSamples = 1
+
+  -> NoiseSource
+  -> noise: FlowToControl
+
+  + (public) above_zero = (noise/value > 0)
+  + (public) when_above = (noise/value when above_zero)
+  + (public) on_above_changed = (noise/value on above_zero)
+}
