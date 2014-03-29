@@ -8,6 +8,96 @@ using namespace std;
 
 namespace Marsyas {
 
+bool ScriptOperationProcessor::operation::update(const MarControlPtr & cause)
+{
+  //MRSWARN("Operation update.");
+
+  if (op == NO_OP)
+  {
+    assert(!value.isInvalid());
+    //MRSWARN("Evaluating terminal:" << value);
+    return value() == cause();
+  }
+
+  assert(left_operand != nullptr);
+  assert(right_operand != nullptr);
+
+  bool reevaluate = false;
+  reevaluate |= left_operand->update(cause);
+  reevaluate |= right_operand->update(cause);
+  reevaluate |= value.isInvalid();
+
+  if (!reevaluate) {
+    //MRSWARN("Operator: nothing to do.");
+    return false;
+  }
+
+  const MarControlPtr & a = left_operand->value;
+  const MarControlPtr & b = right_operand->value;
+  if (a.isInvalid() || b.isInvalid())
+  {
+    MRSERR("Missing operand values to operator: " << op);
+    value = MarControlPtr();
+  }
+  else
+  {
+    try {
+      switch(op)
+      {
+      case PLUS_OP:
+        value = a + b; break;
+      case MINUS_OP:
+        value = a - b; break;
+      case MULT_OP:
+        value = a * b; break;
+      case DIV_OP:
+        value = a / b; break;
+      case EQ_OP:
+        value = a == b; break;
+      case NEQ_OP:
+        value = a != b; break;
+      case LESS_OP:
+        // NOTE: MarControlPtr::operator< only compares pointers, not values
+        // That was probably intended for usage in std::map and similar...
+        value = (*a() < *b()); break;
+      case MORE_OP:
+        value = !(a == b || (*a() < *b())); break;
+      case LESSEQ_OP:
+        value = (a == b || (*a() < *b())); break;
+      case MOREEQ_OP:
+        value = !(*a() < *b()); break;
+      case WHEN_OP:
+        if (value.isInvalid())
+          value = *a(); // create new control
+        else if ( b->to<bool>() )
+          *value() = *a(); // copy control value
+        else
+          reevaluate = false;
+        break;
+      case ON_OP:
+        if (value.isInvalid())
+          value = *a();  // create new control
+        else if ( b() == cause() )
+          *value() = *a(); // copy control value
+        else
+          reevaluate = false;
+        break;
+      default:
+        MRSERR("Unknown operator: " << op);
+        value = MarControlPtr();
+      }
+    }
+    catch(std::exception & e)
+    {
+      MRSERR("Failed operation: " << e.what());
+      value = MarControlPtr();
+    }
+  }
+
+  //MRSWARN("Operator: done.");
+  return reevaluate;
+}
+
 
 ScriptOperationProcessor::operator_type
 ScriptOperationProcessor::operator_for_text(const std::string op_text)
@@ -23,7 +113,9 @@ ScriptOperationProcessor::operator_for_text(const std::string op_text)
     "<", // LESS_OP,
     ">", // MORE_OP,
     "<=", // LESSEQ_OP,
-    ">=" // MOREEQ_OP
+    ">=", // MOREEQ_OP,
+    "when", // WHEN_OP,
+    "on" // ON_OP
   };
 
   vector<string>::const_iterator pos = std::find(op_desc.begin(), op_desc.end(), op_text);
@@ -68,30 +160,31 @@ void ScriptOperationProcessor::setOperation( operation * opn )
 
   prepareOperation(m_operation);
 
-  MarControlPtr value = evaluateOperation(m_operation);
+  m_operation->update();
+  const MarControlPtr & value = m_operation->value;
 
   if (!value.isInvalid())
   {
     addControl(value->getType() + '/' + "result", *value, m_result);
-    m_result->setState(true);
   }
 }
 
-void ScriptOperationProcessor::myUpdate(MarControlPtr)
+void ScriptOperationProcessor::myUpdate(MarControlPtr cause)
 {
 #if 0
   cout << "Processing operation!" << endl;
-  if (!sender.isInvalid())
+  if (!cause.isInvalid())
   {
     cout << "Triggered by control: ";
-    if (sender->getMarSystem())
-      cout << sender->getMarSystem()->getAbsPath();
-    cout << sender->getType() << '/' << sender->getName();
+    if (cause->getMarSystem())
+      cout << cause->getMarSystem()->getAbsPath();
+    cout << cause->getName();
     cout << endl;
   }
 #endif
 
-  MarControlPtr value = evaluateOperation(m_operation);
+  m_operation->update(cause);
+  const MarControlPtr & value = m_operation->value;
 
   if (!value.isInvalid())
   {
@@ -133,59 +226,9 @@ void ScriptOperationProcessor::prepareOperation( operation *opn )
 
       opn->value = dst_control;
 
-      m_dependencies.push_back(dst_name);
+      m_dependencies.push_back( dst_name );
     }
   }
-}
-
-MarControlPtr ScriptOperationProcessor::evaluateOperation( operation *opn )
-{
-  if (opn->op)
-  {
-    MarControlPtr a = evaluateOperation(opn->left_operand);
-    MarControlPtr b = evaluateOperation(opn->right_operand);
-    if (a.isInvalid() || b.isInvalid())
-      return MarControlPtr();
-
-    try {
-      switch(opn->op)
-      {
-      case PLUS_OP:
-        return a + b;
-      case MINUS_OP:
-        return a - b;
-      case MULT_OP:
-        return a * b;
-      case DIV_OP:
-        return a / b;
-      case EQ_OP:
-        return a == b;
-      case NEQ_OP:
-        return a != b;
-      case LESS_OP:
-        // NOTE: MarControlPtr::operator< only compares pointers, not values
-        // That was probably intended for usage in std::map and similar...
-        return (*a() < *b());
-      case MORE_OP:
-        return !(a == b || (*a() < *b()));
-      case LESSEQ_OP:
-        return (a == b || (*a() < *b()));
-      case MOREEQ_OP:
-        return !(*a() < *b());
-
-      default:
-        MRSERR("Unknown operator: " << opn->op);
-      }
-    }
-    catch(...)
-    {
-      MRSERR("Invalid operator for given operands.");
-    }
-
-    return MarControlPtr();
-  }
-
-  return opn->value;
 }
 
 void ScriptOperationProcessor::clearOperation()
@@ -193,10 +236,11 @@ void ScriptOperationProcessor::clearOperation()
   delete m_operation;
   m_operation = nullptr;
 
-  for (string & name : m_dependencies)
+  for (const auto & dep_name : m_dependencies)
   {
-    controls_.erase(name);
+    controls_.erase( dep_name );
   }
+  m_dependencies.clear();
 
   if (!m_result.isInvalid())
   {
@@ -204,9 +248,6 @@ void ScriptOperationProcessor::clearOperation()
     m_result = MarControlPtr();
   }
 }
-
-
-
 
 ScriptStateProcessor::ScriptStateProcessor(const std::string & name):
   MarSystem("ScriptStateProcessor", name)

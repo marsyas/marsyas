@@ -5,11 +5,12 @@
 %baseclass-preinclude "syntax_tree.hpp"
 
 %stype node
-%token INT REAL STRING BOOL ID PATH ARROW WHEN ELSE INCLUDE AS DIRECTIVE_ARG
+%token INT REAL STRING BOOL ID PATH ARROW INCLUDE AS DIRECTIVE_ARG
 %token PUBLIC
 
 %left '='
 %left COMPARE EQ NEQ LESS MORE
+%left CLOCK WHEN ON ELSE
 %left MATH1 '+' '-'
 %left MATH2 '*' '/'
 
@@ -246,6 +247,9 @@ operation_value
 | operation compare operation %prec COMPARE
 { $$.set_operation($1, $2.s, $3); }
 
+| operation clock operation %prec CLOCK
+{ $$.set_operation($1, $2.s, $3); }
+
 | operation math1 operation %prec MATH1
 { $$.set_operation($1, $2.s, $3); }
 
@@ -260,6 +264,11 @@ EQ { $$ = d_scanner.matched(); } |
 NEQ { $$ = d_scanner.matched(); } |
 LESS { $$ = d_scanner.matched(); } |
 MORE { $$ = d_scanner.matched(); }
+;
+
+clock:
+WHEN { $$ = d_scanner.matched(); } |
+ON { $$ = d_scanner.matched(); }
 ;
 
 math1:
