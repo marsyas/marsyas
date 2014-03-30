@@ -1,7 +1,7 @@
 Network : Series
 {
-  + (public) file = ""
-  + (public) volume = 1.0
+  + public file = ""
+  + public volume = 1.0
 
   inSamples = 2048
 

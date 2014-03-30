@@ -2,14 +2,14 @@ kea : Series {
 
   ~ GenericClassifier : "classifier.mrs"
 
-  + (public) weka_file = ""
+  + public weka_file = ""
 
-  + (public) classification = "svm"
+  + public classification = "svm"
 
-  + (public) svm_svm = classifier/svm/svm
-  + (public) svm_kernel = classifier/svm/kernel
-  + (public) svm_gamma = 4
-  + (public) svm_c = 1.0
+  + public svm_svm = classifier/svm/svm
+  + public svm_kernel = classifier/svm/kernel
+  + public svm_gamma = 4
+  + public svm_c = 1.0
 
   + done = report/done
 
