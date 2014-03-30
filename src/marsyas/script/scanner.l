@@ -22,7 +22,7 @@
 
 }
 
-"(public)" { return Parser::PUBLIC; }
+"public" { return Parser::PUBLIC; }
 
 \{ { return '{'; }
 \} { return '}'; }
