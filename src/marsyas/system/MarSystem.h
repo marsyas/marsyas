@@ -106,6 +106,9 @@ private:
 
   std::vector<MarSystemObserver*> observers_;
 
+  MarSystem * parent_scope_;
+  std::map<std::string, MarSystem*> scope_;
+
 protected:
 
   // Parent MarSystem (if in a composite, otherwise it's NULL)
@@ -372,6 +375,7 @@ public:
 
   // Composite interface
   virtual bool addMarSystem(MarSystem *marsystem);
+
   /**
    * @brief Get ...[grand-][grand-]child by path.
    * @param path Path composed of child types and names,
@@ -384,6 +388,14 @@ public:
     return parent_;
   }
   virtual std::vector<MarSystem*> getChildren();
+  bool isDescendentOf(MarSystem *parent);
+
+  // Scope interface
+
+  MarSystem * scope();
+  MarSystem * parentScope() { return parent_scope_; }
+  void addToScope( MarSystem * marsystem );
+  void removeFromScope();
 
   // New composite interface //
 
@@ -406,16 +418,31 @@ public:
   MarControlPtr control( const std::string & name );
 
   /**
-   * @brief Get ...[grand-][grand-]child by path.
-   * @param path Path composed of child names (without types),
-   * e.g. "child-name/child-name/..."
+   * @brief Get system in immediate scope.
+   * @param name System's name (without type).
+   */
+  MarSystem *subSystem( const std::string & name );
+
+  /**
+   * @brief Get system in remote scope.
+   * @param path Path composed of system names (without types).
+   * For example: "name/name/..." or "/name/name/...".
+   *
+   * Each following name in the path is looked up in previous name's scope.
+   * A "/" at beginning starts lookup at root system,
+   * else lookup starts at this system.
+   *
    */
   MarSystem *remoteSystem( const std::string & path );
 
   /**
-   * @brief Get control of ...[grand-][grand-]child by path.
-   * @param path Path composed of child names (without types) and a control name,
-   * e.g. "child-name/child-name/.../control-name"
+   * @brief Get control of system in remote scope.
+   * @param path Path composed of system names (without types) and a control name.
+   * For example: "name/.../name/control-name" or "/name/.../name/control-name".
+   *
+   * Each following name in the path is looked up in previous name's scope.
+   * A "/" at beginning starts lookup at root system,
+   * else lookup starts at this system.
    */
   MarControlPtr remoteControl( const std::string & path );
 
