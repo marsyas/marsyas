@@ -1,9 +1,9 @@
 
 accum: Accumulator
 {
-  + (public) input = ""
-  + (public) window_size = 2048
-  + (public) window_count = 10
+  + public input = ""
+  + public window_size = 2048
+  + public window_count = 10
 
   nTimes = window_count
   inSamples = window_size
