@@ -21,70 +21,87 @@ namespace Marsyas {
 
 class script_translator
 {
-  typedef std::pair<MarSystem*, std::vector<node>> control_mapping_t;
-  typedef std::vector<control_mapping_t> control_map_t;
-  typedef map<string, MarSystem*> prototype_map_t;
-
-  struct context
-  {
-    context(MarSystem *system): root_system(system) {}
-    MarSystem *root_system;
-    control_map_t control_map;
-    prototype_map_t prototypes;
+  struct control_mapping {
+    control_mapping(MarSystem *s, MarSystem *t, const node & d):
+      scope(s), target(t), data(d)
+    {}
+    MarSystem * scope;
+    MarSystem * target;
+    node data;
   };
 
-  enum context_policy
-  {
-    own_context,
-    inherit_context
-  };
+  typedef std::vector<control_mapping> control_map_t;
+  typedef map<string, node> prototype_map_t;
+  typedef map<string, MarSystem*> system_map_t;
+
+  std::deque<prototype_map_t> m_prototype_stack;
+  std::deque<MarSystem*> m_system_scope_stack;
+  std::deque<control_map_t> m_control_scope_stack;
 
   MarSystemManager * m_manager;
   std::string m_working_dir;
   const bool m_use_register;
 
-  std::deque<context> m_context_stack;
+  MarSystem * this_system_scope() { return m_system_scope_stack.back(); }
+  control_map_t & this_control_scope() { return m_control_scope_stack.back(); }
 
-  context & this_context() { return m_context_stack.back(); }
-
-  bool add_prototype( const string & name, MarSystem * system )
+  bool add_prototype( const string & name, const node & proto_node )
   {
+    //MRSMSG("Registering prototype: " << name);
+
     assert(!name.empty());
+    assert(!m_prototype_stack.empty());
 
-    MarSystem *& prototype = this_context().prototypes[name];
+    prototype_map_t & prototypes = m_prototype_stack.back();
 
-    if (prototype)
+    if (prototypes.find(name) != prototypes.end())
     {
-      cerr << "Prototype with name '" << name << "'"
-           << " already registered in this context!" << endl;
+      MRSERR("Prototype with name '" << name << "'"
+             << " already registered in this scope!");
       return false;
     }
 
-    system->setType(name);
-    prototype = system;
+    prototypes[name] = proto_node;
 
     return true;
   }
 
-  MarSystem * instantiate_system( const std::string & type, const std::string & name )
+  const node * resolve_prototype( const std::string & name )
   {
-    for ( auto it = m_context_stack.rbegin(); it != m_context_stack.rend(); ++it )
+    assert(!name.empty());
+
+    for ( auto it = m_prototype_stack.rbegin(); it != m_prototype_stack.rend(); ++it )
     {
-      const context & ctx = *it;
-      MarSystem *prototype = nullptr;
+      const prototype_map_t & prototypes = *it;
       try {
-        prototype = ctx.prototypes.at(type);
+        return &prototypes.at(name);
       }
       catch (...)
       {
         continue;
       }
+    }
+    return nullptr;
+  }
 
-      assert(prototype);
+  MarSystem * instantiate_system( const std::string & type, const std::string & name )
+  {
+    assert(!type.empty());
 
-      MarSystem *system = prototype->clone();;
-      system->setName(name);
-      return system;
+    const node *prototype_node = resolve_prototype(type);
+    if (prototype_node)
+    {
+      MarSystem *system = translate_actor(*prototype_node, true);
+      if (system)
+      {
+        system->setType(system->getName());
+        system->setName(name);
+        return system;
+      }
+      else
+      {
+        return nullptr;
+      }
     }
 
     return m_manager->create(type, name);
@@ -106,14 +123,14 @@ class script_translator
 
     switch(directive_node.tag)
     {
-    case INCLUDE_DIRECTIVE:
-      return handle_include_directive(directive_node);
+    //case INCLUDE_DIRECTIVE:
+      //return handle_include_directive(directive_node);
     default:
       MRSERR("Invalid directive: " << directive_node.tag);
     }
     return false;
   }
-
+#if 0
   bool handle_include_directive( const node & directive_node )
   {
     assert(directive_node.components.size() == 1 ||
@@ -152,7 +169,7 @@ class script_translator
     //cout << "Registering prototype: " << system->getName() << " as " << id << endl;
     return add_prototype(id, system);
   }
-
+#endif
   string resolve_filename( const string & filename )
   {
     string abs_filename(filename);
@@ -171,7 +188,7 @@ class script_translator
       return translator.translateFile( resolve_filename(filename) );
   }
 
-  MarSystem *translate_actor( const node & n, context_policy policy )
+  MarSystem *translate_actor( const node & n, bool independent_scope )
   {
     //cout << "handling actor: " << n.tag << endl;
 
@@ -188,23 +205,25 @@ class script_translator
     assert(type_node.tag == ID_NODE || type_node.tag == STRING_NODE);
     assert(def_node.tag == GENERIC_NODE);
 
-    std::string name, type;
+    std::string name, type_name;
 
     if (name_node.tag == ID_NODE)
       name = std::move(name_node.s);
 
-    type = std::move(type_node.s);
+    type_name = std::move(type_node.s);
 
     MarSystem *system;
 
     switch (type_node.tag)
     {
     case ID_NODE:
-      system = instantiate_system(type, name);
+      system = instantiate_system(type_name, name);
       break;
     case STRING_NODE:
       // represents a filename
-      system = translate_script(type);
+      system = translate_script(type_name);
+      if (system && !name.empty())
+        system->setName(name);
       break;
     default:
       assert(false);
@@ -214,14 +233,29 @@ class script_translator
     if (!system)
       return nullptr;
 
-    if (policy == own_context)
-      m_context_stack.emplace_back(system);
-    else
-      assert(!m_context_stack.empty());
+    m_prototype_stack.emplace_back();
 
+    if (independent_scope)
+    {
+      m_system_scope_stack.push_back(system);
+      m_control_scope_stack.emplace_back();
+    }
+    else if (!name.empty())
+    {
+      try
+      {
+        system->addToScope( this_system_scope() );
+      }
+      catch (std::exception & e)
+      {
+        MRSERR("Failed to add '" << name
+               << "' to scope '" << this_system_scope()->getName() << "'."
+               << endl
+               << "Reason: " << e.what());
+      }
 
-    this_context().control_map.emplace_back(system, vector<node>());
-    int control_map_index = this_context().control_map.size() - 1;
+      m_system_scope_stack.push_back(system);
+    }
 
     int child_idx = 0;
 
@@ -231,7 +265,7 @@ class script_translator
       {
       case ACTOR_NODE:
       {
-        MarSystem *child_system = translate_actor(system_def_element, inherit_context);
+        MarSystem *child_system = translate_actor(system_def_element, false);
         if (child_system)
         {
           if (child_system->getName().empty())
@@ -247,34 +281,41 @@ class script_translator
       }
       case PROTOTYPE_NODE:
       {
-        translate_actor(system_def_element, own_context);
+        const node & proto_node = system_def_element;
+        assert(proto_node.components.size() == 3);
+        const node & name_node = proto_node.components[0];
+        assert(name_node.tag == ID_NODE);
+        string proto_name = name_node.s;
+
+        add_prototype(proto_name, system_def_element);
+
         break;
       }
       case STATE_NODE:
       {
-        this_context().control_map[control_map_index].second.push_back(system_def_element);
+        this_control_scope().emplace_back( system, this_system_scope(), system_def_element);
         break;
       }
       case CONTROL_DEF_NODE:
-        this_context().control_map[control_map_index].second.push_back(system_def_element);
+        this_control_scope().emplace_back( system, this_system_scope(), system_def_element);
         break;
       default:
         assert(false);
       }
     }
 
-    //current_context().control_map.emplace_back(system, std::move(controls));
-
-    if (policy == own_context)
+    if (independent_scope)
     {
-      apply_controls(this_context().control_map);
-      m_context_stack.pop_back();
+      apply_controls( this_control_scope() );
+      m_control_scope_stack.pop_back();
     }
 
-    if (n.tag == PROTOTYPE_NODE)
+    if (this_system_scope() == system)
     {
-      add_prototype(name, system);
+      m_system_scope_stack.pop_back();
     }
+
+    m_prototype_stack.pop_back();
 
     return system;
   }
@@ -284,27 +325,27 @@ class script_translator
   {
     for( const auto & mapping : control_map )
     {
-      MarSystem * system = mapping.first;
-      const auto & controls = mapping.second;
+      MarSystem * scope = mapping.scope;
+      MarSystem * system = mapping.target;
+      const auto & data_node = mapping.data;
 
       //cout << "Applying controls for: " << system->getAbsPath() << endl;
 
-      for( const node & control_node : controls)
+      m_system_scope_stack.push_back( scope );
+
+      switch(data_node.tag)
       {
-        switch(control_node.tag)
-        {
-        case CONTROL_DEF_NODE:
-          apply_control(system, control_node);
-          break;
-        case STATE_NODE:
-          translate_state(system, control_node);
-          break;
-        default:
-          assert(false);
-        }
+      case CONTROL_DEF_NODE:
+        apply_control(system, data_node);
+        break;
+      case STATE_NODE:
+        translate_state(system, data_node);
+        break;
+      default:
+        assert(false);
       }
 
-      system->update();
+      m_system_scope_stack.pop_back();
     }
   }
 
@@ -326,12 +367,12 @@ class script_translator
     }
 
     MarControlPtr condition_control =
-        translate_complex_value(system, condition_node, system);
+        translate_complex_value(condition_node, system);
 
     if (!when_node.components.empty())
     {
       //cout << ".. Got when state." << endl;
-      ScriptStateProcessor *when_processor = translate_state_definition(system, when_node);
+      ScriptStateProcessor *when_processor = translate_state_definition(when_node);
       when_processor->getControl("mrs_bool/condition")->linkTo(condition_control, false);
       when_processor->update();
       system->attachMarSystem(when_processor);
@@ -340,7 +381,7 @@ class script_translator
     if (!else_node.components.empty())
     {
       //cout << ".. Got else state." << endl;
-      ScriptStateProcessor *else_processor = translate_state_definition(system, else_node);
+      ScriptStateProcessor *else_processor = translate_state_definition(else_node);
       else_processor->getControl("mrs_bool/condition")->linkTo(condition_control, false);
       else_processor->setControl("mrs_bool/inverse", true);
       else_processor->update();
@@ -348,7 +389,7 @@ class script_translator
     }
   }
 
-  ScriptStateProcessor * translate_state_definition( MarSystem *system, const node & state_node  )
+  ScriptStateProcessor * translate_state_definition( const node & state_node  )
   {
     ScriptStateProcessor *state_processor = new ScriptStateProcessor("state_processor");
 
@@ -363,13 +404,13 @@ class script_translator
       const std::string & dst_path = mapping_node.components[0].s;
       const node & src_node = mapping_node.components[1];
 
-      MarControlPtr src_control = translate_complex_value(system, src_node, state_processor);
+      MarControlPtr src_control = translate_complex_value(src_node, state_processor);
       if (src_control.isInvalid()) {
         MRSERR("Invalid value for control: " << dst_path);
         continue;
       }
 
-      MarControlPtr dst_control = system->remoteControl(dst_path);
+      MarControlPtr dst_control = this_system_scope()->remoteControl(dst_path);
       if (dst_control.isInvalid()) {
         MRSERR("Invalid destination control: " << dst_path);
         continue;
@@ -429,16 +470,15 @@ class script_translator
 
     MarControlPtr dst_control = system->control( dst_name );
 
-    MarControlPtr src_control = translate_complex_value(system, src_node, system);
-    if (src_control.isInvalid()) {
-      MRSERR("Can not set control - invalid value: "
-             << system->path() << dst_name);
+    MarControlPtr src_control = translate_complex_value(src_node, system);
+    if (src_control.isInvalid())
+    {
+      MRSERR("Can not set control '" << system->path() << dst_name
+             << "' - invalid value.");
       return MarControlPtr();
     }
 
     bool link = src_control->getMarSystem() != nullptr;
-
-    static const bool do_not_update = false;
 
     if (create)
     {
@@ -458,7 +498,7 @@ class script_translator
       }
       if (link)
       {
-        dst_control->linkTo(src_control, do_not_update);
+        dst_control->linkTo( src_control );
       }
     }
     else
@@ -476,7 +516,7 @@ class script_translator
       }
       if (link)
       {
-        dst_control->linkTo(src_control, do_not_update);
+        dst_control->linkTo( src_control );
       }
       else
       {
@@ -487,15 +527,14 @@ class script_translator
     return dst_control;
   }
 
-  MarControlPtr translate_complex_value( MarSystem *anchor,
-                                         const node & value_node,
+  MarControlPtr translate_complex_value( const node & value_node,
                                          MarSystem *owner )
   {
     if (value_node.tag == OPERATION_NODE)
     {
         // cout << "Translating expression..." << endl;
 
-        ScriptOperationProcessor::operation *op = translate_operation(anchor, value_node);
+        ScriptOperationProcessor::operation *op = translate_operation(value_node);
         if (!op)
           return MarControlPtr();
 
@@ -509,12 +548,12 @@ class script_translator
     else
     {
       // cout << "Translating control value..." << endl;
-      MarControlPtr src_control = translate_simple_value(anchor, value_node);
+      MarControlPtr src_control = translate_simple_value(value_node);
       return src_control;
     }
   }
 
-  MarControlPtr translate_simple_value( MarSystem * anchor, const node & control_value )
+  MarControlPtr translate_simple_value( const node & control_value )
   {
     switch(control_value.tag)
     {
@@ -561,7 +600,10 @@ class script_translator
     {
       string link_path = control_value.s;
       assert(!link_path.empty());
-      return anchor->remoteControl(link_path);
+      MarControlPtr link_control = this_system_scope()->remoteControl(link_path);
+      if (link_control.isInvalid())
+        MRSERR("Invalid control path: " << link_path);
+      return link_control;
     }
     default:
       assert(false);
@@ -569,7 +611,7 @@ class script_translator
     return MarControlPtr();
   }
 
-  ScriptOperationProcessor::operation *translate_operation( MarSystem *anchor, const node & op_node )
+  ScriptOperationProcessor::operation *translate_operation( const node & op_node )
   {
     if (op_node.tag == OPERATION_NODE)
     {
@@ -578,8 +620,8 @@ class script_translator
 
       //cout << "-- Translating operation: " << op_node.s[0] << endl;
 
-      auto left_operand = translate_operation(anchor, op_node.components[0]);
-      auto right_operand = translate_operation(anchor, op_node.components[1]);
+      auto left_operand = translate_operation(op_node.components[0]);
+      auto right_operand = translate_operation(op_node.components[1]);
 
       if (!left_operand || !right_operand)
         return nullptr;
@@ -600,7 +642,7 @@ class script_translator
     else
     {
       //cout << "-- Translating value..." << endl;
-      MarControlPtr value = translate_simple_value(anchor, op_node);
+      MarControlPtr value = translate_simple_value(op_node);
       if (value.isInvalid())
       {
         MRSERR("Can not parse expression: invalid control value!");
@@ -657,7 +699,7 @@ public:
     if (!handle_directives(directives))
       return nullptr;
 
-    MarSystem *system = translate_actor(actor, own_context);
+    MarSystem *system = translate_actor(actor, true);
 
     if (system && system->getName().empty())
       system->setName("network");

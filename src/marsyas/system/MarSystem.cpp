@@ -38,7 +38,8 @@ using std::string;
 
 using namespace Marsyas;
 
-MarSystem::MarSystem(mrs_string type, mrs_string name)
+MarSystem::MarSystem(mrs_string type, mrs_string name):
+  parent_scope_(0)
 {
   parent_ = NULL;
   name_ = name;
@@ -87,7 +88,8 @@ MarSystem::MarSystem(mrs_string type, mrs_string name)
 }
 
 // copy constructor
-MarSystem::MarSystem(const MarSystem& a)
+MarSystem::MarSystem(const MarSystem& a):
+  parent_scope_(0)
 {
   parent_ = NULL;
   type_ = a.type_;
@@ -285,6 +287,8 @@ MarSystem::~MarSystem()
   {
     delete attached_marsystems_[i];
   }
+
+  removeFromScope();
 }
 
 void
@@ -401,6 +405,65 @@ MarSystem::addMarSystem(MarSystem *marsystem)
     MRSWARN("MarSystem::addMarSystem - Trying to add MarSystem to a non-Composite - failing...");
     return false;
   }
+}
+
+bool MarSystem::isDescendentOf(MarSystem *ancestor)
+{
+  MarSystem *system = parent_;
+  while(system)
+  {
+    if (system == ancestor)
+      return true;
+    system = system->parent_;
+  }
+  return false;
+}
+
+void MarSystem::addToScope( MarSystem * ancestor )
+{
+  //MRSMSG("MarSystem::addToScope: " << getAbsPath() << " >> " << ancestor->getName());
+
+  if (ancestor == this)
+    throw std::runtime_error("MarSystem can not have itself in scope.");
+
+  if (parent_scope_)
+    throw std::runtime_error("MarSystem already in another scope.");
+
+  //if (!isDescendentOf(ancestor))
+    //throw std::runtime_error("MarSystem must be descendent to be in scope.");
+
+  const string  & name = getName();
+  if (name.empty())
+    throw std::runtime_error("MarSystem has no name.");
+
+  std::map<string, MarSystem*>::iterator it;
+  it = ancestor->scope_.find(name);
+  if (it != ancestor->scope_.end())
+  {
+    std::ostringstream msg;
+    msg << "MarSystem with same name already in this scope.";
+    throw std::runtime_error(msg.str());
+  }
+
+  ancestor->scope_[name] = this;
+
+  parent_scope_ = ancestor;
+}
+
+void MarSystem::removeFromScope()
+{
+  MarSystem *ancestor = parent_scope_;
+  if (!ancestor)
+    return;
+
+  parent_scope_ = nullptr;
+
+  std::map<string, MarSystem*>::iterator it;
+  it = ancestor->scope_.find(getName());
+  if (it == ancestor->scope_.end())
+    return;
+
+  ancestor->scope_.erase(it);
 }
 
 MarSystem*
@@ -1353,9 +1416,22 @@ MarControlPtr MarSystem::control( const string & name )
   return MarControlPtr();
 }
 
+MarSystem *MarSystem::subSystem( const std::string & name )
+{
+  //MRSMSG("MarSystem::subSystem: " << name);
+
+  auto it = scope_.find(name);
+  if (it != scope_.end())
+    return it->second;
+  else
+    return 0;
+}
+
 // Path in form of "system-name/system-name/..." without types:
 MarSystem *MarSystem::remoteSystem( const string & path )
 {
+  //MRSMSG("MarSystem::remoteSystem: " << this << " " << path);
+
   if (path.empty())
     return 0;
 
@@ -1376,14 +1452,14 @@ MarSystem *MarSystem::remoteSystem( const string & path )
     if (separator != string::npos)
     {
       size_t count = separator - pos;
-      system = system->child( path.substr(pos, count) );
+      system = system->subSystem( path.substr(pos, count) );
       pos = pos + count + 1;
     }
     else
     {
       string name = path.substr(pos);
       if (!name.empty())
-        return system->child( name );
+        return system->subSystem( name );
       else
         return system;
     }
@@ -1395,6 +1471,7 @@ MarSystem *MarSystem::remoteSystem( const string & path )
 // Path in form of "system-name/system-name/.../control-name" without types:
 MarControlPtr MarSystem::remoteControl( const string & path )
 {
+  //MRSMSG("MarSystem::remoteControl: " << path);
   if (path.empty())
     return MarControlPtr();
 
