@@ -421,7 +421,7 @@ bool MarSystem::isDescendentOf(MarSystem *ancestor)
 
 void MarSystem::addToScope( MarSystem * ancestor )
 {
-  //MRSMSG("MarSystem::addToScope: " << getAbsPath() << " >> " << ancestor->getName());
+  //MRSMSG("MarSystem::addToScope: " << getPrefix() << " >> " << ancestor->getAbsPath());
 
   if (ancestor == this)
     throw std::runtime_error("MarSystem can not have itself in scope.");
@@ -1406,6 +1406,8 @@ MarSystem * MarSystem::child( const string & name )
 // Name without type:
 MarControlPtr MarSystem::control( const string & name )
 {
+  //MRSMSG("MarSystem::control: " << getAbsPath() << " -> " << name);
+
   ControlItr it;
   for (it = controls_.begin(); it != controls_.end(); ++it)
   {
@@ -1418,7 +1420,7 @@ MarControlPtr MarSystem::control( const string & name )
 
 MarSystem *MarSystem::subSystem( const std::string & name )
 {
-  //MRSMSG("MarSystem::subSystem: " << name);
+  //MRSMSG("MarSystem::subSystem: " << getAbsPath() << " -> " << name);
 
   auto it = scope_.find(name);
   if (it != scope_.end())
@@ -1426,6 +1428,55 @@ MarSystem *MarSystem::subSystem( const std::string & name )
   else
     return 0;
 }
+
+class path_stream
+{
+public:
+  path_stream( const string & path ):
+    m_path(path),
+    m_pos(0)
+  {}
+
+  path_stream & operator>>(string & element)
+  {
+    if (at_end()) {
+      element = string();
+      return *this;
+    }
+
+    string::size_type separator = m_path.find('/', m_pos);
+    if (separator != string::npos)
+    {
+      element = m_path.substr(m_pos, separator - m_pos);
+      m_pos = separator + 1;
+    }
+    else
+    {
+      element = m_path.substr(m_pos);
+      m_pos = string::npos;
+    }
+
+    return *this;
+  }
+
+  void skip()
+  {
+    string::size_type separator = m_path.find('/', m_pos);
+    if (separator != string::npos)
+      m_pos = separator + 1;
+    else
+      m_pos = string::npos;
+  }
+
+  bool at_end()
+  {
+    return m_pos >= m_path.length();
+  }
+
+private:
+  string m_path;
+  string::size_type m_pos;
+};
 
 // Path in form of "system-name/system-name/..." without types:
 MarSystem *MarSystem::remoteSystem( const string & path )
@@ -1435,43 +1486,56 @@ MarSystem *MarSystem::remoteSystem( const string & path )
   if (path.empty())
     return 0;
 
+  path_stream elements(path);
   MarSystem * system = this;
-  string::size_type pos = 0;
 
   if (path[0] == '/')
   {
-    pos = 1;
     // Absolute path. Go find root system:
+
+    elements.skip();
+
     while(system->getParent())
       system = system->getParent();
   }
-
-  while(system)
+  else
   {
-    string::size_type separator = path.find('/', pos);
-    if (separator != string::npos)
+    // Relative path.
+    // Go find first ancestor which has the first element in scope.
+    // TODO: Could speed up if all systems had parent_scope_,
+    // even if not named in any scope
+    // - then we could jump up scope instead of system hierarchy.
+
+    string elem;
+    elements >> elem;
+    assert(!elem.empty());
+
+    while (system)
     {
-      size_t count = separator - pos;
-      system = system->subSystem( path.substr(pos, count) );
-      pos = pos + count + 1;
-    }
-    else
-    {
-      string name = path.substr(pos);
-      if (!name.empty())
-        return system->subSystem( name );
-      else
-        return system;
+      MarSystem *subsystem = system->subSystem(elem);
+      if (subsystem)
+      {
+        system = subsystem;
+        break;
+      }
+      system = system->getParent();
     }
   }
 
-  return 0;
+  while(system && !elements.at_end())
+  {
+    string elem;
+    elements >> elem;
+    system = system->subSystem(elem);
+  }
+
+  return system;
 }
 
 // Path in form of "system-name/system-name/.../control-name" without types:
 MarControlPtr MarSystem::remoteControl( const string & path )
 {
-  //MRSMSG("MarSystem::remoteControl: " << path);
+  //MRSMSG("MarSystem::remoteControl: " << getAbsPath() << " -> " << path);
   if (path.empty())
     return MarControlPtr();
 
