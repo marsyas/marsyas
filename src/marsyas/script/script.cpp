@@ -22,10 +22,9 @@ namespace Marsyas {
 class script_translator
 {
   struct control_mapping {
-    control_mapping(MarSystem *s, MarSystem *t, const node & d):
-      scope(s), target(t), data(d)
+    control_mapping(MarSystem *t, const node & d):
+      target(t), data(d)
     {}
-    MarSystem * scope;
     MarSystem * target;
     node data;
   };
@@ -293,11 +292,11 @@ class script_translator
       }
       case STATE_NODE:
       {
-        this_control_scope().emplace_back( system, this_system_scope(), system_def_element);
+        this_control_scope().emplace_back( system, system_def_element);
         break;
       }
       case CONTROL_DEF_NODE:
-        this_control_scope().emplace_back( system, this_system_scope(), system_def_element);
+        this_control_scope().emplace_back( system, system_def_element);
         break;
       default:
         assert(false);
@@ -325,21 +324,20 @@ class script_translator
   {
     for( const auto & mapping : control_map )
     {
-      MarSystem * scope = mapping.scope;
-      MarSystem * system = mapping.target;
+      MarSystem * target = mapping.target;
       const auto & data_node = mapping.data;
 
       //cout << "Applying controls for: " << system->getAbsPath() << endl;
 
-      m_system_scope_stack.push_back( scope );
+      m_system_scope_stack.push_back( target );
 
       switch(data_node.tag)
       {
       case CONTROL_DEF_NODE:
-        apply_control(system, data_node);
+        apply_control(target, data_node);
         break;
       case STATE_NODE:
-        translate_state(system, data_node);
+        translate_state(target, data_node);
         break;
       default:
         assert(false);
