@@ -456,7 +456,7 @@ void MarSystem::removeFromScope()
   if (!ancestor)
     return;
 
-  parent_scope_ = nullptr;
+  parent_scope_ = 0;
 
   std::map<string, MarSystem*>::iterator it;
   it = ancestor->scope_.find(getName());
