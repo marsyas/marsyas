@@ -192,7 +192,10 @@ class script_translator
     //cout << "handling actor: " << n.tag << endl;
 
     if (n.tag != ACTOR_NODE && n.tag != PROTOTYPE_NODE)
+    {
+      MRSERR("Node is not an actor!");
       return 0;
+    }
 
     assert(n.components.size() == 3);
 
@@ -221,8 +224,14 @@ class script_translator
     case STRING_NODE:
       // represents a filename
       system = translate_script(type_name);
-      if (system && !name.empty())
+      if (!system)
+      {
+        MRSERR("Failed to translate script: " << type_name);
+      }
+      else if(!name.empty())
+      {
         system->setName(name);
+      }
       break;
     default:
       assert(false);
@@ -275,6 +284,10 @@ class script_translator
           }
           system->addMarSystem(child_system);
           child_idx++;
+        }
+        else
+        {
+          MRSERR("Failed to instantiate a child.");
         }
         break;
       }
@@ -695,7 +708,9 @@ public:
     const node &actor = parser.actor();
 
     if (!handle_directives(directives))
+    {
       return nullptr;
+    }
 
     MarSystem *system = translate_actor(actor, true);
 
