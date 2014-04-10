@@ -11,6 +11,7 @@ namespace Marsyas {
 Ratio::Ratio(std::string name): MarSystem("Ratio", name)
 {
   addControl("mrs_string/mode", string());
+  setControlState("mrs_string/mode", true);
 }
 
 void Ratio::myUpdate(MarControlPtr)
