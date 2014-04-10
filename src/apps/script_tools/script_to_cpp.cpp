@@ -191,7 +191,7 @@ struct emitter
       {
         replace(line, '\\', "\\\\");
         replace(line, '"', "\\\"");
-        out << "\"" << line << "\"" << endl;
+        out << "\"" << line << "\\n\"" << endl;
       }
     }
     out << ";" << endl;
