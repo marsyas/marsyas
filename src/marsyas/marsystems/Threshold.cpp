@@ -6,6 +6,7 @@ Threshold::Threshold(const string & name):
   MarSystem("Threshold", name)
 {
   addControl("mrs_real/value", 0.0);
+  setControlState("mrs_real/value", true);
 }
 
 Threshold::Threshold(const Threshold & other):
