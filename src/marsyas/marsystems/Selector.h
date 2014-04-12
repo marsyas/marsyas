@@ -59,6 +59,46 @@ private:
 
   MarControlPtr ctrl_enabled_;
 
+  bool is_enabled(const realvec & mask, int index)
+  {
+    return index >= mask.getSize() ||
+        (index >= 0 && mask(index) > 0);
+  }
+
+  void set_enabled(realvec & mask, int index, bool enabled)
+  {
+    if (index < 0)
+      return;
+    fit_mask(mask, index);
+    mask(index) = enabled ? 1.0 : 0.0;
+  }
+
+  void set_enabled_range(realvec & mask, int begin, int end, bool enabled)
+  {
+    if (end < begin || end < 0)
+      return;
+    fit_mask(mask, end);
+    begin = std::max(0, begin);
+    for (int i = begin; i <= end; ++i)
+      mask(i) = enabled ? 1.0 : 0.0;
+  }
+
+  void fit_mask(realvec & mask, int max_index)
+  {
+    if (max_index < mask.getSize())
+      return;
+    mask.stretch(max_index+1);
+  }
+
+  int enabled_count(const realvec & mask, int total)
+  {
+    int count = 0;
+    for (int i = 0; i < total; i++)
+      if (is_enabled(mask, i))
+        count++;
+    return count;
+  }
+
 public:
   Selector(std::string name);
   Selector(const Selector& a);
