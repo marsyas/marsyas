@@ -62,9 +62,6 @@ Selector::addControls()
   addControl("mrs_realvec/disableRange", realvec());
   setControlState("mrs_realvec/disableRange", true);
 
-  addControl("mrs_realvec/setEnabled", realvec());
-  setControlState("mrs_realvec/setEnabled", true);
-
   addctrl("mrs_realvec/enabled", realvec(), ctrl_enabled_);
 }
 
@@ -75,47 +72,13 @@ Selector::myUpdate(MarControlPtr sender)
   MRSDIAG("Selector.cpp - Selector:myUpdate");
 
   MarControlAccessor acc(ctrl_enabled_);
-  mrs_realvec& enabled = acc.to<mrs_realvec>();
-
-  {
-    const bool do_not_update = false;
-    MarControlAccessor accessor(getControl("mrs_realvec/setEnabled"), do_not_update);
-    realvec & set_enabled_array = accessor.to<realvec>();
-    if (set_enabled_array.getSize())
-    {
-      if (set_enabled_array.getSize() == inObservations_)
-      {
-        enabled = set_enabled_array;
-      }
-      else
-      {
-        MRSERR("Selector: wrong array size for 'setEnabled' control.");
-      }
-      set_enabled_array = realvec();
-    }
-  }
-
-  //
-  // If the enabled realvec has not been created, create it now.
-  // Enable all observations by default.
-  //
-  {
-    mrs_natural current_size = enabled.getSize();
-    if (current_size != inObservations_)
-    {
-      if (current_size < inObservations_)
-        enabled.create(inObservations_);
-      enabled.setval(1.0);
-    }
-  }
+  mrs_realvec& mask = acc.to<mrs_realvec>();
 
   //
   // Disable any observations that the user asks to be disabled
   //
   mrs_natural input_to_disable = getctrl("mrs_natural/disable")->to<mrs_natural>();
-  if (input_to_disable != -1 && input_to_disable < inObservations_) {
-    enabled(input_to_disable) = 0.0;
-  }
+  set_enabled(mask, input_to_disable, false);
   setctrl("mrs_natural/disable", -1);
 
   const realvec & range_to_disable = getControl("mrs_realvec/disableRange")->to<mrs_realvec>();
@@ -123,12 +86,7 @@ Selector::myUpdate(MarControlPtr sender)
   {
     mrs_natural min = static_cast<mrs_natural>( range_to_disable(0) );
     mrs_natural max = static_cast<mrs_natural>( range_to_disable(1) );
-    mrs_natural idx = std::max((mrs_natural) 0, min);
-    while(idx <= max && idx < enabled.getSize())
-    {
-      enabled(idx) = 0.0;
-      ++idx;
-    }
+    set_enabled_range(mask, min, max, false);
   }
   setControl("mrs_realvec/disableRange", realvec());
 
@@ -136,9 +94,7 @@ Selector::myUpdate(MarControlPtr sender)
   // Enable any observations that the user asks to be enabled
   //
   mrs_natural input_to_enable = getctrl("mrs_natural/enable")->to<mrs_natural>();
-  if (input_to_enable != -1 && input_to_enable < inObservations_) {
-    enabled(input_to_enable) = 1.0;
-  }
+  set_enabled(mask, input_to_enable, true);
   setctrl("mrs_natural/enable", -1);
 
   const realvec & range_to_enable = getControl("mrs_realvec/enableRange")->to<mrs_realvec>();
@@ -146,49 +102,38 @@ Selector::myUpdate(MarControlPtr sender)
   {
     mrs_natural min = static_cast<mrs_natural>( range_to_enable(0) );
     mrs_natural max = static_cast<mrs_natural>( range_to_enable(1) );
-    mrs_natural idx = std::max( (mrs_natural) 0, min);
-    while(idx <= max && idx < enabled.getSize())
-    {
-      enabled(idx) = 1.0;
-      ++idx;
-    }
+    set_enabled_range(mask, min, max, true);
   }
   setControl("mrs_realvec/enableRange", realvec());
 
-  //
-  // Count how many of the observations are enabled
-  //
-  mrs_natural total_enabled = 0;
-  for (mrs_natural i=0; i < enabled.getSize(); ++i) {
-    if (enabled(i) > 0.1) // sness - Just in case of floating point roundoff
-      total_enabled++;
-  }
+  // Count how many of the input observations are enabled
+  mrs_natural total_enabled = enabled_count(mask, inObservations_);
 
+  // Set output format
   ctrl_onObservations_->setValue(total_enabled, NOUPDATE);
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-
 }
 
 void
 Selector::myProcess(realvec& in, realvec& out)
 {
-  MarControlAccessor acc(ctrl_enabled_);
-  mrs_realvec& enabled = acc.to<mrs_realvec>();
-
-  mrs_natural outIndex = 0;
-  mrs_natural t,o;
+  const mrs_realvec & mask = ctrl_enabled_->to<realvec>();
 
   //
   // Copy all the input observations and samples to the output except
   // for any observations that are not enabled.
   //
-  for (o=0; o < inObservations_; o++)
-    if (enabled(o)) {
-      for (t = 0; t < inSamples_; t++)
+  mrs_natural outIndex = 0;
+  for (mrs_natural o=0; o < inObservations_; o++)
+  {
+    if (is_enabled(mask, o))
+    {
+      for (mrs_natural t = 0; t < inSamples_; t++)
       {
         out(outIndex,t) = in(o,t);
       }
       outIndex++;
     }
+  }
 }
