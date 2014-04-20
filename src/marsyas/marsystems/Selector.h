@@ -87,7 +87,12 @@ private:
   {
     if (max_index < mask.getSize())
       return;
-    mask.stretch(max_index+1);
+    int current_size = mask.getSize();
+    int new_size = max_index+1;
+    mask.stretch(new_size);
+    // initialize as enabled:
+    for (int i = current_size; i < new_size; ++i)
+        mask(i) = 1.0;
   }
 
   int enabled_count(const realvec & mask, int total)
