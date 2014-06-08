@@ -278,7 +278,7 @@ endif(MARSYAS_MATLAB)
 
 if(MARSYAS_GSTREAMER)
   target_link_libraries(marsyas ${GStreamer_LIBRARY})
-  target_link_libraries(marsyas ${GStramer-App_LIBRARY})
+  target_link_libraries(marsyas ${GStreamer-App_LIBRARY})
   target_link_libraries(marsyas ${Glib_LIBRARY})
   target_link_libraries(marsyas ${_GObjectLibs})
 endif(MARSYAS_GSTREAMER)
