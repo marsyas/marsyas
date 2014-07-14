@@ -124,7 +124,7 @@ SoundFileSink::updateBackend()
 #ifdef MARSYAS_LAME
   else if (ext == ".mp3")
   {
-    dest_ = new MP3FileSink(getName());
+    backend_ = new MP3FileSink(getName());
   }
 #endif
   else
