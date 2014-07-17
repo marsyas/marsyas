@@ -70,7 +70,7 @@ Mapper::~Mapper()
 }
 
 void
-Mapper::open(QString fileName, int pos)
+Mapper::play(QString fileName)
 {
   const bool do_not_update = false;
 

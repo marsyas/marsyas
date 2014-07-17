@@ -41,12 +41,15 @@ public:
   MarPlayer();
   ~MarPlayer();
 
-private slots:
+public slots:
   void open();
   void open(const QString&);
   void about();
+
+private slots:
   void positionSlider(int);
   void seekPos();
+  void play(const QString&);
 
 private:
   void init();
