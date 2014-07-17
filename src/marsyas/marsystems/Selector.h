@@ -20,6 +20,7 @@
 #define MARSYAS_SELECTOR_H
 
 #include <marsyas/system/MarSystem.h>
+#include <algorithm>
 
 namespace Marsyas
 {
