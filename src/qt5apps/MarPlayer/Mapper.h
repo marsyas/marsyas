@@ -46,7 +46,7 @@ public:
   ~Mapper();
 
 public slots:
-  void open(QString fileName, int val);
+  void play(QString fileName);
   void setPos(int value);
   void setGain(int value);
   void play();

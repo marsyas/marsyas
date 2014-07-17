@@ -25,7 +25,10 @@ int
 main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
+  const QStringList & args = a.arguments();
   MarPlayer mp;
+  if (args.count() > 1)
+    mp.open(args[1]);
   mp.show();
   return a.exec();
 }

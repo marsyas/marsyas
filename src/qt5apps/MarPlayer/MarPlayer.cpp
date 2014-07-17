@@ -93,7 +93,7 @@ MarPlayer::createConnections()
           mapper_,SLOT(setGain(int)));
 
   connect(ui.fileComboBox, SIGNAL(activated(const QString&)),
-          this, SLOT(open(const QString&)));
+          this, SLOT(play(const QString&)));
 
 }
 
@@ -101,16 +101,23 @@ void
 MarPlayer::open()
 {
   QString fileName = QFileDialog::getOpenFileName(this);
-  ui.fileComboBox->insertItem(0,fileName);
-  ui.fileComboBox->setCurrentIndex(0);
   open(fileName);
 }
 
 void
-MarPlayer::open(const QString& text)
+MarPlayer::open(const QString& fileName)
 {
-  mapper_->open(text, ui.positionSlider->sliderPosition());
+  ui.fileComboBox->insertItem(0,fileName);
+  ui.fileComboBox->setCurrentIndex(0);
+  play(fileName);
 }
+
+void
+MarPlayer::play(const QString& fileName)
+{
+  mapper_->play(fileName);
+}
+
 
 void
 MarPlayer::positionSlider(int val)
