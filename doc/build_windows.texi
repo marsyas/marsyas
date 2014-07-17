@@ -26,7 +26,7 @@ Studio Command Prompt.
 @item Microsoft Visual Studio
 
 If you want to use all features of Marsyas, you need a compiler with a
-decent C++11 support. Hence, please install at least Visual Studio 2012 or
+good C++11 support. Please install at least Visual Studio 2013 or
 newer version. The free 'Express' version is sufficient.
 
 Download and install Visual Studio from:
@@ -37,15 +37,14 @@ Download and install Visual Studio from:
 @subsubsection Choose correct Visual Studio Command Prompt
 
 Visual Studio versions which support compilation of 64 bit programs provide you
-with several alternative versions of Command Prompt, intended specifically
-for compiling 32 bit or 64 bit programs:
+with alternative versions of Command Prompt with the following labels and purposes:
 @itemize
-@item Visual Studio Command Prompt ...x86 - intended for 32 bit compilation.
-@item Visual Studio Command Prompt ...x64 - intended for 64 bit compilation.
+@item "x64" - for 64 bit compilation.
+@item "x86" - for 32 bit compilation.
 @end itemize
 
-Search the Start menu for the Command Prompt that matches your intended
-compilation mode.
+Search the Start menu for the Command Prompt with one of the above labels,
+according to your intended compilation mode.
 
 @emph{Geeky details: The different Command Prompt versions automatically
 populate the PATH environment variable so as to provide appropriate versions
