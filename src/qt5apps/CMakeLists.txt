@@ -28,7 +28,7 @@ macro(marsyas_qt5_app APP)
   target_link_libraries(${APP} marsyas marsyasqt5)
 
   if(MSVC)
-    set_property( TARGET ${APP} APPEND PROPERTY LINK_FLAGS "/SUBSYSTEM:windows /ENTRY:mainCRTStartup" )
+    set_property( TARGET ${APP} APPEND PROPERTY LINK_FLAGS_RELEASE "/SUBSYSTEM:windows /ENTRY:mainCRTStartup" )
   endif()
 
   install(TARGETS ${APP} DESTINATION bin)
