@@ -186,10 +186,7 @@ protected:
     }
     else
     {
-      MarControlPtr control =
-          m_system->marsystem()->remoteControl( m_short_path.constData() );
-      if (!control.isInvalid())
-        control->setValue( value );
+      m_system->marsystem()->updControl( path().toStdString(), value );
     }
   }
 
