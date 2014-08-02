@@ -1057,11 +1057,14 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
     bcoeffs(14) = 0.0093397750944987;
 
 
+#if STEM_SECOND == 5
+#else
   fluxnet->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
   //fluxnet->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
 
   //fluxnet->updControl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs2);
   //fluxnet->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs2);
+#endif
 
   //onset_strength->linkControl(
   // "mrs_string/filename",
