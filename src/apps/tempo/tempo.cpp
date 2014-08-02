@@ -76,12 +76,8 @@
 // 0: no doubling at all
 // 1: single threshold (bpm > x => double)
 // 2: SVM-based doubling
-#define POST_DOUBLING 2
+#define POST_DOUBLING 0
 
-// 0: try a different flux
-#define STEM_TYPE 9
-
-// 0: baseline (FFT 1024)
 // == 1: FFT 512
 // == 2: FFT 256
 // // // // don't need  3: FFT 1024
@@ -109,10 +105,10 @@
 #define STEM_SECOND 0
 
 
-#define WRITE_INTERMEDIATE 1
+#define WRITE_INTERMEDIATE 0
 #define WRITE_INTERMEDIATE_SHORT 0
 #define WRITE_INTERMEDIATE_LARGE_FILES 0
-#define DISPLAY_SVM 1
+#define DISPLAY_SVM 0
 
 
 #define WINSIZE 1024 //(2048?)
@@ -1582,7 +1578,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     for (int i=0; i<2*GAUSSIAN_CENTER+1; i++) {
         gaussian(i) = normal_pdf(i-GAUSSIAN_CENTER, 0, gaussian_std);
     }
-    gaussian.writeText("out/ACCUM-1-gaussian.txt");
+    //gaussian.writeText("out/ACCUM-1-gaussian.txt");
 
 
 
