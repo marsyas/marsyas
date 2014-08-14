@@ -30,6 +30,12 @@ Fanin::Fanin(mrs_string name):MarSystem("Fanin", name)
   isComposite_ = true;
 }
 
+Fanin::Fanin(const Fanin & other):
+  MarSystem(other)
+{
+  // do not copy slices
+}
+
 Fanin::~Fanin()
 {
   deleteSlices();

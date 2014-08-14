@@ -50,6 +50,7 @@ private:
 
 public:
   Fanin(std::string name);
+  Fanin(const Fanin&);
   ~Fanin();
   MarSystem* clone() const;
 
