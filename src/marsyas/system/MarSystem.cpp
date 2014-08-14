@@ -1422,7 +1422,8 @@ MarSystem *MarSystem::subSystem( const std::string & name )
 {
   //MRSMSG("MarSystem::subSystem: " << getAbsPath() << " -> " << name);
 
-  auto it = scope_.find(name);
+  std::map<std::string, MarSystem*>::iterator it;
+  it = scope_.find(name);
   if (it != scope_.end())
     return it->second;
   else
