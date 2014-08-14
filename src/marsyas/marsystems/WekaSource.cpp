@@ -196,10 +196,19 @@ WekaSource::myUpdate(MarControlPtr sender)
   validationModeEnum_ = None;
   currentIndex_ = 0;
 
-  string v_mode_error_msg("WekaSource: Error in value of control 'validationMode':");
-
   const mrs_string & validation_mode_spec = getctrl("mrs_string/validationMode")->to<mrs_string>();
+  if (validation_mode_spec.empty())
+    return;
+
   argument_list_stream validation_mode_args(validation_mode_spec);
+
+  string v_mode_error_msg;
+  {
+    ostringstream text;
+    text << "WekaSource: Error in value of control 'validationMode' = "
+         << "\"" << validation_mode_spec << "\":";
+    v_mode_error_msg = text.str();
+  }
 
   string validation_mode;
   if (!(validation_mode_args >> validation_mode))
