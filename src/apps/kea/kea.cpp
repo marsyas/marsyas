@@ -5,6 +5,7 @@
 #include <marsyas/system/MarSystemManager.h>
 #include <marsyas/CommandLineOptions.h>
 #include <marsyas/common_source.h>
+#include <marsyas/FileName.h>
 
 #include <vector>
 
@@ -103,9 +104,12 @@ distance_matrix_MIREX()
 {
   if (!wekafname_Set()) return;
 
-  cout << "Distance matrix calculation using " << train_weka_fname_ << endl;
+  string train_file_path =
+      FileName(inputdir_).append(train_weka_fname_).fullname();
+  string predict_collection_path =
+      FileName(inputdir_).append(predictcollectionfname_).fullname();
 
-  train_weka_fname_  = inputdir_ + "/" + train_weka_fname_;
+  cout << "Distance matrix calculation using " << train_file_path << endl;
 
   MarSystemManager mng;
 
@@ -114,7 +118,7 @@ distance_matrix_MIREX()
   MarSystem* wsrc = mng.create("WekaSource", "wsrc");
   accum->addMarSystem(wsrc);
   accum->updControl("WekaSource/wsrc/mrs_bool/normMaxMin", true);
-  accum->updControl("WekaSource/wsrc/mrs_string/filename", train_weka_fname_);
+  accum->updControl("WekaSource/wsrc/mrs_string/filename", train_file_path);
   mrs_natural nInstances =
     accum->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>();
   accum->updControl("mrs_natural/nTimes", nInstances);
@@ -130,15 +134,20 @@ distance_matrix_MIREX()
 
   net->tick();
 
-  ofstream oss;
-  oss.open((outputdir_ + "/" + distancematrix_).c_str());
+  string out_file_name = FileName(outputdir_).append(distancematrix_).fullname();
+  ofstream oss(out_file_name.c_str());
+  if (!oss.is_open())
+  {
+    MRSERR("Failed to open output file: " << out_file_name);
+    return;
+  }
 
   oss << "Marsyas-kea distance matrix for MIREX 2007 Audio Similarity Exchange " << endl;
 
 
   // collection simply for naming the entries
   Collection l;
-  l.read(inputdir_ + predictcollectionfname_);
+  l.read(predict_collection_path);
   for (mrs_natural i=1; i <= l.size(); ++i)
   {
     oss << i << "\t" << l.entry(i-1) << endl;
@@ -170,9 +179,10 @@ distance_matrix()
 {
   if (!wekafname_Set()) return;
 
-  cout << "Distance matrix calculation using " << train_weka_fname_ << endl;
+  string train_file_path =
+      FileName(inputdir_).append(train_weka_fname_).fullname();
 
-  train_weka_fname_  = inputdir_ + train_weka_fname_;
+  cout << "Distance matrix calculation using " << train_file_path << endl;
 
   MarSystemManager mng;
 
@@ -183,7 +193,7 @@ distance_matrix()
   //!!!: mode control
   net->updControl("WekaSource/wsrc/mrs_string/validationMode", "OutputInstancePair");
   net->updControl("WekaSource/wsrc/mrs_bool/normMaxMin", true);
-  net->updControl("WekaSource/wsrc/mrs_string/filename", train_weka_fname_);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", train_file_path);
 
 
   MarSystem* dmatrix = mng.create("SelfSimilarityMatrix", "dmatrix");
@@ -202,8 +212,14 @@ distance_matrix()
   net->linkControl("WekaSource/wsrc/mrs_realvec/instanceIndexes",
                    "SelfSimilarityMatrix/dmatrix/mrs_realvec/instanceIndexes");
 
-  ofstream oss;
-  oss.open(distancematrix_.c_str());
+  string out_file_name = FileName(outputdir_).append(distancematrix_).fullname();
+  ofstream oss(out_file_name.c_str());
+  if (!oss.is_open())
+  {
+    MRSERR("Failed to open output file: " << out_file_name);
+    return;
+  }
+
   oss << "Marsyas-kea distance matrix" << endl;
 
   while(!net->getctrl("SelfSimilarityMatrix/dmatrix/mrs_bool/done")->to<bool>())
@@ -228,9 +244,10 @@ pca()
 
   if (!wekafname_Set()) return;
 
-  train_weka_fname_  = inputdir_ + train_weka_fname_;
+  string train_file_path =
+      FileName(inputdir_).append(train_weka_fname_).fullname();
 
-  cout << "PCA using .arff file: " << train_weka_fname_ << endl;
+  cout << "PCA using .arff file: " << train_file_path << endl;
 
   MarSystemManager mng;
 
@@ -238,7 +255,7 @@ pca()
   MarSystem* accum = mng.create("Accumulator", "accum");
   MarSystem* wsrc = mng.create("WekaSource", "wsrc");
   accum->addMarSystem(wsrc);
-  accum->updControl("WekaSource/wsrc/mrs_string/filename", train_weka_fname_);
+  accum->updControl("WekaSource/wsrc/mrs_string/filename", train_file_path);
   mrs_natural nInstances =
     accum->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>();
   cout << "nInstances = " << nInstances << endl;
@@ -315,9 +332,10 @@ train_classifier()
 
   if (!wekafname_Set()) return;
 
-  train_weka_fname_  = inputdir_ + train_weka_fname_;
+  string train_file_path =
+      FileName(inputdir_).append(train_weka_fname_).fullname();
 
-  cout << "Training classifier using .arff file: " << train_weka_fname_ << endl;
+  cout << "Training classifier using .arff file: " << train_file_path << endl;
   cout << "Classifier type : " << classifier_ << endl;
 
   MarSystemManager mng;
@@ -356,7 +374,7 @@ train_classifier()
   //
   // The training file we are feeding into the WekaSource
   //
-  net->updControl("WekaSource/wsrc/mrs_string/filename", train_weka_fname_);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", train_file_path);
   net->updControl("mrs_natural/inSamples", 1);
 
   ////////////////////////////////////////////////////////////
@@ -381,15 +399,19 @@ train_classifier()
   }
 
 
-  ofstream clout;
-  clout.open(trainedclassifier_.c_str());
-  net->updControl("Classifier/cl/mrs_string/mode", "predict");
+  string out_file_name = FileName(outputdir_).append(trainedclassifier_).fullname();
+  ofstream clout(out_file_name.c_str());
+  if (!clout.is_open())
+  {
+    MRSERR("Failed to open output file: " << out_file_name);
+    return;
+  }
 
+  net->updControl("Classifier/cl/mrs_string/mode", "predict");
 
   clout << *net << endl;
 
   cout << "Done training " << endl;
-
 }
 
 
@@ -399,9 +421,18 @@ predict(mrs_string mode)
 
   MarSystemManager mng;
 
-  cout << "Predicting using " << trainedclassifier_ << endl;
+  string classifier_file_path =
+      FileName(inputdir_).append(trainedclassifier_).fullname();
 
-  ifstream pluginStream(trainedclassifier_.c_str());
+  cout << "Predicting using " << classifier_file_path << endl;
+
+  ifstream pluginStream(classifier_file_path.c_str());
+  if (!pluginStream.is_open())
+  {
+    MRSERR("Failed to open input file: " << classifier_file_path);
+    return;
+  }
+
   MRS_WARNINGS_OFF;
   MarSystem* net = mng.getMarSystem(pluginStream);
   MRS_WARNINGS_ON;
@@ -437,12 +468,24 @@ predict(mrs_string mode)
   //
 
 
-  ofstream prout;
-  prout.open(predictcollectionfname_.c_str());
 
-  ofstream prtout;
-  prtout.open(predicttimeline_.c_str());
 
+  string pr_out_path = FileName(outputdir_).append(predictcollectionfname_).fullname();
+  string prt_out_path = FileName(outputdir_).append(predicttimeline_).fullname();
+
+  ofstream prout(pr_out_path.c_str());
+  if (!prout.is_open())
+  {
+    MRSERR("Failed to open output file: " << pr_out_path);
+    return;
+  }
+
+  ofstream prtout(prt_out_path.c_str());
+  if (!prtout.is_open())
+  {
+    MRSERR("Failed to open output file: " << prt_out_path);
+    return;
+  }
 
 
   realvec data;
@@ -510,9 +553,6 @@ predict(mrs_string mode)
     end++;
   }
 
-
-  prout.close();
-
   // cout << "DONE" << endl;
 
   // sness - hmm, I really should be able to delete net, but I get a
@@ -530,11 +570,12 @@ train_predict(mrs_string mode)
   if (!wekafname_Set()) return;
   if (!twekafname_Set()) return;
 
-  train_weka_fname_  = inputdir_ + train_weka_fname_;
+  string train_input_path = FileName(inputdir_).append(train_weka_fname_).fullname();
+  string test_input_path = FileName(inputdir_).append(test_weka_fname_).fullname();
 
-  cout << "Training classifier using .arff file: " << train_weka_fname_ << endl;
+  cout << "Training classifier using .arff file: " << train_input_path << endl;
   cout << "Classifier type : " << classifier_ << endl;
-  cout << "Predicting classes for .arff file: " << test_weka_fname_ << endl;
+  cout << "Predicting classes for .arff file: " << test_input_path << endl;
 
 
 
@@ -574,7 +615,7 @@ train_predict(mrs_string mode)
   //
   // The training file we are feeding into the WekaSource
   //
-  net->updControl("WekaSource/wsrc/mrs_string/filename", train_weka_fname_);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", train_input_path);
   net->updControl("mrs_natural/inSamples", 1);
 
   ////////////////////////////////////////////////////////////
@@ -625,7 +666,7 @@ train_predict(mrs_string mode)
   //
   // Predict the classes of the test data
   //
-  net->updControl("WekaSource/wsrc/mrs_string/filename", test_weka_fname_);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", test_input_path);
   net->updControl("Classifier/cl/mrs_string/mode", "predict");
   ////////////////////////////////////////////////////////////
   //
@@ -634,12 +675,22 @@ train_predict(mrs_string mode)
   //
 
 
-  ofstream prout;
-  prout.open(predictcollectionfname_.c_str());
+  string pr_out_path = FileName(outputdir_).append(predictcollectionfname_).fullname();
+  string prt_out_path = FileName(outputdir_).append(predicttimeline_).fullname();
 
-  ofstream prtout;
-  prtout.open(predicttimeline_.c_str());
+  ofstream prout(pr_out_path.c_str());
+  if (!prout.is_open())
+  {
+    MRSERR("Failed to open output file: " << pr_out_path);
+    return;
+  }
 
+  ofstream prtout(prt_out_path.c_str());
+  if (!prtout.is_open())
+  {
+    MRSERR("Failed to open output file: " << prt_out_path);
+    return;
+  }
 
 
   realvec data;
@@ -748,8 +799,6 @@ train_predict(mrs_string mode)
   }
 
 
-  prout.close();
-
   cout << "DONE" << endl;
 
   delete net;
@@ -767,9 +816,10 @@ train_evaluate()
 {
   if (!wekafname_Set()) return;
 
-  train_weka_fname_  = inputdir_ + train_weka_fname_;
 
-  cout << "Training classifier using .arff file: " << train_weka_fname_ << endl;
+  string train_input_path = FileName(inputdir_).append(train_weka_fname_).fullname();
+
+  cout << "Training classifier using .arff file: " << train_input_path << endl;
   cout << "Classifier type : " << classifier_ << endl;
 
 
@@ -792,7 +842,7 @@ train_evaluate()
   // net->updControl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
   net->updControl("WekaSource/wsrc/mrs_string/validationMode", "kFold,NS,10");
   // net->updControl("WekaSource/wsrc/mrs_string/validationMode", "UseTestSet,lg.arff");
-  net->updControl("WekaSource/wsrc/mrs_string/filename", train_weka_fname_);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", train_input_path);
   net->updControl("mrs_natural/inSamples", 1);
 
   if (classifier_ == "SVM") {
@@ -866,11 +916,20 @@ void tags() {
   if (!twekafname_Set()) return;
 
   // The file paths we will be reading/writing to.
-  string testing_arff = inputdir_ + test_weka_fname_;
-  string training_arff = inputdir_ + train_weka_fname_;
-  string testing_predictions = outputdir_ + predictcollectionfname_;
-  string testing_predictions_arff = outputdir_ + test_weka_fname_ + ".affinities.arff";
-  string training_predictions_arff = outputdir_ + train_weka_fname_ + ".affinities.arff";
+  string testing_arff = FileName(inputdir_).append(test_weka_fname_).fullname();
+  string training_arff = FileName(inputdir_).append(train_weka_fname_).fullname();
+
+  string testing_predictions = FileName(outputdir_).append(predictcollectionfname_).fullname();
+
+  string testing_predictions_arff =
+      FileName(test_weka_fname_).name() + ".affinities.arff";
+  string training_predictions_arff =
+      FileName(train_weka_fname_).name() + ".affinities.arff";
+
+  testing_predictions_arff =
+      FileName(outputdir_).append( testing_predictions_arff ).fullname();
+  training_predictions_arff =
+      FileName(outputdir_).append( training_predictions_arff ).fullname();
 
   // Initialize the network, classifier, and weka source through which
   // we will read our .arff files
@@ -973,8 +1032,12 @@ void tags() {
   vector<string> previouslySeenFilenames;
 
   // Open the non-stacked predictions output file to write to.
-  ofstream prout;
-  prout.open(testing_predictions.c_str());
+  ofstream prout(testing_predictions.c_str());
+  if (!prout.is_open())
+  {
+    MRSERR("Failed to open output file: " << testing_predictions);
+    return;
+  }
 
   // Tick over the test WekaSource, saving our predictions for each line,
   // until all lines in the test file have been read.
