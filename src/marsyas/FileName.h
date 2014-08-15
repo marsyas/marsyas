@@ -36,6 +36,7 @@ namespace Marsyas
 unrelated convenience utilities related to filenames.
 */
 
+using std::string;
 
 class marsyas_EXPORT FileName
 {
@@ -57,6 +58,8 @@ public:
   bool isAbsolute();
   mrs_bool    isDir (); // true if it is a directory, not a file
   std::vector<mrs_string> getFilesInDir (mrs_string wildcard); //get a list of files in the directory
+  // Append a path element, inserting a path separator if needed:
+  FileName & append(const string & element);
 };
 
 }//namespace Marsyas
