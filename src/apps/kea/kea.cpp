@@ -14,8 +14,8 @@ using namespace Marsyas;
 /* global variables for various commandline options */
 int helpopt_;
 int usageopt_;
-string wekafname_;
-string twekafname_;
+string train_weka_fname_;
+string test_weka_fname_;
 
 string predictcollectionfname_;
 string predicttimeline_;
@@ -78,7 +78,7 @@ printHelp(string progName)
 bool
 twekafname_Set()
 {
-  if (twekafname_ == EMPTYSTRING)
+  if (test_weka_fname_ == EMPTYSTRING)
   {
     MRSERR("No test .arff file specified. Use the -tw option");
     cout << "No test .arff file specified. Use the -tw option" << endl;
@@ -90,7 +90,7 @@ twekafname_Set()
 bool
 wekafname_Set()
 {
-  if (wekafname_ == EMPTYSTRING)
+  if (train_weka_fname_ == EMPTYSTRING)
   {
     cout << "Weka .arff file not specified" << endl;
     return false;
@@ -103,9 +103,9 @@ distance_matrix_MIREX()
 {
   if (!wekafname_Set()) return;
 
-  cout << "Distance matrix calculation using " << wekafname_ << endl;
+  cout << "Distance matrix calculation using " << train_weka_fname_ << endl;
 
-  wekafname_  = inputdir_ + "/" + wekafname_;
+  train_weka_fname_  = inputdir_ + "/" + train_weka_fname_;
 
   MarSystemManager mng;
 
@@ -114,7 +114,7 @@ distance_matrix_MIREX()
   MarSystem* wsrc = mng.create("WekaSource", "wsrc");
   accum->addMarSystem(wsrc);
   accum->updControl("WekaSource/wsrc/mrs_bool/normMaxMin", true);
-  accum->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+  accum->updControl("WekaSource/wsrc/mrs_string/filename", train_weka_fname_);
   mrs_natural nInstances =
     accum->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>();
   accum->updControl("mrs_natural/nTimes", nInstances);
@@ -170,9 +170,9 @@ distance_matrix()
 {
   if (!wekafname_Set()) return;
 
-  cout << "Distance matrix calculation using " << wekafname_ << endl;
+  cout << "Distance matrix calculation using " << train_weka_fname_ << endl;
 
-  wekafname_  = inputdir_ + wekafname_;
+  train_weka_fname_  = inputdir_ + train_weka_fname_;
 
   MarSystemManager mng;
 
@@ -183,7 +183,7 @@ distance_matrix()
   //!!!: mode control
   net->updControl("WekaSource/wsrc/mrs_string/validationMode", "OutputInstancePair");
   net->updControl("WekaSource/wsrc/mrs_bool/normMaxMin", true);
-  net->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", train_weka_fname_);
 
 
   MarSystem* dmatrix = mng.create("SelfSimilarityMatrix", "dmatrix");
@@ -228,9 +228,9 @@ pca()
 
   if (!wekafname_Set()) return;
 
-  wekafname_  = inputdir_ + wekafname_;
+  train_weka_fname_  = inputdir_ + train_weka_fname_;
 
-  cout << "PCA using .arff file: " << wekafname_ << endl;
+  cout << "PCA using .arff file: " << train_weka_fname_ << endl;
 
   MarSystemManager mng;
 
@@ -238,7 +238,7 @@ pca()
   MarSystem* accum = mng.create("Accumulator", "accum");
   MarSystem* wsrc = mng.create("WekaSource", "wsrc");
   accum->addMarSystem(wsrc);
-  accum->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+  accum->updControl("WekaSource/wsrc/mrs_string/filename", train_weka_fname_);
   mrs_natural nInstances =
     accum->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>();
   cout << "nInstances = " << nInstances << endl;
@@ -315,9 +315,9 @@ train_classifier()
 
   if (!wekafname_Set()) return;
 
-  wekafname_  = inputdir_ + wekafname_;
+  train_weka_fname_  = inputdir_ + train_weka_fname_;
 
-  cout << "Training classifier using .arff file: " << wekafname_ << endl;
+  cout << "Training classifier using .arff file: " << train_weka_fname_ << endl;
   cout << "Classifier type : " << classifier_ << endl;
 
   MarSystemManager mng;
@@ -356,7 +356,7 @@ train_classifier()
   //
   // The training file we are feeding into the WekaSource
   //
-  net->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", train_weka_fname_);
   net->updControl("mrs_natural/inSamples", 1);
 
   ////////////////////////////////////////////////////////////
@@ -428,7 +428,7 @@ predict(mrs_string mode)
   //
   // Predict the classes of the test data
   //
-  net->updControl("WekaSource/wsrc/mrs_string/filename", twekafname_);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", test_weka_fname_);
   net->updControl("Classifier/cl/mrs_string/mode", "predict");
   ////////////////////////////////////////////////////////////
   //
@@ -530,11 +530,11 @@ train_predict(mrs_string mode)
   if (!wekafname_Set()) return;
   if (!twekafname_Set()) return;
 
-  wekafname_  = inputdir_ + wekafname_;
+  train_weka_fname_  = inputdir_ + train_weka_fname_;
 
-  cout << "Training classifier using .arff file: " << wekafname_ << endl;
+  cout << "Training classifier using .arff file: " << train_weka_fname_ << endl;
   cout << "Classifier type : " << classifier_ << endl;
-  cout << "Predicting classes for .arff file: " << twekafname_ << endl;
+  cout << "Predicting classes for .arff file: " << test_weka_fname_ << endl;
 
 
 
@@ -574,7 +574,7 @@ train_predict(mrs_string mode)
   //
   // The training file we are feeding into the WekaSource
   //
-  net->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", train_weka_fname_);
   net->updControl("mrs_natural/inSamples", 1);
 
   ////////////////////////////////////////////////////////////
@@ -625,7 +625,7 @@ train_predict(mrs_string mode)
   //
   // Predict the classes of the test data
   //
-  net->updControl("WekaSource/wsrc/mrs_string/filename", twekafname_);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", test_weka_fname_);
   net->updControl("Classifier/cl/mrs_string/mode", "predict");
   ////////////////////////////////////////////////////////////
   //
@@ -767,9 +767,9 @@ train_evaluate()
 {
   if (!wekafname_Set()) return;
 
-  wekafname_  = inputdir_ + wekafname_;
+  train_weka_fname_  = inputdir_ + train_weka_fname_;
 
-  cout << "Training classifier using .arff file: " << wekafname_ << endl;
+  cout << "Training classifier using .arff file: " << train_weka_fname_ << endl;
   cout << "Classifier type : " << classifier_ << endl;
 
 
@@ -792,7 +792,7 @@ train_evaluate()
   // net->updControl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
   net->updControl("WekaSource/wsrc/mrs_string/validationMode", "kFold,NS,10");
   // net->updControl("WekaSource/wsrc/mrs_string/validationMode", "UseTestSet,lg.arff");
-  net->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", train_weka_fname_);
   net->updControl("mrs_natural/inSamples", 1);
 
   if (classifier_ == "SVM") {
@@ -866,11 +866,11 @@ void tags() {
   if (!twekafname_Set()) return;
 
   // The file paths we will be reading/writing to.
-  string testing_arff = inputdir_ + twekafname_;
-  string training_arff = inputdir_ + wekafname_;
+  string testing_arff = inputdir_ + test_weka_fname_;
+  string training_arff = inputdir_ + train_weka_fname_;
   string testing_predictions = outputdir_ + predictcollectionfname_;
-  string testing_predictions_arff = outputdir_ + twekafname_ + ".affinities.arff";
-  string training_predictions_arff = outputdir_ + wekafname_ + ".affinities.arff";
+  string testing_predictions_arff = outputdir_ + test_weka_fname_ + ".affinities.arff";
+  string training_predictions_arff = outputdir_ + train_weka_fname_ + ".affinities.arff";
 
   // Initialize the network, classifier, and weka source through which
   // we will read our .arff files
@@ -1096,8 +1096,8 @@ loadOptions()
 {
   helpopt_ = cmd_options_.getBoolOption("help");
   usageopt_ = cmd_options_.getBoolOption("usage");
-  wekafname_ = cmd_options_.getStringOption("wekafname");
-  twekafname_ = cmd_options_.getStringOption("testwekafname");
+  train_weka_fname_ = cmd_options_.getStringOption("wekafname");
+  test_weka_fname_ = cmd_options_.getStringOption("testwekafname");
   predictcollectionfname_ = cmd_options_.getStringOption("predictcollectionfname");
   mode_ = cmd_options_.getStringOption("mode");
   inputdir_ = cmd_options_.getStringOption("inputdir");
