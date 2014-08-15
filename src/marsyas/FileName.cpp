@@ -199,3 +199,24 @@ bool FileName::isAbsolute()
 #endif
   return false;
 }
+
+FileName & FileName::append(const string & element)
+{
+  if (element.empty())
+    return *this;
+
+  if (filename_.empty())
+  {
+    filename_ = element;
+  }
+  else
+  {
+    if (filename_[filename_.size()-1] != '/' &&
+        element[0] != '/')
+    {
+      filename_.push_back('/');
+    }
+    filename_.append(element);
+  }
+  return *this;
+}
