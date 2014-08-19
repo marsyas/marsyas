@@ -13,8 +13,7 @@ the revision number is provided separately for each task).
 The last command enters the subdirectory where all the 
 Marsyas executables reside. 
 
-> git clone https://github.com/marsyas/marsyas.git marsyas
-> git checkout <commit ID>
+> git clone -b mirex-2014 --depth 1 https://github.com/marsyas/marsyas.git marsyas
 > cd marsyas 
 > mkdir build 
 > cd build 
@@ -23,8 +22,6 @@ Marsyas executables reside.
 > cd bin
 
 ------------- MIREX 2014 Audio Beat Tracking Tasks ---------------------
-git commit ID: f495886f1b476d6fe3f5f8ed58e06eb32625c410
-svn: 4767
 
 The algorithm contains two distinct versions, differentiated by its mode of operation.
 The application outputs two text files: one with the tempo measure (median IBI, 
@@ -43,8 +40,6 @@ If only the output directory is assigned, the audio filename will be assumed.
 
 
 ------------- MIREX 2014 Audio Train/Test Tasks ---------------------------
-git commit ID: f4511fb5dc4e8c582ccf637c19fa80e9eaa2f32e
-svn: 4819
 
 Extract features, train classifier and predict for 1 fold: 
 bextract -sv <train.txt> -tc <test.txt> -pr <test_predicted.txt> -od </path/to/workdir> -w <features.arff>
@@ -57,8 +52,6 @@ scratch directories for each fold.
 
 
 ------------- MIREX 2014 Audio Tag Classification -------------------------
-git commit ID: f4511fb5dc4e8c582ccf637c19fa80e9eaa2f32e
-svn: 4819
 
 Assumes train.txt is a training list file (files and tags) 
 and test.txt is a testing list file (just files) 
@@ -94,8 +87,6 @@ Step3) Second stage (stacked generalization) for automatic tag annotation
 > ../../scripts/Ruby/threshold_binarization.rb train.txt stage2_affinities.txt > stage2_predictions.txt
 
 ----------- MIREX 2014 Audio Similarity ------------------------------
-git commit ID: f4511fb5dc4e8c582ccf637c19fa80e9eaa2f32e
-svn: 4819
 
 Extract features 
 > ./bextract -fe -sv filelist.txt -od /path/to/workdir -w filelist.arff
@@ -110,8 +101,6 @@ QUESTION: copying filelist.txt to workdir is a bit silly. Remove the use of "-id
 QUESTION: distance matrix does not look very diverse... maybe due to small amount of input samples?
 
 ---------- MIREX 2014 Audio Key Detection ------------------------
-git commit ID: c1d588a08c6e3c38f6dfa31f2d5896b2a831a3d5
-svn: 4828
 
 > ./pitchextract -m key -w 16384 -h 4096 input.wav -o output.txt
 
