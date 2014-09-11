@@ -1,8 +1,11 @@
 #!/usr/bin/python
 
-import marsyas
+from pylab import *
 import sys
-import numpy as np
+from matplotlib import pyplot
+from marsyas import * 
+from marsyas_util import *
+
 
 def medfilt1(x=None,L=None):
 
@@ -77,18 +80,22 @@ def medfilt1(x=None,L=None):
 def run(inFilename, outFilename, medianFilter):
     mng = marsyas.MarSystemManager()
 
-    # Create network to extract pitch
-    inNet = mng.create("Series","series")
+    # fanout with pitch extractors 
+    pitchnet = create(["Fanout/fanout", 
+                       [
+                        "AubioYin/yin", 
+                        "Rms/rms"
+                    ]])
 
-    # Add the MarSystems
-    inNet.addMarSystem(mng.create("SoundFileSource", "src"))
-    inNet.addMarSystem(mng.create("Stereo2Mono", "s2m"));
-    inNet.addMarSystem(mng.create("ShiftInput", "si"));
+    # sound input network 
+    spec = ["Series/pitchExtract",
+            ["SoundFileSource/src", 
+             "Stereo2Mono/s2m",
+             "ShiftInput/si",
+             pitchnet
+              ]]
     
-    fanout = mng.create("Fanout","fanout")
-    fanout.addMarSystem(mng.create("AubioYin", "yin"));
-    fanout.addMarSystem(mng.create("Rms", "rms"));
-    inNet.addMarSystem(fanout)
+    inNet = create(spec);
 
     # Create network to output audio
     outNet = mng.create("Series","series")
@@ -98,6 +105,9 @@ def run(inFilename, outFilename, medianFilter):
     
     # Update controls
     inNet.updControl("SoundFileSource/src/mrs_string/filename", marsyas.MarControlPtr.from_string(inFilename))
+    
+    inNet.updControl("mrs_natural/inSamples", 2048);
+    outNet.updControl("mrs_natural/inSamples", 2048);
     osrate = inNet.getControl("mrs_real/osrate").to_real()
     outNet.updControl("SoundFileSink/sink/mrs_real/israte", osrate)
 
@@ -113,8 +123,16 @@ def run(inFilename, outFilename, medianFilter):
         inNet.tick()
 
     outPitches = medfilt1(pitchData,medianFilter)        
+    rmsData = medfilt1(rmsData,medianFilter)        
     outRms = np.asarray(rmsData)
     outRms *= 5
+
+    figure();
+    plot(rmsData);
+    figure();
+    plot(outPitches);
+    
+    show();
 
     for i in range(0,len(outPitches)):
         outNet.updControl("SineSource/src/mrs_real/frequency", outPitches[i]);
