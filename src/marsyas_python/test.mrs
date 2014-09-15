@@ -1,0 +1,7 @@
+
+Network : Series
+{
+  -> input: NoiseSource
+  -> amp: Gain
+  -> output: AudioSink
+}

@@ -1,0 +1,13 @@
+Parallel 
+{
+  + harmonic = 3 
+  + detune = 0.0 
+  -> Series { 
+	-> AudioSource 
+	-> AubioYin 
+	-> pitch: FlowControl 
+}
+-> SineSource { 
+	freq = (/pitch/value */harmonic + /detune)
+}}
+
