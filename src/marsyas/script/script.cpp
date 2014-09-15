@@ -729,12 +729,20 @@ MarSystem *system_from_script(std::istream & script_stream,
   return translator.translateStream(script_stream, working_directory);
 }
 
-MarSystem *system_from_script(const std::string & filepath, MarSystemManager *mng)
+MarSystem *system_from_script(const std::string & script,
+                              const std::string & working_directory,
+                              MarSystemManager *mng)
+{
+  ScriptTranslator translator(mng);
+  std::istringstream script_stream(script);
+  return translator.translateStream(script_stream, working_directory);
+}
+
+MarSystem *system_from_script_file(const std::string & filepath, MarSystemManager *mng)
 {
   ScriptTranslator translator(mng);
   return translator.translateFile(filepath);
 }
-
 
 ScriptTranslator::ScriptTranslator( MarSystemManager * manager ):
   m_manager(manager),

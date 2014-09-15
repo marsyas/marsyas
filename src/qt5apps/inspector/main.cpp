@@ -348,7 +348,7 @@ void Main::openSystem(const QString & filename)
   if (filename.endsWith(".mrs"))
   {
 #ifdef MARSYAS_HAS_SCRIPT
-    system = system_from_script(filename.toStdString());
+    system = system_from_script_file(filename.toStdString());
 #endif
   }
   else if (filename.endsWith(mpl_ending))

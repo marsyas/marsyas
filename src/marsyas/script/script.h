@@ -9,12 +9,17 @@
 namespace Marsyas {
 
 marsyas_EXPORT
-MarSystem *system_from_script(const std::string & filename, MarSystemManager *mng = 0);
-
-marsyas_EXPORT
 MarSystem *system_from_script(std::istream & script_stream,
                               const std::string & working_directory = std::string(),
                               MarSystemManager *mng = 0);
+
+marsyas_EXPORT
+MarSystem *system_from_script(const std::string & script,
+                              const std::string & working_directory = std::string(),
+                              MarSystemManager *mng = 0);
+
+marsyas_EXPORT
+MarSystem *system_from_script_file(const std::string & filename, MarSystemManager *mng = 0);
 
 class ScriptTranslator
 {
