@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2014 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -151,7 +151,13 @@ AubioYin::myProcess(realvec& in, realvec& out)
   if (pitch < 0) {
     pitch = vec_quadint_min(&yin,vec_min_elem(&yin),1);
   }
-
+  
   out(0,0) = ctrl_osrate_/pitch;
+//   while (out(0,0) > 500) // ignore above 1000Hz 
+//     out(0,0) = out(0,0) / 2;
+  
+  
+
+//   std::cout << out(0,0) << " - " << pitch  << std::endl;
 
 }

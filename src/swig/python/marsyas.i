@@ -9,6 +9,7 @@
 %include "marsystemmanager.i"
 %include "marcontrolptr.i"
 %include "realvec.i"
+%include "script.i"
 %include "Collection.i"
 
 /* Exception handling: translate C++ exceptions to Python Exceptions.

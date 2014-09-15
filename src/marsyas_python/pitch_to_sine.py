@@ -123,7 +123,8 @@ def run(inFilename, outFilename, medianFilter):
         inNet.tick()
 
     outPitches = medfilt1(pitchData,medianFilter)        
-    rmsData = medfilt1(rmsData,medianFilter)        
+#    rmsData = medfilt1(rmsData,medianFilter)        
+#    outPitches = pitchData
     outRms = np.asarray(rmsData)
     outRms *= 5
 
