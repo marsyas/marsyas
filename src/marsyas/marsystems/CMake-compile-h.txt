@@ -263,6 +263,7 @@ SVMClassifier.h
 TempoHypotheses.h
 TimeFreqPeakConnectivity.h
 TimelineLabeler.h
+Timer.h
 TimeStretch.h
 Transposer.h
 TriangularFilterBank.h

@@ -243,6 +243,7 @@
 #include <marsyas/marsystems/TempoHypotheses.h>
 #include <marsyas/marsystems/TimeFreqPeakConnectivity.h>
 #include <marsyas/marsystems/TimeStretch.h>
+#include <marsyas/marsystems/Timer.h> 
 #include <marsyas/marsystems/TimelineLabeler.h>
 #include <marsyas/marsystems/Transposer.h>
 #include <marsyas/marsystems/TriangularFilterBank.h>
@@ -535,6 +536,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("TempoHypotheses", new TempoHypotheses("tempohyp"));
   registerPrototype("TimeFreqPeakConnectivity", new TimeFreqPeakConnectivity("tfpeakconn"));
   registerPrototype("TimeStretch", new TimeStretch("tscp"));
+  registerPrototype("Timer", new Timer("timerp"));
   registerPrototype("TimelineLabeler", new TimelineLabeler("timelinelabelerpr"));
   registerPrototype("Transposer", new Transposer("transposer"));
   registerPrototype("TriangularFilterBank", new TriangularFilterBank("triangularfilterbank_pr"));

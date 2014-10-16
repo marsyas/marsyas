@@ -263,6 +263,7 @@ SVMClassifier.cpp
 TempoHypotheses.cpp
 TimeFreqPeakConnectivity.cpp
 TimelineLabeler.cpp
+Timer.cpp
 TimeStretch.cpp
 Transposer.cpp
 TriangularFilterBank.cpp
