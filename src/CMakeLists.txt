@@ -104,7 +104,10 @@ if(WITH_QT4)
 endif()
 
 if (VAMP_FOUND)
-  add_subdirectory(mvamp)
+  # add_subdirectory(mvamp) # Currently does not compile.
+  if(MARSYAS_SCRIPT)
+    add_subdirectory(marsyas_vamp_scripting)
+  endif()
 endif (VAMP_FOUND)
 
 if (MAXSDK_FOUND)
