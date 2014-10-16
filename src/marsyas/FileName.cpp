@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <string>
+#include <cstdlib>
 
 using std::ostringstream;
 using std::max;
@@ -219,4 +220,26 @@ FileName & FileName::append(const string & element)
     filename_.append(element);
   }
   return *this;
+}
+
+FileName FileName::userHomeDir()
+{
+#if defined(MARSYAS_LINUX) || defined(MARSYAS_MACOSX)
+  return FileName( std::getenv("HOME") );
+#else
+  MRS_ERROR("FileName::userHomeDir not implemented for this system.");
+  return FileName();
+#endif
+}
+
+FileName FileName::userAppDataDir()
+{
+#if defined(MARSYAS_LINUX)
+  return userHomeDir().append(".local/share");
+#elif defined(MARSYAS_MACOSX)
+  return userHomeDir().append("Library/Application Support");
+#else
+  MRS_ERROR("FileName::userAppDataDir not implemented for this system.");
+  return FileName();
+#endif
 }

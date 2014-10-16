@@ -60,6 +60,9 @@ public:
   std::vector<mrs_string> getFilesInDir (mrs_string wildcard); //get a list of files in the directory
   // Append a path element, inserting a path separator if needed:
   FileName & append(const string & element);
+
+  static FileName userHomeDir();
+  static FileName userAppDataDir();
 };
 
 }//namespace Marsyas
