@@ -3,11 +3,6 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   message(FATAL_ERROR "CMake initialized in the wrong directory. Please initialize CMake with the top-level Marsyas directory as source directory.")
 endif()
 
-if(POLICY CMP0020)
-  # Accept new policy related to automatically linking Qt apps to qtmain.lib on Windows
-  cmake_policy(SET CMP0020 NEW)
-endif()
-
 ## basic CMAKE vars
 if (APPLE)
   mark_as_advanced (CMAKE_OSX_ARCHITECTURES)
