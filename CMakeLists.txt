@@ -1,4 +1,9 @@
-cmake_minimum_required(VERSION 2.8.2)
+cmake_minimum_required(VERSION 2.8.9)
+# Note: Policies have to be repeated after every minimum cmake version declaration
+if(POLICY CMP0020)
+  # Accept new policy related to automatically linking Qt apps to qtmain.lib on Windows
+  cmake_policy(SET CMP0020 NEW)
+endif()
 
 option(MARSYAS_DOCUMENTATION_ONLY "Only build documentation, not program sources" OFF)
 
@@ -7,6 +12,8 @@ option(MARSYAS_DOCUMENTATION_ONLY "Only build documentation, not program sources
 if(MARSYAS_DOCUMENTATION_ONLY)
   set(MARSYAS_LANGUAGES NONE)
 endif()
+
+
 
 project(marsyas ${MARSYAS_LANGUAGES})
 
