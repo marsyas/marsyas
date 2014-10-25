@@ -227,7 +227,7 @@ FileName FileName::userHomeDir()
 #if defined(MARSYAS_LINUX) || defined(MARSYAS_MACOSX)
   return FileName( std::getenv("HOME") );
 #else
-  MRS_ERROR("FileName::userHomeDir not implemented for this system.");
+  MRSERR("FileName::userHomeDir not implemented for this system.");
   return FileName();
 #endif
 }
@@ -239,7 +239,7 @@ FileName FileName::userAppDataDir()
 #elif defined(MARSYAS_MACOSX)
   return userHomeDir().append("Library/Application Support");
 #else
-  MRS_ERROR("FileName::userAppDataDir not implemented for this system.");
+  MRSERR("FileName::userAppDataDir not implemented for this system.");
   return FileName();
 #endif
 }
