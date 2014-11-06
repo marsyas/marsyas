@@ -404,6 +404,7 @@ install( FILES
 
 install( FILES
   script/script.h
+  script/manager.h
 
   DESTINATION include/marsyas/script
 )

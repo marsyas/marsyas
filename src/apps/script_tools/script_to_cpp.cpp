@@ -104,7 +104,7 @@ struct emitter
   void source_includes()
   {
     out << "#include \"" << out_header_name << "\"" << endl;
-    out << "#include <marsyas/script/manager.hpp>" << endl;
+    out << "#include <marsyas/script/manager.h>" << endl;
   }
 
   bool source_namespace()
