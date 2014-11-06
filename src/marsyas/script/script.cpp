@@ -1,5 +1,5 @@
 #include "script.h"
-#include "manager.hpp"
+#include "manager.h"
 #include "parser.h"
 #include "operation_processor.hpp"
 #include <marsyas/system/MarSystemManager.h>
