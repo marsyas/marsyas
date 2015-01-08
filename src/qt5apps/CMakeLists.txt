@@ -21,7 +21,7 @@ macro(marsyas_qt5_app APP)
     add_executable(${APP} ${ARGN})
   endif()
 
-  target_link_libraries(${APP} marsyas marsyasqt5)
+  target_link_libraries(${APP} marsyas marsyas-qt5)
 
   if(MSVC)
     set_property( TARGET ${APP} APPEND PROPERTY LINK_FLAGS_RELEASE "/SUBSYSTEM:windows /ENTRY:mainCRTStartup" )

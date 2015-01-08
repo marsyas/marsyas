@@ -22,8 +22,21 @@ endif()
 
 qt5_wrap_cpp( moc_src ${moc_hdr})
 
-add_library( marsyasqt5 STATIC ${src} ${moc_src} )
+add_library( marsyas-qt5 STATIC ${src} ${moc_src} )
 
-target_link_libraries( marsyasqt5 marsyas )
+target_link_libraries( marsyas-qt5 marsyas )
 
-qt5_use_modules( marsyasqt5 Core Widgets )
+qt5_use_modules( marsyas-qt5 Core Widgets )
+
+install( FILES
+  marsyasqt_common.h
+  marsystem_wrapper.h
+
+  DESTINATION include/marsyas/qt5
+)
+
+install( TARGETS marsyas-qt5
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
