@@ -25,19 +25,11 @@ supported way to build Marsyas.
 
 @unnumberedsubsec Stable(-ish) Version
 
-@strong{Note:} Marsyas is currently approaching the next stable release
-(version 0.5.0) which will bring a lot of changes that also affect the build
-process. Instructions in this manual do not apply anymore to the last
-stable release! For this reason we suggest to use the latest development state
-of Marsyas sources.
-
-To get the latest Marsyas sources visit the
-@uref{https://github.com/marsyas/marsyas/,Marsyas GitHub project page}
-and use the "Download ZIP" button.
-
-If you still want to use the last stable Marsyas release, you can obtain
-it from SourceForge:
-@uref{http://sourceforge.net/projects/marsyas/}
+Marsyas is currently approaching the next stable release
+(version 0.5.0). The source code is in the "release/0.5" branch of our
+git repository, hosted on GitHub, and it can be downloaded using
+the following link:
+@uref{https://github.com/marsyas/marsyas/archive/release/0.5.zip}
 
 @unnumberedsubsec Development Version
 
@@ -45,7 +37,7 @@ If you intend to keep updating your copy of the Marsyas sources along with the
 latest development or contribute to development, you will need to use git to
 interact with the Marsyas git repository.
 
-The Marsyas git repository is hosted at GitHub:
+The Marsyas git repository is hosted on GitHub:
 @uref{https://github.com/marsyas/marsyas/}
 
 @unnumberedsubsubsec Read access
