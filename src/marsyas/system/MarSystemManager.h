@@ -82,6 +82,7 @@ public:
   MarSystem* getMarSystem(std::istream& is, MarSystem *parent=NULL);
   MarSystem* loadFromFile(std::string fname);
   std::map<std::string, MarSystem*> getWorkingSet(std::istream& is);
+  const std::map<std::string, MarSystem*> & registry() { return registry_; }
 
   bool isRegistered (std::string name);
 
