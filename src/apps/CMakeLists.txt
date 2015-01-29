@@ -15,6 +15,7 @@ endmacro(marsyas_app)
 
 ## build apps
 ## in docs -gp
+add_subdirectory(info)
 add_subdirectory(mkcollection)
 add_subdirectory(sfplay)
 add_subdirectory(sfinfo)
