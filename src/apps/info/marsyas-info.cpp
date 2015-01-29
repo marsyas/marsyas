@@ -81,21 +81,21 @@ int list_controls(int argc, char **argv)
   for(control_map_t::const_iterator it = controls.begin(); it != controls.end(); ++it)
   {
     const MarControlPtr & control = it->second;
-    cout << control->id() << " ";
+    cout << control->id() << " (";
     string type = control->getType();
     if (type == "mrs_bool")
-      cout << "(boolean)";
+      cout << "boolean, default=" << (control->to<bool>() ? "true" : "false");
     else if (type == "mrs_natural")
-      cout << "(integer)";
+      cout << "integer, default=" << control->to<mrs_natural>();
     else if (type == "mrs_real")
-      cout << "(real)";
+      cout << "real, default=" << control->to<mrs_real>();
     else if (type == "mrs_realvec")
-      cout << "(array)";
+      cout << "array";
     else if (type == "mrs_string")
-      cout << "(string)";
+      cout << "string, default=\"" << control->to<string>() << "\"";
     else
-      cout << "(" << type << ")";
-    cout << endl;
+      cout << "type: " << type;
+    cout << ")" << endl;
   }
 
   return 0;
