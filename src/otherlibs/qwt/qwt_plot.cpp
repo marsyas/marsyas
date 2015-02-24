@@ -127,6 +127,7 @@ QwtPlot::QwtPlot( const QwtText &title, QWidget *parent ):
 //! Destructor
 QwtPlot::~QwtPlot()
 {
+    setAutoReplot( false );
     detachItems( QwtPlotItem::Rtti_PlotItem, autoDelete() );
 
     delete d_data->layout;
@@ -423,7 +424,7 @@ void QwtPlot::setPlotLayout( QwtPlotLayout *layout )
     if ( layout != d_data->layout )
     {
         delete d_data->layout;
-        layout = d_data->layout;
+        d_data->layout = layout;
 
         updateLayout();
     }
@@ -818,22 +819,35 @@ QwtScaleMap QwtPlot::canvasMap( int axisId ) const
     }
     else
     {
-        int margin = 0;
-        if ( !plotLayout()->alignCanvasToScale( axisId ) )
-            margin = plotLayout()->canvasMargin( axisId );
-
         const QRect &canvasRect = d_data->canvas->contentsRect();
         if ( axisId == yLeft || axisId == yRight )
         {
-            map.setPaintInterval( canvasRect.bottom() - margin,
-                canvasRect.top() + margin );
+            int top = 0;
+            if ( !plotLayout()->alignCanvasToScale( xTop ) )
+                top = plotLayout()->canvasMargin( xTop );
+
+            int bottom = 0;
+            if ( !plotLayout()->alignCanvasToScale( xBottom ) )
+                bottom = plotLayout()->canvasMargin( xBottom );
+
+            map.setPaintInterval( canvasRect.bottom() - bottom,
+                canvasRect.top() + top );
         }
         else
         {
-            map.setPaintInterval( canvasRect.left() + margin,
-                canvasRect.right() - margin );
+            int left = 0;
+            if ( !plotLayout()->alignCanvasToScale( yLeft ) )
+                left = plotLayout()->canvasMargin( yLeft );
+
+            int right = 0;
+            if ( !plotLayout()->alignCanvasToScale( yRight ) )
+                right = plotLayout()->canvasMargin( yRight );
+
+            map.setPaintInterval( canvasRect.left() + left,
+                canvasRect.right() - right );
         }
     }
+
     return map;
 }
 
@@ -1108,8 +1122,7 @@ void QwtPlot::attachItem( QwtPlotItem *plotItem, bool on )
         }
     }
 
-    if ( autoReplot() )
-        update();
+    autoRefresh();
 }
 
 /*!

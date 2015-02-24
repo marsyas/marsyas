@@ -242,12 +242,12 @@ void QwtPlotRenderer::renderDocument( QwtPlot *plot,
     {
 #ifndef QT_NO_PRINTER
         QPrinter printer;
+        printer.setOutputFormat( QPrinter::PdfFormat );
         printer.setColorMode( QPrinter::Color );
         printer.setFullPage( true );
         printer.setPaperSize( sizeMM, QPrinter::Millimeter );
         printer.setDocName( title );
         printer.setOutputFileName( fileName );
-        printer.setOutputFormat( QPrinter::PdfFormat );
         printer.setResolution( resolution );
 
         QPainter painter( &printer );
@@ -259,12 +259,12 @@ void QwtPlotRenderer::renderDocument( QwtPlot *plot,
 #if QT_VERSION < 0x050000
 #ifndef QT_NO_PRINTER
         QPrinter printer;
+        printer.setOutputFormat( QPrinter::PostScriptFormat );
         printer.setColorMode( QPrinter::Color );
         printer.setFullPage( true );
         printer.setPaperSize( sizeMM, QPrinter::Millimeter );
         printer.setDocName( title );
         printer.setOutputFileName( fileName );
-        printer.setOutputFormat( QPrinter::PostScriptFormat );
         printer.setResolution( resolution );
 
         QPainter painter( &printer );

@@ -1610,6 +1610,8 @@ QRect QwtSymbol::boundingRect() const
 {
     QRectF rect;
 
+    bool pinPointTranslation = false;
+
     switch ( d_data->style )
     {
         case QwtSymbol::Ellipse:
@@ -1653,6 +1655,7 @@ QRect QwtSymbol::boundingRect() const
 
             rect = qwtScaledBoundingRect( 
                 d_data->path.graphic, d_data->size );
+            pinPointTranslation = true;
 
             break;
         }
@@ -1663,15 +1666,15 @@ QRect QwtSymbol::boundingRect() const
             else
                 rect.setSize( d_data->size );
             
-            rect.moveCenter( QPointF( 0.0, 0.0 ) );
+            pinPointTranslation = true;
 
-            // pinpoint ???
             break;
         }
         case QwtSymbol::Graphic:
         {
             rect = qwtScaledBoundingRect( 
                 d_data->graphic.graphic, d_data->size );
+            pinPointTranslation = true;
 
             break;
         }
@@ -1693,6 +1696,7 @@ QRect QwtSymbol::boundingRect() const
 
                 rect = transform.mapRect( rect );
             }
+            pinPointTranslation = true;
             break;
         }
 #endif
@@ -1703,8 +1707,7 @@ QRect QwtSymbol::boundingRect() const
         }
     }
 
-    if ( d_data->style == QwtSymbol::Graphic || 
-        d_data->style == QwtSymbol::SvgDocument || d_data->style == QwtSymbol::Path )
+    if ( pinPointTranslation )
     {
         QPointF pinPoint( 0.0, 0.0 );
         if ( d_data->isPinPointEnabled )

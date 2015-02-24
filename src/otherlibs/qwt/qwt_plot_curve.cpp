@@ -487,44 +487,57 @@ void QwtPlotCurve::drawLines( QPainter *painter,
 
     if ( doIntegers )
     {
-        const QPolygon polyline = mapper.toPolygon( 
+        QPolygon polyline = mapper.toPolygon( 
             xMap, yMap, data(), from, to );
 
         if ( d_data->paintAttributes & ClipPolygons )
         {
-            const QPolygon clipped = QwtClipper::clipPolygon( 
+            polyline = QwtClipper::clipPolygon( 
                 clipRect.toAlignedRect(), polyline, false );
+        }
 
-            QwtPainter::drawPolyline( painter, clipped );
-        }
-        else
-        {
-            QwtPainter::drawPolyline( painter, polyline );
-        }
+        QwtPainter::drawPolyline( painter, polyline );
     }
     else
     {
-        QPolygonF polyline = mapper.toPolygonF( xMap, yMap,
-            data(), from, to );
+        QPolygonF polyline = mapper.toPolygonF( xMap, yMap, data(), from, to );
 
         if ( doFit )
             polyline = d_data->curveFitter->fitCurve( polyline );
 
-        if ( d_data->paintAttributes & ClipPolygons )
+        if ( doFill )
         {
-            const QPolygonF clipped = QwtClipper::clipPolygonF( 
-                clipRect, polyline, false );
+            if ( painter->pen().style() != Qt::NoPen )
+            {
+                // here we are wasting memory for the filled copy,
+                // do polygon clipping twice etc .. TODO
 
-            QwtPainter::drawPolyline( painter, clipped );
+                QPolygonF filled = polyline;
+                fillCurve( painter, xMap, yMap, canvasRect, filled );
+                filled.clear();
+
+                if ( d_data->paintAttributes & ClipPolygons )
+                {
+                    polyline = QwtClipper::clipPolygonF( 
+                        clipRect, polyline, false );
+                }
+
+                QwtPainter::drawPolyline( painter, polyline );
+            }
+            else
+            {
+                fillCurve( painter, xMap, yMap, canvasRect, polyline );
+            }
         }
         else
         {
-            QwtPainter::drawPolyline( painter, polyline );
-        }
+            if ( d_data->paintAttributes & ClipPolygons )
+            {
+                polyline = QwtClipper::clipPolygonF(
+                    clipRect, polyline, false );
+            }
 
-        if ( doFill )
-        {
-            fillCurve( painter, xMap, yMap, canvasRect, polyline );
+            QwtPainter::drawPolyline( painter, polyline );
         }
     }
 }

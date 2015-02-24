@@ -23,7 +23,7 @@ class QwtPainterCommand;
 
     QwtGraphic is the representation of a graphic that is tailored for
     scalability. Like QPicture it will be initialized by QPainter
-    operations and replayed later to any target paint device.
+    operations and can be replayed later to any target paint device.
 
     While the usual image representations QImage and QPixmap are not
     scalable Qt offers two paint devices, that might be candidates
@@ -36,18 +36,16 @@ class QwtPainterCommand;
 
     - QSvgRenderer/QSvgGenerator\n
       Unfortunately QSvgRenderer hides to much information about
-      its nodes in internal APIs, that are necessary proper 
+      its nodes in internal APIs, that are necessary for proper 
       layout calculations. Also it is derived from QObject and 
       can't be copied like QImage/QPixmap.
-      Also QSvgRenderer/QSvgGenerator are no complete SVG implementations
-      with a questionable future in Qt 5.
 
     QwtGraphic maps all scalable drawing primitives to a QPainterPath
     and stores them together with the painter state changes 
     ( pen, brush, transformation ... ) in a list of QwtPaintCommands. 
     For being a complete QPaintDevice it also stores pixmaps or images, 
     what is somehow against the idea of the class, because these objects 
-    can be scaled without a loss in quality.
+    can't be scaled without a loss in quality.
 
     The main issue about scaling a QwtGraphic object are the pens used for
     drawing the outlines of the painter paths. While non cosmetic pens 
@@ -83,12 +81,16 @@ public:
     enum RenderHint
     {
         /*!
-           When RenderPensUnscaled is set non cosmetic pens are
-           painted unscaled - like cosmetic pens. The difference to
-           using cosmetic pens is, when the graphic is rendered
-           to a document in a scalable vector format ( PDF, SVG ):
-           the width of non cosmetic pens will be scaled by the
-           document viewer.
+           When rendering a QwtGraphic a specific scaling between 
+           the controlPointRect() and the coordinates of the target rectangle
+           is set up internally in render().
+
+           When RenderPensUnscaled is set this specific scaling is applied
+           for the control points only, but not for the pens.
+           All other painter transformations ( set up by application code )
+           are supposed to work like usual.
+
+           \sa render();
          */
         RenderPensUnscaled = 0x1
     };

@@ -9,6 +9,7 @@
 
 #include "qwt_raster_data.h"
 #include "qwt_point_3d.h"
+#include <qnumeric.h>
 
 class QwtRasterData::ContourPlane
 {
@@ -343,6 +344,12 @@ QwtRasterData::ContourLines QwtRasterData::contourLines(
                     zMin = z;
                 if ( z > zMax )
                     zMax = z;
+            }
+
+            if ( qIsNaN( zSum ) )
+            {
+                // one of the points is NaN
+                continue;
             }
 
             if ( ignoreOutOfRange )

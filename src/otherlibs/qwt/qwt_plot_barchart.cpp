@@ -184,15 +184,19 @@ QRectF QwtPlotBarChart::boundingRect() const
     if ( numSamples == 0 )
         return QwtPlotSeriesItem::boundingRect();
 
-    const double baseLine = baseline();
-
     QRectF rect = QwtPlotSeriesItem::boundingRect();
-    if ( rect.bottom() < baseLine )
-        rect.setBottom( baseLine );
-    if ( rect.top() > baseLine )
-        rect.setTop( baseLine );
+    if ( rect.height() >= 0 )
+    {
+        const double baseLine = baseline();
 
-    if ( rect.isValid() && ( orientation() == Qt::Horizontal ) )
+        if ( rect.bottom() < baseLine )
+            rect.setBottom( baseLine );
+
+        if ( rect.top() > baseLine )
+            rect.setTop( baseLine );
+    }
+
+    if ( orientation() == Qt::Horizontal )
         rect.setRect( rect.y(), rect.x(), rect.height(), rect.width() );
 
     return rect;

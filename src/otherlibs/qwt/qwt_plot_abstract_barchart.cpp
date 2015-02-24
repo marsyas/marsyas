@@ -256,6 +256,7 @@ double QwtPlotAbstractBarChart::sampleWidth( const QwtScaleMap &map,
 
             width = qwtTransformWidth( map, value, w );
             width -= d_data->spacing;
+            width = qMax( width, d_data->layoutHint );
         }
     }
 

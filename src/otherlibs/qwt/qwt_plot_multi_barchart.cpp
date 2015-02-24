@@ -314,10 +314,14 @@ QRectF QwtPlotMultiBarChart::boundingRect() const
     if ( d_data->style != QwtPlotMultiBarChart::Stacked )
     {
         rect = QwtPlotSeriesItem::boundingRect();
-        if ( rect.bottom() < baseLine )
-            rect.setBottom( baseLine );
-        if ( rect.top() > baseLine )
-            rect.setTop( baseLine );
+
+        if ( rect.height() >= 0 )
+        {
+            if ( rect.bottom() < baseLine )
+                rect.setBottom( baseLine );
+            if ( rect.top() > baseLine )
+                rect.setTop( baseLine );
+        }
     }
     else
     {
@@ -349,7 +353,7 @@ QRectF QwtPlotMultiBarChart::boundingRect() const
         rect.setRect( xMin, yMin, xMax - xMin, yMax - yMin );
     }
 
-    if ( rect.isValid() && ( orientation() == Qt::Horizontal ) )
+    if ( orientation() == Qt::Horizontal )
         rect.setRect( rect.y(), rect.x(), rect.height(), rect.width() );
 
     return rect;

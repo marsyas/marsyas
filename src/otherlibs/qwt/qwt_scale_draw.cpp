@@ -121,7 +121,7 @@ void QwtScaleDraw::getBorderDistHint(
     const QFont &font, int &start, int &end ) const
 {
     start = 0;
-    end = 0;
+    end = 1.0;
 
     if ( !hasComponent( QwtAbstractScaleDraw::Labels ) )
         return;

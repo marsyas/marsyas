@@ -897,9 +897,23 @@ bool QwtPicker::eventFilter( QObject *object, QEvent *event )
             case QEvent::Resize:
             {
                 const QResizeEvent *re = static_cast<QResizeEvent *>( event );
+
+                /*
+                   Adding/deleting additional event filters inside of an event filter
+                   is not safe dues to the implementation in Qt ( changing alist while iterating ).
+                   So we create the overlays in a way, that they don't install en event filter
+                   ( parent set to NULL ) and do the resizing here.
+                 */
+                if ( d_data->trackerOverlay )
+                    d_data->trackerOverlay->resize( re->size() );
+
+                if ( d_data->rubberBandOverlay )
+                    d_data->rubberBandOverlay->resize( re->size() );
+
                 if ( d_data->resizeMode == Stretch )
                     stretchSelection( re->oldSize(), re->size() );
 
+                updateDisplay();
                 break;
             }
             case QEvent::Enter:
@@ -1502,8 +1516,9 @@ void QwtPicker::updateDisplay()
     {
         if ( rw.isNull() )
         {
-            rw = new QwtPickerRubberband( this, w );
+            rw = new QwtPickerRubberband( this, NULL ); // NULL -> no extra event filter
             rw->setObjectName( "PickerRubberBand" );
+            rw->setParent( w );
             rw->resize( w->size() );
         }
 
@@ -1537,8 +1552,9 @@ void QwtPicker::updateDisplay()
     {
         if ( tw.isNull() )
         {
-            tw = new QwtPickerTracker( this, w );
+            tw = new QwtPickerTracker( this, NULL ); // NULL -> no extra event filter
             tw->setObjectName( "PickerTracker" );
+            tw->setParent( w );
             tw->resize( w->size() );
         }
         tw->setFont( d_data->trackerFont );

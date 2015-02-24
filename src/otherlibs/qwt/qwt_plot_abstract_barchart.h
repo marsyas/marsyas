@@ -34,10 +34,10 @@ public:
     {
         /*!
           The sample width is calculated by dividing the bounding rectangle
-          by the number of samples.
+          by the number of samples. The layoutHint() is used as a minimum width
+          in paint device coordinates.
 
           \sa boundingRectangle()
-          \note The layoutHint() is ignored
          */
         AutoAdjustSamples,
 
