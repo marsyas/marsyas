@@ -312,15 +312,18 @@ void QwtWidgetOverlay::draw( QPainter *painter ) const
         painter->setClipRect( parentWidget()->contentsRect() );
 
         // something special for the plot canvas
-        QPainterPath clipPath;
 
-        ( void )QMetaObject::invokeMethod(
-            widget, "borderPath", Qt::DirectConnection,
-            Q_RETURN_ARG( QPainterPath, clipPath ), Q_ARG( QRect, rect() ) );
-
-        if (!clipPath.isEmpty())
+        const int idx = widget->metaObject()->indexOfMethod( "borderPath(QRect)" );
+        if ( idx >= 0 )
         {
-            painter->setClipPath( clipPath, Qt::IntersectClip );
+            QPainterPath clipPath;
+
+            ( void )QMetaObject::invokeMethod(
+                widget, "borderPath", Qt::DirectConnection,
+                Q_RETURN_ARG( QPainterPath, clipPath ), Q_ARG( QRect, rect() ) );
+
+            if (!clipPath.isEmpty())
+                painter->setClipPath( clipPath, Qt::IntersectClip );
         }
     }
 

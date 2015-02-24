@@ -7,8 +7,8 @@
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
 
-#ifndef QWT_PLOT_BAR_CHART_H
-#define QWT_PLOT_BAR_CHART_H
+#ifndef QWT_PLOT_MULTI_BAR_CHART_H
+#define QWT_PLOT_MULTI_BAR_CHART_H
 
 #include "qwt_global.h"
 #include "qwt_plot_abstract_barchart.h"

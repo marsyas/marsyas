@@ -66,7 +66,8 @@ static QRectF qwtStrokedPathRect(
 static inline void qwtExecCommand( 
     QPainter *painter, const QwtPainterCommand &cmd, 
     QwtGraphic::RenderHints renderHints,
-    const QTransform &transform )
+    const QTransform &transform,
+    const QTransform *initialTransform )
 {
     switch( cmd.type() )
     {
@@ -90,12 +91,20 @@ static inline void qwtExecCommand(
 
             if ( doMap )
             {
-                const QTransform transform = painter->transform();
+                const QTransform tr = painter->transform();
 
                 painter->resetTransform();
-                painter->drawPath( transform.map( *cmd.path() ) );
 
-                painter->setTransform( transform );
+                QPainterPath path = tr.map( *cmd.path() );
+                if ( initialTransform )
+                {
+                    painter->setTransform( *initialTransform );
+                    path = initialTransform->inverted().map( path );
+                }
+
+                painter->drawPath( path );
+
+                painter->setTransform( tr );
             }
             else
             {
@@ -310,7 +319,8 @@ class QwtGraphic::PrivateData
 public:
     PrivateData():
         boundingRect( 0.0, 0.0, -1.0, -1.0 ),
-        pointRect( 0.0, 0.0, -1.0, -1.0 )
+        pointRect( 0.0, 0.0, -1.0, -1.0 ),
+        initialTransform( NULL )
     {
     }
 
@@ -322,6 +332,7 @@ public:
     QRectF pointRect;
 
     QwtGraphic::RenderHints renderHints;
+    QTransform *initialTransform;
 };
 
 /*!
@@ -564,7 +575,7 @@ void QwtGraphic::render( QPainter *painter ) const
     for ( int i = 0; i < numCommands; i++ )
     {
         qwtExecCommand( painter, commands[i], 
-            d_data->renderHints, transform );
+            d_data->renderHints, transform, d_data->initialTransform );
     }
 
     painter->restore();
@@ -651,11 +662,23 @@ void QwtGraphic::render( QPainter *painter, const QRectF &rect,
     tr.translate( -d_data->pointRect.x(), -d_data->pointRect.y() );
 
     const QTransform transform = painter->transform();
+    if ( !scalePens && transform.isScaling() )
+    {
+        // we don't want to scale pens according to sx/sy,
+        // but we want to apply the scaling from the 
+        // painter transformation later
+
+        d_data->initialTransform = new QTransform();
+        d_data->initialTransform->scale( transform.m11(), transform.m22() );
+    }
 
     painter->setTransform( tr, true );
     render( painter );
 
     painter->setTransform( transform );
+
+    delete d_data->initialTransform;
+    d_data->initialTransform = NULL;
 }
 
 /*!
@@ -980,7 +1003,7 @@ void QwtGraphic::setCommands( QVector< QwtPainterCommand > &commands )
 
     QPainter painter( this );
     for ( int i = 0; i < numCommands; i++ )
-        qwtExecCommand( &painter, cmds[i], RenderHints(), QTransform() );
+        qwtExecCommand( &painter, cmds[i], RenderHints(), QTransform(), NULL );
 
     painter.end();
 }
