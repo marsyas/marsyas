@@ -63,19 +63,7 @@ if(APPLE)
   install(DIRECTORY ${qt5_dir}/qml/QtQuick/Layouts DESTINATION ${bundle_dir}/Contents/qml/QtQuick)
   install(FILES qt.macos.conf DESTINATION ${bundle_dir}/Contents/Resources RENAME qt.conf)
 
-  # Bundle marsyas-run with inspector:
-  add_dependencies( inspector marsyas-run )
-  set(marsyas-run-executable ${CMAKE_BINARY_DIR}/bin/marsyas-run)
-  install(PROGRAMS ${marsyas-run-executable} DESTINATION ${bundle_dir}/Contents/MacOS)
-
-  # Bundle marsyas-run with inspector:
-  add_dependencies( inspector marsyas-info )
-  set(marsyas-info-executable ${CMAKE_BINARY_DIR}/bin/marsyas-info)
-  install(PROGRAMS ${marsyas-info-executable} DESTINATION ${bundle_dir}/Contents/MacOS)
-
   set(extra_fixup_items
-    ${bundle_dir}/Contents/MacOS/marsyas-run
-    ${bundle_dir}/Contents/MacOS/marsyas-info
     ${bundle_dir}/Contents/plugins/platforms/libqcocoa.dylib
     ${bundle_dir}/Contents/qml/QtQuick.2/libqtquick2plugin.dylib
     ${bundle_dir}/Contents/qml/QtQuick.2/libqtquick2plugin_debug.dylib
