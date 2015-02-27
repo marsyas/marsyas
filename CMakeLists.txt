@@ -16,6 +16,8 @@ if (POLICY CMP0042)
   cmake_policy(SET CMP0042 NEW)
 endif()
 
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.7)
+
 # Mac OS X: rpath handling
 set(CMAKE_MACOSX_RPATH TRUE)
 if (DEFINED CMAKE_INSTALL_PREFIX)
