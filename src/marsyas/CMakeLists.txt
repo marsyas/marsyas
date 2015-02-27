@@ -418,13 +418,6 @@ if (MARSYAS_STATIC)
     ARCHIVE DESTINATION lib
   )
 else (MARSYAS_STATIC)
-  if (DEFINED CMAKE_INSTALL_PREFIX)
-    set(LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib)
-  else ()
-    set(LIB_DIR "")
-  endif ()
-  set_target_properties(marsyas PROPERTIES INSTALL_NAME_DIR ${LIB_DIR})
-
   install(TARGETS marsyas
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
