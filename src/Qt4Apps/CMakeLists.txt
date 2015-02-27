@@ -20,7 +20,10 @@ add_executable(${APP_NAME} ${APP_SOURCES} ${APP_UIHEADERS}
 
 target_link_Libraries(${APP_NAME} ${APP_LIBS})
 
-install(TARGETS ${APP_NAME} DESTINATION bin)
+# Do not install on Mac OS because of absolute paths to Qt dependencies
+if(NOT APPLE)
+  install(TARGETS ${APP_NAME} DESTINATION bin)
+endif()
 
 endmacro (marsyas_qt4app)
 
