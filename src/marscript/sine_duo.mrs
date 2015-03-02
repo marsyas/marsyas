@@ -2,7 +2,6 @@ net: Series
 {
   + public frequency1 = 440.0
   + public frequency2 = 447.0
-  + public frequency3 = 200.0
   + public amp = 1.0
 
   israte = 44100.0
@@ -17,20 +16,5 @@ net: Series
     gain = /amp
   }
 
-  -> timer: Timer
-
-//   phasor/increment = timer/trigger
-
-    frequency1 = ((800.0 * timer/time) when timer/trigger)
-
-//       when (timer/trigger)
-//         {
-//            frequency1 = (800.0 * timer/time)
-//         }
-//   else 
-//   {       
-//     frequency1 = 500.0
-//   }
-  
   -> out: AudioSink
 }
