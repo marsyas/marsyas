@@ -26,12 +26,18 @@
 #include <cstdio>
 #include <cstring>
 
+#define PCM_FMAX24 8388608.0
+
 namespace Marsyas
 {
 /**
 	\ingroup Internal
 	\brief Reads .wav soundfiles
 */
+
+    typedef struct {
+	unsigned char byte[3];
+    } myUint24_t;
 
 
 class WavFileSource: public AbsSoundFileSource
@@ -40,6 +46,7 @@ private:
   int *idata_;
   short *sdata_;
   unsigned char *cdata_;
+  myUint24_t *sldata_;
 
   FILE *sfp_;
   long sfp_begin_;
@@ -72,6 +79,7 @@ private:
   mrs_real duration_;
 
   mrs_natural getLinear32(realvec& win);
+  mrs_natural getLinear24(realvec& win);
   mrs_natural getLinear16(realvec& win);
   mrs_natural getLinear8(realvec& win);
 
@@ -83,9 +91,9 @@ public:
   ~WavFileSource();
   MarSystem* clone() const;
 
-
   void getHeader(std::string filename);
   void myProcess(realvec& in, realvec &out);
+
 };
 
 }//namespace Marsyas

@@ -34,6 +34,7 @@ namespace Marsyas
 */
 
 
+
 class WavFileSource2: public AbsSoundFileSource2
 {
 private:

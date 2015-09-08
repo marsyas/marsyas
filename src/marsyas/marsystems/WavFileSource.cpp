@@ -56,6 +56,7 @@ WavFileSource::~WavFileSource()
   delete [] idata_;
   delete [] sdata_;
   delete [] cdata_;
+  free(sldata_);
   if (sfp_ != NULL)
     fclose(sfp_);
 }
@@ -227,7 +228,6 @@ WavFileSource::getHeader(mrs_string filename)
       //srate = srate;
 #endif
 
-
       setctrl("mrs_real/israte", (mrs_real)srate);
       setctrl("mrs_real/osrate", (mrs_real)srate);
 
@@ -242,9 +242,9 @@ WavFileSource::getHeader(mrs_string filename)
       //bits_ = bits_;
 #endif
 
-      if ((bits_ != 16)&&(bits_ != 8)&&(bits_!=32))
+      if ((bits_ != 16)&&(bits_ != 8)&&(bits_!=32)&&(bits_ != 24))
       {
-        MRSWARN("WavFileSource::Only linear 8-bit, 16-bit, and 32-bit samples are supported ");
+        MRSWARN("WavFileSource::Only linear 8-bit, 16-bit, 24-bit and 32-bit samples are supported ");
       }
       fseek(sfp_, chunkSize - 16, SEEK_CUR);
 
@@ -347,10 +347,12 @@ WavFileSource::myUpdate(MarControlPtr sender)
   delete [] idata_;
   delete [] sdata_;
   delete [] cdata_;
+  free(sldata_);
 
   idata_ = new int[inSamples_ * nChannels_];
   sdata_ = new short[inSamples_ * nChannels_];
   cdata_ = new unsigned char[inSamples_ * nChannels_];
+  sldata_ = (myUint24_t*)malloc(inSamples_ * nChannels_ * sizeof(myUint24_t));
 
   repetitions_ = getctrl("mrs_real/repetitions")->to<mrs_real>();
   duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
@@ -377,8 +379,8 @@ WavFileSource::getLinear8(realvec& slice)
 {
   mrs_natural t;
   mrs_natural c = 0;
-  fseek(sfp_, pos_ * nChannels_ + sfp_begin_, SEEK_SET);
 
+  fseek(sfp_, pos_ * nChannels_ + sfp_begin_, SEEK_SET);
   samplesToRead_ = inSamples_ * nChannels_;
   samplesRead_ = (mrs_natural)fread(cdata_, sizeof(unsigned char), samplesToRead_, sfp_);
 
@@ -407,30 +409,9 @@ WavFileSource::getLinear8(realvec& slice)
   return pos_;
 }
 
-// oh dear.  "long" here means 32 bits
-unsigned long
-WavFileSource::ByteSwapLong(unsigned long nLongNumber)
-{
-  return (((nLongNumber&0x000000FF)<<24)+((nLongNumber&0x0000FF00)<<8)+
-          ((nLongNumber&0x00FF0000)>>8)+((nLongNumber&0xFF000000)>>24));
-}
-
-unsigned int
-WavFileSource::ByteSwapInt(unsigned int nInt)
-{
-  return (((nInt&0x000000FF)<<24)+((nInt&0x0000FF00)<<8)+
-          ((nInt&0x00FF0000)>>8)+((nInt&0xFF000000)>>24));
-}
-
-
-unsigned short
-WavFileSource::ByteSwapShort (unsigned short nValue)
-{
-  return (static_cast<unsigned short>((nValue & 0xff00) >> 8) |
-          static_cast<unsigned short>((nValue & 0xff) << 8));
-}
 
 mrs_natural
+
 WavFileSource::getLinear32(realvec& slice)
 {
   mrs_natural c,t;
@@ -487,6 +468,67 @@ WavFileSource::getLinear32(realvec& slice)
   return pos_;
 }
 
+mrs_natural
+WavFileSource::getLinear24(realvec& slice)
+{
+  mrs_natural c,t;
+
+  fseek(sfp_, 3 * pos_ * nChannels_ + sfp_begin_, SEEK_SET);
+  samplesRead_ = (mrs_natural)fread(sldata_, sizeof(myUint24_t), samplesToRead_, sfp_);
+
+  // pad with zeros if necessary
+  if ((samplesRead_ != samplesToRead_) && (samplesRead_ != 0))
+  {
+    for (c=0; c < nChannels_; ++c)
+      for (t=0; t < inSamples_; t++)
+        slice(c, t) = 0.0;
+    samplesToWrite_ = samplesRead_ / nChannels_;
+  }
+  else // default case - read enough samples or no samples in which case zero output
+  {
+    samplesToWrite_ = inSamples_;
+    // if there are no more samples output zeros
+    if (samplesRead_ == 0)
+      for (t=0; t < inSamples_; t++)
+      {
+        nt_ = nChannels_ * t;
+        for (c=0; c < nChannels_; c++)
+        {
+	    sldata_[nt_ + c].byte[0] = 0;
+	    sldata_[nt_ + c].byte[1] = 0;
+	    sldata_[nt_ + c].byte[2] = 0;
+        }
+      }
+  }
+
+  // write the read samples to output slice once for each channel
+  for (t=0; t < samplesToWrite_; t++)
+  {
+    ival_ = 0;
+    nt_ = nChannels_ * t;
+#if defined(MARSYAS_BIGENDIAN)
+    for (c=0; c < nChannels_; c++)
+    {
+	float val;
+	myUint24_t tmp = sldata_[nt_ + c];
+	val = (tmp.byte[0]<<8 | tmp.byte[1]<<16 | tmp.byte[2]<<24) / 2147483648.0;
+	val = ByteSwapInt(ival);
+	slice(c, t) = val;
+    }
+#else
+    for (c=0; c < nChannels_; c++)
+    {
+	float val;
+	myUint24_t tmp = sldata_[nt_ + c];
+	val = (tmp.byte[0]<<8 | tmp.byte[1]<<16 | tmp.byte[2]<<24) / 2147483648.0;
+	slice(c, t) = val;
+    }
+#endif
+  }
+
+  pos_ += samplesToWrite_;
+  return pos_;
+}
 
 mrs_natural
 WavFileSource::getLinear16(realvec& slice)
@@ -515,7 +557,7 @@ WavFileSource::getLinear16(realvec& slice)
         nt_ = nChannels_ * t;
         for (c=0; c < nChannels_; ++c)
         {
-          sdata_[nt_ + c] = 0;
+	    sdata_[nt_ + c] = 0;
         }
       }
   }
@@ -528,14 +570,15 @@ WavFileSource::getLinear16(realvec& slice)
 #if defined(MARSYAS_BIGENDIAN)
     for (c=0; c < nChannels_; ++c)
     {
-      sval_ = ByteSwapShort(sdata_[nt_ + c]);
-      slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT + 1);
+	sval_ = sdata_[nt_ + c];
+	sval_ = ByteSwapShort(asd);
+	slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT + 1);
     }
 #else
     for (c=0; c < nChannels_; ++c)
     {
-      sval_ = sdata_[nt_ + c];
-      slice(c, t) = ((mrs_real) sval_ / (PCM_FMAXSHRT + 1));
+	sval_ = sdata_[nt_ + c];
+	slice(c, t) = ((mrs_real) sval_ / (PCM_FMAXSHRT + 1));
     }
 #endif
   }
@@ -553,6 +596,38 @@ WavFileSource::myProcess(realvec& in, realvec& out)
   case 32:
   {
     getLinear32(out);
+    ctrl_pos_->setValue(pos_, NOUPDATE);
+
+    if (pos_ >= rewindpos_ + csize_)
+    {
+      if (repetitions_ != 1)
+        pos_ = rewindpos_;
+    }
+    samplesOut_ += onSamples_;
+
+    if (repetitions_ != 1)
+    {
+      hasData_ = (samplesOut_ < repetitions_ * csize_);
+
+      lastTickWithData_ = ((samplesOut_  + onSamples_>= repetitions_ * csize_) && hasData_);
+    }
+
+    else
+    {
+      hasData_ = pos_ < rewindpos_ + csize_;
+      lastTickWithData_ = ((pos_ + onSamples_ >= rewindpos_ + csize_) && hasData_);
+    }
+
+    if (repetitions_ == -1)
+    {
+      hasData_ = true;
+      lastTickWithData_ = false;
+    }
+    break;
+  }
+  case 24:
+  {
+    getLinear24(out);
     ctrl_pos_->setValue(pos_, NOUPDATE);
 
     if (pos_ >= rewindpos_ + csize_)
@@ -650,4 +725,27 @@ WavFileSource::myProcess(realvec& in, realvec& out)
   ctrl_currentHasData_->setValue(hasData_);
 
   ctrl_currentLastTickWithData_->setValue(lastTickWithData_);
+}
+
+// oh dear.  "long" here means 32 bits
+unsigned long
+WavFileSource::ByteSwapLong(unsigned long nLongNumber)
+{
+  return (((nLongNumber&0x000000FF)<<24)+((nLongNumber&0x0000FF00)<<8)+
+          ((nLongNumber&0x00FF0000)>>8)+((nLongNumber&0xFF000000)>>24));
+}
+
+unsigned int
+WavFileSource::ByteSwapInt(unsigned int nInt)
+{
+  return (((nInt&0x000000FF)<<24)+((nInt&0x0000FF00)<<8)+
+          ((nInt&0x00FF0000)>>8)+((nInt&0xFF000000)>>24));
+}
+
+
+unsigned short
+WavFileSource::ByteSwapShort (unsigned short nValue)
+{
+  return (static_cast<unsigned short>((nValue & 0xff00) >> 8) |
+          static_cast<unsigned short>((nValue & 0xff) << 8));
 }
