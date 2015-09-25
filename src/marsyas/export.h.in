@@ -1,7 +1,9 @@
 #ifndef _marsyas_DLLDEFINES_H
 #define _marsyas_DLLDEFINES_H
 
-#if defined (_WIN32) && !defined(MARSYAS_STATIC)
+#define MARSYAS_STATIC ${MARSYAS_STATIC_FLAG}
+
+#if defined (_WIN32) && !(MARSYAS_STATIC)
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4251)

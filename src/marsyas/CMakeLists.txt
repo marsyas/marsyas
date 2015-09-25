@@ -295,7 +295,7 @@ install( FILES
   common_source.h
   Communicator.h
   Conversions.h
-  export.h
+  ${CMAKE_CURRENT_BINARY_DIR}/export.h
   dsound.h
   ERBTools.h
   fft.h
