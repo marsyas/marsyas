@@ -65,6 +65,14 @@ include_directories(${CMAKE_BINARY_DIR})
 ## oops, don't install this!  -gp
 #install(FILES ${CMAKE_BINARY_DIR}/config.h DESTINATION include/marsyas)
 
+if(MARSYAS_STATIC)
+  set(MARSYAS_STATIC_FLAG 1)
+else()
+  set(MARSYAS_STATIC_FLAG 0)
+endif()
+configure_file(marsyas/export.h.in ${CMAKE_CURRENT_BINARY_DIR}/marsyas/export.h)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 add_subdirectory(otherlibs)
 
 ## setup includes
