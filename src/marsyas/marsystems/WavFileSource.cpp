@@ -28,6 +28,7 @@ WavFileSource::WavFileSource(mrs_string name):AbsSoundFileSource("WavFileSource"
   idata_ = 0;
   sdata_ = 0;
   cdata_ = 0;
+  sldata_ = 0;
   sfp_ = 0;
   pos_ = 0;
 
@@ -37,6 +38,13 @@ WavFileSource::WavFileSource(mrs_string name):AbsSoundFileSource("WavFileSource"
 
 WavFileSource::WavFileSource(const WavFileSource& a): AbsSoundFileSource(a)
 {
+  idata_ = 0;
+  sdata_ = 0;
+  cdata_ = 0;
+  sldata_ = 0;
+  sfp_ = 0;
+  pos_ = 0;
+
   ctrl_pos_ = getctrl("mrs_natural/pos");
   ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
   ctrl_previouslyPlaying_ = getctrl("mrs_string/previouslyPlaying");
@@ -56,7 +64,8 @@ WavFileSource::~WavFileSource()
   delete [] idata_;
   delete [] sdata_;
   delete [] cdata_;
-  free(sldata_);
+  delete [] sldata_;
+
   if (sfp_ != NULL)
     fclose(sfp_);
 }
@@ -347,12 +356,12 @@ WavFileSource::myUpdate(MarControlPtr sender)
   delete [] idata_;
   delete [] sdata_;
   delete [] cdata_;
-  free(sldata_);
+  delete [] sldata_;
 
   idata_ = new int[inSamples_ * nChannels_];
   sdata_ = new short[inSamples_ * nChannels_];
   cdata_ = new unsigned char[inSamples_ * nChannels_];
-  sldata_ = (myUint24_t*)malloc(inSamples_ * nChannels_ * sizeof(myUint24_t));
+  sldata_ = new myUint24_t[inSamples_ * nChannels_];
 
   repetitions_ = getctrl("mrs_real/repetitions")->to<mrs_real>();
   duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
