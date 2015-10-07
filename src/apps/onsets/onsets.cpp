@@ -288,8 +288,15 @@ detect_onsets(string sfName)
       onsetnet->updControl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
       onsetnet->tick();
       timestamps_samples += onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-      cout << timestamps_samples / fs << endl; //in seconds
-      //cout << timestamps_samples << endl; //in samples
+      if (confidenceopt) {
+        mrs_real confidence = onsetnet->getctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence")->to<mrs_real>();
+        if (confidence > thresholdopt) {
+          cout << timestamps_samples / fs; //in seconds
+          cout << "\t" << confidence << endl;
+        }
+      } else {
+        cout << timestamps_samples / fs << endl; //in seconds
+      }
       onsetnet->updControl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/ntoff", 0.0); //note off
     }
   }
@@ -306,8 +313,6 @@ detect_onsets(string sfName)
         mrs_real confidence = onsetnet->getctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence")->to<mrs_real>();
         if (confidence > thresholdopt) {
           cout << timestamps_samples / fs; //in seconds
-          cout << "\t";
-          cout << timestamps_samples / fs;
           cout << "\t" << confidence << endl;
         }
       } else {
