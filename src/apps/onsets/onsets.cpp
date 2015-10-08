@@ -170,8 +170,11 @@ detect_onsets(string sfName)
   onsetnet->linkControl("Accumulator/onsetaccum/mrs_bool/flush",
                         "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected");
   if (confidenceopt) {
-    onsetnet->linkControl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain",
-                          "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
+    if (audiosynthopt)
+      {
+        onsetnet->linkControl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain",
+                              "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
+      }
   }
 
   //onsetnet->linkControl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_bool/reset",
