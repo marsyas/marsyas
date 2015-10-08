@@ -44,6 +44,7 @@ class WavFileSource: public AbsSoundFileSource
 {
 private:
   int *idata_;
+  float *fdata_;
   short *sdata_;
   unsigned char *cdata_;
   myUint24_t *sldata_;
@@ -55,6 +56,7 @@ private:
   mrs_natural csize_;
   mrs_natural size_;
   int ival_;
+  float fval_;
   short sval_;
   unsigned short bits_;
   MarControlPtr ctrl_pos_;
@@ -82,7 +84,8 @@ private:
   mrs_natural getLinear24(realvec& win);
   mrs_natural getLinear16(realvec& win);
   mrs_natural getLinear8(realvec& win);
-
+  mrs_natural getFloat32(realvec& win);
+  unsigned short format_tag_;
 
 public:
   WavFileSource(std::string name);

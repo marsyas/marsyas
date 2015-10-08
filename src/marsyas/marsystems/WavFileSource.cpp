@@ -26,6 +26,7 @@ using namespace Marsyas;
 WavFileSource::WavFileSource(mrs_string name):AbsSoundFileSource("WavFileSource",name)
 {
   idata_ = 0;
+  fdata_ = 0;
   sdata_ = 0;
   cdata_ = 0;
   sldata_ = 0;
@@ -39,6 +40,7 @@ WavFileSource::WavFileSource(mrs_string name):AbsSoundFileSource("WavFileSource"
 WavFileSource::WavFileSource(const WavFileSource& a): AbsSoundFileSource(a)
 {
   idata_ = 0;
+  fdata_ = 0;
   sdata_ = 0;
   cdata_ = 0;
   sldata_ = 0;
@@ -62,6 +64,7 @@ WavFileSource::WavFileSource(const WavFileSource& a): AbsSoundFileSource(a)
 WavFileSource::~WavFileSource()
 {
   delete [] idata_;
+  delete [] fdata_;
   delete [] sdata_;
   delete [] cdata_;
   delete [] sldata_;
@@ -194,18 +197,18 @@ WavFileSource::getHeader(mrs_string filename)
       //chunkSize = chunkSize;
 #endif
 
-      unsigned short format_tag;
-      if (fread(&format_tag, 2, 1, sfp_) != 1) {
+
+      if (fread(&format_tag_, 2, 1, sfp_) != 1) {
         MRSERR("Error reading wav file");
       }
 
 #if defined(MARSYAS_BIGENDIAN)
-      format_tag = ByteSwapShort(format_tag);
+      format_tag_ = ByteSwapShort(format_tag_);
 #else
-      //format_tag = format_tag;
+      //format_tag_ = format_tag_;
 #endif
 
-      if (format_tag != 1)
+      if ((format_tag_ != 1)&&(format_tag_  != 3))
       {
         fclose(sfp_);
         MRSWARN("Non pcm(compressed) wave files are not supported");
@@ -354,11 +357,13 @@ WavFileSource::myUpdate(MarControlPtr sender)
   rewindpos_ = getctrl("mrs_natural/loopPos")->to<mrs_natural>();
 
   delete [] idata_;
+  delete [] fdata_;
   delete [] sdata_;
   delete [] cdata_;
   delete [] sldata_;
 
   idata_ = new int[inSamples_ * nChannels_];
+  fdata_ = new float[inSamples_ * nChannels_];
   sdata_ = new short[inSamples_ * nChannels_];
   cdata_ = new unsigned char[inSamples_ * nChannels_];
   sldata_ = new myUint24_t[inSamples_ * nChannels_];
@@ -420,7 +425,65 @@ WavFileSource::getLinear8(realvec& slice)
 
 
 mrs_natural
+WavFileSource::getFloat32(realvec& slice)
+{
+  mrs_natural c,t;
+  
+  fseek(sfp_, 4 * pos_ * nChannels_ + sfp_begin_, SEEK_SET);
+  samplesRead_ = (mrs_natural)fread(fdata_, sizeof(float), samplesToRead_, sfp_);
 
+  // pad with zeros if necessary
+  if ((samplesRead_ != samplesToRead_)&&(samplesRead_ != 0))
+  {
+    for (c=0; c < nChannels_; ++c)
+      for (t=0; t < inSamples_; t++)
+        slice(c, t) = 0.0;
+    samplesToWrite_ = samplesRead_ / nChannels_;
+  }
+  else // default case - read enough samples or no samples in which case zero output
+  {
+    samplesToWrite_ = inSamples_;
+
+    // if there are no more samples output zeros
+    if (samplesRead_ == 0)
+      for (t=0; t < inSamples_; t++)
+      {
+        nt_ = nChannels_ * t;
+        for (c=0; c < nChannels_; ++c)
+        {
+          fdata_[nt_ + c] = 0;
+        }
+      }
+  }
+
+  // write the read samples to output slice once for each channel
+  for (t=0; t < samplesToWrite_; t++)
+  {
+    ival_ = 0;
+    nt_ = nChannels_ * t;
+#if defined(MARSYAS_BIGENDIAN)
+    for (c=0; c < nChannels_; ++c)
+    {
+      fval_ = fdata_[nt_ + c];
+      slice(c, t) = (mrs_real) fval_;
+    }
+#else
+    for (c=0; c < nChannels_; ++c)
+    {
+      fval_ = fdata_[nt_ + c];
+      slice(c, t) = (mrs_real) fval_;
+    }
+#endif
+  }
+
+  pos_ += samplesToWrite_;
+  return pos_;
+}
+
+
+
+
+mrs_natural
 WavFileSource::getLinear32(realvec& slice)
 {
   mrs_natural c,t;
@@ -604,7 +667,10 @@ WavFileSource::myProcess(realvec& in, realvec& out)
   {
   case 32:
   {
-    getLinear32(out);
+    if (format_tag_ == 1) 
+      getLinear32(out);
+    else 
+      getFloat32(out);
     ctrl_pos_->setValue(pos_, NOUPDATE);
 
     if (pos_ >= rewindpos_ + csize_)
