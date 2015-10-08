@@ -49,13 +49,16 @@ endif (MARSYAS_CYGWIN OR MARSYAS_MINGW OR MARSYAS_WIN32)
 
 
 ### DETECT OPTIONAL PACKAGES
+
+find_package(Sndfile)
+if(SNDFILE_FOUND)
+  set(MARSYAS_SNDFILE 1)
+endif()
+
 if (WITH_MAD)
   find_package(mad REQUIRED)
   set (MARSYAS_MAD 1)
 endif (WITH_MAD)
-
-
-
 
 if (WITH_LAME)
   find_package(lame REQUIRED)

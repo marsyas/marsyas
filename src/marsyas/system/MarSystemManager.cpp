@@ -285,6 +285,9 @@
 #include <marsyas/marsystems/Threshold.h>
 //modifyHeader
 
+#ifdef MARSYAS_SNDFILE
+#include <marsyas/marsystems/LibsndfileSource.h>
+#endif
 #ifdef MARSYAS_AUDIOIO
 #include <marsyas/marsystems/AudioSource.h>
 #include <marsyas/marsystems/AudioSourceBlocking.h>
@@ -572,6 +575,10 @@ MarSystemManager::MarSystemManager()
   //modifyRegister
 
   // optional MarSystems
+#ifdef MARSYAS_SNDFILE
+  registerPrototype("LibsndfileSource", new LibsndfileSource("LibsndfileSource"));
+#endif
+
 #ifdef MARSYAS_AUDIOIO
   registerPrototype("AudioSink", new AudioSink("audiosinkp"));
   registerPrototype("AudioSinkBlocking", new AudioSinkBlocking("AudioSinkBlocking"));

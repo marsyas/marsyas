@@ -181,6 +181,11 @@ if (MARSYAS_ANN)
     list(APPEND Marsyas_SOURCES ${ANN_DIR}/ANN.cpp)
 endif (MARSYAS_ANN)
 
+if(MARSYAS_SNDFILE)
+  list(APPEND Marsyas_SOURCES marsystems/LibsndfileSource.cpp)
+  include_directories(${SNDFILE_INCLUDE_DIRS})
+endif()
+
 if (MARSYAS_MAD)
     list(APPEND Marsyas_SOURCES marsystems/MP3FileSource.cpp)
     include_directories(${mad_INCLUDE_DIR})
@@ -242,6 +247,10 @@ endif()
 ## LINK
 
 target_link_libraries(marsyas ${OS_LIBS})
+
+if(MARSYAS_SNDFILE)
+  target_link_libraries(marsyas ${SNDFILE_LIBRARIES})
+endif()
 
 if(MARSYAS_JSON)
   target_link_libraries(marsyas json++)
