@@ -75,7 +75,7 @@ WekaData::NormMaxMin()
 {
   minimums_.create(cols_-1);
   maximums_.create(cols_-1);
-  maximums_.setval(DBL_MIN);
+  maximums_.setval(-DBL_MIN);
   minimums_.setval(DBL_MAX);
 
   // find minimums_ and maximums_
