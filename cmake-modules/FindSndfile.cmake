@@ -1,0 +1,9 @@
+include(FindPackageHandleStandardArgs)
+
+find_path(SNDFILE_INCLUDE_DIRS sndfile.h)
+find_library(SNDFILE_LIBRARIES sndfile)
+
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(Sndfile DEFAULT_MSG
+  SNDFILE_LIBRARIES
+  SNDFILE_INCLUDE_DIRS
+)
