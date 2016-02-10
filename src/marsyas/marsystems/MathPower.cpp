@@ -68,7 +68,6 @@ MathPower::myUpdate(MarControlPtr sender)
   ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames,
                              "MathPower_"), NOUPDATE);
 
-  exponent_ = ctrl_exponent_->to<mrs_real>();
 }
 
 void
@@ -76,12 +75,14 @@ MathPower::myProcess(realvec& in, realvec& out)
 {
   mrs_natural t,o;
 
+  mrs_real exponent = ctrl_exponent_->to<mrs_real>();
+
   /// Iterate over the observations and samples and do the processing.
   for (o = 0; o < inObservations_; o++)
   {
     for (t = 0; t < inSamples_; t++)
     {
-      out(o, t) = pow(in(o, t), exponent_);
+      out(o, t) = pow(in(o, t), exponent);
     }
   }
 }

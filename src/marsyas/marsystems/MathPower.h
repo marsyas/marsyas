@@ -46,7 +46,6 @@ private:
 
   /// MarControlPtr for the gain control
   MarControlPtr ctrl_exponent_;
-  mrs_real exponent_;
 
 public:
   /// MathPower constructor.
