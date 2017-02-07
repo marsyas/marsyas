@@ -96,8 +96,8 @@ void FM::myProcess( realvec& in, realvec& out )
   //checkFlow(in,out);
 
 
-  register mrs_real mSample_;
-  register mrs_real oFrequency_;
+  mrs_real mSample_;
+  mrs_real oFrequency_;
 
   if (getctrl("mrs_bool/noteon")->to<mrs_bool>() == false) {
     return;

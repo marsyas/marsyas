@@ -519,9 +519,9 @@ MP3FileSource::getLinear16(realvec& slice)
 {
 
 
-  register double peak = 1.0/32767; // normalize 24-bit sample
-  register mad_fixed_t left_ch, right_ch;
-  register mrs_real sample;
+  double peak = 1.0/32767; // normalize 24-bit sample
+  mad_fixed_t left_ch, right_ch;
+  mrs_real sample;
 
 
 
@@ -761,8 +761,8 @@ MP3FileSource::fillStream( mrs_natural target )
   if (stream.buffer == NULL || stream.error == MAD_ERROR_BUFLEN)
   {
 
-    register mrs_natural remaining = 0;
-    register mrs_natural chunk = INPUT_BUFFER_SIZE;
+    mrs_natural remaining = 0;
+    mrs_natural chunk = INPUT_BUFFER_SIZE;
 
     // cout << "offset = " << offset << endl;
 

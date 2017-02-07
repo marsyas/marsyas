@@ -125,7 +125,7 @@ void RawFileSource::getHeader(mrs_string fileName)
 
 void RawFileSource::swap16(unsigned char *ptr)
 {
-  register unsigned char val;
+  unsigned char val;
 
   // Swap 1st and 2nd bytes
   val = *(ptr);
