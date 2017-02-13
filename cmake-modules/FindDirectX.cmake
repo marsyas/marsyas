@@ -12,6 +12,7 @@ find_path(DSOUND_INCLUDE_DIR dsound.h
     "$ENV{PROGRAMFILES}/Microsoft DirectX SDK/Include"
     "$ENV{PROGRAMFILES}/Microsoft DirectX SDK (August 2008)/Include"
     "$ENV{PROGRAMFILES}/Microsoft DirectX SDK (June 2010)/Include"
+    "$ENV{PROGRAMFILES}/Windows Kits/8.1/Include/um"
   DOC "The directory where dsound.h resides"
 )
 mark_as_advanced(DSOUND_INCLUDE_DIR)
@@ -22,6 +23,7 @@ find_library(DSOUND_LIBRARY dsound
     "$ENV{PROGRAMFILES}/Microsoft DirectX SDK/Lib/x86"
     "$ENV{PROGRAMFILES}/Microsoft DirectX SDK (August 2008)/Lib/x86"
     "$ENV{PROGRAMFILES}/Microsoft DirectX SDK (June 2010)/Lib/x86"
+    "$ENV{PROGRAMFILES}/Windows Kits/8.1/Lib/winv6.3/um/x86"
   DOC "The directory where the dsound library resides"
 )
 mark_as_advanced(DSOUND_LIBRARY)
