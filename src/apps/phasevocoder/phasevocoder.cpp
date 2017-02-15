@@ -57,6 +57,7 @@ mrs_natural midi_ = -1;
 bool microphone_ = false;
 mrs_string convertmode_ = "sorted";
 mrs_string onsetsfile_ = "";
+mrs_string pitchesfile_ = "";
 mrs_string unconvertmode_ = "classic";
 mrs_bool multires_ = false;
 mrs_string multiresMode_ = "transient_switch";
@@ -146,6 +147,20 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
     }
   }
 
+  vector<float> pitch_shifts;
+
+  if (pitchesfile_ != "")
+    {
+      cout <<  "PITCHES FILE IS " << pitchesfile_ << endl;
+      ifstream pfile(pitchesfile_);
+      float pshift;
+      while (!pfile.eof())
+	{
+	  pfile >> pshift;
+	  pitch_shifts.push_back(pshift);
+	}
+    }
+
   MarSystemManager mng;
 
   // create the phasevocoder network
@@ -157,7 +172,10 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
   else
     pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
 
-
+  pvseries->addMarSystem(mng.create("Gain", "gain"));
+  pvseries->updControl("Gain/gain/mrs_real/gain", gopt_);
+  cout << "GOPT = " << gopt_ << endl;
+  
 
   if (oscbank_)
   {
@@ -220,8 +238,8 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 
 
 
-  if (!quietopt_)
-    cout << *pvseries << endl;
+  //   if (!quietopt_)
+  // cout << *pvseries << endl;
 
 
   int numticks = 0;
@@ -240,11 +258,20 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
                            true);
     }
 
-
+    if (pitchesfile_ != "")
+      {
+	// cout << pitch_shifts[numticks] << endl;
+	pvseries->updControl("PhaseVocoderOscBank/pvoc/mrs_real/PitchShift", pitch_shifts[numticks]);
+      }
+    // if (numticks == 1000)
+    //  pvseries->updControl("PhaseVocoderOscBank/pvoc/mrs_real/PitchShift", 1.5);
+    // if (numticks == 3000)
+    // pvseries->updControl("PhaseVocoderOscBank/pvoc/mrs_real/PitchShift", 1.25);
+    
     pvseries->tick();
 
     numticks++;
-
+    // std::cout << numticks << std::endl;
 
     mrs_bool onset_found = false;
 
@@ -1629,6 +1656,7 @@ initOptions()
   cmd_options.addBoolOption("oscbank", "ob", oscbank_);
   cmd_options.addStringOption("convertmode", "cm", convertmode_);
   cmd_options.addStringOption("onsets", "on", onsetsfile_);
+  cmd_options.addStringOption("pitches", "pi", pitchesfile_);
   cmd_options.addStringOption("unconvertmode", "ucm", unconvertmode_);
   // cmd_options.addBoolOption("multires", "mr", multires_);
   // cmd_options.addStringOption("multiresMode", "mrm", multiresMode_);
@@ -1659,6 +1687,7 @@ loadOptions()
   convertmode_ = cmd_options.getStringOption("convertmode");
   unconvertmode_ = cmd_options.getStringOption("unconvertmode");
   onsetsfile_ = cmd_options.getStringOption("onsets");
+  pitchesfile_ = cmd_options.getStringOption("pitches");
   // multires_ = cmd_options.getBoolOption("multires");
   // multiresMode_ = cmd_options.getStringOption("multiresMode");
 }
@@ -1695,6 +1724,7 @@ main(int argc, const char **argv)
     cerr << "voices (-v)        = " << vopt_ << endl;
     cerr << "midiPort (-m)      = " << midi_ << endl;
     cerr << "outFile  (-f)      = " << fileName << endl;
+    cerr << "pitches files (-pi) = " << pitchesfile_ << endl;
   }
 
   int i =0;

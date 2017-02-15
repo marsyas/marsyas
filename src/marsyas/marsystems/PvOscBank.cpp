@@ -199,6 +199,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 {
 
 
+
   mrs_natural c,t;
   MarControlAccessor acc(ctrl_frequencies_);
   mrs_realvec& frequencies = acc.to<mrs_realvec>();
@@ -223,7 +224,6 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 
   peaks.setval(0.0);
 
-
   for (t=0; t < NP_; t++)
   {
     frequencies(t) =  in(2*t+1,0);
@@ -231,6 +231,8 @@ PvOscBank::myProcess(realvec& in, realvec& out)
   PS_ = P_;
   Iinv_ = (mrs_real)(1.0 / I_);
   Pinc_ = PS_ * L_ / TWOPI;
+
+  
   Nw_ = getctrl("mrs_natural/winSize")->to<mrs_natural>();
   mrs_real maxAmp =0.0;
 
@@ -317,12 +319,11 @@ PvOscBank::myProcess(realvec& in, realvec& out)
   for (t=0; t < NP_; t++)
   {
     frequencies(t) *= Pinc_;
-
     f_ = lastfreq_(t);
     finc_ = (frequencies(t) - f_) * Iinv_;
 
-    //if ((magnitudes_(t) < 1.0e-06)||(magnitudes_(t) < 0.01 * maxAmp))
-    if (magnitudes_(t) < 1.0e-07)
+    if ((magnitudes_(t) < 1.0e-06)||(magnitudes_(t) < 0.05 * maxAmp))
+    // if (magnitudes_(t) < 1.0e-07)
     {
       magnitudes_(t) = 0.0;
       a_ = lastamp_(t);
