@@ -197,9 +197,6 @@ PvOscBank::isPeak(int bin, mrs_realvec& magnitudes, mrs_real maxAmp)
 void
 PvOscBank::myProcess(realvec& in, realvec& out)
 {
-
-
-
   mrs_natural c,t;
   MarControlAccessor acc(ctrl_frequencies_);
   mrs_realvec& frequencies = acc.to<mrs_realvec>();
@@ -322,8 +319,8 @@ PvOscBank::myProcess(realvec& in, realvec& out)
     f_ = lastfreq_(t);
     finc_ = (frequencies(t) - f_) * Iinv_;
 
-    if ((magnitudes_(t) < 1.0e-06)||(magnitudes_(t) < 0.05 * maxAmp))
-    // if (magnitudes_(t) < 1.0e-07)
+    // if ((magnitudes_(t) < 1.0e-06)||(magnitudes_(t) < 0.05 * maxAmp))
+    if (magnitudes_(t) < 1.0e-06)
     {
       magnitudes_(t) = 0.0;
       a_ = lastamp_(t);

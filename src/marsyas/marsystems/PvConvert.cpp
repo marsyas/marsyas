@@ -123,6 +123,7 @@ PvConvert::myUpdate(MarControlPtr sender)
 void
 PvConvert::myProcessFull(realvec& in, realvec& out)
 {
+
   mrs_natural t;
   mrs_natural N2 = inObservations_/2;
 

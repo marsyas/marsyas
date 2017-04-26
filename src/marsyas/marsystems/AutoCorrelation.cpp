@@ -118,7 +118,6 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
   normalize_ = 0;
   if(getctrl("mrs_natural/normalize")->to<mrs_natural>())
   {
-    cout << "NORM INIT" << endl;
     realvec tmp(getctrl("mrs_natural/onSamples")->to<mrs_natural>());
     normalize_ = 1;
     norm_.create(getctrl("mrs_natural/onSamples")->to<mrs_natural>());
@@ -226,7 +225,6 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
     // Copy result to output
     if(normalize_)
     {
-      cout << "NORM Normalization happening" << endl;
       for (t=0; t < onSamples_; t++)
       {
         out(o,t) = scratch_(t)*norm_(t);
