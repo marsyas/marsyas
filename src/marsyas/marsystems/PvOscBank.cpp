@@ -320,7 +320,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
     finc_ = (frequencies(t) - f_) * Iinv_;
 
     // if ((magnitudes_(t) < 1.0e-06)||(magnitudes_(t) < 0.05 * maxAmp))
-    if (magnitudes_(t) < 1.0e-06)
+    if (magnitudes_(t) < 1.0e-07)
     {
       magnitudes_(t) = 0.0;
       a_ = lastamp_(t);
