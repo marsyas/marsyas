@@ -96,6 +96,9 @@ Peaker::myProcess(realvec& in, realvec& out)
   mrs_natural peakNeighbors;
 
 
+
+  
+
   peakStrengthRelRms = getctrl("mrs_real/peakStrength")->to<mrs_real>();
   peakStrengthRelMax = getctrl("mrs_real/peakStrengthRelMax")->to<mrs_real>();
   peakStrengthRelThresh = getctrl("mrs_real/peakStrengthRelThresh")->to<mrs_real>();
@@ -103,6 +106,8 @@ Peaker::myProcess(realvec& in, realvec& out)
   peakStrengthAbs = getctrl("mrs_real/peakStrengthAbs")->to<mrs_real>();
   peakStart = getctrl("mrs_natural/peakStart")->to<mrs_natural>();
   peakEnd = getctrl("mrs_natural/peakEnd")->to<mrs_natural>();
+
+
   interpolationMode = getctrl("mrs_natural/interpolation")->to<mrs_natural>();
   //peakGain = getctrl("mrs_real/peakGain")->to<mrs_real>();
   peakHarmonics = getctrl("mrs_bool/peakHarmonics")->to<mrs_bool>();
