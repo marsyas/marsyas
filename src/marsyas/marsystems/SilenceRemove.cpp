@@ -68,10 +68,18 @@ SilenceRemove::myUpdate(MarControlPtr sender)
     marsystems_[0]->update();
 
     // forward flow propagation
-    ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-    ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
-    ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-    ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
+    // ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+    // ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+    // ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+    // ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
+
+
+    setctrl(ctrl_onSamples_, marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+    setctrl(ctrl_onObservations_, marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+    setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate")->to<mrs_real>());
+  ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
+    
+    
 
     //marsystems_[0]->update(); //lmartins: shouldn't this have already been called?! [?]
 
