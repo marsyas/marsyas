@@ -289,3 +289,4 @@ ZeroCrossings.h
 ZeroRClassifier.h
 Ratio.h
 Threshold.h
+Histogram.h

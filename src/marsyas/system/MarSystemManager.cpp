@@ -283,6 +283,7 @@
 #include <marsyas/marsystems/CsvSink.h>
 #include <marsyas/marsystems/Ratio.h>
 #include <marsyas/marsystems/Threshold.h>
+#include <marsyas/marsystems/Histogram.h>
 //modifyHeader
 
 #ifdef MARSYAS_SNDFILE

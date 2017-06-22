@@ -17,7 +17,7 @@ marsyasBaseDir = os.path.abspath( marsyasBaseDir )
 
 def modify_manager(filename,action):
     fileToEdit = os.path.join(marsyasBaseDir, 'src', 'marsyas',
-        'core', 'MarSystemManager.cpp')
+        'system', 'MarSystemManager.cpp')
     filelines = open( fileToEdit ).readlines()
     if (action==1):
         for line in filelines:
