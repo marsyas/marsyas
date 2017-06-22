@@ -1303,29 +1303,47 @@ void
 toy_with_rmsilence(string sfName)
 {
   cout << "Removing silences from: " << sfName << endl;
-  MarSystemManager mng;
 
+  FileName fname(sfName);  
+  MarSystemManager mng;
   MarSystem* rmnet = mng.create("Series/rmnet");
   MarSystem* src = mng.create("SoundFileSource/src");
-  src->updControl("mrs_string/filename", sfName);
-  
   MarSystem* srm = mng.create("SilenceRemove/srm");
-  srm->addMarSystem(src);
-
+  srm->addMarSystem(src);  
   rmnet->addMarSystem(srm);
-  rmnet->addMarSystem(mng.create("SoundFileSink", "dest"));
+  rmnet->addMarSystem(mng.create("SoundFileSink/dest"));
 
-  FileName fname(sfName);
   
-  rmnet->updControl("SoundFileSink/dest/mrs_string/filename", fname.nameNoExt() + "_srm.wav");
-
-  cout << *rmnet << endl;
-  while (rmnet->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
-  {
-    rmnet->tick();
-  }
-  cout << "Finished removing silences. Output is " << fname.nameNoExt() + "_srm.wav"
-       << endl;
+  if (fname.ext() == "mf")
+    {
+      Collection l;
+      l.read(sfName);
+      for (mrs_natural i=0; i < l.size(); ++i)
+	{
+	  FileName fname(l.entry(i));
+	  src->updControl("mrs_string/filename", l.entry(i));
+	  rmnet->updControl("SoundFileSink/dest/mrs_string/filename", fname.nameNoExt() + "_srm.wav");  
+	  // cout << *rmnet << endl;
+	  while (rmnet->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	    {
+	      rmnet->tick();
+	    }
+	  cout << "Finished removing silences. Output is " << fname.nameNoExt() + "_srm.wav"
+	       << endl;
+	}
+    }
+  else
+    {
+      src->updControl("mrs_string/filename", sfName);
+      rmnet->updControl("SoundFileSink/dest/mrs_string/filename", fname.nameNoExt() + "_srm.wav");  
+      // cout << *rmnet << endl;
+      while (rmnet->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	{
+	  rmnet->tick();
+	}
+      cout << "Finished removing silences. Output is " << fname.nameNoExt() + "_srm.wav"
+	   << endl;
+    }
   delete rmnet;
 }
 
