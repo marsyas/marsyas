@@ -260,6 +260,7 @@ public:
   void sqr();
   void sqroot();
   void norm();
+  void normMax();
   void normMaxMin();
   void pow (mrs_real exp);
 

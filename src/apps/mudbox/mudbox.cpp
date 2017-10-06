@@ -1309,6 +1309,8 @@ toy_with_rmsilence(string sfName)
   MarSystem* rmnet = mng.create("Series/rmnet");
   MarSystem* src = mng.create("SoundFileSource/src");
   MarSystem* srm = mng.create("SilenceRemove/srm");
+
+  MarSystem* histo = mng.create("Histogram/histo");
   srm->addMarSystem(src);  
   rmnet->addMarSystem(srm);
   rmnet->addMarSystem(mng.create("SoundFileSink/dest"));

@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2017 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -26,14 +26,11 @@ namespace Marsyas
 /**
 	\class Histogram
 	\ingroup Processing
-	\brief Basic example on how to use controls efficiently in MarSystems
-
-	This example is the same as Gain; it scales the output by
-	multiplying each sample with a real number.
+	\brief Calculate amplitude histogram into output slide 
 
 	Controls:
 	- \b mrs_real/gain [w] : sets the gain multiplier.
-	- \b mrs_bool/dummy [rw] : does nothing.
+	- \b mrs_bool/normalize [wr]: normalizes the histogram 
 */
 
 class marsyas_EXPORT Histogram: public MarSystem
@@ -47,9 +44,10 @@ private:
   void myUpdate(MarControlPtr sender);
 
 
-  /// MarControlPtr for the gain control
-  MarControlPtr ctrl_gain_EXAMPLE_;
-
+  MarControlPtr ctrl_gain_;
+  MarControlPtr ctrl_normalize_;
+  MarControlPtr ctrl_reset_;
+  MarControlPtr ctrl_histoSize_;
 public:
   /// Histogram constructor.
   Histogram(std::string name);

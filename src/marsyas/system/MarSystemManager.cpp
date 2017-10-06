@@ -573,6 +573,7 @@ MarSystemManager::MarSystemManager()
   registerPrototype("CsvSink", new CsvSink("csvsink_prototype"));
   registerPrototype("Ratio", new Ratio("ratio_prototype"));
   registerPrototype("Threshold", new Threshold("threshold_prototype"));
+  registerPrototype("Histogram", new Histogram("histogram_prototype"));
   //modifyRegister
 
   // optional MarSystems
