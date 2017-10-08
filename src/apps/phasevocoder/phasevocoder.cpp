@@ -149,7 +149,7 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 
   vector<float> pitch_shifts;
 
-  if (pitchesfile_ != "")
+/*   if (pitchesfile_ != "")
     {
       cout <<  "PITCHES FILE IS " << pitchesfile_ << endl;
       ifstream pfile(pitchesfile_);
@@ -160,6 +160,7 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 	  pitch_shifts.push_back(pshift);
 	}
     }
+*/ 
 
   MarSystemManager mng;
 

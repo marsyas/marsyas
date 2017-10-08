@@ -1,5 +1,16 @@
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
+
+include (TestBigEndian)
+TEST_BIG_ENDIAN(IS_BIG_ENDIAN)
+if(IS_BIG_ENDIAN)
+add_definitions(-DOSC_HOST_BIG_ENDIAN)
+else()
+add_definitions(-DOSC_HOST_LITTLE_ENDIAN)
+endif()
+
+
+
 # separate versions of NetworkingUtils.cpp and UdpSocket.cpp are provided for Win32 and POSIX
 # the IpSystemTypePath selects the correct ones based on the current platform
 
