@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 2000-2017 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -2095,9 +2095,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
   MRSDIAG("bextract.cpp - bextract_train_refactored");
   MarSystemManager mng;
 
-  cout << "wekafname = " << wekafname << endl;
-
-
   // Overall extraction and classification network
   MarSystem* bextractNetwork = mng.create("Series", "bextractNetwork");
 
@@ -3107,7 +3104,7 @@ initOptions()
   cmd_options.addBoolOption("pluginmute", "pm", false);
   cmd_options.addBoolOption("csvoutput", "csv", false);
   cmd_options.addBoolOption("playback", "pb", false);
-  cmd_options.addStringOption("outputdir", "od", EMPTYSTRING);
+  cmd_options.addStringOption("outputdir", "od", "./");
   cmd_options.addStringOption("predict", "pr", EMPTYSTRING);
   cmd_options.addStringOption("test", "tc", EMPTYSTRING);
   cmd_options.addBoolOption("stereo", "st", false);
@@ -4073,27 +4070,34 @@ main(int argc, const char **argv)
   vector<string>::iterator sfi;
 
 
+  
+  Collection single;
+  
   for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi)
   {
     string sfname = *sfi;
-    Collection l;
-    int status = readCollection(l,sfname);
-    if (status != 0) {
-      return status;
-    }
+    FileName sf_fname(sfname);
+    if (sf_fname.ext() == "wav")
+      {
+	single.add(sfname,"no_label");
+      }
+    else
+      {
+	Collection l;
+	int status = readCollection(l,sfname);
+	if (status != 0) {
+	  return status;
+	}
 
-    if (!l.hasLabels())
-    {
-      l.labelAll(l.name());
-      classNames += (l.name()+',');
-    }
-
-
-    cls.push_back(l);
-    ++i;
+	if (!l.hasLabels())
+	  {
+	    l.labelAll(l.name());
+	    classNames += (l.name()+',');
+	  }
+	cls.push_back(l);
+	++i;
+      }
   }
-
-  Collection single;
   single.concatenate(cls);
   if (single.getSize() == 0)
   {
