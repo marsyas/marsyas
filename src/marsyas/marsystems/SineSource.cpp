@@ -51,14 +51,12 @@ void
 SineSource::addControls()
 {
   addctrl("mrs_real/frequency", 440.0, freqControl_);
+  addctrl("mrs_bool/interpolate_frequency", false, interpControl_);
 }
 
 void
 SineSource::myUpdate(MarControlPtr sender)
 {
-//   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-//   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-//   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   MarSystem::myUpdate(sender);
 
   wavetableSize_ = 8192;
@@ -83,18 +81,27 @@ SineSource::myProcess(realvec &in, realvec &out)
     return;
   }
 
-  mrs_real incr = freqControl_->to<mrs_real>() * wavetableSize_ / israte_;
+  mrs_real freq = freqControl_->to<mrs_real>();
+  mrs_real incr = freq * wavetableSize_ / israte_;
   mrs_natural inSamples = inSamples_;
-
+  mrs_real fdiff = (freq - prev_freq_) / inSamples;
+  
   for (mrs_natural t=0; t < inSamples; t++)
   {
     out(0,t) = wavetable_((mrs_natural)index_);
+    incr = (prev_freq_ + t * fdiff) * wavetableSize_ / israte_;
     index_ += incr;
+    
     while (index_ >= wavetableSize_)
       index_ -= wavetableSize_;
     while (index_ < 0)
       index_ += wavetableSize_;
   }
+  cout << "freq = " << freq << endl;
+  cout << "prev_freq = " << prev_freq_ << endl;
+  
+  prev_freq_ = freq;
+
 }
 
 

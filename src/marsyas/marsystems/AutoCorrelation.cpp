@@ -256,7 +256,7 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
       for (t=1 ; t<onSamples_/2 ; t++)
         if (out(o, t)> out(o, t+1) && out(o, t) > out(o, t-1) && out(o, t)>maxOut)
           maxOut = out(o, t) ;
-      //cout << maxOut/out(o, 0)<< " " << 1+voicing_ << << endl;
+      cout << maxOut/out(o, 0)<< " " << 1+voicing_ << endl;
 
       if(maxOut && maxOut/out(o, 0) > 1-voicing_)
         for (t=1; t < onSamples_; t++)
@@ -278,40 +278,17 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
       out(o,t) = 0.0;
     }
     */
-
-
-
     // mrs_real myNorm = out(0,0);
     // if (myNorm > 0)
     // out	/= myNorm;
   }
 
-
-
-
-
   if (ctrl_setr0to0_->to<mrs_bool>())
   {
-
-    // for (o=0; o < onObservations_; o++)
-    // out(o,0) = 0.0;
-
-
-
     for (o=0; o < onObservations_; o++)
       for (t=0; t < onSamples_; t++)
       {
         out(o,t) = out(o,t);
       }
   }
-
-  /*
-  MATLAB_PUT(in, "corr_in");
-  MATLAB_PUT(out, "corr");
-
-  MATLAB_EVAL("subplot(211)");
-  MATLAB_EVAL("plot(corr_in)");
-  MATLAB_EVAL("subplot(212)");
-  MATLAB_EVAL("plot(corr)");
-  */
 }
