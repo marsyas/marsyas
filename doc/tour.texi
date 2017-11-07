@@ -58,8 +58,8 @@ character are required for Windows).
 
 @example 
 cd MY_MARSYAS_DIR/build/bin 
-mkcollection -c music.mf ../../music_speech/music_wav
-mkcollection -c speech.mf ../../music_speech/speech_wav
+mkcollection -c music.mf ../../audio/music_speech/music_wav
+mkcollection -c speech.mf ../../audio/music_speech/speech_wav
 @end example
 
 The following commands can be used to have a quick preview 
