@@ -68,8 +68,8 @@ of audio from each 30-second clip). You can ctrl-c anytime
 to exit sfplay. 
 
 @example 
-sfplay -l 1 music.mf 
-sfplay -l 1 speech.mf 
+sfplay -ln 1 music.mf 
+sfplay -ln 1 speech.mf 
 @end example 
 
 Now we are ready to train a classifier that can be used 
