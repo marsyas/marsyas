@@ -36,6 +36,7 @@ Histogram::Histogram(const Histogram& a) : MarSystem(a)
   ctrl_normalize_ = getctrl("mrs_bool/normalize");
   ctrl_reset_ = getctrl("mrs_bool/reset");
   ctrl_histoSize_ = getctrl("mrs_natural/histoSize");
+  ctrl_deltaStd_ = getctrl("mrs_real/deltaStd");
 }
 
 
@@ -57,6 +58,7 @@ Histogram::addControls()
   addctrl("mrs_bool/normalize", false, ctrl_normalize_);
   addctrl("mrs_bool/reset", false, ctrl_reset_);
   addctrl("mrs_natural/histoSize", 100, ctrl_histoSize_);
+  addctrl("mrs_real/deltaStd", 0.0, ctrl_deltaStd_);
 }
 
 void
@@ -68,7 +70,7 @@ Histogram::myUpdate(MarControlPtr sender)
   ctrl_onSamples_->setValue(ctrl_histoSize_->to<mrs_natural>(),  NOUPDATE);
   // ctrl_onSamples_->setValue(ctrl_inSamples_->to<mrs_natural>(), NOUPDATE);
   ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>(), NOUPDATE);
-    ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>() / ctrl_inSamples_->to<mrs_natural>());
+  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>() / ctrl_inSamples_->to<mrs_natural>());
   
 }
 
@@ -83,6 +85,7 @@ Histogram::myProcess(realvec& in, realvec& out)
   const mrs_real& gainValue = ctrl_gain_->to<mrs_real>();
   const mrs_bool& normalize = ctrl_normalize_->to<mrs_bool>();
   const mrs_bool& reset = ctrl_reset_->to<mrs_bool>();
+  const mrs_real& deltaStd = ctrl_deltaStd_->to<mrs_real>();
   
   increment = 1.0 / onSamples_;
   /// Iterate over the observations and samples and do the processing.
@@ -110,6 +113,13 @@ Histogram::myProcess(realvec& in, realvec& out)
     }
   }
 
+   mrs_realvec deltas(inSamples_-1);
+  for (t = 1; t < inSamples_; t++)
+    {
+      deltas(t) = fabs(in(0,t) - in(0, t-1));
+    }
+
+  ctrl_deltaStd_->setValue(deltas.maxval());
   if (normalize)
     {
 

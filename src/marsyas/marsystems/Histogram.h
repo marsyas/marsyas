@@ -48,6 +48,7 @@ private:
   MarControlPtr ctrl_normalize_;
   MarControlPtr ctrl_reset_;
   MarControlPtr ctrl_histoSize_;
+  MarControlPtr ctrl_deltaStd_;
 public:
   /// Histogram constructor.
   Histogram(std::string name);

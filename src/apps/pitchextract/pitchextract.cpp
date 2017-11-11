@@ -590,16 +590,6 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
     cout << "Pitch = " << pitches(i) << "- (conf) - " << confidences(i) << endl;
     rms = fth->getctrl("mrs_realvec/innerOut")->to<mrs_realvec>()(0);
     
-    mrs_real scaled_pitch = pitches(i);
-    if (frsopt == "bark") {
-      scaled_pitch = hertz2bark(pitches(i));
-    }
-    if (frsopt == "mel") {
-      scaled_pitch = hertz2mel(pitches(i),1);
-    }
-    if (frsopt == "midi") {
-      scaled_pitch = hertz2pitch(pitches(i));
-    }
 
     cout << "low pitch = " << lowPitch << endl;
     cout << "low pitch (Hz) = " << pitch2hertz(lowPitch) << endl;
@@ -622,16 +612,32 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
       pitches(i) = 0.0;
     cout << "npitches(i) = " << pitches(i) << endl;
 
+
+
+    mrs_real scaled_pitch = pitches(i);
+    if (frsopt == "bark") {
+      scaled_pitch = hertz2bark(pitches(i));
+    }
+    if (frsopt == "mel") {
+      scaled_pitch = hertz2mel(pitches(i),1);
+    }
+    if (frsopt == "midi") {
+      scaled_pitch = hertz2pitch(pitches(i));
+    }
+
+
+    
     confidences(i) = rms * 2.0; 
-    if (confidences(i) < 0.01)
+    if (confidences(i) < 0.08)
       {
 	confidences(i) = 0.0;
 	scaled_pitch = 0.0;
+	pitches(i) = 0.0;
       }
 
     // ofs << scaled_pitch << " - " << confidences(i) << endl;
-    ofs << scaled_pitch << endl;
-    cout << "scaled_pitch = " << scaled_pitch << endl;    
+    ofs << scaled_pitch  * 10.0 << endl;
+    cout << "**** scaled_pitch = " << scaled_pitch * 10.0 << endl;    
   }
   
   ofs.close();
@@ -666,7 +672,7 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 	  {
 	    cout << "PLAYBACK " << pitches(i) << endl;
 	    playback->updControl("Fanout/mix/Series/ch0/SineSource/ss/mrs_real/frequency", pitches(i));
-	    playback->updControl("Fanout/mix/Series/ch0/Gain/sinegain/mrs_real/gain", confidences(i));
+	    playback->updControl("Fanout/mix/Series/ch0/Gain/sinegain/mrs_real/gain", confidences(i)*2.0);
 	    playback->tick();
 	  }
 	delete playback;
