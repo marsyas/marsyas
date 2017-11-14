@@ -89,7 +89,7 @@ def process_collection(wav_fnames):
     inSamples.setValue_natural(winSize)
     fname = plot_net.getControl("SoundFileSource/src/mrs_string/filename")
     normalize = plot_net.getControl("Fanout/fan/Series/hist/Histogram/histo/mrs_bool/normalize")
-    deltaStd = plot_net.getControl("Fanout/fan/Series/hist/Histogram/histo/mrs_real/deltaStd")
+    # deltaStd = plot_net.getControl("Fanout/fan/Series/hist/Histogram/histo/mrs_real/deltaStd")
     memSize1 = plot_net.getControl("Fanout/fan/Series/hist/TextureStats/tstats1/mrs_natural/memSize")
     memSize2 = plot_net.getControl("Fanout/fan/Series/dlt/TextureStats/tstats2/mrs_natural/memSize")
 #    normalize1 = plot_net.getControl("Fanout/fan/Series/dlt/Histogram/histo1/mrs_bool/normalize")
@@ -105,7 +105,7 @@ def process_collection(wav_fnames):
     num_glitch = 0
     numFiles = 0
     seconds2process = 15.0
-    samples2process = seconds2process * 8000
+    samples2process = seconds2process * 48000
     iterations2process = int(samples2process * 1.0 / winSize)
     
 
@@ -122,7 +122,7 @@ def process_collection(wav_fnames):
         
             plot_net.tick()
             # print("DELTA", deltaStd.to_real())
-            deltas.append(deltaStd.to_real())
+            # deltas.append(deltaStd.to_real())
             nTicks = nTicks + 1
         normalize.setValue_bool(True)
         # normalize1.setValue_bool(True)
@@ -145,13 +145,13 @@ def process_collection(wav_fnames):
         
     avg_ratio = avg_ratio / numFiles
     print("----------------------")
-    print("AVERAGE AGGREGATE = ", np.mean(aggregate_deltas), np.std(aggregate_deltas))
+    # print("AVERAGE AGGREGATE = ", np.mean(aggregate_deltas), np.std(aggregate_deltas))
     print(("AVERAGE RATIO=" , avg_ratio))
     print(("NUM GLITCH = ", num_glitch, numFiles))
     print(("GLITCH PERCENTAGE=", int(100 * (num_glitch * 1.0/len(wav_fnames)))))
 
-    print("AVG DELTA = ",  np.mean(deltas)) 
-    print("STD DELTA = ", np.std(deltas))
+#     print("AVG DELTA = ",  np.mean(deltas)) 
+#    print("STD DELTA = ", np.std(deltas))
 #    show(gridplot(*figs, ncols=2))
     return (ratios, wav_fnames)
 
