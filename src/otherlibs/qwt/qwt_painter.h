@@ -18,6 +18,10 @@
 #include <qline.h>
 #include <qpalette.h>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#include <QPainterPath>
+#endif
+
 class QPainter;
 class QBrush;
 class QColor;

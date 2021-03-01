@@ -14,6 +14,10 @@
 #include <qpaintdevice.h>
 #include <qpaintengine.h>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#include <QPainterPath>
+#endif
+
 /*!
   \brief A null paint device doing nothing
 

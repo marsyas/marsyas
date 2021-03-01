@@ -16,6 +16,10 @@
 #include <qimage.h>
 #include <qpolygon.h>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#include <QPainterPath>
+#endif
+
 class QPainterPath;
 
 /*!
