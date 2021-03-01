@@ -197,7 +197,7 @@ ibt_pd_new (t_symbol *s, int argc, t_atom *argv)
     else if (!strcmp(firstarg->s_name, "@outPathName") && argc > 1)
     {
       post("ibt_pd %s: %s", firstarg->s_name, atom_getsymbol(argv+1)->s_name);
-      x->outPathName = atom_getsymbol(argv+1)->s_name;
+      x->outPathName = const_cast<char*>(atom_getsymbol(argv+1)->s_name);
       argc -= 2; argv += 2;
     }
     else if (!strcmp(firstarg->s_name, "@stateRecovery") && argc > 1)

@@ -38,7 +38,7 @@ if(MARSYAS_MACOSX)
 	SET_TARGET_PROPERTIES(ibt_pd PROPERTIES SUFFIX ".pd_darwin")
 elseif(MARSYAS_LINUX)
 	#define --export-dynamic -shared
-	TARGET_LINK_LIBRARIES(ibt_pd ${MARSYAS_LIBRARY} "--export-dynamic -shared")
+	TARGET_LINK_LIBRARIES(ibt_pd ${MARSYAS_LIBRARY} "-export-dynamic -shared")
 	#define so extension as .pd_linux in Linux 
 	SET_TARGET_PROPERTIES(ibt_pd PROPERTIES SUFFIX ".pd_linux")
 elseif(MARSYAS_WIN32)	
