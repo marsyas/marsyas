@@ -14,7 +14,7 @@ set (MVamp_SOURCES
 
 add_library(mvamp SHARED ${MVamp_SOURCES})
 
-include_directories(${VAMP_INCLUDE_DIR})
+include_directories(${VAMP_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../marsyas/marsystems/)
 
 # In case we build the static version of Marsyas, we need to link
 # to that specific archive library. Also linking some additional libs/frameworks
