@@ -40,12 +40,18 @@ BeatPhase::BeatPhase(const BeatPhase& a) : MarSystem(a)
   ctrl_tempo_candidates_ = getctrl("mrs_realvec/tempo_candidates");
 
   ctrl_tempos_ = getctrl("mrs_realvec/tempos");
+  ctrl_prev_tempos_ = getctrl("mrs_realvec/prev_tempos");
   ctrl_temposcores_ = getctrl("mrs_realvec/tempo_scores");
+  ctrl_prior_tempo_scores_ = getctrl("mrs_realvec/prior_tempo_scores");
+
   ctrl_phase_tempo_ = getctrl("mrs_real/phase_tempo");
   ctrl_ground_truth_tempo_ = getctrl("mrs_real/ground_truth_tempo");
   ctrl_beats_ = getctrl("mrs_realvec/beats");
   ctrl_bhopSize_ = getctrl("mrs_natural/bhopSize");
   ctrl_bwinSize_ = getctrl("mrs_natural/bwinSize");
+  ctrl_hopSize_ = getctrl("mrs_natural/hopSize");
+  ctrl_winSize_ = getctrl("mrs_natural/winSize");
+  
   ctrl_timeDomain_ = getctrl("mrs_realvec/timeDomain");
   ctrl_nCandidates_ = getctrl("mrs_natural/nCandidates");
   ctrl_beatOutput_ = getctrl("mrs_realvec/beatOutput");
@@ -70,16 +76,21 @@ BeatPhase::clone() const
 void
 BeatPhase::addControls()
 {
-  mrs_natural nCandidates = 8;
+  mrs_natural nCandidates = 10;
 
   //Add specific controls needed by this MarSystem.
   addctrl("mrs_realvec/tempo_candidates", realvec(nCandidates), ctrl_tempo_candidates_);
   addctrl("mrs_realvec/tempos", realvec(nCandidates), ctrl_tempos_);
+  addctrl("mrs_realvec/prev_tempos", realvec(nCandidates), ctrl_prev_tempos_);
   addctrl("mrs_realvec/tempo_scores", realvec(nCandidates), ctrl_temposcores_);
+  addctrl("mrs_realvec/prior_tempo_scores", realvec(nCandidates), ctrl_prior_tempo_scores_);
+  
 
   addctrl("mrs_real/phase_tempo", 100.0, ctrl_phase_tempo_);
   addctrl("mrs_real/ground_truth_tempo", 100.0, ctrl_ground_truth_tempo_);
   addctrl("mrs_realvec/beats", realvec(), ctrl_beats_);
+  addctrl("mrs_natural/hopSize", 64, ctrl_hopSize_);
+  addctrl("mrs_natural/winSize", 128, ctrl_winSize_);
   addctrl("mrs_natural/bhopSize", 64, ctrl_bhopSize_);
   addctrl("mrs_natural/bwinSize", 1024, ctrl_bwinSize_);
   addctrl("mrs_realvec/timeDomain", realvec(), ctrl_timeDomain_);
@@ -87,6 +98,11 @@ BeatPhase::addControls()
   setctrlState("mrs_natural/nCandidates", true);
   addctrl("mrs_realvec/beatOutput", realvec(), ctrl_beatOutput_);
   addctrl("mrs_real/factor", 4.0, ctrl_factor_);
+
+  MarControlAccessor accpt(ctrl_prev_tempos_);
+  mrs_realvec& prev_tempos = accpt.to<mrs_realvec>();
+  prev_tempos.setval(100.0);
+
 }
 
 void
@@ -109,10 +125,15 @@ BeatPhase::myUpdate(MarControlPtr sender)
   mrs_realvec& temposcores = acc_ts.to<mrs_realvec>();
   temposcores.stretch(nCandidates);
 
+  MarControlAccessor acc_pts(ctrl_prior_tempo_scores_);
+  mrs_realvec& prior_tempo_scores = acc_pts.to<mrs_realvec>();
+  prior_tempo_scores.stretch(nCandidates);
+  prior_tempo_scores.setval(1.0/nCandidates);
+
+
   MarControlAccessor acc_tc(ctrl_tempo_candidates_);
   mrs_realvec& tempocandidates = acc_tc.to<mrs_realvec>();
   tempocandidates.stretch(nCandidates * 2);
-
 
 
   if (pinSamples_ != inSamples_)
@@ -129,6 +150,7 @@ BeatPhase::myUpdate(MarControlPtr sender)
     }
   }
 
+  prev_tempo_ = 100; 
   pinSamples_ = inSamples_;
 
 
@@ -143,7 +165,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
 
 
-  // mrs_real ground_truth_tempo = ctrl_ground_truth_tempo_->to<mrs_real>();
+  mrs_real ground_truth_tempo = ctrl_ground_truth_tempo_->to<mrs_real>();
   // used for evaluation experiments
 
 
@@ -154,8 +176,17 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
   MarControlAccessor acct(ctrl_tempos_);
   mrs_realvec& tempos = acct.to<mrs_realvec>();
+
+  MarControlAccessor accpt(ctrl_prev_tempos_);
+  mrs_realvec& prev_tempos = accpt.to<mrs_realvec>();
+  
+  
   MarControlAccessor accts(ctrl_temposcores_);
   mrs_realvec& tempo_scores = accts.to<mrs_realvec>();
+
+
+   MarControlAccessor accpts(ctrl_prior_tempo_scores_);  
+   mrs_realvec& prior_tempo_scores = accpts.to<mrs_realvec>();
 
 
   // Demultiplex candidates and scores
@@ -167,6 +198,8 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
   // normalize to pdf
   tempo_scores /= tempo_scores.sum();
+
+
 
   // holds the tempo scores based on cross-correlation with pulse train
   mrs_realvec onset_scores;
@@ -191,7 +224,15 @@ BeatPhase::myProcess(realvec& in, realvec& out)
   // needed to output correct beat location times
   // mrs_natural bwinSize = ctrl_bwinSize_->to<mrs_natural>();
   mrs_natural bhopSize = ctrl_bhopSize_->to<mrs_natural>();
+  mrs_natural bwinSize = ctrl_bwinSize_->to<mrs_natural>();
+  mrs_natural hopSize = ctrl_hopSize_->to<mrs_natural>();
+  mrs_natural winSize = ctrl_winSize_->to<mrs_natural>();
 
+  
+  mrs_real oss_hop_win_ratio = winSize / hopSize;
+
+  // std::cout << "OSS HOP WIN RATIO " << oss_hop_win_ratio << std::endl;
+  // std::cout << "OSS rate" << osrate_ << std::endl;
   MarControlAccessor acc(ctrl_beats_);
   mrs_realvec& beats = acc.to<mrs_realvec>();
 
@@ -227,9 +268,12 @@ BeatPhase::myProcess(realvec& in, realvec& out)
       max_crco = 0.0;
 
       tempo = tempos(k);
-      period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize
+      if (tempo < 1)
+	period = 0;
+      else
+	period = (oss_hop_win_ratio * osrate_) * 60.0 / tempo; // flux hopSize is half the winSize
+      
       mrs_natural period_int = (mrs_natural)(period+0.5);
-
 
       if (period_int > 1)
       {
@@ -301,6 +345,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
   }
 
 
+
   // renormalize scores
   onset_scores /= onset_scores.sum();
   tempo_scores /= tempo_scores.sum();
@@ -312,6 +357,47 @@ BeatPhase::myProcess(realvec& in, realvec& out)
   // renormalize
   tempo_scores /= tempo_scores.sum();
 
+
+
+  
+
+  mrs_natural nTempos = tempos.getSize();
+  mrs_realvec transition_probs(nTempos);
+
+  
+  for (int i=0; i < nTempos; i++)
+    {
+      mrs_real transition_prob_sum = 0.0;       
+      for (int j=0 ; j < nTempos; j++)
+	{
+	  transition_probs(j) = exp(-6.0 * fabs(tempos(i)/prev_tempos(j) - 1));
+	  // transition_probs(j) = 1.0 / nTempos; 
+	  // transition_prob_sum += (transition_probs(j) * prior_tempo_scores(j));
+	  transition_prob_sum = transition_probs.maxval() * prior_tempo_scores(j);
+	}
+      transition_prob_sum *= tempo_scores(i);
+      prior_tempo_scores(i) = transition_prob_sum;
+      prior_tempo_scores /= prior_tempo_scores.sum();      
+    }
+
+  mrs_real prior_max_score = 0.0;
+  mrs_natural prior_argmax_score = 0;
+  for (int i=0; i < nTempos; i++)
+   {
+     if (prior_tempo_scores(i) > prior_max_score)
+       {
+	 prior_max_score = prior_tempo_scores(i);
+	 prior_argmax_score = i;
+       }
+   }
+
+  
+  // std::cout << "PRIOR_ARGMAX_SCORE" << prior_argmax_score << std::endl;
+  mrs_real prob_max_tempo = tempos(prior_argmax_score);
+  // prob_max_tempo = ground_truth_tempo;
+  
+
+ 
   // pick the maximum scoring tempo candidate
   mrs_real max_score = 0.0;
   int max_i=0;
@@ -324,17 +410,28 @@ BeatPhase::myProcess(realvec& in, realvec& out)
     }
   }
 
+
+  // instead of the max local tempo select the probabilistic max tempo 
+  mrs_real beat_period;
+
+  mrs_natural tempo_i;
+
+
   // return the best tempo candidate and the
   // corresponding score in both the tempo vector
   // as well as the control phase_tempo
+  
   mrs_real swap_tempo = tempos(0);
   mrs_real swap_score = tempo_scores(0);
+  mrs_real swap_phase = tempo_phases(0); 
   tempos(0) = tempos(max_i);
   tempo_scores(0) = tempo_scores(max_i);
-
+  tempo_phases(0) = tempo_phases(max_i); 
+  
   if (max_i != 0) {
     tempos(max_i) = swap_tempo;
     tempo_scores(max_i) = swap_score;
+    tempo_phases(max_i) = swap_phase;
   }
 
   max_score = 0.0;
@@ -350,68 +447,80 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
   swap_tempo = tempos(1);
   swap_score = tempo_scores(1);
+  swap_phase = tempo_phases(1);
+  
   tempos(1) = tempos(max_i);
   tempo_scores(1) = tempo_scores(max_i);
+  tempo_phases(1) = tempo_phases(max_i); 
+  
   if (max_i != 1) {
     tempos(max_i) = swap_tempo;
     tempo_scores(max_i) = swap_score;
+    tempo_phases(max_i) = swap_phase; 
   }
 
-  ctrl_phase_tempo_->setValue(tempos(max_i));
+  
+  ctrl_phase_tempo_->setValue(tempos(0));
 
 
-  // select a tempo for the beat locations
-  // with doubling heuristic if tempo < 75 BPM
-  tempo = tempos(0);
-  if (tempo < 70.0)
-    tempo = tempo * 2;
-  mrs_real beat_length = 60.0 / tempo;
-
-  if (tempo >= 50)
-    period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize
-  else
-    period = 0;
-
-  period = (mrs_natural)(period+0.5);
-  // Place the beats in the right location in the onset detection function
-  for (int b=0; b < 4; b++) {
-    mrs_natural temp_t = (mrs_natural) (tempo_phases(max_i) - b * period);
-    if (temp_t >= 0) {
-      beats(0,temp_t) = -0.5;
-    }
-  }
-
-
-  //mrs_natural prev_sample_count;
-  //prev_sample_count = sampleCount_;
-
-  // Output all the detected beats to it's own MarControl
-  int total_beats = 0;
-  MarControlAccessor beatOutputAcc(ctrl_beatOutput_);
-  mrs_realvec& beatOutput = beatOutputAcc.to<mrs_realvec>();
-  for (t = 0; t < inSamples_; t++)
-  {
-    beatOutput(t) = 0.0;
-  }
-
-  // output the beats
-  mrs_real beat_location;
-  for (int t = inSamples_-1-2*bhopSize; t < inSamples_; t++)
-  {
-    if (beats(0,t) == -0.5)
+  for (int i= 0; i < tempos.getSize(); i++)
     {
-      beat_location = (sampleCount_ + t -(inSamples_-1 -bhopSize)) / (2.0 * osrate_);
-      if ((beat_location > current_beat_location_)&&((beat_location - current_beat_location_) > beat_length * 0.75))
-      {
-        if (ctrl_verbose_->isTrue()) {
-          MRSMSG(beat_location << "\t"
-                 << beat_location + 0.02 << " b");
-        }
-        beatOutput(total_beats) = beat_location;
-        current_beat_location_ = beat_location;
-        total_beats++;
-      }
+      /* std::cout << "TEMPO(" << i << ") = " << tempos(i) << ":-----:" << tempo_phases(i) << std::endl;
+      std::cout << "start block : " << block_start << std::endl;
+      */ 
+      beat_period = 60.0 / tempos(i);      
+      if (fabs(tempos(i) - prob_max_tempo) < 2.0)
+	{
+	  tempo_i = i;
+	  tempo = tempos(i);
+	  beat_period = 60.0 / tempo;
+	  if (tempo >= 50)
+	    period = oss_hop_win_ratio * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize
+	  else
+	    period = 0;		  
+	  period = (mrs_natural)(period+0.5);
+	}
     }
-  }
+
+  
+
+
+    
+  // std::cout << "osrate_ =  " << osrate_ << std::endl;
+  
+  tempo = tempos(tempo_i); 
+  mrs_natural temp_t = (mrs_natural) tempo_phases(tempo_i);
+  beat_period = 60.0 / tempos(tempo_i);
+  mrs_natural mt_t;
+  mrs_real init_beat_location;
+
+  mrs_real start_block = sampleCount_  / (oss_hop_win_ratio * osrate_); 
+  mrs_real end_block = (sampleCount_  + bhopSize) / (oss_hop_win_ratio * osrate_);
+
+  // std::cout << "start_block:" << start_block << std::endl;
+  // std::cout << "end-block:" << end_block << std::endl;
+
+  // std::cout << "PROB MAX TEMPO:" << prob_max_tempo << std::endl;
+  // std::cout << "TEMPO PHASES:" << tempo_phases << std::endl;
+  
+  
+  mrs_real beat_percentage = 0.75; 
+  
+  if ((temp_t > 0) && (temp_t < inSamples_))
+    {
+      mt_t = temp_t;
+      init_beat_location = (sampleCount_ + mt_t -(inSamples_-1 -bhopSize)) / (oss_hop_win_ratio * osrate_);
+      if ((init_beat_location - current_beat_location_) / beat_period > beat_percentage)
+	{
+	  current_beat_location_ = init_beat_location;
+	  std::cout << current_beat_location_ << std::endl;
+	}
+    }
+
+
+  for (int i= 0; i < tempos.getSize(); i++)
+    prev_tempos(i) = tempos(i);
+
+  prev_tempo_ = tempo;  
   sampleCount_ += bhopSize;
 }

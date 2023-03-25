@@ -763,7 +763,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
       induction_mode = "single";
     }
 
-    cout << "Requested induction in \"" << induction_mode << "\" operation" << endl;
+    // cout << "Requested induction in \"" << induction_mode << "\" operation" << endl;
 
     //handle beat error tolerance, used in trigger groundtruth mode (and assure that beat-times ground file is passed)
     if(strcmp(induction_mode.c_str(), "groundtruth") == 0)
@@ -825,7 +825,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
     maxBPM_ = 160;
     cerr << "Avoid metrical changes mode activated (default in causal operation)." << endl;
   }
-  cerr << "Considered tempo in the range [" << minBPM_ << "-" << maxBPM_ << "]BPM." << endl;
+  // cerr << "Considered tempo in the range [" << minBPM_ << "-" << maxBPM_ << "]BPM." << endl;
 
 
   ///////////////////////////////////////////////////////////////////////////////////////

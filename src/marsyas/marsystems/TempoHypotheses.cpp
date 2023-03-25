@@ -183,14 +183,14 @@ TempoHypotheses::myProcess(realvec& in, realvec& out)
       //Manual assorted values for filling BPM hypotheses vector when none are generated
       int manualBPMs_[] = {120, 60, 240, 100, 160, 200, 80, 140, 180, 220, 150};
 
-      if(!foundPeriods_ && !dumbInductionRequest_)
-        cerr << "\nUnable to find salient periodicities within the given induction window..." << endl;
-      if(dumbInductionRequest_)
-        cerr << "\nDumb Induction Mode..." << endl;
+      // if(!foundPeriods_ && !dumbInductionRequest_)
+        // cerr << "\nUnable to find salient periodicities within the given induction window..." << endl;
+      // if(dumbInductionRequest_)
+        // cerr << "\nDumb Induction Mode..." << endl;
 
-      cerr << "...Replacing induction with the following BPMs: ";
+	// cerr << "...Replacing induction with the following BPMs: ";
 
-      mrs_natural assignedPerCount = 0;
+      mrs_natural assignedPerCount = 0; 
       for (unsigned int i=0; i < (sizeof(manualBPMs_) / sizeof(int)); i++)
       {
         if(assignedPerCount == nPeriods_) break;
@@ -203,7 +203,7 @@ TempoHypotheses::myProcess(realvec& in, realvec& out)
         //assure that the chosen manual periods are within the user-defined BPM range
         if(manualPeriod >= minPeriod_ && manualPeriod <= maxPeriod_)
         {
-          cerr << manualBPMs_[i] << "; ";
+          // cerr << manualBPMs_[i] << "; ";
 
           int z = 0;
           for (int j = (assignedPerCount * nPhases_); j < ((assignedPerCount+1) * nPhases_); j++)

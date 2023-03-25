@@ -37,14 +37,20 @@ private:
   //Add specific controls needed by this MarSystem.
   void addControls();
   MarControlPtr ctrl_tempos_;
+  MarControlPtr ctrl_prev_tempos_;
   MarControlPtr ctrl_tempo_candidates_;
 
   MarControlPtr ctrl_temposcores_;
 
   MarControlPtr ctrl_phase_tempo_;
   MarControlPtr ctrl_ground_truth_tempo_;
+  MarControlPtr ctrl_prior_tempo_scores_;
 
+
+  
   MarControlPtr ctrl_beats_;
+  MarControlPtr ctrl_hopSize_;
+  MarControlPtr ctrl_winSize_;
   MarControlPtr ctrl_bhopSize_;
   MarControlPtr ctrl_bwinSize_;
   MarControlPtr ctrl_timeDomain_;
@@ -60,6 +66,8 @@ private:
   void myUpdate(MarControlPtr sender);
   mrs_natural sampleCount_;
   mrs_real factor_;
+  mrs_real prev_tempo_;
+  mrs_natural num_steady_;
 
 public:
   BeatPhase(std::string name);

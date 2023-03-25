@@ -79,7 +79,7 @@
 #define POST_DOUBLING 2
 
 #define WRITE_INTERMEDIATE 0
-#define DISPLAY_SVM 1
+#define DISPLAY_SVM 0
 
 
 #define WINSIZE 1024 //(2048?)
@@ -989,18 +989,24 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
     "Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData",
     "mrs_bool/hasData");
 
+  onset_strength->linkControl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize",
+			      "mrs_natural/winSize");
+			     
+
 
   //   updated values, for variable sample rates.  ms = milliseconds
   //   these will be rounded up to the nearest power of 2 (in samples)
   mrs_real oss_hop_ms = 2.9;     // for flux calculation
   mrs_real oss_win_ms = 5.8;     // for flux calculation
-
   mrs_real srate = onset_strength->getControl("mrs_real/file_srate")->to<mrs_real>();
   mrs_natural oss_hop_size = (mrs_natural) next_power_two(srate * oss_hop_ms * 0.001);
   mrs_natural oss_win_size = (mrs_natural) next_power_two(srate * oss_win_ms * 0.001);
 #if 0
   cout<<"OSS sizes:\t"<<oss_hop_size<<"\t"<<oss_win_size<<endl;
+  cout<<"srate:\t"<<srate << endl;  
 #endif
+
+
   onset_strength->updControl("mrs_natural/inSamples", oss_hop_size);
   fluxnet->updControl("ShiftInput/si/mrs_natural/winSize", oss_win_size);
 
@@ -1162,11 +1168,20 @@ void
 tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
   (void) resName;
-  cout << "SIMPLE TEMPO ESTIMATION METHOD (STEM)" << endl;
+  // cout << "SIMPLE TEMPO ESTIMATION METHOD (STEM)" << endl;
 
   //MarSystemManager mng;
 
+
+  
   MarSystem *onset_strength = onset_strength_signal_flux(sfName);
+
+
+  mrs_natural oss_hop_size = onset_strength->getControl("mrs_natural/inSamples")->to<mrs_natural>();
+  mrs_natural oss_win_size = onset_strength->getControl("mrs_natural/winSize")->to<mrs_natural>();
+    
+
+  
   MarSystem *beatTracker = mng.create("Series/beatTracker");
 
 #if WRITE_INTERMEDIATE
@@ -1244,6 +1259,9 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   mrs_real hop_ms = 2.9;     // for flux calculation
   mrs_real bhop_ms = 2.9;    // for onset strength signal
   mrs_real bwin_ms = 46.4; // 46.4;	 // for onset strength signal
+  
+
+  
   // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
   mrs_natural nCandidates = 10;  // number of tempo candidates
   mrs_natural factor = 4;
@@ -1279,6 +1297,12 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   mrs_natural hopSize = (mrs_natural) next_power_two(srate * hop_ms * 0.001);
   mrs_natural bhopSize = (mrs_natural) next_power_two(srate * bhop_ms * 0.001);
   mrs_natural bwinSize = (mrs_natural) next_power_two(srate * bwin_ms * 0.001);
+  mrs_natural winSize; 
+
+  hopSize = oss_hop_size;
+  bhopSize = 64;
+  bwinSize = 1024; 
+  
 #if 0
   cout<<"sizes:"<<endl;
   cout<<hopSize<<endl;
@@ -1304,7 +1328,8 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   beatTracker->updControl("BeatPhase/beatphase/mrs_real/ground_truth_tempo", ground_truth_tempo);
   beatTracker->linkControl("BeatPhase/beatphase/mrs_realvec/tempo_candidates",
                            "FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData");
-
+  beatTracker->updControl("BeatPhase/beatphase/mrs_natural/hopSize", oss_hop_size);
+  beatTracker->updControl("BeatPhase/beatphase/mrs_natural/winSize", oss_win_size);  
 
   mrs_realvec tempos(nCandidates);  // tempo estimates from the BH
   mrs_realvec temposcores(nCandidates);
@@ -1332,6 +1357,10 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 
   mrs_natural size_in_bytes = onset_strength->getctrl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
+  /* std::cout << "Size in bytes  = " << size_in_bytes << std::endl;
+  std::cout << "hopSize = " << hopSize << std::endl;
+ std:cout << "bhoPSize = " << bhopSize << std::endl; 
+  */ 
   mrs_natural num_ticks = (size_in_bytes / (hopSize * bhopSize)) + 1;
 
 
@@ -1339,10 +1368,15 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   // beginning: tick until the input BH buffer is full
   mrs_natural begin_tick_num = bwinSize / bhopSize - 1;
+
+  // std::cout << "BEGIN TICK NUM" << begin_tick_num << std::endl;
+  
+
+  
   for (; ticks<begin_tick_num; ticks++) {
     beatTracker->tick();
-    //mrs_realvec input = onset_strength->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
-    //cout<<"begin:\t"<<input(0,0)<<"\t"<<input(0,2047)<<endl;
+    // mrs_realvec input = onset_strength->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
+    // cout<<"begin:\t"<<input(0,0)<<"\t"<<input(0,2047)<<endl;
   }
 
   // reset anything needed for real processing
@@ -1528,7 +1562,7 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   // cout << tempos(0) << endl;
   ofs << tempos(0) << endl;
   ofs.close();
-  cout << "Estimated tempo = " << tempos(0) << endl;
+  // cout << "Estimated tempo = " << tempos(0) << endl;
 
 
   delete beatTracker;

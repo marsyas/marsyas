@@ -1382,7 +1382,7 @@ PhaseLock::myProcess(realvec& in, realvec& out)
 
     //cout << "TRIGGER @ " << timeElapsed_ << endl;
 
-    cerr << "\nRequested Induction in \"" << mode_ << "\" mode at: " << (((timeElapsed_* hopSize_)-hopSize_/2) / srcFs_) << "s" << endl; //(" << timeElapsed_ << ")" << endl;
+    // cerr << "\nRequested Induction in \"" << mode_ << "\" mode at: " << (((timeElapsed_* hopSize_)-hopSize_/2) / srcFs_) << "s" << endl; //(" << timeElapsed_ << ")" << endl;
 
     //maxScore_ = calcGTNormScore(in);
     if(strcmp(mode_.c_str(), "2b") == 0 || strcmp(mode_.c_str(), "2b2") == 0) //gt period+phase (adjusted)
@@ -1468,7 +1468,7 @@ PhaseLock::myProcess(realvec& in, realvec& out)
     else if(strcmp(mode_.c_str(), "regular") == 0)
       regularFunc(in , out);
 
-    cerr << "===================FINISH INDUCTION=====================" << endl;
+    // cerr << "===================FINISH INDUCTION=====================" << endl;
 
     /*
     ostringstream oss;
