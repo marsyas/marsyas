@@ -64,10 +64,11 @@ private:
 
 
   void myUpdate(MarControlPtr sender);
-  mrs_natural sampleCount_;
+  mrs_natural sampleCount_; 
   mrs_real factor_;
   mrs_real prev_tempo_;
   mrs_natural num_steady_;
+  mrs_real average_beat_height_; 
 
 public:
   BeatPhase(std::string name);

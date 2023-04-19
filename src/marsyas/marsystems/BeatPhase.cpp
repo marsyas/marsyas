@@ -153,7 +153,7 @@ BeatPhase::myUpdate(MarControlPtr sender)
   prev_tempo_ = 100; 
   pinSamples_ = inSamples_;
 
-
+  average_beat_height_ = 0.1; 
 
 }
 
@@ -243,6 +243,17 @@ BeatPhase::myProcess(realvec& in, realvec& out)
     {
       out (o,t) = in(o,t);
       beats (o,t) = 0.0;
+    }
+  }
+
+  in.normMaxMin();
+
+  for (o=0; o < inObservations_; o++)
+  {
+    for (t = 0; t < inSamples_; t++)
+    {
+      if (in(0,t) < 0.5 * average_beat_height_)
+	in(0,t) =0.0; 
     }
   }
 
@@ -497,26 +508,20 @@ BeatPhase::myProcess(realvec& in, realvec& out)
   mrs_real start_block = sampleCount_  / (oss_hop_win_ratio * osrate_); 
   mrs_real end_block = (sampleCount_  + bhopSize) / (oss_hop_win_ratio * osrate_);
 
-  // std::cout << "start_block:" << start_block << std::endl;
-  // std::cout << "end-block:" << end_block << std::endl;
+  
+  mrs_real beat_percentage = 0.75;
 
-  // std::cout << "PROB MAX TEMPO:" << prob_max_tempo << std::endl;
-  // std::cout << "TEMPO PHASES:" << tempo_phases << std::endl;
-  
-  
-  mrs_real beat_percentage = 0.75; 
-  
   if ((temp_t > 0) && (temp_t < inSamples_))
     {
       mt_t = temp_t;
       init_beat_location = (sampleCount_ + mt_t -(inSamples_-1 -bhopSize)) / (oss_hop_win_ratio * osrate_);
       if ((init_beat_location - current_beat_location_) / beat_period > beat_percentage)
 	{
+	  average_beat_height_ = (average_beat_height_ + in(0,mt_t)) * 0.5;
 	  current_beat_location_ = init_beat_location;
 	  std::cout << current_beat_location_ << std::endl;
 	}
     }
-
 
   for (int i= 0; i < tempos.getSize(); i++)
     prev_tempos(i) = tempos(i);

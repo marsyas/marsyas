@@ -1164,12 +1164,30 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
 */
 
 
+/* I can't be bothered to think about this myself, so copied from
+ http://stackoverflow.com/questions/3418231/c-replace-part-of-a-string-with-another-string
+ -gp */
+bool replace(std::string& str, const std::string& from, const std::string& to) {
+  size_t start_pos = str.find(from);
+  if(start_pos == std::string::npos)
+    return false;
+  str.replace(start_pos, from.length(), to);
+  return true;
+}
+
+
+
+
 void
 tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
   (void) resName;
   // cout << "SIMPLE TEMPO ESTIMATION METHOD (STEM)" << endl;
-
+  // cout << sfName << endl;
+  mrs_string oss_name;
+  oss_name = sfName; 
+  replace(oss_name, ".wav", ".oss.txt");
+    
   //MarSystemManager mng;
 
 
@@ -1184,10 +1202,12 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   
   MarSystem *beatTracker = mng.create("Series/beatTracker");
 
-#if WRITE_INTERMEDIATE
+#if 1
   onset_strength->addMarSystem(mng.create("PlotSink", "plotsink"));
   onset_strength->updControl("PlotSink/plotsink/mrs_string/filename",
-                             "out/onset_signal_strength.txt");
+                             oss_name);
+  onset_strength->updControl("PlotSink/plotsink/mrs_string/header",
+			     "oss");
   onset_strength->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
   onset_strength->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
   onset_strength->updControl("PlotSink/plotsink/mrs_bool/no_ticks", true);

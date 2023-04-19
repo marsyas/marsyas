@@ -48,6 +48,7 @@ PlotSink::PlotSink(const PlotSink& a):MarSystem(a)
   ctrl_single_file_ = getctrl("mrs_bool/single_file");
   ctrl_no_ticks_ = getctrl("mrs_bool/no_ticks");
   ctrl_filename_ = getctrl("mrs_string/filename");
+  ctrl_header_ = getctrl("mrs_string/header");  
   ctrl_matlab_ = getctrl("mrs_bool/matlab");
   ctrl_matlabCommand_ = getctrl("mrs_string/matlabCommand");
 }
@@ -81,6 +82,7 @@ PlotSink::addControls()
   addctrl("mrs_bool/matlab", false, ctrl_matlab_);
   addctrl("mrs_string/matlabCommand",
           "plot("+type_+"_"+name_+"_indata);", ctrl_matlabCommand_);
+  addctrl("mrs_string/header", "", ctrl_header_);
 }
 
 void
@@ -97,11 +99,12 @@ PlotSink::myUpdate(MarControlPtr sender)
   }
 
   filename_ = ctrl_filename_->to<mrs_string>();
-
+  header_ = ctrl_header_->to<mrs_string>();
   if (!single_file_ && ctrl_single_file_->isTrue() &&
       !filename_.empty())
   {
     single_file_ = new std::ofstream(filename_.c_str());
+    (*single_file_) << header_ << std::endl;          
   }
 }
 
@@ -110,6 +113,8 @@ PlotSink::myProcess(realvec& in, realvec& out)
 {
   out = in;
   mrs_natural t,o;
+
+
 
   //if using MATLABengine, plot the input data in MATLAB
 #ifdef MARSYAS_MATLAB
@@ -146,6 +151,9 @@ PlotSink::myProcess(realvec& in, realvec& out)
       (*single_file_) << std::endl;
     }
   }
+
+
+
 
   if(ctrl_messages_->isTrue())
   {

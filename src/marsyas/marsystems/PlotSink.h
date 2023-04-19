@@ -58,6 +58,7 @@ private:
   mrs_natural counter_;
   std::ofstream *single_file_;
   std::string filename_;
+  std::string header_;
 
   MarControlPtr ctrl_messages_;
   MarControlPtr ctrl_separator_;
@@ -65,6 +66,7 @@ private:
   MarControlPtr ctrl_single_file_;
   MarControlPtr ctrl_no_ticks_;
   MarControlPtr ctrl_filename_;
+  MarControlPtr ctrl_header_;
   MarControlPtr ctrl_matlab_;
   MarControlPtr ctrl_matlabCommand_;
 
